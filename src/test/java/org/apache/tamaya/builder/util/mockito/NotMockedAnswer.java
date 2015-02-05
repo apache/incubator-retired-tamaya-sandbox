@@ -24,6 +24,7 @@ import org.mockito.stubbing.Answer;
 
 import java.io.Serializable;
 
+// @todo This is a duplicated class
 public class NotMockedAnswer implements Answer<Object>, Serializable {
     public final static NotMockedAnswer NOT_MOCKED_ANSWER = new NotMockedAnswer();
 
