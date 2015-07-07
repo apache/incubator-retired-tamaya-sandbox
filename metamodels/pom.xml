@@ -21,28 +21,19 @@ under the License.
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.tamaya</groupId>
-        <artifactId>tamaya-all</artifactId>
+        <groupId>org.apache.tamaya.ext</groupId>
+        <artifactId>tamaya-sandbox</artifactId>
         <version>0.1-incubating-SNAPSHOT</version>
+        <relativePath>..</relativePath>
     </parent>
 
-    <artifactId>tamaya-sandbox</artifactId>
-    <groupId>org.apache.tamaya.ext</groupId>
-
-    <name>Apache Tamaya Sandbox Modules</name>
-    <description>This project contains the several extensions that can be used with Tamaya, but are not (yet) ready for
-        a release.</description>
+    <groupId>org.apache.tamaya.ext.metamodels</groupId>
+    <artifactId>tamaya-metamodels</artifactId>
+    <name>Apache Tamaya Extension Modules: Metamodels</name>
     <packaging>pom</packaging>
 
     <modules>
-        <module>integration</module>
-        <module>management</module>
-        <module>metamodels</module>
-        <module>jodatime</module>
-        <module>functions</module>
-        <module>sysprops</module>
-        <module>environment</module>
-        <module>remote</module>
+        <module>simple</module>
     </modules>
 
 </project>
