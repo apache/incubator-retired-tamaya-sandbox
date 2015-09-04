@@ -40,7 +40,6 @@ under the License.
         <module>jodatime</module>
         <module>sysprops</module>
         <module>environment</module>
-        <module>remote</module>
     </modules>
 
 </project>
