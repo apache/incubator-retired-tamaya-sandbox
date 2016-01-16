@@ -27,7 +27,7 @@ under the License.
         <relativePath>..</relativePath>
     </parent>
     <artifactId>tamaya-commons-config</artifactId>
-    <name>Apache Tamaya Commons Configuration Integration</name>
+    <name>Apache Tamaya Commons Integration - Apache Commons</name>
     <packaging>bundle</packaging>
 
     <dependencies>
