@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="tamaya-classloader-support">
+    <feature name="tamaya-classloader-support" description="Apache Tamaya Modules - Classloader Support" version="0.3.0.incubating-SNAPSHOT">
+        <details>Apache Tamaya Classloader Support registers a ConfigurationContext that leverages
+    classloader hierarchies. Also visibility of features and components is aligned with the
+    corresponding hierarchy of classloaders.</details>
+        <bundle start-level="80">mvn:org.apache.tamaya/tamaya-api/0.3-incubating-SNAPSHOT</bundle>
+        <bundle start-level="80">mvn:org.apache.tamaya.ext/tamaya-spisupport/0.3-incubating-SNAPSHOT</bundle>
+        <bundle start-level="80">mvn:org.apache.geronimo.specs/geronimo-annotation_1.2_spec/1.0-alpha-1</bundle>
+    </feature>
+</features>
