@@ -1,6 +1,0 @@
-org/apache/tamaya/clsupport/AbstractClassloaderAwareItemLoader.class
-org/apache/tamaya/clsupport/ServiceContainer.class
-org/apache/tamaya/clsupport/CLAwareServiceContext.class
-org/apache/tamaya/clsupport/CLAwareConfigurationContext.class
-org/apache/tamaya/clsupport/CLAwareConfigurationContext$1.class
-org/apache/tamaya/clsupport/CLAwareConfigurationContext$ContextManager.class
