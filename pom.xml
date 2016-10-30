@@ -27,18 +27,80 @@ under the License.
 
     <artifactId>tamaya-sandbox</artifactId>
     <groupId>org.apache.tamaya.ext</groupId>
-    <name>Apache Tamaya Extension Modules - Expermimental Sandbox Modules</name>
+    <name>Apache Tamaya Extensions - Sandbox</name>
     <description>This project contains the several extensions that can be used with Tamaya, but that where not yet ready for production use or still under heavy discussion.</description>
     <packaging>pom</packaging>
+
+    <properties>
+        <commons-io.version>2.5</commons-io.version>
+        <findbugs.skip>false</findbugs.skip>
+        <jdkVersion>1.7</jdkVersion>
+        <osgi.version>6.0.0</osgi.version>
+        <maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
+        <maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
+        <maven.compile.optimize>false</maven.compile.optimize>
+        <maven.compile.deprecation>true</maven.compile.deprecation>
+        <maven.javadoc.skip>false</maven.javadoc.skip>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <json.spec.version>1.0-alpha-1</json.spec.version>
+        <junit.version>4.12</junit.version>
+
+        <!-- Dependency and plugin relate version properties go here -->
+        <johnzon.version>0.9-incubating</johnzon.version>
+
+        <!-- Keep the JRuby version in sync with the one used by Asciidoctor -->
+        <asciidoctor.version>1.5.2</asciidoctor.version>
+        <asciidoctor-diagramm.version>1.2.1</asciidoctor-diagramm.version>
+        <asciidoctorj.version>1.5.2</asciidoctorj.version>
+        <checkstyle.version>2.15</checkstyle.version>
+        <enforcer.version>1.4.1</enforcer.version>
+        <gem.plugin>1.0.7</gem.plugin>
+        <sources.plugin>3.0.1</sources.plugin>
+        <hamcrest.version>2.0.0.0</hamcrest.version>
+        <javadoc.version>2.10.4</javadoc.version>
+        <!-- Must/should match the JRuby version used by AsciidoctorJ -->
+        <jruby.version>1.7.20</jruby.version>
+        <findbugs.version>3.0.4</findbugs.version>
+        <mockito.version>1.10.19</mockito.version>
+        <rat.version>0.12</rat.version>
+        <toolchains.plugin>1.1</toolchains.plugin>
+
+        <!-- Dependencies for site generation -->
+        <reflow-skin.version>1.1.1</reflow-skin.version>
+        <released_version>0.2-incubating</released_version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.johnzon</groupId>
+                <artifactId>johnzon-core</artifactId>
+                <version>${johnzon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>1.3</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <modules>
         <module>apache-commons</module>
         <module>jodatime</module>
-        <module>metamodel-simple</module>
-        <module>metamodel-staged</module>
+        <module>usagetracker</module>
+        <module>validation</module>
         <module>remote</module>
-        <module>sysprops</module>
-        <module>ui</module>
+        <module>configured-sysprops</module>
+        <module>etcd</module>
+        <module>consul</module>
+        <module>camel</module>
+        <module>propertysources</module>
+        <!--<module>ui</module>-->
+        <!--<module>osgi</module>-->
+        <module>management</module>
+        <!--<module>metamodel</module>-->
     </modules>
 
 </project>

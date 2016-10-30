@@ -22,12 +22,12 @@ under the License.
 
     <parent>
         <groupId>org.apache.tamaya.ext</groupId>
-        <artifactId>tamaya-integrations</artifactId>
-        <version>0.2-incubating-SNAPSHOT</version>
+        <artifactId>tamaya-sandbox</artifactId>
+        <version>0.3-incubating-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>tamaya-commons-config</artifactId>
-    <name>Apache Tamaya Commons Integration - Apache Commons</name>
+    <name>Apache Tamaya Modules - Apache Commons</name>
     <packaging>bundle</packaging>
 
     <dependencies>

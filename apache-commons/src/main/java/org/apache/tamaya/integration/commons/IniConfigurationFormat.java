@@ -50,7 +50,7 @@ public class IniConfigurationFormat implements ConfigurationFormat {
                     String key = keyIter.next();
                     properties.put(key, sectionConfig.getString(key));
                 }
-                builder.addProperties(section, properties);
+                builder.addSectionProperties(section, properties);
             }
         } catch (ConfigurationException e) {
             throw new ConfigException("Failed to parse ini-file format from " + url, e);

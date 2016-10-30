@@ -22,6 +22,7 @@ package org.apache.tamaya.integration.commons;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spi.PropertyValue;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -64,8 +65,9 @@ public class CommonsConfigPropertySource implements PropertySource {
     }
 
     @Override
-    public String get(String key) {
-        return commonsConfig.getString(key);
+    public PropertyValue get(String key) {
+        return PropertyValue.of(key, commonsConfig.getString(key),
+                getName());
     }
 
     @Override
@@ -77,5 +79,10 @@ public class CommonsConfigPropertySource implements PropertySource {
             config.put(key, commonsConfig.getString(key));
         }
         return config;
+    }
+
+    @Override
+    public boolean isScannable() {
+        return true;
     }
 }
