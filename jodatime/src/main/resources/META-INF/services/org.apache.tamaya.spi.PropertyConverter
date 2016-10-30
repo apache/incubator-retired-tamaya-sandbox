@@ -19,3 +19,4 @@
 org.apache.tamaya.jodatime.DateTimeConverter
 org.apache.tamaya.jodatime.DateTimeZoneConverter
 org.apache.tamaya.jodatime.PeriodConverter
+org.apache.tamaya.jodatime.DurationConverter

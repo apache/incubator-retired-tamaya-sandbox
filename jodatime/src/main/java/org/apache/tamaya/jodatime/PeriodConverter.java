@@ -84,6 +84,10 @@ public class PeriodConverter implements PropertyConverter<org.joda.time.Period> 
     }
 
     private void addSupportedFormats(ConversionContext context) {
+        if(context==null){
+            // use case when called internally from DurationConverter.
+            return;
+        }
         context.addSupportedFormats(PeriodConverter.class, "PyYmMwWdDThHmMsS");
         context.addSupportedFormats(PeriodConverter.class, "Pyyyy-mm-ddThh:mm:ss");
     }
