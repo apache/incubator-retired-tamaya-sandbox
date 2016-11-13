@@ -101,7 +101,7 @@ final class FactoryManager {
         }
 
         @Override
-        public PropertySource create(String config, Map<String, String> extendedConfig) {
+        public PropertySource create(Map<String, String> config) {
             try {
                 return this.type.newInstance();
             } catch (Exception e) {
@@ -124,7 +124,7 @@ final class FactoryManager {
         }
 
         @Override
-        public PropertySourceProvider create(String config, Map<String, String> extendedConfig) {
+        public PropertySourceProvider create(Map<String, String> config) {
             try {
                 return this.type.newInstance();
             } catch (Exception e) {

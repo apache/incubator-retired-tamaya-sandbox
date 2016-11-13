@@ -71,24 +71,24 @@
             <artifactId>tamaya-formats</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tamaya.ext</groupId>
-            <artifactId>tamaya-json</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.johnzon</groupId>
-            <artifactId>johnzon-core</artifactId>
-            <version>0.9-incubating</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-json_1.0_spec</artifactId>
-            <version>1.0-alpha-1</version>
-            <scope>compile</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.tamaya.ext</groupId>-->
+            <!--<artifactId>tamaya-json</artifactId>-->
+            <!--<version>${project.version}</version>-->
+            <!--<scope>provided</scope>-->
+            <!--<optional>true</optional>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.johnzon</groupId>-->
+            <!--<artifactId>johnzon-core</artifactId>-->
+            <!--<version>0.9-incubating</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.geronimo.specs</groupId>-->
+            <!--<artifactId>geronimo-json_1.0_spec</artifactId>-->
+            <!--<version>1.0-alpha-1</version>-->
+            <!--<scope>compile</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>java-hamcrest</artifactId>
@@ -108,11 +108,11 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            org.apache.tamaya.model,
-                            org.apache.tamaya.model.spi
+                            org.apache.tamaya.metamodel,
+                            org.apache.tamaya.metamodel.spi
                         </Export-Package>
                         <Private-Package>
-                            org.apache.tamaya.model.internal
+                            org.apache.tamaya.metamodel.internal
                         </Private-Package>
                     </instructions>
                 </configuration>

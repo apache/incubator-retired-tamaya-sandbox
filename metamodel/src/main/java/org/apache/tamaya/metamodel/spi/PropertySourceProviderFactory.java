@@ -34,12 +34,11 @@ public interface PropertySourceProviderFactory {
 
     /**
      * Resolve the given expression (without the key part).
-     * @param config the source configuration text, or null.
-     * @param extendedConfig any further extended configuration, not null, but may be
+     * @param config any further extended configuration, not null, but may be
      *                       empty.
      * @return the property source, or null.
      */
-    PropertySourceProvider create(String config, Map<String, String> extendedConfig);
+    PropertySourceProvider create(Map<String, String> config);
 
     /**
      * Get the property source type. The type is used to identify the correct factory instance

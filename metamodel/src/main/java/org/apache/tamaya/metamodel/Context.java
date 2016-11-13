@@ -30,38 +30,62 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class Context {
 
-    private static final Map<String,Context> CONTEXTS = new ConcurrentHashMap();
+    private static final ThreadLocal<Context> THREAD_CONTEXT = new ThreadLocal<Context>(){
+        @Override
+        protected Context initialValue() {
+            return new Context();
+        }
+    };
+
     private final Map<String,String> properties = new ConcurrentHashMap<>();
 
-    public static Context getInstance(){
-        return getInstance("");
+    /**
+     * Access the thread-based context. If no such context
+     * exists a new one will be created.
+     * @return the corresponding context, never null.
+     */
+    public static Context getThreadInstance(){
+        return THREAD_CONTEXT.get();
     }
 
     /**
-     * Access the context with a goven contextId, this allows to manage multiple
-     * contexts, e.g. for different EE application's deployed. If no such context
-     * exists a new one will be created.
-     * @param contextId the contextId, not null.
+     * Access the current context, which actually is the current context, combined with the thread based
+     * context (overriding).
      * @return the corresponding context, never null.
      */
-    public static Context getInstance(String contextId){
-        Context context = CONTEXTS.get(contextId);
-        if(context==null){
-            synchronized (Context.class){
-                context = CONTEXTS.get(contextId);
-                if(context==null){
-                    context = new Context();
-                    CONTEXTS.put(contextId, context);
-                }
-            }
-        }
-        return context;
+    public Context getCurrentInstance(){
+        return this.combineWith(THREAD_CONTEXT.get());
     }
 
+    /**
+     * Combine this context with the other contexts given.
+     * @param contexts the context to merge with this context.
+     * @return the newly created Context.
+     */
+    public Context combineWith(Context... contexts) {
+        Context newContext = new Context();
+        newContext.properties.putAll(getProperties());
+        for(Context ctx:contexts) {
+            newContext.properties.putAll(ctx.getProperties());
+        }
+        return newContext;
+    }
+
+    /**
+     * Access the given context property.
+     * @param key the key, not null
+     * @return the value, or null.
+     */
     public String getProperty(String key){
         return getProperty(key, null);
     }
 
+    /**
+     * Access the given context property.
+     * @param key the key, not the default value.
+     * @param defaultValue the default value to be returned, if no value is defined.
+     * @return the value, default value or null.
+     */
     public String getProperty(String key, String defaultValue){
         String value = this.properties.get(key);
         if(value==null){
@@ -70,10 +94,21 @@ public final class Context {
         return value;
     }
 
+    /**
+     * Sets the given context property.
+     * @param key the key, not null.
+     * @param value the value, not null.
+     * @return the porevious value, or null.
+     */
     public String setProperty(String key, String value){
        return this.properties.put(key,value);
     }
 
+    /**
+     * Sets the given property unless there is already a value defined.
+     * @param key the key, not null.
+     * @param value the value, not null.
+     */
     public void setPropertyIfAbsent(String key, String value){
         String prev = this.properties.get(key);
         if(prev==null){
@@ -81,10 +116,19 @@ public final class Context {
         }
     }
 
+    /**
+     * Adds all properties given, overriding any existing properties.
+     * @param properties the properties, not null.
+     */
     public void setProperties(Map<String,String> properties){
         this.properties.putAll(properties);
     }
 
+    /**
+     * Checks if all the given properties are present.
+     * @param keys the keys to check, not null.
+     * @return true, if all the given keys are existing.
+     */
     public boolean checkProperties(String... keys){
         for(String key:keys) {
             if (getProperty(key, null) == null) {
@@ -94,13 +138,10 @@ public final class Context {
         return true;
     }
 
-    public boolean checkProperty(String key, String value){
-        if(value!=null){
-            return value.equals(getProperty(key, null));
-        }
-        return !checkProperties(key);
-    }
-
+    /**
+     * Access all the current context properties.
+     * @return the properties, never null.
+     */
     public Map<String,String> getProperties(){
         return Collections.unmodifiableMap(this.properties);
     }

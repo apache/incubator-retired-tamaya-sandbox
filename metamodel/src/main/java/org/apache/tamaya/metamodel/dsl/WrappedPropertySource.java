@@ -18,9 +18,12 @@
  */
 package org.apache.tamaya.metamodel.dsl;
 
+import org.apache.tamaya.spi.FilterContext;
+import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,6 +36,7 @@ final class WrappedPropertySource implements PropertySource {
 
     private Integer ordinalAssigned;
     private PropertySource wrapped;
+    private List<PropertyFilter> filters;
 
     private WrappedPropertySource(PropertySource wrapped){
         this.wrapped = Objects.requireNonNull(wrapped);
@@ -77,12 +81,35 @@ final class WrappedPropertySource implements PropertySource {
 
     @Override
     public PropertyValue get(String key) {
-        return wrapped.get(key);
+        PropertyValue value = wrapped.get(key);
+        if(value != null && value.getValue()!=null){
+            if(filters!=null){
+                String filteredValue = value.getValue();
+                for(PropertyFilter pf:filters){
+                    filteredValue = pf.filterProperty(filteredValue, new FilterContext(key, value.getConfigEntries(), true));
+                }
+                if(filteredValue!=null){
+                    return PropertyValue.builder(key, filteredValue, getName())
+                            .setContextData(value.getConfigEntries()).build();
+                }
+            }
+        }
+        return value;
     }
 
     @Override
     public Map<String, String> getProperties() {
-        return wrapped.getProperties();
+        Map<String, String> props = wrapped.getProperties();
+        if(filters!=null){
+            String filteredValue = value.getValue();
+            for(PropertyFilter pf:filters){
+                filteredValue = pf.filterProperty(filteredValue, new FilterContext(key, value.getConfigEntries(), true));
+            }
+            if(filteredValue!=null){
+                return PropertyValue.builder(key, filteredValue, getName())
+                        .setContextData(value.getConfigEntries()).build();
+            }
+        }
     }
 
     @Override

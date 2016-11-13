@@ -17,46 +17,59 @@
 // under the License.
 // -->
 <configuration>
-    <formats>
-        <format name="yaml"/>
-        <format name="json"/>
-    </formats>
-    <!--<converters>-->
-    <!--<converter type="AllInOneConverter"/>-->
-    <!--</converters>-->
-    <filters>
-        <filter type="UsageTrackerFilter"/>
-    </filters>
-
+    <!-- Context is evaluated first. -->
     <context>
         <context-entry name="stage">${properties:system:STAGE?default=DEV}</context-entry>
         <context-entry name="app">${properties:system.APP?default=NONE}</context-entry>
         <context-entry name="context">${java:org.apache.tamaya.context.Context#id()}</context-entry>
         <context-entry name="company">Trivadis</context-entry>
+        <context-entry name="default-formats">yaml,json</context-entry>
     </context>
 
-    <sources>
+    <!-- Configuration definition. -->
+
+    <config-sources>
        <source enabled="${stage=TEST || stage=PTA || stage=PROD}"
            uri="properties:environment">
-           <decorator name="maped-to">ENV.</decorator>
-           <decorator name="secured">
+           <filter type="mapping">ENV.</filter>
+           <filter type="access-control">
                <param name="roles">admin,power-user</param>
                <param name="policy">mask</param>
-           </decorator>
+           </filter>
        </source>
        <source uri="properties:system"/>
-       <source name="FILE:config.json" observe="true" observe-period="20000"
-               uri="file:/./config.json" />
-       <source name="CP:config.yml" uri="classpath*://META-INF/application-config.yml"/>
-       <source name="MINE" uri="propertysource:ch.mypack.MyClassSource">
+       <source name="FILE:config.json" refresh-period="5000"
+               uri="file:/./config.json" >
+           <param name="observe-period">20000</param>
+           <param name="formats">json</param>
+       </source>
+       <source-provider name="classpath:application-config.yml" uri="classpath*://META-INF/application-config.yml">
+           <param name="formats">yaml</param>
+       </source-provider>
+       <source name="MINE" uri="class:ch.mypack.MyClassSource">
            <param name="locale">de</param>
         </source>
-       <include enabled="${context.cstage==TEST}">TEST-config.xml</include>
-       <source name="CONFIG-DIR" uri="dir:/${CONFIG-DIR}/**/*.json"/>
-        <source name="SERVER" uri="https://www.confdrive.com/cfg/customerId=${}">
-            <param name="locale">de</param>
-        </source>
-    </sources>
+       <include enabled="${stage==TEST}">TEST-config.xml</include>
+       <source-provider name="CONFIG-DIR" uri="resource:/${CONFIG-DIR}/**/*.json"/>
+       <source name="SERVER" uri="https://www.confdrive.com/cfg/customerId=${}">
+           <param name="locale">de</param>
+       </source>
+    </config-sources>
+    <config-filters>
+        <filter type="UsageTrackerFilter"/>
+        <filter type="access-control">
+            <param name="roles">admin,power-user</param>
+            <param name="policy">hide</param>
+            <param name="expression">*.secret</param>
+        </filter>
+        <filter type="Cache">
+            <param name="ttl">30000</param>
+            <param name="expression">cached.*</param>
+        </filter>
+    </config-filters>
+    <!--<converters>-->
+    <!--<converter type="AllInOneConverter"/>-->
+    <!--</converters>-->
 
 </configuration>
 
