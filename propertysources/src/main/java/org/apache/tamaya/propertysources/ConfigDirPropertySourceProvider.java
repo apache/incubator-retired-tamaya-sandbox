@@ -21,7 +21,7 @@ package org.apache.tamaya.propertysources;
 
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormats;
-import org.apache.tamaya.format.FlattenedDefaultPropertySource;
+import org.apache.tamaya.format.MappedConfigurationDataPropertySource;
 import org.apache.tamaya.resource.AbstractPathPropertySourceProvider;
 import org.apache.tamaya.spi.PropertySource;
 
@@ -65,7 +65,7 @@ public class ConfigDirPropertySourceProvider extends AbstractPathPropertySourceP
                         "Failed to read configuration from " + url);
                 return Collections.emptySet();
             }
-            return asCollection(new FlattenedDefaultPropertySource(config));
+            return asCollection(new MappedConfigurationDataPropertySource(config));
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,
                     "Failed to read configuration from " + url, e);

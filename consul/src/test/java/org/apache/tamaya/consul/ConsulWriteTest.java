@@ -19,8 +19,7 @@
 package org.apache.tamaya.consul;
 
 import com.google.common.net.HostAndPort;
-import org.apache.tamaya.consul.ConsulPropertySource;
-import org.apache.tamaya.mutableconfig.spi.ConfigChangeRequest;
+import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
 import org.junit.BeforeClass;
 
 import java.net.MalformedURLException;

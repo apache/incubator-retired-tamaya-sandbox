@@ -23,7 +23,7 @@ import com.google.common.net.HostAndPort;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.model.kv.Value;
-import org.apache.tamaya.mutableconfig.spi.ConfigChangeRequest;
+import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
 import org.apache.tamaya.mutableconfig.spi.MutablePropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spi.PropertyValueBuilder;

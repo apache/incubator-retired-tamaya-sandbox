@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.etcd;
 
-import org.apache.tamaya.mutableconfig.spi.ConfigChangeRequest;
+import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
 import org.apache.tamaya.mutableconfig.spi.MutablePropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spi.PropertyValueBuilder;
@@ -44,6 +44,14 @@ public class EtcdPropertySource extends BasePropertySource
 
     private final boolean disabled = evaluateDisabled();
 
+    public EtcdPropertySource(){
+        super("etcd", 1000);
+    }
+
+    public EtcdPropertySource(int defaultOrdinal){
+        super("etcd", defaultOrdinal);
+    }
+
     private boolean evaluateDisabled() {
         String value = System.getProperty("tamaya.etcdprops.disable");
         if(value==null){
@@ -67,19 +75,6 @@ public class EtcdPropertySource extends BasePropertySource
             }
         }
         return getDefaultOrdinal();
-    }
-
-    /**
-     * Returns the  default ordinal used, when no ordinal is set, or the ordinal was not parseable to an int value.
-     * @return the  default ordinal used, by default 0.
-     */
-    public int getDefaultOrdinal(){
-        return 1000;
-    }
-
-    @Override
-    public String getName() {
-        return "etcd";
     }
 
     @Override
