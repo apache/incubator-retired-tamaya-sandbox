@@ -87,6 +87,7 @@ under the License.
     </dependencyManagement>
 
     <modules>
+        <module>hazelcast</module>
         <module>apache-commons</module>
         <module>jodatime</module>
         <module>usagetracker</module>
