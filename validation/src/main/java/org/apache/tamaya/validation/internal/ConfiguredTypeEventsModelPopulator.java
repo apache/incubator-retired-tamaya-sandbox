@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 /**
- * Internal facade that registers all kind of injected fields as {@link org.apache.tamaya.model.ConfigModel} entries,
+ * Internal facade that registers all kind of injected fields as {@link org.apache.tamaya.validation.ConfigModel} entries,
  * so all configured injection points are visible as documented configuration hooks.
  */
 public final class ConfiguredTypeEventsModelPopulator implements ConfigEventListener {
