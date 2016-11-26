@@ -76,49 +76,49 @@ public class Activator implements BundleActivator {
         }
 
         // register injection mechanisms, if not configured otherwise
-        val = context.getProperty(SERVICE_INJECT_PROP);
-        if(val == null || Boolean.parseBoolean(val)){
-            injectionTracker = new ServiceTracker<Object, Object>(context, Object.class, null) {
-                @Override
-                public Object addingService(ServiceReference<Object> reference) {
-                    Object service = context.getService(reference);
-                    Object pidObj = reference.getProperty(Constants.SERVICE_PID);
-                    if (pidObj instanceof String) {
-                        String pid = (String) pidObj;
-                        ConfigurationAdmin configAdmin = null;
-                        ServiceReference<ConfigurationAdmin> adminRef =
-                                context.getServiceReference(ConfigurationAdmin.class);
-                        if(adminRef!=null){
-                            configAdmin = context.getService(adminRef);
-                        }
-                        try {
-                            Configuration targetConfig = null;
-                            if(configAdmin != null){
-                                org.osgi.service.cm.Configuration osgiConfig = configAdmin.getConfiguration(pid);
-                                if(osgiConfig!=null){
-                                    targetConfig = new OSGIEnhancedConfiguration(osgiConfig);
-                                }
-                            }
-                            if(targetConfig==null){
-                                targetConfig = ConfigurationProvider.getConfiguration();
-                            }
-                            ConfigurationInjection.getConfigurationInjector().configure(service, targetConfig);
-                        } catch (Exception e) {
-                            LOG.log(Level.WARNING, "Error configuring Service: " + service, e);
-                        }
-                    } else {
-                        LOG.log(Level.SEVERE, "Unsupported pid: " + pidObj);
-                    }
-                    return service;
-                }
-
-                @Override
-                public void removedService(ServiceReference<Object> reference, Object service) {
-                    context.ungetService(reference);
-                }
-            };
-            injectionTracker.open();
-        }
+//        val = context.getProperty(SERVICE_INJECT_PROP);
+//        if(val == null || Boolean.parseBoolean(val)){
+//            injectionTracker = new ServiceTracker<Object, Object>(context, Object.class, null) {
+//                @Override
+//                public Object addingService(ServiceReference<Object> reference) {
+//                    Object service = context.getService(reference);
+//                    Object pidObj = reference.getProperty(Constants.SERVICE_PID);
+//                    if (pidObj instanceof String) {
+//                        String pid = (String) pidObj;
+//                        ConfigurationAdmin configAdmin = null;
+//                        ServiceReference<ConfigurationAdmin> adminRef =
+//                                context.getServiceReference(ConfigurationAdmin.class);
+//                        if(adminRef!=null){
+//                            configAdmin = context.getService(adminRef);
+//                        }
+//                        try {
+//                            Configuration targetConfig = null;
+//                            if(configAdmin != null){
+//                                org.osgi.service.cm.Configuration osgiConfig = configAdmin.getConfiguration(pid);
+//                                if(osgiConfig!=null){
+//                                    targetConfig = new OSGIEnhancedConfiguration(osgiConfig);
+//                                }
+//                            }
+//                            if(targetConfig==null){
+//                                targetConfig = ConfigurationProvider.getConfiguration();
+//                            }
+//                            ConfigurationInjection.getConfigurationInjector().configure(service, targetConfig);
+//                        } catch (Exception e) {
+//                            LOG.log(Level.WARNING, "Error configuring Service: " + service, e);
+//                        }
+//                    } else {
+//                        LOG.log(Level.SEVERE, "Unsupported pid: " + pidObj);
+//                    }
+//                    return service;
+//                }
+//
+//                @Override
+//                public void removedService(ServiceReference<Object> reference, Object service) {
+//                    context.ungetService(reference);
+//                }
+//            };
+//            injectionTracker.open();
+//        }
     }
 
     @Override

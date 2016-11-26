@@ -1,0 +1,3 @@
+Export-Package: \
+	org.apache.tamaya.usagetracker,\
+	org.apache.tamaya.usagetracker.spi
