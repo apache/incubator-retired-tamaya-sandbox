@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.integration.osgi;
+package org.apache.tamaya.osgi;
 
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spisupport.BasePropertySource;

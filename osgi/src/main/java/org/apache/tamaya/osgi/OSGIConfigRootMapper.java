@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.integration.osgi;
+package org.apache.tamaya.osgi;
 
 /**
  * Mapping function for mapping Tamaya configuration sections to OSGI pids.
