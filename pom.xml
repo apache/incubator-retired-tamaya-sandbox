@@ -20,16 +20,29 @@ under the License.
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.tamaya</groupId>
-        <artifactId>tamaya-all</artifactId>
-        <version>0.3-incubating-SNAPSHOT</version>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>18</version>
+        <relativePath>org.apache:apache</relativePath>
     </parent>
-
-    <artifactId>tamaya-sandbox</artifactId>
     <groupId>org.apache.tamaya.ext</groupId>
-    <name>Apache Tamaya Extensions - Sandbox</name>
-    <description>This project contains the several extensions that can be used with Tamaya, but that where not yet ready for production use or still under heavy discussion.</description>
+    <artifactId>tamaya-sandbox</artifactId>
+    <version>0.3-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <name>Apache Tamaya Sandbox</name>
+    <description>Extension modules for Apache Tamaya</description>
+    <url>https://tamaya.incubator.apache.org</url>
+    <inceptionYear>2016</inceptionYear>
+
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://apache.org</url>
+    </organization>
+
+    <prerequisites>
+        <maven>3.0.5</maven>
+    </prerequisites>
 
     <properties>
         <commons-io.version>2.5</commons-io.version>
@@ -44,10 +57,12 @@ under the License.
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <json.spec.version>1.0-alpha-1</json.spec.version>
+        <johnzon.version>0.9-incubating</johnzon.version>
         <junit.version>4.12</junit.version>
 
         <!-- Dependency and plugin relate version properties go here -->
-        <johnzon.version>0.9-incubating</johnzon.version>
+        <arquillian.version>1.1.7.Final</arquillian.version>
+        <arquillian.deamon.version>1.0.0.Alpha1</arquillian.deamon.version>
 
         <!-- Keep the JRuby version in sync with the one used by Asciidoctor -->
         <asciidoctor.version>1.5.2</asciidoctor.version>
@@ -71,8 +86,180 @@ under the License.
         <released_version>0.2-incubating</released_version>
     </properties>
 
+    <licenses>
+        <license>
+            <name>Apache License</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git://git.apache.org/incubator-tamaya-extensions.git</connection>
+        <developerConnection>scm:git://git.apache.org/incubator-tamaya-extensions.git</developerConnection>
+        <url>https://git-wip-us.apache.org/repos/asf?p=incubator-tamaya-extensions.git</url>
+    </scm>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.apache.org/jira/browse/TAMAYA</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Tamaya Development List</name>
+            <post>dev@tamaya.incubator.apache.org</post>
+            <subscribe>dev-subscribe@tamaya.incubator.apache.org</subscribe>
+            <unsubscribe>dev-unsubscribe@tamaya.incubator.apache.org</unsubscribe>
+            <archive>http://mail-archives.apache.org/mod_mbox/incubator-tamaya-dev/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Tamaya Commits List</name>
+            <post>commits@tamaya.incubator.apache.org</post>
+            <subscribe>commits-subscribe@tamaya.incubator.apache.org</subscribe>
+            <unsubscribe>commits-unsubscribe@tamaya.incubator.apache.org</unsubscribe>
+            <archive>http://mail-archives.apache.org/mod_mbox/incubator-tamaya-commits/</archive>
+        </mailingList>
+        <mailingList>
+            <name>tamaya-private</name>
+            <subscribe>private-subscribe@tamaya.incubator.apache.org</subscribe>
+            <unsubscribe>private-unsubscribe@tamaya.incubator.apache.org</unsubscribe>
+            <post>private@tamaya.incubator.apache.org</post>
+            <archive>http://mail-archives.apache.org/mod_mbox/tamaya-private/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <distributionManagement>
+    </distributionManagement>
+
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>https://builds.apache.org/view/Tamaya/</url>
+    </ciManagement>
+
+    <developers>
+        <developer>
+            <name>Anatole Tresch</name>
+            <id>anatole</id>
+            <email>anatole -at- apache.org</email>
+            <roles>
+                <role>PMC</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+
+        <developer>
+            <id>struberg</id>
+            <name>Mark Struberg</name>
+            <email>struberg at apache.org</email>
+            <roles>
+                <role>PMC</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+
+        <developer>
+            <id>gpetracek</id>
+            <name>Gerhard Petracek</name>
+            <email>gpetracek at apache.org</email>
+            <organization>IRIAN.at, Austria</organization>
+            <organizationUrl>http://www.irian.at/</organizationUrl>
+            <roles>
+                <role>PMC</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+
+        <developer>
+            <id>johndament</id>
+            <name>John D. Ament</name>
+            <email>johndament at apache.org</email>
+            <roles>
+                <role>PMC</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+
+        <developer>
+            <id>plexus</id>
+            <name>Oliver B. Fischer</name>
+            <roles>
+                <role>PMC</role>
+            </roles>
+            <email>plexus@apache.org</email>
+            <timezone>+1</timezone>
+        </developer>
+
+        <developer>
+            <id>pottlinger</id>
+            <name>Phil Ottlinger</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+            <email>pottlinger at apache.org</email>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${findbugs.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>java-hamcrest</artifactId>
+                <version>${hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>rubygems</groupId>
+                <artifactId>asciidoctor-diagram</artifactId>
+                <version>${asciidoctor-diagramm.version}</version>
+                <type>gem</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-json_1.0_spec</artifactId>
+                <version>${json.spec.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.johnzon</groupId>
                 <artifactId>johnzon-core</artifactId>
@@ -81,10 +268,36 @@ under the License.
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
-                <version>1.3</version>
+                <version>${hamcrest.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>bnd-process</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <modules>
         <module>hazelcast</module>
@@ -99,7 +312,7 @@ under the License.
         <module>camel</module>
         <module>propertysources</module>
         <!--<module>ui</module>-->
-        <!--<module>osgi</module>-->
+        <module>osgi</module>
         <module>management</module>
         <!--<module>metamodel</module>-->
     </modules>

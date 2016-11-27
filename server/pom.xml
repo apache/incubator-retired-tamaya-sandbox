@@ -28,7 +28,7 @@ under the License.
 
     <artifactId>tamaya-server</artifactId>
     <name>Apache Tamaya Modules - Server Extension</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <jdkVersion>1.7</jdkVersion>

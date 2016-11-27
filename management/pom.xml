@@ -28,7 +28,7 @@ under the License.
 
     <artifactId>tamaya-management</artifactId>
     <name>Apache Tamaya Modules - JMX Support</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <jdkVersion>1.7</jdkVersion>

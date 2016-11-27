@@ -28,7 +28,7 @@ under the License.
     </parent>
     <artifactId>tamaya-commons-config</artifactId>
     <name>Apache Tamaya Modules - Apache Commons</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

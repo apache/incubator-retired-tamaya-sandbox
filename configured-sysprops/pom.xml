@@ -28,7 +28,7 @@ under the License.
     </parent>
     <artifactId>tamaya-sysprops</artifactId>
     <name>Apache Tamaya Modules - Configured System Properties</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <build>
         <plugins>

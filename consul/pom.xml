@@ -28,7 +28,7 @@ under the License.
 
     <artifactId>tamaya-consul</artifactId>
     <name>Apache Tamaya Modules - Consul</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <build>
         <plugins>

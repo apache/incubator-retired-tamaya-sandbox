@@ -29,7 +29,7 @@ under the License.
 
     <artifactId>tamaya-remote</artifactId>
     <name>Apache Tamaya Modules - Remote PropertySource</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <jdkVersion>1.7</jdkVersion>

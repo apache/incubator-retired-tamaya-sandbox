@@ -28,7 +28,7 @@ under the License.
 
     <artifactId>tamaya-camel</artifactId>
     <name>Apache Tamaya Modules - Apache Camel Support</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <camel.version>2.17.0</camel.version>

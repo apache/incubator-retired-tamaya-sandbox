@@ -29,7 +29,7 @@ under the License.
     <artifactId>tamaya-propertysources</artifactId>
     <name>Apache Tamaya Modules - PropertySources</name>
     <description>A collection of simple property sources and property source providers.</description>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -49,7 +49,7 @@ under the License.
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
+            <artifactId>java-hamcrest</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>

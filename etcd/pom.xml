@@ -28,7 +28,7 @@ under the License.
 
     <artifactId>tamaya-etcd</artifactId>
     <name>Apache Tamaya Modules - etcd PropertySource</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <build>
         <plugins>

@@ -31,7 +31,7 @@
     <description>This extension module provides functionality to configure the
         configuration system using meta-configuration.
     </description>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <jdkVersion>1.7</jdkVersion>

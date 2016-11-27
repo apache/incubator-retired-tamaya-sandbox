@@ -28,7 +28,7 @@
 
     <artifactId>tamaya-hazelcast</artifactId>
     <name>Apache Tamaya Modules - Hazelcast PropertySource</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <build>
         <plugins>
