@@ -16,22 +16,32 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.metamodel.internal;
 
-import org.apache.tamaya.spi.ConfigurationContext;
+package org.apache.tamaya.metamodel.internal.factories;
+
+import org.apache.tamaya.metamodel.spi.ItemFactory;
+import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spisupport.CLIPropertySource;
+import org.apache.tamaya.spisupport.EnvironmentPropertySource;
+
+import java.util.Map;
 
 /**
- * Common interface for refreshable items.
+ * Factory for configuring CLI argument based property sources.
  */
-public interface Refreshable {
+public final class CLIArgumentsFactory implements ItemFactory<PropertySource>{
+    @Override
+    public String getName() {
+        return "CLI";
+    }
 
-    /**
-     * Refreshes the given configuration context, by applying any changes
-     * needed to reflect the change.
-     * @param context the configuration context, not null.
-     * @return the new configuration context. In case no changes are
-     *         needed or the changes could be applied implicitly, the
-     *         instance passed as input should be returned.
-     */
-    ConfigurationContext refresh(ConfigurationContext context);
+    @Override
+    public PropertySource create(Map<String,String> parameters) {
+        return new CLIPropertySource();
+    }
+
+    @Override
+    public Class<? extends PropertySource> getType() {
+        return PropertySource.class;
+    }
 }

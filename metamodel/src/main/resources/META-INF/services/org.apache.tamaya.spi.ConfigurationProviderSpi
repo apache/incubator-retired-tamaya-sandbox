@@ -16,4 +16,5 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-org.apache.tamaya.metamodel.dsl.internal.DSLLoadingConfigurationProviderSpi
+
+org.apache.tamaya.metamodel.internal.DSLLoadingConfigurationProviderSpi

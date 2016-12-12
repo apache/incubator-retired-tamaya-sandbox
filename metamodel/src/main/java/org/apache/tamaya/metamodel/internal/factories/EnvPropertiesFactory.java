@@ -16,24 +16,31 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.metamodel.spi;
 
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
-import org.w3c.dom.Document;
+package org.apache.tamaya.metamodel.internal.factories;
+
+import org.apache.tamaya.metamodel.spi.ItemFactory;
+import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spisupport.EnvironmentPropertySource;
+
+import java.util.Map;
 
 /**
- * Reader that reads meta configuration from the meta configuration XML source.
- * This SPI allows to allow different aspects to be configured by different modules.
+ * Factory for configuring environment properties based property sources.
  */
-public interface MetaConfigurationReader {
+public final class EnvPropertiesFactory implements ItemFactory<PropertySource>{
+    @Override
+    public String getName() {
+        return "env-properties";
+    }
 
-    /**
-     * Reads meta-configuration from the given document and configures the current
-     * context builder. The priority of readers is determined by the priorization policy
-     * implemented by the {@link org.apache.tamaya.spi.ServiceContext},
-     * @param document the meta-configuration document
-     * @param contextBuilder the context builder to use.
-     */
-    void read(Document document, ConfigurationContextBuilder contextBuilder);
+    @Override
+    public PropertySource create(Map<String,String> parameters) {
+        return new EnvironmentPropertySource();
+    }
 
+    @Override
+    public Class<? extends PropertySource> getType() {
+        return PropertySource.class;
+    }
 }

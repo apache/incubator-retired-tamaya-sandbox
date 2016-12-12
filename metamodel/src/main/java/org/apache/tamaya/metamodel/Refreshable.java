@@ -16,24 +16,17 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.metamodel.spi;
+package org.apache.tamaya.metamodel;
 
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
-import org.w3c.dom.Document;
+import org.apache.tamaya.spi.ConfigurationContext;
 
 /**
- * Reader that reads meta configuration from the meta configuration XML source.
- * This SPI allows to allow different aspects to be configured by different modules.
+ * Common interface for refreshable items.
  */
-public interface MetaConfigurationReader {
+public interface Refreshable {
 
     /**
-     * Reads meta-configuration from the given document and configures the current
-     * context builder. The priority of readers is determined by the priorization policy
-     * implemented by the {@link org.apache.tamaya.spi.ServiceContext},
-     * @param document the meta-configuration document
-     * @param contextBuilder the context builder to use.
+     * Refreshes the given instance.
      */
-    void read(Document document, ConfigurationContextBuilder contextBuilder);
-
+    void refresh();
 }

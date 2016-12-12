@@ -18,31 +18,34 @@
  */
 package org.apache.tamaya.metamodel.spi;
 
-import org.apache.tamaya.metamodel.internal.SourceConfig;
-import org.apache.tamaya.spi.PropertySource;
-
 import java.util.Map;
 
-
 /**
- * {@link PropertySource} and {@link SourceConfig} instances that
- * implement configurable are configured with the according configuration
- * settings provided in the {@code tamaya-config.xml} meta-configuration.
+ * Factory for items that are configurable using meta-configuration.
+ * This allows easy registration using the name, instead of the fully qualified
+ * class name.
  */
-public interface PropertySourceFactory {
+public interface ItemFactory<T> {
 
     /**
-     * Resolve the given expression (without the key part).
-     * @param config any further extended configuration, not null, but may be
-     *                       empty.
-     * @return the property source, or null.
+     * Get the factory name.
+     * @return the factory name, not null.
      */
-    PropertySource create(Map<String, String> config);
+    String getName();
 
     /**
-     * Get the property source type. The type is used to identify the correct factory instance
-     * to resolve a configured property source.
-     * @return the (unique) type key, never null and not empty.
+     * Create a new instance.
+     * @param parameters the parameters for configuring the instance.
+     * @return the new instance, not null.
      */
-    String getType();
+    T create(Map<String,String> parameters);
+
+    /**
+     * Get the target type created by this factory. This can be used to
+     * assign the factory to an acording item base type, e.g. a PropertySource,
+     * PropertySourceProvider, PropertyFilter etc.
+     * @return the target type, not null.
+     */
+    Class<? extends T> getType();
+
 }

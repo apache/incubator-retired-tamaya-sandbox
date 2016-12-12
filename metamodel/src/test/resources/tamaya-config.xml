@@ -20,44 +20,68 @@
     <!-- Context is evaluated first. -->
     <context>
         <context-entry name="stage">${properties:system:STAGE?default=DEV}</context-entry>
+        <context-entry name="configdir">${properties:system:configdir?default=.}</context-entry>
         <context-entry name="app">${properties:system.APP?default=NONE}</context-entry>
         <context-entry name="context">${java:org.apache.tamaya.context.Context#id()}</context-entry>
         <context-entry name="company">Trivadis</context-entry>
         <context-entry name="default-formats">yaml,json</context-entry>
+        <context-entry name="default-refresh-period">5 SECOND</context-entry>
     </context>
+    <context name="APP">
+        <context-entry name="application">someAppName</context-entry>
+    </context>
+
+    <!-- combinationPolicy type="" / -->
 
     <!-- Configuration definition. -->
 
-    <config-sources>
+    <property-sources>
        <source enabled="${stage=TEST || stage=PTA || stage=PROD}"
-           uri="properties:environment">
-           <filter type="mapping">ENV.</filter>
-           <filter type="access-control">
+           type="env-properties">
+           <filter type="PropertyMapping">
+               <param name="mapTarget">ENV.</param>
+           </filter>
+           <filter type="AccessMask">
                <param name="roles">admin,power-user</param>
                <param name="policy">mask</param>
+               <param name="mask">*****</param>
+               <param name="matchExpression">SEC_</param>
            </filter>
        </source>
-       <source uri="properties:system"/>
-       <source name="FILE:config.json" refresh-period="5000"
-               uri="file:/./config.json" >
-           <param name="observe-period">20000</param>
-           <param name="formats">json</param>
+       <source type="sys-properties" >
+           <filter type="ImmutablePropertySource" />
        </source>
-       <source-provider name="classpath:application-config.yml" uri="classpath*://META-INF/application-config.yml">
-           <param name="formats">yaml</param>
-       </source-provider>
-       <source name="MINE" uri="class:ch.mypack.MyClassSource">
-           <param name="locale">de</param>
+       <source type="file" refreshable="true">
+           <name>config.json</name>
+           <param name="location">config.json</param>
+       </source>
+        <source type="file" refreshable="true">
+            <name>config.xml</name>
+            <param name="location">config.xml</param>
+            <param name="formats">xml-properties</param>
         </source>
-       <include enabled="${stage==TEST}">TEST-config.xml</include>
-       <source-provider name="CONFIG-DIR" uri="resource:/${CONFIG-DIR}/**/*.json"/>
-       <source name="SERVER" uri="https://www.confdrive.com/cfg/customerId=${}">
-           <param name="locale">de</param>
+       <source-provider type="resource">
+           <name>classpath:application-config.yml</name>
+           <param name="location">/META-INF/application-config.yml</param>
+       </source-provider>
+       <source type="ch.mypack.MyClassSource" />
+       <!--<include enabled="${stage==TEST}">TEST-config.xml</include>-->
+       <source-provider type="resource" enabled="${configdir != null}">
+           <name>config-dir</name>
+           <param name="location">/${configdir}/**/*.json</param>
+       </source-provider>
+       <source type="url" refreshable="true">
+           <name>remote</name>
+           <param name="location">https://www.confdrive.com/cfg/customerId=1234</param>
+           <param name="formats">json</param>
+           <filter type="CachedPropertySource">
+               <param name="ttl">30 SECOND</param>
+           </filter>
        </source>
-    </config-sources>
-    <config-filters>
+    </property-sources>
+    <property-filters>
         <filter type="UsageTrackerFilter"/>
-        <filter type="access-control">
+        <filter type="AccessControl">
             <param name="roles">admin,power-user</param>
             <param name="policy">hide</param>
             <param name="expression">*.secret</param>
@@ -66,10 +90,11 @@
             <param name="ttl">30000</param>
             <param name="expression">cached.*</param>
         </filter>
-    </config-filters>
-    <!--<converters>-->
+    </property-filters>
+    <property-converters>
     <!--<converter type="AllInOneConverter"/>-->
-    <!--</converters>-->
+        <default-converters/>
+    </property-converters>
 
 </configuration>
 
