@@ -41,11 +41,9 @@ import java.util.logging.Logger;
  */
 public class Activator implements BundleActivator {
 
-    private static final String SERVICE_RANKING_PROP = "org.tamaya.integration.osgi.cm.ranking";
+    private static final String SERVICE_RANKING_PROP = "org.apache.tamaya.osgi.cm.ranking";
 
-    private static final String SERVICE_OVERRIDE_PROP = "org.tamaya.integration.osgi.cm.override";
-
-    private static final String SERVICE_INJECT_PROP = "org.tamaya.integration.osgi.cm.inject";
+//    private static final String SERVICE_OVERRIDE_PROP = "org.apache.tamaya.osgi.cm.override";
 
     private static final Integer DEFAULT_RANKING = 10;
 
@@ -53,22 +51,25 @@ public class Activator implements BundleActivator {
 
     private ServiceRegistration<ConfigurationAdmin> registration;
 
-    private ServiceTracker<Object, Object> injectionTracker;
+//    private ServiceTracker<Object, Object> injectionTracker;
 
     @Override
     public void start(BundleContext context) throws Exception {
-        String val = context.getProperty(SERVICE_OVERRIDE_PROP);
-        if(val == null || Boolean.parseBoolean(val)){
-            Dictionary<String, Object> props = new Hashtable<>();
-            String ranking = context.getProperty(SERVICE_RANKING_PROP);
-            if (ranking == null) {
-                props.put(Constants.SERVICE_RANKING, DEFAULT_RANKING);
-            } else {
-                props.put(Constants.SERVICE_RANKING, Integer.valueOf(ranking));
-            }
-            TamayaConfigAdminImpl cm = new TamayaConfigAdminImpl(context);
-            registration = context.registerService(ConfigurationAdmin.class, cm, props);
+        Dictionary<String, Object> props = new Hashtable<>();
+        String ranking = context.getProperty(SERVICE_RANKING_PROP);
+        if (ranking == null) {
+            ranking = System.getProperty(SERVICE_RANKING_PROP);
         }
+        if (ranking == null) {
+            props.put(Constants.SERVICE_RANKING, DEFAULT_RANKING);
+            LOG.fine("Using default ranking for Tamaya OSGI ConfigAdmin service: " + DEFAULT_RANKING);
+        } else {
+            props.put(Constants.SERVICE_RANKING, Integer.valueOf(ranking));
+            LOG.fine("Using custom ranking for Tamaya OSGI ConfigAdmin service: " + ranking);
+        }
+        TamayaConfigAdminImpl cm = new TamayaConfigAdminImpl(context);
+        registration = context.registerService(ConfigurationAdmin.class, cm, props);
+        LOG.info("Registered Tamaya OSGI ConfigAdmin service-");
 
         // register injection mechanisms, if not configured otherwise
 //        val = context.getProperty(SERVICE_INJECT_PROP);
@@ -121,9 +122,9 @@ public class Activator implements BundleActivator {
         if (registration != null) {
             registration.unregister();
         }
-        if(injectionTracker!=null){
-            injectionTracker.close();
-        }
+//        if(injectionTracker!=null){
+//            injectionTracker.close();
+//        }
     }
 
 }
