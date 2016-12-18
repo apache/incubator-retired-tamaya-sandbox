@@ -48,28 +48,4 @@ under the License.
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Import-Package>
-                            org.apache.tamaya,
-                            org.apache.tamaya.spi,
-                            org.apache.tamaya.format,
-                            org.apache.commons,
-                            javax.annotation,
-                            *
-                        </Import-Package>
-                        <Export-Package>
-                            org.apache.tamaya.integration.commons
-                        </Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

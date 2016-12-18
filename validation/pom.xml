@@ -30,7 +30,7 @@
     <name>Apache Tamaya Modules - Validation</name>
     <description>This extension module provides functionality to validate configuration.
     </description>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <properties>
         <jdkVersion>1.7</jdkVersion>

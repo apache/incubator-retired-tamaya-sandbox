@@ -1,0 +1,5 @@
+Export-Package: \
+	org.apache.tamaya.ui,\
+	org.apache.tamaya.ui.event,\
+	org.apache.tamaya.ui.spi,\
+	org.apache.tamaya.ui.views

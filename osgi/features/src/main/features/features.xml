@@ -11,9 +11,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<features name="org-apache-tamaya-${project.version}">
-    <feature name="org-apache-tamaya" version="${project.version}">
-        <feature>org-apache-tamaya</feature>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.3.0" name="org-apache-tamaya">
+    <feature name="configadmin" version="${project.version}">
         <bundle>mvn:${project.groupId}/tamaya-osgi/${project.version}/jar</bundle>
         <bundle>mvn:${project.groupId}/tamaya-functions/${project.version}/jar</bundle>
         <bundle>mvn:${project.groupId}/tamaya-spi-support/${project.version}/jar</bundle>

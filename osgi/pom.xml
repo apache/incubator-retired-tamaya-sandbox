@@ -68,8 +68,8 @@
     </dependencies>
 
     <modules>
-        <module>features</module>
         <module>common</module>
+        <module>features</module>
     </modules>
 
 </project>
