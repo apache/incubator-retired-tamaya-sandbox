@@ -18,10 +18,12 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
+import org.apache.tamaya.metamodel.*;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
+import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertySourceProvider;
 import org.w3c.dom.Document;
@@ -66,6 +68,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
                         PropertySource ps = sourceFactory.create(params);
                         if(ps!=null) {
                             ComponentConfigurator.configure(ps, params);
+                            ps = decoratePropertySource(ps, contextBuilder, node, params);
                             LOG.finer("Adding configured property source: " + ps.getName());
                             contextBuilder.addPropertySources(ps);
                         }
@@ -84,6 +87,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
                         PropertySourceProvider prov = providerFactory.create(params);
                         if(prov!=null) {
                             ComponentConfigurator.configure(prov, node);
+                            prov = decoratePropertySourceProvider(prov, contextBuilder, node, params);
                             LOG.finer("Adding configured property source provider: " + prov.getClass().getName());
                             contextBuilder.addPropertySources(prov.getPropertySources());
                         }
@@ -98,6 +102,80 @@ public class PropertySourceReader implements MetaConfigurationReader{
                 LOG.log(Level.SEVERE, "Failed to read property source configuration: " + node, e);
             }
         }
+    }
+
+    /**
+     * Decorates a property source to be refreshable or filtered.
+     * @param ps the wrapped property source
+     * @param contextBuilder
+     *@param configNode the XML config node
+     * @param params the extracted parameter list   @return the property source to be added to the context.
+     */
+    private PropertySource decoratePropertySource(PropertySource ps, ConfigurationContextBuilder contextBuilder, Node configNode, Map<String, String> params){
+        Node refreshableVal = configNode.getAttributes().getNamedItem("refreshable");
+        if(refreshableVal!=null && Boolean.parseBoolean(refreshableVal.getNodeValue())){
+            if(!(ps instanceof Refreshable)){
+                ps = RefreshablePropertySource.of(params, ps);
+            }
+        }
+        NodeList childNodes = configNode.getChildNodes();
+        for(int i=0;i<childNodes.getLength();i++){
+            Node node = childNodes.item(i);
+            if("filter".equals(node.getNodeName())) {
+                ps = FilteredPropertySource.of(ps);
+                configureFilter((FilteredPropertySource) ps, node);
+            }
+        }
+        Node enabledVal = configNode.getAttributes().getNamedItem("enabled");
+        if(enabledVal!=null){
+            ps = new EnabledPropertySource(ps,
+                    MetaContext.getDefaultInstance().getProperties(),
+                    enabledVal.getNodeValue());
+        }
+        return ps;
+    }
+
+    private void configureFilter(FilteredPropertySource ps, Node filterNode) {
+        try {
+            String type = filterNode.getAttributes().getNamedItem("type").getNodeValue();
+            ItemFactory<PropertyFilter> filterFactory = ItemFactoryManager.getInstance().getFactory(PropertyFilter.class, type);
+            if(filterFactory==null){
+                LOG.severe("No such property filter: " + type);
+                return;
+            }
+            Map<String,String> params = ComponentConfigurator.extractParameters(filterNode);
+            PropertyFilter filter = filterFactory.create(params);
+            if(filter!=null) {
+                ComponentConfigurator.configure(filter, params);
+                LOG.finer("Adding configured property filter: " + filter.getClass().getName());
+                ps.addPropertyFilter(filter);
+            }
+        }catch(Exception e){
+            LOG.log(Level.SEVERE, "Failed to read property filter configuration: " + filterNode, e);
+        }
+    }
+
+    /**
+     * Decorates a property source provider to be refreshable or filtered.
+     * @param prov the property source provider to be wrapped.
+     * @param contextBuilder
+     *@param configNode the XML config node
+     * @param params the extracted parameter list   @return the property source provider to be added to the context.
+     */
+    private PropertySourceProvider decoratePropertySourceProvider(PropertySourceProvider prov, ConfigurationContextBuilder contextBuilder, Node configNode, Map<String, String> params){
+        Node refreshableVal = configNode.getAttributes().getNamedItem("refreshable");
+        if(refreshableVal!=null && Boolean.parseBoolean(refreshableVal.getNodeValue())){
+            if(!(prov instanceof Refreshable)){
+                prov = RefreshablePropertySourceProvider.of(params, prov);
+            }
+        }
+        Node enabledVal = configNode.getAttributes().getNamedItem("enabled");
+        if(enabledVal!=null){
+            prov = new EnabledPropertySourceProvider(prov,
+                    MetaContext.getDefaultInstance().getProperties(),
+                    enabledVal.getNodeValue());
+        }
+        return prov;
     }
 
 }

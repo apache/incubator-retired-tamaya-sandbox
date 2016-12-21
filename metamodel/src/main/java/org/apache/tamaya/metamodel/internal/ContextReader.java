@@ -39,7 +39,7 @@ public class ContextReader implements MetaConfigurationReader {
     @Override
     public void read(Document document, ConfigurationContextBuilder contextBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("context");
-        String contextName = "DEFAULT";
+        String contextName = null;
         LOG.finer("Reading " + nodeList.getLength() + " meta context entries...");
         for(int i=0;i<nodeList.getLength();i++){
             Node node = nodeList.item(i);
@@ -48,7 +48,7 @@ public class ContextReader implements MetaConfigurationReader {
                 if(nameNode!=null){
                     contextName = nameNode.getTextContent();
                 }
-                MetaContext context = MetaContext.getInstance(contextName);
+                MetaContext context = contextName!=null?MetaContext.getInstance(contextName):MetaContext.getDefaultInstance();
                 NodeList entryNodes = node.getChildNodes();
                 for(int c=0;c<entryNodes.getLength();c++){
                     Node entryNode = entryNodes.item(c);

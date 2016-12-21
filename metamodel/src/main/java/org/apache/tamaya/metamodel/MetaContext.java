@@ -52,6 +52,7 @@ public final class MetaContext {
             return new MetaContext();
         }
     };
+    public static final String DEFAULT_CONTEXT_NAME = "<DEFAULT>";
 
     private String id;
 
@@ -69,6 +70,15 @@ public final class MetaContext {
      */
     public static MetaContext getInstance(String contextName) {
         return getInstance(contextName, null);
+    }
+
+    /**
+     * Access the default context. Contexts are managed as weak references in this class. If no
+     * such context exists, a new instance is created.
+     * @return the context instance, never null.
+     */
+    public static MetaContext getDefaultInstance(){
+        return getInstance(DEFAULT_CONTEXT_NAME);
     }
 
     /**

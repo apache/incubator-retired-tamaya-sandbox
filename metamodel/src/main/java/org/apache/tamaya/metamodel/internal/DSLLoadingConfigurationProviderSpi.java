@@ -23,18 +23,10 @@ import org.apache.tamaya.spi.*;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.spisupport.DefaultConfiguration;
 import org.apache.tamaya.spisupport.DefaultConfigurationContextBuilder;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 import javax.annotation.Priority;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * ConfigurationContext that uses {@link MetaConfiguration} to configure the
@@ -48,7 +40,7 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
 
     @Override
     public ConfigurationContextBuilder getConfigurationContextBuilder() {
-        return ServiceContextManager.getServiceContext().getService(ConfigurationContextBuilder.class);
+        return ServiceContextManager.getServiceContext().create(ConfigurationContextBuilder.class);
     }
 
     @Override
