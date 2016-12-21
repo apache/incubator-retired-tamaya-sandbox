@@ -19,6 +19,7 @@
 package org.apache.tamaya.osgi;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -43,7 +44,7 @@ public class TamayaConfigAdminImpl implements ConfigurationAdmin {
     /** THe optional OSGI parent service. */
     private ConfigurationAdmin parent;
     /** The cached configurations. */
-    private Map<String,Configuration> configs = new WeakHashMap<>();
+    private Map<String,Configuration> configs = new ConcurrentHashMap<>();
     /** The configuration section mapper. */
     private OSGIConfigRootMapper configRootMapper;
 
@@ -68,7 +69,7 @@ public class TamayaConfigAdminImpl implements ConfigurationAdmin {
             key += "::"+location;
         }
         Configuration config = this.configs.get(key);
-        if(config==null) {
+        if (config == null) {
             Dictionary<String, Object> parentConfig = getParentConfig(null, factoryPid, location);
             config = new TamayaOSGIConfiguration(null, factoryPid, configRootMapper, parentConfig);
             this.configs.put(key, config);
@@ -82,8 +83,8 @@ public class TamayaConfigAdminImpl implements ConfigurationAdmin {
         if(location!=null){
             key += "::"+location;
         }
-        Configuration config = this.configs.get(key);
-        if(config==null) {
+        Configuration  config = this.configs.get(key);
+        if (config == null) {
             Dictionary<String, Object> parentConfig = getParentConfig(pid, null, location);
             config = new TamayaOSGIConfiguration(pid, null, configRootMapper, parentConfig);
             this.configs.put(key, config);
@@ -120,25 +121,18 @@ public class TamayaConfigAdminImpl implements ConfigurationAdmin {
 
     @Override
     public Configuration[] listConfigurations(String filter) throws IOException, InvalidSyntaxException {
-        Collection<Configuration> result;
-        if (filter == null) {
-            result = this.configs.values();
+        List<Configuration> result = new ArrayList<>();
+        if (filter == null || context == null) {
+            return this.configs.values().toArray(new Configuration[this.configs.size()]);
         } else {
-            result = new ArrayList<>();
-            if(context==null){
-                for (Configuration config : this.configs.values()) {
+            Filter flt = context.createFilter(filter);
+            for(Configuration config:this.configs.values()) {
+                if (flt.match(config.getProperties())) {
                     result.add(config);
                 }
-            }else {
-                Filter flt = context.createFilter(filter);
-                for (Configuration config : this.configs.values()) {
-                    if (flt.match(config.getProperties())) {
-                        result.add(config);
-                    }
-                }
             }
+            return result.toArray(new Configuration[result.size()]);
         }
-        return result.toArray(new Configuration[configs.size()]);
     }
 
     /**

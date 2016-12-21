@@ -74,7 +74,6 @@ public class OSGIKarafTest {
                 .classifier("features")
                 .version("0.3-incubating-SNAPSHOT");
         return options(
-                // distribution to test: Karaf 3.0.3
                 KarafDistributionOption.karafDistributionConfiguration()
                         .frameworkUrl(CoreOptions.maven()
                                 .groupId("org.apache.karaf")
@@ -85,8 +84,9 @@ public class OSGIKarafTest {
                         .name("ApacheKaraf")
                         .useDeployFolder(false)
                         .unpackDirectory(new File("target/karaf")),
-                // no local and remote consoles
-//                KarafDistributionOption.debugConfiguration("5005", true),
+                // if activated, the remote karaf instance will stop and wait for
+                // debugger to connect to.
+//                KarafDistributionOption.debugConfiguration("5006", true),
                 KarafDistributionOption.configureConsole().ignoreLocalConsole(),
                 KarafDistributionOption.configureConsole().ignoreRemoteShell(),
                 // keep runtime folder allowing analysing results
@@ -105,7 +105,6 @@ public class OSGIKarafTest {
                         karafStandardRepo, "scr"),
                 KarafDistributionOption.features(
                         tamayaRepo, "tamaya-osgi-features/0.3.0.incubating-SNAPSHOT"),
-//                bundle("reference:file:target/test-classes"),
                 junitBundles()
         );
     }
@@ -140,7 +139,6 @@ public class OSGIKarafTest {
     }
 
     @Test
-    @Ignore
     public void getConfiguration() throws Exception {
         ConfigurationAdmin configAdmin = getConfigAdmin();
         org.osgi.service.cm.Configuration config = configAdmin.getConfiguration("tamaya");

@@ -39,34 +39,6 @@
         <pax.exam.version>4.5.0</pax.exam.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-atinject_1.0_spec</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tamaya</groupId>
-            <artifactId>tamaya-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tamaya</groupId>
-            <artifactId>tamaya-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tamaya.ext</groupId>
-            <artifactId>tamaya-functions</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tamaya.ext</groupId>
-            <artifactId>tamaya-spisupport</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-
     <modules>
         <module>common</module>
         <module>features</module>
