@@ -19,13 +19,17 @@
 package org.apache.tamaya.metamodel.internal;
 
 import org.apache.tamaya.metamodel.MetaConfiguration;
-import org.apache.tamaya.spi.*;
 import org.apache.tamaya.Configuration;
+import org.apache.tamaya.spi.ConfigurationContext;
+import org.apache.tamaya.spi.ConfigurationContextBuilder;
+import org.apache.tamaya.spi.ConfigurationProviderSpi;
+import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.spisupport.DefaultConfiguration;
 import org.apache.tamaya.spisupport.DefaultConfigurationContextBuilder;
+import org.apache.tamaya.spisupport.PropertyFilterComparator;
+import org.apache.tamaya.spisupport.PropertySourceComparator;
 
 import javax.annotation.Priority;
-import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -93,10 +97,8 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
                                 .addDefaultPropertyConverters()
                                 .addDefaultPropertyFilters()
                                 .addDefaultPropertySources()
-                                .sortPropertyFilter(
-                                        (Comparator<PropertyFilter>)
-                                                DefaultConfigurationContextBuilder.DEFAULT_PROPERTYFILTER_COMPARATOR)
-                                .sortPropertySources(DefaultConfigurationContextBuilder.DEFAULT_PROPERTYSOURCE_COMPARATOR)
+                                .sortPropertyFilter(PropertyFilterComparator.getInstance())
+                                .sortPropertySources(PropertySourceComparator.getInstance())
                                 .build());
                 }
             }
