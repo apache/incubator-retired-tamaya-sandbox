@@ -20,6 +20,7 @@ package org.apache.tamaya.osgi;
 
 import org.apache.karaf.features.Feature;
 import org.apache.karaf.features.FeaturesService;
+import org.apache.tamaya.spi.ServiceContextManager;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,6 +34,7 @@ import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
 import org.ops4j.pax.exam.options.BootClasspathLibraryOption;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -43,6 +45,9 @@ import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -152,12 +157,28 @@ public class OSGIKarafTest {
         assertEquals(config.getProperties().get("my.testProperty4"), "success4");
         StringBuilder b = new StringBuilder();
         b.append("Print all configs....\n\n");
-        org.osgi.service.cm.Configuration[] configs = configAdmin.listConfigurations("*");
+        org.osgi.service.cm.Configuration[] configs = configAdmin.listConfigurations(null);
         for (org.osgi.service.cm.Configuration cfg : configs) {
             b.append("\nConfiguration found in Karaf OSGI Container: " + cfg);
             b.append("\n-------------------------------------------------");
         }
         System.out.println(b.toString());
+    }
+
+    @Test
+    public void testResourceIsVisible(){
+        assertNotNull(ServiceContextManager.getServiceContext()
+        .getResource("META-INF/javaconfiguration.properties", null));
+    }
+
+    @Test
+    public void testResourcesAreVisible() throws IOException {
+        Enumeration<URL> urls = ServiceContextManager.getServiceContext()
+                .getResources("META-INF/javaconfiguration.properties", null);
+        assertNotNull(urls);
+        assertTrue(urls.hasMoreElements());
+        URL url = urls.nextElement();
+        assertNotNull(url);
     }
 
     public ConfigurationAdmin getConfigAdmin() {
