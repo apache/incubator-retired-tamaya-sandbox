@@ -25,12 +25,11 @@
         <groupId>org.apache.tamaya.ext</groupId>
         <artifactId>tamaya-osgi-all</artifactId>
         <version>0.3-incubating-SNAPSHOT</version>
-        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>tamaya-osgi</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tamaya :: OSGi Integration :: ConfigAdmin</name>
+    <name>Apache Tamaya Modules - OSGi Integration :: ConfigAdmin</name>
     <description>Tamaya Based OSGI Implementation of ConfigAdmin and Config Injection</description>
 
     <properties>

@@ -22,14 +22,13 @@ limitations under the License.
 
     <parent>
         <groupId>org.apache.tamaya.ext</groupId>
-        <artifactId>tamaya-sandbox</artifactId>
+        <artifactId>tamaya-osgi-all</artifactId>
         <version>0.3-incubating-SNAPSHOT</version>
-        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>tamaya-features</artifactId>
     <packaging>bundle</packaging>
-    <name>Apache Tamaya :: OSGI Integration :: Features</name>
+    <name>Apache Tamaya Modules - OSGi Integration :: Features</name>
 
     <properties>
         <karaf.version>4.0.7</karaf.version>

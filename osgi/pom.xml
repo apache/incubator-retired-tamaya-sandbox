@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <!--
+  <!--
 
         Licensed to the Apache Software Foundation (ASF) under one or more
         contributor license agreements.  See the NOTICE file distributed with
@@ -18,30 +17,36 @@
         See the License for the specific language governing permissions and
         limitations under the License.
     -->
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>org.apache.tamaya.ext</groupId>
-        <artifactId>tamaya-sandbox</artifactId>
-        <version>0.3-incubating-SNAPSHOT</version>
-        <relativePath>..</relativePath>
-    </parent>
-
-    <artifactId>tamaya-osgi-all</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Tamaya :: OSGi Integration :: ALL</name>
-    <description>Tamaya OSGI Integration</description>
-
-    <properties>
-        <karaf.version>4.0.7</karaf.version>
-        <osgi.version>6.0.0</osgi.version>
-        <pax.exam.version>4.5.0</pax.exam.version>
-    </properties>
-
-    <modules>
-        <module>common</module>
-        <module>features</module>
-    </modules>
-
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.tamaya.ext</groupId>
+    <artifactId>tamaya-sandbox</artifactId>
+    <version>0.3-incubating-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <artifactId>tamaya-osgi-all</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache Tamaya Modules - OSGi Integration :: all</name>
+  <description>Tamaya OSGI Integration</description>
+  <properties>
+    <karaf.version>4.0.7</karaf.version>
+    <osgi.version>6.0.0</osgi.version>
+    <pax.exam.version>4.5.0</pax.exam.version>
+  </properties>
+  <modules>
+    <module>common</module>
+    <module>features</module>
+  </modules>
+  <!-- In order to avoid JVM crashes we explicitly downgrade to 2.18 following advice on:
+http://maven.40175.n5.nabble.com/surefire-forked-vm-failed-td5858900.html
+-->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18</version>
+      </plugin>
+    </plugins>
+  </build>
 </project>
