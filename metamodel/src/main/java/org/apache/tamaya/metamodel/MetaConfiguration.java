@@ -55,13 +55,12 @@ public final class MetaConfiguration {
     /**
      * Creates a new {@link Configuration} using {@link #createConfiguration(URL)}
      * and applies it as default configuration using {@link ConfigurationProvider#setConfiguration(Configuration)}.
-     * @return the new configuration instance.
      */
     public static void configure(){
         LOG.info("TAMAYA: Checking for meta-configuration...");
         URL configFile = getDefaultMetaConfig();
         if(configFile==null){
-            LOG.warning("TAMAYA: No tamaya-config.xml found, using defaults.");
+            LOG.warning("TAMAYA: No " + CONFIG_RESOURCE + " found, using defaults.");
         }
         configure(configFile);
     }
@@ -70,7 +69,6 @@ public final class MetaConfiguration {
      * Creates a new {@link Configuration} using {@link #createConfiguration(URL)}
      * and applies it as default configuration using {@link ConfigurationProvider#setConfiguration(Configuration)}.
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
-     * @return the new configuration instance.
      */
     public static void configure(URL metaConfig){
         try {
@@ -120,7 +118,7 @@ public final class MetaConfiguration {
             for(MetaConfigurationReader reader: ServiceContextManager.getServiceContext().getServices(
                     MetaConfigurationReader.class
             )){
-                LOG.fine("TAMAYA: Executing MetaConfig-Reader: " + reader.getClass().getName()+"...");
+                LOG.fine("TAMAYA: Executing MetaConfig-Reader: " + reader.getClass().getName() + "...");
                 reader.read(document, builder);
             }
             return builder;
