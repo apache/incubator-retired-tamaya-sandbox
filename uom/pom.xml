@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tamaya.ext</groupId>
+        <artifactId>tamaya-sandbox</artifactId>
+        <version>0.3-incubating-SNAPSHOT</version>
+    </parent>
+    <artifactId>tamaya-uom</artifactId>
+    <name>Apache Tamaya Modules - Units of Measurement Support</name>
+    <description>This modules provides a set of property converters to support
+        JSR 363 implementations in conjunction with Apache Tamaya.</description>
+    <inceptionYear>2017</inceptionYear>
+
+    <properties>
+        <jsr363.version>1.0</jsr363.version>
+    </properties>
+
+</project>
