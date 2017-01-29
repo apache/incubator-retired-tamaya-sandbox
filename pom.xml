@@ -148,21 +148,9 @@ under the License.
         </developer>
 
         <developer>
-            <id>struberg</id>
-            <name>Mark Struberg</name>
-            <email>struberg at apache.org</email>
-            <roles>
-                <role>PMC</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-
-        <developer>
-            <id>gpetracek</id>
-            <name>Gerhard Petracek</name>
-            <email>gpetracek at apache.org</email>
-            <organization>IRIAN.at, Austria</organization>
-            <organizationUrl>http://www.irian.at/</organizationUrl>
+            <id>wkeil</id>
+            <name>Werner Keil</name>
+            <email>wkeil at apache.org</email>
             <roles>
                 <role>PMC</role>
             </roles>
