@@ -20,3 +20,6 @@ org.apache.tamaya.jodatime.DateTimeConverter
 org.apache.tamaya.jodatime.DateTimeZoneConverter
 org.apache.tamaya.jodatime.PeriodConverter
 org.apache.tamaya.jodatime.DurationConverter
+org.apache.tamaya.jodatime.InstantConverter
+org.apache.tamaya.jodatime.LocalDateConverter
+org.apache.tamaya.jodatime.LocalTimeConverter
