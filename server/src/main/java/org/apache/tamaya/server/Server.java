@@ -32,33 +32,27 @@ import java.util.Set;
 /**
  * Main Application for the Tamaya Configuration Server.
  */
-public class ConfigServiceApp {
+public class Server {
 
     /**
      * Utility class.
      */
-    private ConfigServiceApp(){}
+    private Server(){}
 
-    /**
-     * JAX RS Application.
-     */
-    public static class ResourceLoader extends Application{
 
-        @Override
-        public Set<Class<?>> getClasses() {
-            final Set<Class<?>> classes = new HashSet<>();
-            // register root resource
-            classes.add(ConfigurationResource.class);
-            return classes;
-        }
+    public static void start() throws Exception {
+        start("/", 8085);
     }
 
-    public static void main(String... args) throws Exception {
-        Configuration config = ConfigurationProvider.getConfiguration();
-        String contextPath = config.getOrDefault("tamaya.server.contextPath", "/");
+    public static void start(int port) throws Exception {
+        start("/", port);
+    }
+
+    public static void start(String contextPath, int port) throws Exception {
+        Objects.requireNonNull(contextPath);
         String appBase = ".";
         Tomcat tomcat = new Tomcat();
-        tomcat.setPort(config.getOrDefault("tamaya.server.port", Integer.class, 8085));
+        tomcat.setPort(port);
 
         // Define a web application context.
         Context context = tomcat.addWebapp(contextPath, new File(
@@ -73,5 +67,26 @@ public class ConfigServiceApp {
         tomcat.getServer().await();
     }
 
+
+    public static void main(String... args) throws Exception {
+        Configuration config = ConfigurationProvider.getConfiguration();
+        String contextPath = config.getOrDefault("tamaya.server.contextPath", "/");
+        int port = config.getOrDefault("tamaya.server.port", Integer.class, 8085);
+        start(contextPath, port);
+    }
+
+    /**
+     * JAX RS Application.
+     */
+    public final static class ResourceLoader extends Application{
+
+        @Override
+        public Set<Class<?>> getClasses() {
+            final Set<Class<?>> classes = new HashSet<>();
+            // register root resource
+            classes.add(ConfigurationServices.class);
+            return classes;
+        }
+    }
 
 }
