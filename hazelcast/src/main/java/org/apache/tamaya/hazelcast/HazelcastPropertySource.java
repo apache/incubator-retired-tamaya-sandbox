@@ -24,7 +24,6 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IList;
 import com.hazelcast.core.IMap;
 import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
-import org.apache.tamaya.mutableconfig.Refreshable;
 import org.apache.tamaya.mutableconfig.spi.MutablePropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spisupport.BasePropertySource;
@@ -56,7 +55,7 @@ import java.util.logging.Logger;
  * instance of pass a Hazelcast configuration instance.
  */
 public class HazelcastPropertySource extends BasePropertySource
-implements Refreshable, MutablePropertySource{
+implements MutablePropertySource{
 
     private static final Logger LOG = Logger.getLogger(HazelcastPropertySource.class.getName());
     private Map<String, String> configMap = new HashMap<>();
@@ -128,7 +127,6 @@ implements Refreshable, MutablePropertySource{
         return true;
     }
 
-    @Override
     public void refresh() {
         IMap<String,String> config = hazelcastInstance.getMap(mapReference);
         Map<String, String> configMap = new HashMap<>(config);

@@ -34,7 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by Anatole on 20.03.2015.
+ * Property source provider that reads all resources from {@code META-INF/config/**}
+ * into configuration sources..
  */
 public class MetainfConfigPropertySourceProvider extends AbstractPathPropertySourceProvider {
 

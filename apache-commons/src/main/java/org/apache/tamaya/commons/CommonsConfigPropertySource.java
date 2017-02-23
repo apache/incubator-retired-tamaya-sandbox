@@ -18,8 +18,6 @@
  */
 package org.apache.tamaya.commons;
 
-//X TODO Move out into separate commons-config integration module...
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
@@ -54,7 +52,6 @@ public class CommonsConfigPropertySource implements PropertySource {
         }
     }
 
-    @Override
     public int getOrdinal() {
         return ordinal;
     }

@@ -34,7 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by Anatole on 20.03.2015.
+ * A property provider implementation that tries to read all files in a directory as
+ * configuration.
  */
 public class ConfigDirPropertySourceProvider extends AbstractPathPropertySourceProvider {
 

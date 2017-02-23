@@ -65,7 +65,7 @@ public abstract class BaseRemotePropertySource implements PropertySource{
         ConfigurationFormat format = getConfigurationFormat();
         for(URL url:getAccessURLs()) {
             try(InputStream is = url.openStream()) {
-                ConfigurationData data = format.readConfiguration(url.toExternalForm(), is);
+                ConfigurationData data = format.readConfiguration(url);
                 if(data!=null){
                     Map<String,String> newProperties = mapConfigurationData(data);
                     // the configs served by the tamaya server module has a 'data' root section containing the
@@ -124,7 +124,6 @@ public abstract class BaseRemotePropertySource implements PropertySource{
         return PropertyValue.of(key,getProperties().get(key),getName());
     }
 
-    @Override
     public int getOrdinal(){
         PropertyValue configuredOrdinal = get(TAMAYA_ORDINAL);
         if(configuredOrdinal!=null){
