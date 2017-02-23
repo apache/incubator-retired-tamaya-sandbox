@@ -19,6 +19,7 @@
 package org.apache.tamaya.etcd;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,9 +27,9 @@ import java.util.logging.Logger;
 /**
  * Singleton that reads and stores the current etcd setup, especially the possible URLs to be used.
  */
-public final class EtcdBackends {
+public final class EtcdBackendConfig {
 
-    private static final Logger LOG = Logger.getLogger(EtcdBackends.class.getName());
+    private static final Logger LOG = Logger.getLogger(EtcdBackendConfig.class.getName());
     private static List<EtcdAccessor> etcdBackends = new ArrayList<>();
 
     static{
@@ -57,9 +58,23 @@ public final class EtcdBackends {
         }
     }
 
-    private EtcdBackends(){}
+    private EtcdBackendConfig(){}
+
+    private static boolean isEtcdDisabled() {
+        String value = System.getProperty("tamaya.etcd.disable");
+        if(value==null){
+            value = System.getenv("tamaya.etcd.disable");
+        }
+        if(value==null){
+            return false;
+        }
+        return value.isEmpty() || Boolean.parseBoolean(value);
+    }
 
     public static List<EtcdAccessor> getEtcdBackends(){
+        if(isEtcdDisabled()){
+            return Collections.emptyList();
+        }
         return etcdBackends;
     }
 }

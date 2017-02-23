@@ -29,9 +29,7 @@ import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spi.PropertyValueBuilder;
 import org.apache.tamaya.spisupport.BasePropertySource;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,10 +42,46 @@ public class ConsulPropertySource extends BasePropertySource
 implements MutablePropertySource{
     private static final Logger LOG = Logger.getLogger(ConsulPropertySource.class.getName());
 
-    private String prefix = System.getProperty("tamaya.consul.prefix", "");
+    private String prefix = "";
+
+    private List<HostAndPort> consulBackends;
 
 
-    @Override
+    public ConsulPropertySource(String prefix, Collection<String> backends){
+        this.prefix = prefix==null?"":prefix;
+        consulBackends = new ArrayList<>();
+        for(String s:backends){
+            consulBackends.add(HostAndPort.fromString(s));
+        }
+    }
+
+    public ConsulPropertySource(Collection<String> backends){
+        consulBackends = new ArrayList<>();
+        for(String s:backends){
+            consulBackends.add(HostAndPort.fromString(s));
+        }
+    }
+
+    public ConsulPropertySource(){
+        prefix = System.getProperty("tamaya.consul.prefix", "");
+    }
+
+    public ConsulPropertySource(String... backends){
+        consulBackends = new ArrayList<>();
+        for (String s : backends) {
+            consulBackends.add(HostAndPort.fromString(s));
+        }
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public ConsulPropertySource setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
+
     public int getOrdinal() {
         PropertyValue configuredOrdinal = get(TAMAYA_ORDINAL);
         if(configuredOrdinal!=null){
@@ -98,7 +132,7 @@ implements MutablePropertySource{
                 reqKey = reqKey.substring(0,reqKey.length()-".source".length());
             }
         }
-        for(HostAndPort hostAndPort: ConsulBackends.getConsulBackends()){
+        for(HostAndPort hostAndPort: getConsulBackends()){
             try{
                 Consul consul = Consul.builder().withHostAndPort(hostAndPort).build();
                 KeyValueClient kvClient = consul.keyValueClient();
@@ -124,7 +158,7 @@ implements MutablePropertySource{
 
     @Override
     public Map<String, String> getProperties() {
-//        for(HostAndPort hostAndPort: ConsulBackends.getConsulBackends()){
+//        for(HostAndPort hostAndPort: getConsulBackends()){
 //            try{
 //                Consul consul = Consul.builder().withHostAndPort(hostAndPort).build();
 //                KeyValueClient kvClient = consul.keyValueClient();
@@ -168,7 +202,7 @@ implements MutablePropertySource{
 
     @Override
     public void applyChange(ConfigChangeRequest configChange) {
-        for(HostAndPort hostAndPort: ConsulBackends.getConsulBackends()){
+        for(HostAndPort hostAndPort: ConsulBackendConfig.getConsulBackends()){
             try{
                 Consul consul = Consul.builder().withHostAndPort(hostAndPort).build();
                 KeyValueClient kvClient = consul.keyValueClient();
@@ -194,5 +228,13 @@ implements MutablePropertySource{
                 LOG.log(Level.FINE, "consul access failed on " + hostAndPort + ", trying next...", e);
             }
         }
+    }
+
+    private List<HostAndPort> getConsulBackends(){
+        if(consulBackends==null){
+            consulBackends = ConsulBackendConfig.getConsulBackends();
+            LOG.info("Using consul backends: " + consulBackends);
+        }
+        return consulBackends;
     }
 }

@@ -24,8 +24,11 @@ import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spi.PropertyValueBuilder;
 import org.apache.tamaya.spisupport.BasePropertySource;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,25 +45,41 @@ public class EtcdPropertySource extends BasePropertySource
 
     private String prefix = System.getProperty("tamaya.etcd.prefix", "");
 
-    private final boolean disabled = evaluateDisabled();
+    private List<EtcdAccessor> etcdBackends;
+
+    public EtcdPropertySource(String prefix, Collection<String> backends){
+        this.prefix = prefix==null?"":prefix;
+        etcdBackends = new ArrayList<>();
+        for(String s:backends){
+            etcdBackends.add(new EtcdAccessor(s));
+        }
+    }
+
+    public EtcdPropertySource(Collection<String> backends){
+        etcdBackends = new ArrayList<>();
+        for(String s:backends){
+            etcdBackends.add(new EtcdAccessor(s));
+        }
+    }
 
     public EtcdPropertySource(){
-        super("etcd", 1000);
+        prefix = System.getProperty("tamaya.etcd.prefix", "");
     }
 
-    public EtcdPropertySource(int defaultOrdinal){
-        super("etcd", defaultOrdinal);
+    public EtcdPropertySource(String... backends){
+        etcdBackends = new ArrayList<>();
+        for (String s : backends) {
+            etcdBackends.add(new EtcdAccessor(s));
+        }
     }
 
-    private boolean evaluateDisabled() {
-        String value = System.getProperty("tamaya.etcdprops.disable");
-        if(value==null){
-            value = System.getenv("tamaya.etcdprops.disable");
-        }
-        if(value==null){
-            return false;
-        }
-        return value.isEmpty() || Boolean.parseBoolean(value);
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public EtcdPropertySource setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
     }
 
     @Override
@@ -79,9 +98,6 @@ public class EtcdPropertySource extends BasePropertySource
 
     @Override
     public PropertyValue get(String key) {
-        if(disabled){
-            return null;
-        }
         // check prefix, if key does not start with it, it is not part of our name space
         // if so, the prefix part must be removedProperties, so etcd can resolve without it
         if(!key.startsWith(prefix)){
@@ -105,7 +121,7 @@ public class EtcdPropertySource extends BasePropertySource
                 reqKey = reqKey.substring(0,reqKey.length()-".source".length());
             }
         }
-        for(EtcdAccessor accessor: EtcdBackends.getEtcdBackends()){
+        for(EtcdAccessor accessor: EtcdBackendConfig.getEtcdBackends()){
             try{
                 props = accessor.get(reqKey);
                 if(!props.containsKey("_ERROR")) {
@@ -123,21 +139,16 @@ public class EtcdPropertySource extends BasePropertySource
 
     @Override
     public Map<String, String> getProperties() {
-        if(disabled){
-            return Collections.emptyMap();
-        }
-        if(!EtcdBackends.getEtcdBackends().isEmpty()){
-            for(EtcdAccessor accessor: EtcdBackends.getEtcdBackends()){
-                try{
-                    Map<String, String> props = accessor.getProperties("");
-                    if(!props.containsKey("_ERROR")) {
-                        return mapPrefix(props);
-                    } else{
-                        LOG.log(Level.FINE, "etcd error on " + accessor.getUrl() + ": " + props.get("_ERROR"));
-                    }
-                } catch(Exception e){
-                    LOG.log(Level.FINE, "etcd access failed on " + accessor.getUrl() + ", trying next...", e);
+        for(EtcdAccessor accessor: getEtcdBackends()){
+            try{
+                Map<String, String> props = accessor.getProperties("");
+                if(!props.containsKey("_ERROR")) {
+                    return mapPrefix(props);
+                } else{
+                    LOG.log(Level.FINE, "etcd error on " + accessor.getUrl() + ": " + props.get("_ERROR"));
                 }
+            } catch(Exception e){
+                LOG.log(Level.FINE, "etcd access failed on " + accessor.getUrl() + ", trying next...", e);
             }
         }
         return Collections.emptyMap();
@@ -165,7 +176,7 @@ public class EtcdPropertySource extends BasePropertySource
 
     @Override
     public void applyChange(ConfigChangeRequest configChange) {
-        for(EtcdAccessor accessor: EtcdBackends.getEtcdBackends()){
+        for(EtcdAccessor accessor: EtcdBackendConfig.getEtcdBackends()){
             try{
                 for(String k: configChange.getRemovedProperties()){
                     Map<String,String> res = accessor.delete(k);
@@ -201,4 +212,11 @@ public class EtcdPropertySource extends BasePropertySource
         }
     }
 
+    private List<EtcdAccessor> getEtcdBackends(){
+        if(etcdBackends==null){
+            etcdBackends = EtcdBackendConfig.getEtcdBackends();
+            LOG.info("Using etcd backends: " + etcdBackends);
+        }
+        return etcdBackends;
+    }
 }

@@ -21,6 +21,7 @@ package org.apache.tamaya.consul;
 import com.google.common.net.HostAndPort;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,9 +29,9 @@ import java.util.logging.Logger;
 /**
  * Singleton that reads and stores the current consul setup, especially the possible host:ports to be used.
  */
-public final class ConsulBackends {
+public final class ConsulBackendConfig {
 
-    private static final Logger LOG = Logger.getLogger(ConsulBackends.class.getName());
+    private static final Logger LOG = Logger.getLogger(ConsulBackendConfig.class.getName());
     private static List<HostAndPort> consulBackends = new ArrayList<>();
 
     static{
@@ -51,9 +52,23 @@ public final class ConsulBackends {
         }
     }
 
-    private ConsulBackends(){}
+    private ConsulBackendConfig(){}
+
+    private static boolean isConsulDisabled() {
+        String value = System.getProperty("tamaya.consul.disable");
+        if(value==null){
+            value = System.getenv("tamaya.consul.disable");
+        }
+        if(value==null){
+            return false;
+        }
+        return value.isEmpty() || Boolean.parseBoolean(value);
+    }
 
     public static List<HostAndPort> getConsulBackends(){
+        if(isConsulDisabled()){
+            return Collections.emptyList();
+        }
         return consulBackends;
     }
 }
