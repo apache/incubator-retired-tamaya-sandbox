@@ -36,8 +36,6 @@ public final class ConfigModelReader {
 
     /** The default model entries selector. */
     private static final String DEFAULT_META_INFO_SELECTOR = ".model";
-    /** parameter to change the selector to be used for filtering out the target values to be used. */
-    private static final String META_INFO_SELECTOR_PARAM = "org.apache.tamaya.model.integrated.selector";
 
     /**
      * Utility class only.

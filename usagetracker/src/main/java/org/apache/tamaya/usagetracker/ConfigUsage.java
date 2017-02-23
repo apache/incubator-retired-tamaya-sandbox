@@ -18,11 +18,11 @@
  */
 package org.apache.tamaya.usagetracker;
 
+import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -36,8 +36,14 @@ public final class ConfigUsage {
     private static final String NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE = "No UsageTrackerSpi component available.";
 
     /** The loaded usage tracking SPI. */
-    private static ConfigUsageSpi usageTracker = ServiceContextManager
-            .getServiceContext().getService(ConfigUsageSpi.class);
+    private static ConfigUsageSpi spi(){
+        ConfigUsageSpi spi = ServiceContextManager
+                .getServiceContext().getService(ConfigUsageSpi.class);
+        if(spi==null){
+            throw new ConfigException(NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE);
+        }
+        return spi;
+    }
 
     /**
      * Singleton constructor.
@@ -50,8 +56,7 @@ public final class ConfigUsage {
      * @return the ignored package names, not null.
      */
     public static Set<String> getIgnoredUsagePackages(){
-        return Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE)
-                .getIgnoredPackages();
+        return spi().getIgnoredPackages();
     }
 
     /**
@@ -59,8 +64,7 @@ public final class ConfigUsage {
      * @param packageName the package names to be added, not null.
      */
     public static void addIgnoredUsagePackages(String... packageName){
-        Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE)
-                .addIgnoredUsagePackages(packageName);
+        spi().addIgnoredUsagePackages(packageName);
     }
 
     /**
@@ -68,8 +72,7 @@ public final class ConfigUsage {
      * @param enabled set to true to enable usage tracking.
      */
     public static void enableUsageTracking(boolean enabled){
-        Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE)
-                .enableUsageTracking(enabled);
+        spi().enableUsageTracking(enabled);
     }
 
     /**
@@ -79,8 +82,7 @@ public final class ConfigUsage {
      * @return the stats collected, or null.
      */
     public static UsageStat getUsage(String key){
-        return Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE)
-                .getUsage(key);
+        return spi().getUsage(key);
     }
 
     /**
@@ -88,15 +90,14 @@ public final class ConfigUsage {
      * @return the recorded usge references, never null.
      */
     public static Collection<UsageStat> getUsages() {
-        return Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE).getUsages();
+        return spi().getUsages();
     }
 
     /**
      * Clears all collected usage statistics.
      */
     public static void clearUsageStats() {
-        Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE)
-                .clearUsageStats();
+        spi().clearUsageStats();
     }
 
     /**
@@ -105,8 +106,7 @@ public final class ConfigUsage {
      * @return the stats collected, or null.
      */
     public static UsageStat getUsageAllProperties(){
-        return Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE)
-                .getUsageAllProperties();
+        return spi().getUsageAllProperties();
     }
 
     /**
@@ -114,8 +114,7 @@ public final class ConfigUsage {
      * @return true, if usage tracking is enabled.
      */
     public static boolean isUsageTrackingEnabled(){
-        return Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE)
-                .isUsageTrackingEnabled();
+        return spi().isUsageTrackingEnabled();
     }
 
     /**
@@ -123,7 +122,7 @@ public final class ConfigUsage {
      * @return usage info or default message.
      */
     public static String getUsageInfo(){
-        return Objects.requireNonNull(usageTracker, NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE).getUsageInfo();
+        return spi().getUsageInfo();
     }
 
 }
