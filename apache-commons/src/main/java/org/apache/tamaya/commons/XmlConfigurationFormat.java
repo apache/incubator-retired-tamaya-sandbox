@@ -19,52 +19,44 @@
 package org.apache.tamaya.commons;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalINIConfiguration;
-import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationDataBuilder;
 import org.apache.tamaya.format.ConfigurationFormat;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Implements a ini file format based on the APache Commons
- * {@link org.apache.commons.configuration.HierarchicalINIConfiguration}.
+ * {@link XMLConfiguration}.
  */
-public class IniConfigurationFormat implements ConfigurationFormat {
+public class XmlConfigurationFormat implements ConfigurationFormat {
 
     @Override
     public String getName() {
-        return "ini";
+        return "xml";
     }
 
     @Override
     public boolean accepts(URL url) {
-        String fileName = url.getFile();
-        return fileName.endsWith(".ini") || fileName.endsWith(".INI");
+        String fileName = url.getFile().toLowerCase();
+        return fileName.endsWith(".xml");
     }
 
     @Override
     public ConfigurationData readConfiguration(URL url) {
         ConfigurationDataBuilder builder = ConfigurationDataBuilder.of(url.toString(), this);
         try {
-            HierarchicalINIConfiguration commonIniConfiguration = new HierarchicalINIConfiguration(url);
-            for(String section:commonIniConfiguration.getSections()){
-                SubnodeConfiguration sectionConfig = commonIniConfiguration.getSection(section);
-                Map<String, String> properties = new HashMap<>();
-                Iterator<String> keyIter = sectionConfig.getKeys();
+            XMLConfiguration commonXmlConfiguration = new XMLConfiguration(url);
+                Iterator<String> keyIter = commonXmlConfiguration.getKeys();
                 while(keyIter.hasNext()){
                     String key = keyIter.next();
-                    properties.put(key, sectionConfig.getString(key));
-                }
-                builder.addSectionProperties(section, properties);
+                    builder.addDefaultProperty(key, commonXmlConfiguration.getString(key));
             }
         } catch (ConfigurationException e) {
-            throw new ConfigException("Failed to parse ini-file format from " + url, e);
+            throw new ConfigException("Failed to parse xml-file format from " + url, e);
         }
         return builder.build();
     }
