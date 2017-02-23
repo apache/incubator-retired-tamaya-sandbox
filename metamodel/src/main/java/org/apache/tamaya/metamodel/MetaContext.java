@@ -41,8 +41,8 @@ import java.util.concurrent.TimeUnit;
  *     <li>providing key/values only valid for a certain time (assigned a TTL), see {@link #setProperty(String, String, int, TimeUnit)},
  *     {@link #setProperties(Map, long, TimeUnit)}</li>
  * </ul>
- * Additionally there is special support for thread related contexts, see {@link #getThreadInstance()}.
- * Finally there is also one special globally shared context instance, see {@link #getCurrentInstance()}.
+ * Additionally there is special support for thread related contexts, see {@link #getThreadInstance(boolean)}.
+ * Finally there is also one special globally shared context instance, see {@link #getCurrentInstance(boolean)}.
  */
 public final class MetaContext {
 
@@ -105,10 +105,15 @@ public final class MetaContext {
     /**
      * Access the thread-based context. If no such context
      * exists a new one will be created.
+     * @param reinit if true, clear's the thread's context.
      * @return the corresponding context, never null.
      */
-    public static MetaContext getThreadInstance(){
-        return THREAD_CONTEXT.get();
+    public static MetaContext getThreadInstance(boolean reinit){
+        MetaContext threadContext =THREAD_CONTEXT.get();
+        if(reinit){
+            threadContext.properties.clear();
+        }
+        return threadContext;
     }
 
     /**
@@ -117,7 +122,17 @@ public final class MetaContext {
      * @return the corresponding context, never null.
      */
     public MetaContext getCurrentInstance(){
-        return this.combineWith(THREAD_CONTEXT.get());
+        return getCurrentInstance(false);
+    }
+
+    /**
+     * Access the current context, which actually is the current context, combined with the thread based
+     * context (overriding).
+     * @param reinit if true, clear's the thread's meta context.
+     * @return the corresponding context, never null.
+     */
+    public MetaContext getCurrentInstance(boolean reinit){
+        return this.combineWith(getThreadInstance(reinit));
     }
 
     /**

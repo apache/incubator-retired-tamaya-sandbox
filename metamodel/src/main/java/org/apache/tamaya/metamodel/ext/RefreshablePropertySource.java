@@ -16,11 +16,13 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.metamodel;
+package org.apache.tamaya.metamodel.ext;
 
+import org.apache.tamaya.metamodel.Refreshable;
 import org.apache.tamaya.metamodel.internal.ComponentConfigurator;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spisupport.PropertySourceComparator;
 
 import java.util.Collections;
 import java.util.Map;
@@ -115,9 +117,8 @@ public final class RefreshablePropertySource
         }
     }
 
-    @Override
     public int getOrdinal() {
-        return this.wrapped.getOrdinal();
+        return PropertySourceComparator.getOrdinal(this.wrapped);
     }
 
     @Override

@@ -20,13 +20,20 @@ package org.apache.tamaya.metamodel.internal;
 
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.metamodel.spi.SimpleResolver;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
+import org.apache.tamaya.spi.ServiceContextManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.annotation.Priority;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+
 
 /**
  * Meta-configuration reader that reads the shared context data.
@@ -35,6 +42,33 @@ import java.util.logging.Logger;
 public class ContextReader implements MetaConfigurationReader {
 
     private static final Logger LOG = Logger.getLogger(ContextReader.class.getName());
+
+    private Map<String,SimpleResolver> resolvers = new ConcurrentHashMap<>();
+
+    public ContextReader(){
+        for(SimpleResolver resolver: ServiceContextManager.getServiceContext()
+                .getServices(SimpleResolver.class)){
+            this.resolvers.put(resolver.getResolverId(), resolver);
+        }
+    }
+
+    public void addResolver(SimpleResolver resolver){
+        if(!this.resolvers.containsKey(resolver.getResolverId())) {
+            this.resolvers.put(resolver.getResolverId(), resolver);
+        }
+    }
+
+    public void removeResolver(SimpleResolver resolver){
+        this.resolvers.remove(resolver.getResolverId());
+    }
+
+    public Set<String> getResolverIds(){
+        return this.resolvers.keySet();
+    }
+
+    public SimpleResolver getResolver(String resolverKey){
+        return this.resolvers.get(resolverKey);
+    }
 
     @Override
     public void read(Document document, ConfigurationContextBuilder contextBuilder) {
@@ -55,12 +89,93 @@ public class ContextReader implements MetaConfigurationReader {
                     if("context-entry".equals(entryNode.getNodeName())){
                         String key = entryNode.getAttributes().getNamedItem("name").getNodeValue();
                         String value = entryNode.getTextContent();
-                        // TODO add support for placeholders here...
+                        resolvePlaceholders(value);
                         LOG.finest("Applying context entry: " + key + '=' + value + " on " + contextName);
                         context.setProperty(key, value);
                     }
                 }
             }
+        }
+    }
+
+    private String resolvePlaceholders(String value) {
+        StringBuilder result = new StringBuilder();
+        StringBuilder exp = new StringBuilder();
+        final int INVALUE = 0;
+        final int BEFORE_EXP = 1;
+        final int INEXP = 2;
+        int state = INVALUE;
+        StringTokenizer tokenizer = new StringTokenizer(value, "${}", true);
+        while(tokenizer.hasMoreTokens()){
+            String token = tokenizer.nextToken();
+            switch(token){
+                case "$":
+                    switch(state){
+                        case INVALUE:
+                        default:
+                            state = BEFORE_EXP;
+                            break;
+                        case BEFORE_EXP: // escaped
+                            result.append(token);
+                            state = INVALUE;
+                            break;
+                        case INEXP:
+                            exp.append(token);
+                            break;
+                    }
+                    break;
+                case "{":
+                    switch(state){
+                        case BEFORE_EXP:
+                            state = INEXP;
+                            break;
+                        case INVALUE:
+                        case INEXP:
+                        default:
+                            result.append(token);
+                            break;
+                    }
+                case "}":
+                    switch(state){
+                        case INVALUE:
+                            result.append(token);
+                            break;
+                        case INEXP:
+                            result.append(evaluateExpression(exp.toString()));
+                            exp.setLength(0);
+                            state = INVALUE;
+                            break;
+                        case BEFORE_EXP:
+                            result.append("$").append(token);
+                            state = INVALUE;
+                            break;
+                    }
+                    break;
+                default:
+                    result.append(token);
+            }
+        }
+        return result.toString();
+    }
+
+    private String evaluateExpression(String exp) {
+        String[] parts = exp.split(":", 2);
+        if(parts.length<2){
+            return "--{MISSING RESOLVER ID in "+exp+"}";
+        }
+        SimpleResolver resolver = this.resolvers.get(parts[0]);
+        if(resolver==null){
+            return "--{NO RESOLVER FOUND for "+exp+"}";
+        }
+        try{
+            String resolved = resolver.evaluate(parts[1]);
+            if(resolved==null) {
+                return "--{NOT RESOLVABLE:" + exp + "}";
+            }else{
+                return resolved;
+            }
+        }catch(Exception e){
+            return "--{ERROR:"+exp+":"+e+"}";
         }
     }
 }

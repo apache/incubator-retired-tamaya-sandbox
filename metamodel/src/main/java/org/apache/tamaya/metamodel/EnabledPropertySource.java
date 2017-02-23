@@ -20,6 +20,7 @@ package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spisupport.PropertySourceComparator;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -94,9 +95,8 @@ public final class EnabledPropertySource
         this.enabled = enabled;
     }
 
-    @Override
     public int getOrdinal() {
-        return this.wrapped.getOrdinal();
+        return PropertySourceComparator.getOrdinal(this.wrapped);
     }
 
     @Override

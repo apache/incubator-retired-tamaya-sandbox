@@ -17,7 +17,7 @@
  *  under the License.
  */
 
-package org.apache.tamaya.metamodel.dsl;
+package org.apache.tamaya.metamodel.ext;
 
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;

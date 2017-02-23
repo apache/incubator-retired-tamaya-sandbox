@@ -17,7 +17,7 @@
  * under the License.
  */
 /**
- * Main package of the DSL module. Normally client code does not need access this package.
- * But extensions also relying on the meta-data configuration mechanism may use it.
+ * Main package containing extended functionality such as decorators and mixin-implementations
+ * provided to users.
  */
-package org.apache.tamaya.metamodel.dsl;
+package org.apache.tamaya.metamodel.ext;

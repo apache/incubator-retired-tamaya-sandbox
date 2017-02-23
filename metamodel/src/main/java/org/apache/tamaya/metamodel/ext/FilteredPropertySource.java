@@ -16,13 +16,14 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.metamodel;
+package org.apache.tamaya.metamodel.ext;
 
 import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spisupport.BasePropertySource;
+import org.apache.tamaya.spisupport.PropertySourceComparator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,11 +62,10 @@ public final class FilteredPropertySource extends BasePropertySource {
         return new FilteredPropertySource(propertySource);
     }
 
-    @Override
     public int getOrdinal() {
         int ordinalSet = super.getOrdinal();
         if(ordinalSet == 0){
-            return this.wrapped.getOrdinal();
+            return PropertySourceComparator.getOrdinal(this.wrapped);
         }
         return ordinalSet;
     }

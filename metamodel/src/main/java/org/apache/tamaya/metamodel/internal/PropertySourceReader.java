@@ -19,6 +19,10 @@
 package org.apache.tamaya.metamodel.internal;
 
 import org.apache.tamaya.metamodel.*;
+import org.apache.tamaya.metamodel.ext.EnabledPropertySourceProvider;
+import org.apache.tamaya.metamodel.ext.FilteredPropertySource;
+import org.apache.tamaya.metamodel.ext.RefreshablePropertySource;
+import org.apache.tamaya.metamodel.ext.RefreshablePropertySourceProvider;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
