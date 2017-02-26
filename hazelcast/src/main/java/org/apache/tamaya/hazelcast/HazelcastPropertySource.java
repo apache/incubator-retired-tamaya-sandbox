@@ -56,51 +56,106 @@ import java.util.logging.Logger;
  */
 public class HazelcastPropertySource extends BasePropertySource
 implements MutablePropertySource{
-
+    /** The logger. */
     private static final Logger LOG = Logger.getLogger(HazelcastPropertySource.class.getName());
+    /** The Hazelcast config map used. */
     private Map<String, String> configMap = new HashMap<>();
+    /** The hazelcast API instance. */
     private HazelcastInstance hazelcastInstance;
+    /** The hazelcast map reference ID used, by default {@code tamaya.configuration}. */
     private String mapReference = "tamaya.configuration";
+    /** Flag if this property source is read-only. */
     private boolean readOnly = false;
 
+    /**
+     * Creates a new instance, hereby using {@code "Hazelcast"} as property source name and
+     * a default hazelcast backend created by calling {@link Hazelcast#newHazelcastInstance()}.
+     */
     public HazelcastPropertySource(){
         super("Hazelcast");
         this.hazelcastInstance = Hazelcast.newHazelcastInstance();
     }
 
+    /**
+     * Creates a new instance, hereby using {@code "Hazelcast"} as property source name and the
+     * given hazelcast instance.
+     * @param hazelcastInstance the hazelcast instance, not null.
+     */
     public HazelcastPropertySource(HazelcastInstance hazelcastInstance){
         this("Hazelcast", hazelcastInstance);
     }
 
+    /**
+     * Creates a new instance, hereby using the given property source name and
+     * a default hazelcast backend created by calling {@link Hazelcast#newHazelcastInstance()}.
+     * @param name the property source name, not null.
+     */
     public HazelcastPropertySource(String name){
         super(name);
         this.hazelcastInstance = Hazelcast.newHazelcastInstance();
     }
 
+    /**
+     * Creates a new instance, hereby using the given property source name and
+     * a creating a new hazelcast backend using the given Hazelcast {@link Config}.
+     * @param config the hazelcast config, not null.
+     * @param name the property source name, not null.
+     */
     public HazelcastPropertySource(String name, Config config){
         super(name);
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
     }
 
+    /**
+     * Creates a new instance, hereby using the given property source name and the
+     * hazelcast instance.
+     * @param name
+     * @param hazelcastInstance
+     */
     public HazelcastPropertySource(String name, HazelcastInstance hazelcastInstance){
         super(name);
         this.hazelcastInstance = Objects.requireNonNull(hazelcastInstance);
     }
 
+    /**
+     * Setting the read-only flag for this instance.
+     * @param readOnly if true, the property source will not write back any changes to the
+     *                 hazelcast backend.
+     */
     public void setReadOnly(boolean readOnly){
         this.readOnly = readOnly;
     }
 
+    /**
+     * Flag to check if the property source is read-only.
+     * @return true, if the instance is read-only.
+     */
     public boolean isReadOnly(){
         return readOnly;
     }
 
+    /**
+     * Set the Hazelcast reference name for the Tamaya configuration Map.
+     * @param mapReference the map reference to be used, not null.
+     */
     public void setMapReference(String mapReference){
         this.mapReference = Objects.requireNonNull(mapReference);
     }
 
+    /**
+     * Get the Hazelcast reference name for the Tamaya configuration Map.
+     * @return the Hazelcast reference name for the Tamaya configuration Map, never null.
+     */
     public String getMapReference(){
         return mapReference;
+    }
+
+    /**
+     * Get access to the hazelcast instance used.
+     * @return the hazelcast instance, not null.
+     */
+    public HazelcastInstance getHazelcastInstance() {
+        return hazelcastInstance;
     }
 
     @Override
@@ -127,6 +182,9 @@ implements MutablePropertySource{
         return true;
     }
 
+    /**
+     * Reloads the configuration map from Hazelcast completely.
+     */
     public void refresh() {
         IMap<String,String> config = hazelcastInstance.getMap(mapReference);
         Map<String, String> configMap = new HashMap<>(config);
@@ -175,7 +233,4 @@ implements MutablePropertySource{
                 "\n}";
     }
 
-    public HazelcastInstance getHazelcastInstance() {
-        return hazelcastInstance;
-    }
 }
