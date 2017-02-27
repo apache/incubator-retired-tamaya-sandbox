@@ -1,8 +1,7 @@
 Export-Package: \
 	org.apache.tamaya.osgi
 Bundle-Activator: org.apache.tamaya.osgi.Activator
-Export-Service:   org.apache.tamaya.osgi,\
-                  org.osgi.service.cm.ConfigurationAdmin
+Export-Service:   org.osgi.service.cm.ConfigurationAdmin
 Import-Package: \
     org.osgi.service.cm,\
     org.osgi.framework,\
