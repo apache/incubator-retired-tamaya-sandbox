@@ -1,2 +1,3 @@
 Export-Package: \
-	org.apache.tamaya.integration.camel
+	org.apache.tamaya.camel
+Bundle-SymbolicName: org.apache.tamaya.camel

@@ -45,7 +45,7 @@ under the License.
         </route>
     </routeContext>
 
-    <bean id="properties" class="org.apache.tamaya.integration.camel.TamayaPropertiesComponent">
+    <bean id="properties" class="org.apache.tamaya.camel.TamayaPropertiesComponent">
         <property name="tamayaOverrides" value="true"/>
     </bean>
 

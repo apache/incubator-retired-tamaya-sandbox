@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.integration.camel;
+package org.apache.tamaya.camel;
 
 import org.apache.camel.component.properties.PropertiesFunction;
 import org.apache.tamaya.Configuration;
