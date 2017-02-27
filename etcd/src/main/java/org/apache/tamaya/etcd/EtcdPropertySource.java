@@ -53,6 +53,8 @@ public class EtcdPropertySource extends BasePropertySource
         for(String s:backends){
             etcdBackends.add(new EtcdAccessor(s));
         }
+        setDefaultOrdinal(1000);
+        setName("etcd");
     }
 
     public EtcdPropertySource(Collection<String> backends){
@@ -60,10 +62,14 @@ public class EtcdPropertySource extends BasePropertySource
         for(String s:backends){
             etcdBackends.add(new EtcdAccessor(s));
         }
+        setDefaultOrdinal(1000);
+        setName("etcd");
     }
 
     public EtcdPropertySource(){
         prefix = System.getProperty("tamaya.etcd.prefix", "");
+        setDefaultOrdinal(1000);
+        setName("etcd");
     }
 
     public EtcdPropertySource(String... backends){
@@ -71,6 +77,8 @@ public class EtcdPropertySource extends BasePropertySource
         for (String s : backends) {
             etcdBackends.add(new EtcdAccessor(s));
         }
+        setDefaultOrdinal(1000);
+        setName("etcd");
     }
 
     public String getPrefix() {

@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.commons;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.tamaya.ConfigException;
@@ -26,6 +25,8 @@ import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationDataBuilder;
 import org.apache.tamaya.format.ConfigurationFormat;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,22 +50,28 @@ public class IniConfigurationFormat implements ConfigurationFormat {
     }
 
     @Override
-    public ConfigurationData readConfiguration(URL url) {
-        ConfigurationDataBuilder builder = ConfigurationDataBuilder.of(url.toString(), this);
+    public ConfigurationData readConfiguration(String name, InputStream inputStream) {
+        ConfigurationDataBuilder builder = ConfigurationDataBuilder.of(name, this);
         try {
-            HierarchicalINIConfiguration commonIniConfiguration = new HierarchicalINIConfiguration(url);
-            for(String section:commonIniConfiguration.getSections()){
+            HierarchicalINIConfiguration commonIniConfiguration;
+            File file = new File(name);
+            if (file.exists()) {
+                commonIniConfiguration = new HierarchicalINIConfiguration(file);
+            }else{
+                commonIniConfiguration = new HierarchicalINIConfiguration(new URL(name));
+            }
+            for (String section : commonIniConfiguration.getSections()) {
                 SubnodeConfiguration sectionConfig = commonIniConfiguration.getSection(section);
                 Map<String, String> properties = new HashMap<>();
                 Iterator<String> keyIter = sectionConfig.getKeys();
-                while(keyIter.hasNext()){
+                while (keyIter.hasNext()) {
                     String key = keyIter.next();
                     properties.put(key, sectionConfig.getString(key));
                 }
                 builder.addSectionProperties(section, properties);
             }
-        } catch (ConfigurationException e) {
-            throw new ConfigException("Failed to parse ini-file format from " + url, e);
+        } catch (Exception e) {
+            throw new ConfigException("Failed to parse ini-file format from " + name, e);
         }
         return builder.build();
     }

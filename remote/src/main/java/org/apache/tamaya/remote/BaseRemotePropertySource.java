@@ -65,7 +65,7 @@ public abstract class BaseRemotePropertySource implements PropertySource{
         ConfigurationFormat format = getConfigurationFormat();
         for(URL url:getAccessURLs()) {
             try(InputStream is = url.openStream()) {
-                ConfigurationData data = format.readConfiguration(url);
+                ConfigurationData data = format.readConfiguration(url.toString(), is);
                 if(data!=null){
                     Map<String,String> newProperties = mapConfigurationData(data);
                     // the configs served by the tamaya server module has a 'data' root section containing the

@@ -18,13 +18,14 @@
  */
 package org.apache.tamaya.commons;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationDataBuilder;
 import org.apache.tamaya.format.ConfigurationFormat;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -46,17 +47,23 @@ public class XmlConfigurationFormat implements ConfigurationFormat {
     }
 
     @Override
-    public ConfigurationData readConfiguration(URL url) {
-        ConfigurationDataBuilder builder = ConfigurationDataBuilder.of(url.toString(), this);
+    public ConfigurationData readConfiguration(String name, InputStream inputStream) {
+        ConfigurationDataBuilder builder = ConfigurationDataBuilder.of(name, this);
         try {
-            XMLConfiguration commonXmlConfiguration = new XMLConfiguration(url);
-                Iterator<String> keyIter = commonXmlConfiguration.getKeys();
-                while(keyIter.hasNext()){
-                    String key = keyIter.next();
-                    builder.addDefaultProperty(key, commonXmlConfiguration.getString(key));
+            XMLConfiguration commonXmlConfiguration;
+            File file = new File(name);
+            if (file.exists()) {
+                commonXmlConfiguration = new XMLConfiguration(file);
+            }else{
+                commonXmlConfiguration = new XMLConfiguration(new URL(name));
             }
-        } catch (ConfigurationException e) {
-            throw new ConfigException("Failed to parse xml-file format from " + url, e);
+            Iterator<String> keyIter = commonXmlConfiguration.getKeys();
+            while (keyIter.hasNext()) {
+                String key = keyIter.next();
+                builder.addDefaultProperty(key, commonXmlConfiguration.getString(key));
+            }
+        } catch (Exception e) {
+            throw new ConfigException("Failed to parse xml-file format from " + name, e);
         }
         return builder.build();
     }
