@@ -1,3 +1,4 @@
 Export-Package: \
 	org.apache.tamaya.validation,\
 	org.apache.tamaya.validation.spi
+Bundle-SymbolicName: org.apache.tamaya.validation

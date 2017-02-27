@@ -1,2 +1,3 @@
 Export-Package: \
 	org.apache.tamaya.ui.mutableconfig
+Bundle-SymbolicName: org.apache.tamaya.ui.mutableconfig

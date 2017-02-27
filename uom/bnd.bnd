@@ -1,0 +1,3 @@
+Export-Package: \
+	org.apache.tamaya.uom
+Bundle-SymbolicName: org.apache.tamaya.uom

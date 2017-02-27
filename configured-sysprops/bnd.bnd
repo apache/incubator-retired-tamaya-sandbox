@@ -1,2 +1,3 @@
 Export-Package: \
 	org.apache.tamaya.sysprops
+Bundle-SymbolicName: org.apache.tamaya.sysprops

@@ -1,2 +1,3 @@
 Export-Package: \
 	org.apache.tamaya.consul
+Bundle-SymbolicName: org.apache.tamaya.consul

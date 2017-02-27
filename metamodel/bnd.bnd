@@ -2,3 +2,4 @@ Export-Package: \
 	org.apache.tamaya.metamodel,\
 	org.apache.tamaya.metamodel.dsl,\
 	org.apache.tamaya.metamodel.spi
+Bundle-SymbolicName: org.apache.tamaya.metamodel
