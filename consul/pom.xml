@@ -27,6 +27,7 @@ under the License.
     </parent>
 
     <artifactId>tamaya-consul</artifactId>
+    <version>${parent.version}-beta</version>
     <name>Apache Tamaya Modules - Consul</name>
     <packaging>jar</packaging>
 
@@ -43,23 +44,23 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-functions</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-mutable-config</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>

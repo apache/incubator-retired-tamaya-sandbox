@@ -27,6 +27,7 @@ limitations under the License.
     </parent>
 
     <artifactId>tamaya-karaf-features</artifactId>
+    <version>${parent.version}-alpha</version>
     <packaging>jar</packaging>
     <description>Tamaya Karaf Integration Tests Suite.</description>
     <name>Apache Tamaya :: Karaf :: Features</name>

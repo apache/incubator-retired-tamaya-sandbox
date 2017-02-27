@@ -27,6 +27,7 @@
     </parent>
 
     <artifactId>tamaya-metamodel</artifactId>
+    <version>${parent.version}-alpha</version>
     <name>Apache Tamaya Modules - Metamodel</name>
     <description>This extension module provides functionality to configure the
         configuration system using meta-configuration.
@@ -41,40 +42,40 @@
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-injection-api</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-spisupport</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-events</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-formats</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-resources</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>

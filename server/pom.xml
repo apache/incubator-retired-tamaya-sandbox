@@ -27,6 +27,7 @@ under the License.
     </parent>
 
     <artifactId>tamaya-server</artifactId>
+    <version>${parent.version}-alpha</version>
     <name>Apache Tamaya Modules - Server Extension</name>
     <packaging>jar</packaging>
 

@@ -27,6 +27,7 @@
     </parent>
 
     <artifactId>tamaya-validation</artifactId>
+    <version>${parent.version}-alpha</version>
     <name>Apache Tamaya Modules - Validation</name>
     <description>This extension module provides functionality to validate configuration.
     </description>
@@ -40,30 +41,30 @@
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-injection-api</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-events</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-json</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>

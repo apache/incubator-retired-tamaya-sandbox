@@ -27,6 +27,7 @@ under the License.
         <relativePath>..</relativePath>
     </parent>
     <artifactId>tamaya-commons-config</artifactId>
+    <version>${parent.version}-beta</version>
     <name>Apache Tamaya Modules - Apache Commons</name>
     <packaging>jar</packaging>
 
@@ -34,12 +35,12 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-formats</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-configuration</groupId>
