@@ -27,8 +27,7 @@
         <version>0.3-incubating-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tamaya-osgi</artifactId>
-    <version>${parent.version}-alpha</version>
+    <artifactId>tamaya-osgi_alpha</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tamaya :: OSGi Integration :: ConfigAdmin</name>
     <description>Tamaya Based OSGI Implementation of ConfigAdmin and Config Injection</description>
@@ -57,22 +56,22 @@
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-functions</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-spisupport</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <!-- Testing -->

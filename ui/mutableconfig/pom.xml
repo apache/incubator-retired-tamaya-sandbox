@@ -30,8 +30,7 @@ under the License.
 
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tamaya-ui-mutableconfig</artifactId>
-    <version>${parent.version}-alpha</version>
+    <artifactId>tamaya-ui-mutableconfig_alpha</artifactId>
     <name>Apache Tamaya Modules - UI (Mutable Config)</name>
 
 </project>

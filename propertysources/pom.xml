@@ -26,8 +26,7 @@ under the License.
         <version>0.3-incubating-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
-    <artifactId>tamaya-propertysources</artifactId>
-    <version>${parent.version}-alpha</version>
+    <artifactId>tamaya-propertysources_alpha</artifactId>
     <name>Apache Tamaya Modules - PropertySources</name>
     <description>A collection of simple property sources and property source providers.</description>
     <packaging>jar</packaging>
@@ -36,13 +35,13 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -55,12 +54,12 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-resources</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-formats</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 

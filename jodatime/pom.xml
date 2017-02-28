@@ -29,8 +29,7 @@ under the License.
         <relativePath>..</relativePath>
     </parent>
 
-    <artifactId>tamaya-jodatime</artifactId>
-    <version>${parent.version}-alpha</version>
+    <artifactId>tamaya-jodatime_beta</artifactId>
     <name>Apache Tamaya Modules - Joda-Time Support</name>
     <packaging>jar</packaging>
 
@@ -49,13 +48,13 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
 

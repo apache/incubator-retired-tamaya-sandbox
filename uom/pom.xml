@@ -17,8 +17,7 @@
         <artifactId>tamaya-sandbox</artifactId>
         <version>0.3-incubating-SNAPSHOT</version>
     </parent>
-    <artifactId>tamaya-uom</artifactId>
-    <version>${parent.version}-alpha</version>
+    <artifactId>tamaya-uom_beta</artifactId>
     <name>Apache Tamaya Modules - Units of Measurement Support</name>
     <description>This modules provides a set of property converters to support
         JSR 363 implementations in conjunction with Apache Tamaya.</description>
@@ -33,13 +32,13 @@
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
 

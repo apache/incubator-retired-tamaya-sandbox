@@ -26,8 +26,7 @@ under the License.
         <relativePath>..</relativePath>
     </parent>
 
-    <artifactId>tamaya-usagetracker</artifactId>
-    <version>${parent.version}-beta</version>
+    <artifactId>tamaya-usagetracker_beta</artifactId>
     <name>Apache Tamaya Modules - Usage tracker</name>
     <description>This extension module provides functionality to measure configuration
         usage during runtime.
@@ -42,30 +41,30 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-injection-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-events</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-json</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>

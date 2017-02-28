@@ -26,8 +26,7 @@ under the License.
         <relativePath>..</relativePath>
     </parent>
 
-    <artifactId>tamaya-etcd</artifactId>
-    <version>${parent.version}-beta</version>
+    <artifactId>tamaya-etcd_beta</artifactId>
     <name>Apache Tamaya Modules - etcd PropertySource</name>
     <packaging>jar</packaging>
 
@@ -43,18 +42,18 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-functions</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -72,7 +71,7 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-mutable-config</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
