@@ -18,11 +18,9 @@
  */
 package org.apache.tamaya.metamodel.ext;
 
-import org.apache.tamaya.spi.FilterContext;
-import org.apache.tamaya.spi.PropertyFilter;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spi.*;
 import org.apache.tamaya.spisupport.BasePropertySource;
+import org.apache.tamaya.spisupport.DefaultConfigurationContextBuilder;
 import org.apache.tamaya.spisupport.PropertySourceComparator;
 
 import java.util.ArrayList;
@@ -41,6 +39,8 @@ public final class FilteredPropertySource extends BasePropertySource {
 
     private PropertySource wrapped;
     private List<PropertyFilter> filters = new ArrayList<>();
+    private ConfigurationContext dummyContext = new DefaultConfigurationContextBuilder()
+            .addPropertySources(this).build();
 
     /**
      * Constructor used privately. Use {@link #of(PropertySource)} for making a {@link PropertySource} filterable.
@@ -84,7 +84,7 @@ public final class FilteredPropertySource extends BasePropertySource {
             if(filters!=null){
                 PropertyValue filteredValue = value;
                 for(PropertyFilter pf:filters){
-                    filteredValue = pf.filterProperty(filteredValue, new FilterContext(key, value));
+                    filteredValue = pf.filterProperty(filteredValue, new FilterContext(value, dummyContext));
                 }
                 if(filteredValue!=null){
                     return filteredValue;
@@ -101,7 +101,7 @@ public final class FilteredPropertySource extends BasePropertySource {
             Map<String, PropertyValue> result = new HashMap<>();
             synchronized (filters) {
                 for (PropertyValue value : props.values()) {
-                    FilterContext filterContext = new FilterContext(value.getKey(), props);
+                    FilterContext filterContext = new FilterContext(value, props, dummyContext);
                     PropertyValue filteredValue = value;
                     for (PropertyFilter pf : filters) {
                         filteredValue = pf.filterProperty(filteredValue, filterContext);

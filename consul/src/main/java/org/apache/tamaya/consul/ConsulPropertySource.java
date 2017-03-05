@@ -147,7 +147,7 @@ implements MutablePropertySource{
                     props.put(reqKey+".modifyIndex", String.valueOf(value.getModifyIndex()));
                     props.put(reqKey+".lockIndex", String.valueOf(value.getLockIndex()));
                     props.put(reqKey+".flags", String.valueOf(value.getFlags()));
-                    return new PropertyValueBuilder(key, value.getValue().get(), getName()).setMetaEntries(props).build();
+                    return PropertyValue.builder(key, value.getValue().get(), getName()).setMetaEntries(props).build();
                 }
             } catch(Exception e){
                 LOG.log(Level.FINE, "etcd access failed on " + hostAndPort + ", trying next...", e);
@@ -162,7 +162,7 @@ implements MutablePropertySource{
 //            try{
 //                Consul consul = Consul.builder().withHostAndPort(hostAndPort).build();
 //                KeyValueClient kvClient = consul.keyValueClient();
-//                Optional<Value> valueOpt = kvClient.getValue(reqKey);
+//                Optional<Value> valueOpt = kvClient.getProperty(reqKey);
 //                try{
 //                    Map<String, String> props = kvClient.getProperties("");
 //                    if(!props.containsKey("_ERROR")) {

@@ -38,9 +38,9 @@ public class UsageTrackerFilter implements PropertyFilter{
     public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
             ConfigUsageSpi tracker = ServiceContextManager.getServiceContext().getService(ConfigUsageSpi.class);
         if (context.isSinglePropertyScoped()) {
-            tracker.trackSingleKeyAccess(context.getKey(), value);
+            tracker.trackSingleKeyAccess(value, context.getContext());
         } else {
-            tracker.trackAllPropertiesAccess();
+            tracker.trackAllPropertiesAccess(context.getContext());
         }
         return value;
     }

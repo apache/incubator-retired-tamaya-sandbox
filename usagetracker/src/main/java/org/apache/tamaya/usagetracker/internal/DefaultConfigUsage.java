@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.usagetracker.internal;
 
+import org.apache.tamaya.spi.ConfigurationContext;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.usagetracker.UsageStat;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
@@ -111,20 +112,20 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
     }
 
     @Override
-    public void trackAllPropertiesAccess(){
-        trackSingleKeyAccess("<<all>>", PropertyValue.of("<<all>>","<not stored>","-"));
+    public void trackAllPropertiesAccess(ConfigurationContext context){
+        trackSingleKeyAccess(PropertyValue.of("<<all>>","<not stored>","-"), context);
     }
 
     @Override
-    public void trackSingleKeyAccess(String key, PropertyValue value){
+    public void trackSingleKeyAccess(PropertyValue value, ConfigurationContext context){
         // Ignore meta-entries
-        if(!isUsageTrackingEnabled() || key.startsWith("_")){
+        if(!isUsageTrackingEnabled()){
             return;
         }
-        UsageStat usage = this.usages.get(key);
+        UsageStat usage = this.usages.get(value.getKey());
         if(usage==null){
-            usage = new UsageStat(key);
-            this.usages.put(key, usage);
+            usage = new UsageStat(value.getKey());
+            this.usages.put(value.getKey(), usage);
         }
         usage.trackUsage(value);
     }
