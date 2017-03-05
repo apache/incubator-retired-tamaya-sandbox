@@ -117,6 +117,7 @@ public final class RefreshablePropertySource
         }
     }
 
+    @Override
     public int getOrdinal() {
         return PropertySourceComparator.getOrdinal(this.wrapped);
     }
@@ -132,7 +133,7 @@ public final class RefreshablePropertySource
     }
 
     @Override
-    public Map<String, String> getProperties() {
+    public Map<String, PropertyValue> getProperties() {
         return this.wrapped.getProperties();
     }
 

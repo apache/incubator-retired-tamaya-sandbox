@@ -22,10 +22,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * PropertySource that wraps {@link org.apache.commons.configuration.Configuration}.
@@ -52,6 +49,7 @@ public class CommonsConfigPropertySource implements PropertySource {
         }
     }
 
+    @Override
     public int getOrdinal() {
         return ordinal;
     }
@@ -68,12 +66,12 @@ public class CommonsConfigPropertySource implements PropertySource {
     }
 
     @Override
-    public Map<String, String> getProperties() {
-        Map<String, String> config = new HashMap<>();
+    public Map<String, PropertyValue> getProperties() {
+        Map<String,PropertyValue> config = new HashMap<>();
         Iterator<String> keyIter = commonsConfig.getKeys();
         while (keyIter.hasNext()) {
             String key = keyIter.next();
-            config.put(key, commonsConfig.getString(key));
+            config.put(key, PropertyValue.of(key, commonsConfig.getString(key), getName()));
         }
         return config;
     }

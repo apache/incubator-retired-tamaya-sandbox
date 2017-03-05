@@ -147,7 +147,7 @@ implements MutablePropertySource{
                     props.put(reqKey+".modifyIndex", String.valueOf(value.getModifyIndex()));
                     props.put(reqKey+".lockIndex", String.valueOf(value.getLockIndex()));
                     props.put(reqKey+".flags", String.valueOf(value.getFlags()));
-                    return new PropertyValueBuilder(key, value.getValue().get(), getName()).setContextData(props).build();
+                    return new PropertyValueBuilder(key, value.getValue().get(), getName()).setMetaEntries(props).build();
                 }
             } catch(Exception e){
                 LOG.log(Level.FINE, "etcd access failed on " + hostAndPort + ", trying next...", e);
@@ -157,7 +157,7 @@ implements MutablePropertySource{
     }
 
     @Override
-    public Map<String, String> getProperties() {
+    public Map<String, PropertyValue> getProperties() {
 //        for(HostAndPort hostAndPort: getConsulBackends()){
 //            try{
 //                Consul consul = Consul.builder().withHostAndPort(hostAndPort).build();

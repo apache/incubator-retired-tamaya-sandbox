@@ -20,6 +20,7 @@ package org.apache.tamaya.consul;
 
 import com.google.common.net.HostAndPort;
 import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
+import org.apache.tamaya.spi.PropertyValue;
 import org.junit.BeforeClass;
 
 import java.net.MalformedURLException;
@@ -73,7 +74,7 @@ public class ConsulWriteTest {
     @org.junit.Test
     public void testGetProperties() throws Exception {
         if(!execute)return;
-        Map<String,String> result = propertySource.getProperties();
+        Map<String,PropertyValue> result = propertySource.getProperties();
         assertTrue(result.isEmpty());
     }
 }

@@ -20,6 +20,7 @@ package org.apache.tamaya.usagetracker.internal;
 
 import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
+import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
 
@@ -34,7 +35,7 @@ import javax.annotation.Priority;
 public class UsageTrackerFilter implements PropertyFilter{
 
     @Override
-    public String filterProperty(String value, FilterContext context) {
+    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
             ConfigUsageSpi tracker = ServiceContextManager.getServiceContext().getService(ConfigUsageSpi.class);
         if (context.isSinglePropertyScoped()) {
             tracker.trackSingleKeyAccess(context.getKey(), value);

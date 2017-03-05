@@ -47,6 +47,8 @@ public class EtcdPropertySource extends BasePropertySource
 
     private List<EtcdAccessor> etcdBackends;
 
+    private Map<String,String> metaData = new HashMap<>();
+
     public EtcdPropertySource(String prefix, Collection<String> backends){
         this.prefix = prefix==null?"":prefix;
         etcdBackends = new ArrayList<>();
@@ -55,6 +57,11 @@ public class EtcdPropertySource extends BasePropertySource
         }
         setDefaultOrdinal(1000);
         setName("etcd");
+        if(!prefix.isEmpty()){
+            metaData.put("prefix", prefix);
+        }
+        metaData.put("backend", "etcd");
+        metaData.put("backends", backends.toString());
     }
 
     public EtcdPropertySource(Collection<String> backends){
@@ -64,12 +71,27 @@ public class EtcdPropertySource extends BasePropertySource
         }
         setDefaultOrdinal(1000);
         setName("etcd");
+        metaData.put("backend", "etcd");
+        metaData.put("backends", backends.toString());
     }
 
     public EtcdPropertySource(){
         prefix = System.getProperty("tamaya.etcd.prefix", "");
         setDefaultOrdinal(1000);
         setName("etcd");
+        if(!prefix.isEmpty()){
+            metaData.put("prefix", prefix);
+        }
+        metaData.put("backend", "etcd");
+        String backendProp = "";
+        for(EtcdAccessor acc:getEtcdBackends()){
+            if(backendProp.isEmpty()){
+                backendProp += acc.getUrl();
+            }else{
+                backendProp += ", " + acc.getUrl();
+            }
+        }
+        metaData.put("backends", backendProp);
     }
 
     public EtcdPropertySource(String... backends){
@@ -79,6 +101,11 @@ public class EtcdPropertySource extends BasePropertySource
         }
         setDefaultOrdinal(1000);
         setName("etcd");
+        if(!prefix.isEmpty()){
+            metaData.put("prefix", prefix);
+        }
+        metaData.put("backend", "etcd");
+        metaData.put("backends", backends.toString());
     }
 
     public String getPrefix() {
@@ -86,7 +113,12 @@ public class EtcdPropertySource extends BasePropertySource
     }
 
     public EtcdPropertySource setPrefix(String prefix) {
-        this.prefix = prefix;
+        this.prefix = prefix==null?"":prefix;
+        if(!prefix.isEmpty()){
+            metaData.put("prefix", prefix);
+        }else{
+            metaData.remove("prefix");
+        }
         return this;
     }
 
@@ -114,27 +146,13 @@ public class EtcdPropertySource extends BasePropertySource
             key = key.substring(prefix.length());
         }
         Map<String,String> props;
-        String reqKey = key;
-        if(key.startsWith("_")){
-            reqKey = key.substring(1);
-            if(reqKey.endsWith(".createdIndex")){
-                reqKey = reqKey.substring(0,reqKey.length()-".createdIndex".length());
-            } else if(reqKey.endsWith(".modifiedIndex")){
-                reqKey = reqKey.substring(0,reqKey.length()-".modifiedIndex".length());
-            } else if(reqKey.endsWith(".ttl")){
-                reqKey = reqKey.substring(0,reqKey.length()-".ttl".length());
-            } else if(reqKey.endsWith(".expiration")){
-                reqKey = reqKey.substring(0,reqKey.length()-".expiration".length());
-            } else if(reqKey.endsWith(".source")){
-                reqKey = reqKey.substring(0,reqKey.length()-".source".length());
-            }
-        }
         for(EtcdAccessor accessor: EtcdBackendConfig.getEtcdBackends()){
             try{
-                props = accessor.get(reqKey);
+                props = accessor.get(key);
                 if(!props.containsKey("_ERROR")) {
                     // No repfix mapping necessary here, since we only access/return the value...
-                    return new PropertyValueBuilder(key, props.get(reqKey), getName()).setContextData(props).build();
+                    return PropertyValue.builder(key, props.get(key), getName()).setMetaEntries(metaData)
+                            .addMetaEntries(props).removeMetaEntry(key).build();
                 } else{
                     LOG.log(Level.FINE, "etcd error on " + accessor.getUrl() + ": " + props.get("_ERROR"));
                 }
@@ -146,7 +164,7 @@ public class EtcdPropertySource extends BasePropertySource
     }
 
     @Override
-    public Map<String, String> getProperties() {
+    public Map<String, PropertyValue> getProperties() {
         for(EtcdAccessor accessor: getEtcdBackends()){
             try{
                 Map<String, String> props = accessor.getProperties("");
@@ -162,19 +180,45 @@ public class EtcdPropertySource extends BasePropertySource
         return Collections.emptyMap();
     }
 
-    private Map<String, String> mapPrefix(Map<String, String> props) {
-        if(prefix.isEmpty()){
-            return props;
-        }
-        Map<String,String> map = new HashMap<>();
-        for(Map.Entry<String,String> entry:props.entrySet()){
-            if(entry.getKey().startsWith("_")){
-                map.put("_" + prefix + entry.getKey().substring(1), entry.getValue());
-            } else{
-                map.put(prefix+ entry.getKey(), entry.getValue());
+    private Map<String, PropertyValue> mapPrefix(Map<String, String> props) {
+
+        Map<String, PropertyValueBuilder> builders = new HashMap<>();
+        // Evaluate keys
+        for(Map.Entry<String,String> entry:props.entrySet()) {
+            if (!entry.getKey().startsWith("_")) {
+                PropertyValueBuilder builder = builders.get(entry.getKey());
+                if (builder == null) {
+                    builder = PropertyValue.builder(entry.getKey(), "", getName()).setMetaEntries(metaData);
+                    builders.put(entry.getKey(), builder);
+                }
             }
         }
-        return map;
+        // add meta entries
+        for(Map.Entry<String,String> entry:props.entrySet()) {
+            if (entry.getKey().startsWith("_")) {
+                String key = entry.getKey().substring(1);
+                for(String field:new String[]{".createdIndex", ".modifiedIndex", ".ttl",
+                        ".expiration", ".source"}) {
+                    if (key.endsWith(field)) {
+                        key = key.substring(0, key.length() - field.length());
+                        PropertyValueBuilder builder = builders.get(key);
+                        if (builder != null) {
+                            builder.addMetaEntry(field, entry.getValue());
+                        }
+                    }
+                }
+            }
+        }
+        // Map to value map.
+        Map<String, PropertyValue> values = new HashMap<>();
+        for(Map.Entry<String,PropertyValueBuilder> en:builders.entrySet()) {
+            if(prefix.isEmpty()){
+                values.put(en.getKey(), en.getValue().build());
+            }else{
+                values.put(prefix + en.getKey(), en.getValue().setKey(prefix + en.getKey()).build());
+            }
+        }
+        return values;
     }
 
     @Override

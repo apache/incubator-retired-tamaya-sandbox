@@ -27,6 +27,7 @@ import org.apache.tamaya.spisupport.PropertySourceComparator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,7 @@ public final class FilteredPropertySource extends BasePropertySource {
         return new FilteredPropertySource(propertySource);
     }
 
+    @Override
     public int getOrdinal() {
         int ordinalSet = super.getOrdinal();
         if(ordinalSet == 0){
@@ -80,42 +82,38 @@ public final class FilteredPropertySource extends BasePropertySource {
         PropertyValue value = wrapped.get(key);
         if(value != null && value.getValue()!=null){
             if(filters!=null){
-                String filteredValue = value.getValue();
+                PropertyValue filteredValue = value;
                 for(PropertyFilter pf:filters){
-                    filteredValue = pf.filterProperty(filteredValue, new FilterContext(key, value.getConfigEntries(), true));
+                    filteredValue = pf.filterProperty(filteredValue, new FilterContext(key, value));
                 }
                 if(filteredValue!=null){
-                    return PropertyValue.builder(key, filteredValue, getName())
-                            .setContextData(value.getConfigEntries()).build();
+                    return filteredValue;
                 }
             }
         }
-        return value;
+        return null;
     }
 
     @Override
-    public Map<String, String> getProperties() {
-        Map<String, String> wrappedProps = wrapped.getProperties();
-        if(!filters.isEmpty()){
-            Map<String, String> result = new HashMap<>();
+    public Map<String, PropertyValue> getProperties() {
+        Map<String, PropertyValue> props = wrapped.getProperties();
+        if(!props.isEmpty()){
+            Map<String, PropertyValue> result = new HashMap<>();
             synchronized (filters) {
-                for (String key : wrappedProps.keySet()) {
-                    PropertyValue value = wrapped.get(key);
-                    FilterContext filterContext = new FilterContext(key, value.getConfigEntries(), true);
-                    String filteredValue = value.getValue();
+                for (PropertyValue value : props.values()) {
+                    FilterContext filterContext = new FilterContext(value.getKey(), props);
+                    PropertyValue filteredValue = value;
                     for (PropertyFilter pf : filters) {
                         filteredValue = pf.filterProperty(filteredValue, filterContext);
                     }
                     if (filteredValue != null) {
-                        result.putAll(value.getConfigEntries());
-                        result.put(key, filteredValue);
+                        result.put(filteredValue.getKey(), filteredValue);
                     }
-
                 }
             }
             return result;
         }
-        return wrappedProps;
+        return Collections.emptyMap();
     }
 
     @Override

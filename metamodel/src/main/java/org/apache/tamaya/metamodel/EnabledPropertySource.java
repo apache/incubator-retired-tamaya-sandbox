@@ -95,6 +95,7 @@ public final class EnabledPropertySource
         this.enabled = enabled;
     }
 
+    @Override
     public int getOrdinal() {
         return PropertySourceComparator.getOrdinal(this.wrapped);
     }
@@ -113,7 +114,7 @@ public final class EnabledPropertySource
     }
 
     @Override
-    public Map<String, String> getProperties() {
+    public Map<String, PropertyValue> getProperties() {
         if(!isEnabled()){
             return Collections.emptyMap();
         }

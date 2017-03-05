@@ -18,6 +18,8 @@
  */
 package org.apache.tamaya.usagetracker;
 
+import org.apache.tamaya.spi.PropertyValue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -167,7 +169,7 @@ public final class UsageStat {
      * stacktrace is shortened to a maximal size of 20 items.
      * @param value the value returned, not null.
      */
-    public void trackUsage(String value){
+    public void trackUsage(PropertyValue value){
         trackUsage(value, maxTrace);
     }
 
@@ -177,7 +179,7 @@ public final class UsageStat {
      * @param value the value returned, not null.
      * @param maxTraceLength the maximal length of the stored stacktrace.
      */
-    public void trackUsage(String value, int maxTraceLength){
+    public void trackUsage(PropertyValue value, int maxTraceLength){
         String accessPoint = null;
         if(maxTraceLength>0) {
             Exception e = new Exception();
@@ -230,7 +232,7 @@ public final class UsageStat {
         private long firstAccessTS;
         private String[] stackTrace;
         private String accessPoint;
-        private Map<Long, String> trackedValues;
+        private Map<Long, PropertyValue> trackedValues;
 
         public AccessDetail(String key, String accessPoint, String[] stackTrace){
             this.key = Objects.requireNonNull(key);
@@ -244,7 +246,7 @@ public final class UsageStat {
             accessCount.set(0);
         }
 
-        public long trackAccess(String value){
+        public long trackAccess(PropertyValue value){
             long count = accessCount.incrementAndGet();
             lastAccessTS = System.currentTimeMillis();
             if(firstAccessTS==0){
@@ -285,7 +287,7 @@ public final class UsageStat {
             return stackTrace.clone();
         }
 
-        public Map<Long, String> getTrackedValues(){
+        public Map<Long, PropertyValue> getTrackedValues(){
             synchronized (this) {
                 if (trackedValues == null) {
                     return Collections.emptyMap();

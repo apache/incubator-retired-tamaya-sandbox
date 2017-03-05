@@ -20,6 +20,7 @@ package org.apache.tamaya.propertysources;
 
 import org.apache.tamaya.core.propertysource.SimplePropertySource;
 import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spi.PropertyValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,7 +97,9 @@ public final class PropertySourceBuilder {
      * @return the bulder for chaining.
      */
     public PropertySourceBuilder putAll(PropertySource propertySource){
-        this.properties.putAll(propertySource.getProperties());
+        for(PropertyValue val:propertySource.getProperties().values()) {
+            this.properties.put(val.getKey(), val.getValue());
+        }
         return this;
     }
 

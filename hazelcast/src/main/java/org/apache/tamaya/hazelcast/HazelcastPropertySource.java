@@ -28,7 +28,6 @@ import org.apache.tamaya.mutableconfig.spi.MutablePropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spisupport.BasePropertySource;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -166,15 +165,19 @@ implements MutablePropertySource{
             return null;
         }
         return PropertyValue.builder(key, value, getName())
-                .addContextData("backend", "Hazelcast")
-                .addContextData("instance", hcConfig.getInstanceName())
-                .addContextData("mapReference", mapReference)
+                .addMetaEntry("backend", "Hazelcast")
+                .addMetaEntry("instance", hcConfig.getInstanceName())
+                .addMetaEntry("mapReference", mapReference)
                 .build();
     }
 
     @Override
-    public Map<String, String> getProperties() {
-        return Collections.unmodifiableMap(this.configMap);
+    public Map<String, PropertyValue> getProperties() {
+        Map<String,String> meta = new HashMap<>();
+        meta.put("backend", "Hazelcast");
+        meta.put("instance", hazelcastInstance.getConfig().getInstanceName());
+        meta.put("mapReference", mapReference);
+        return PropertyValue.map(this.configMap, getName(), meta);
     }
 
     @Override

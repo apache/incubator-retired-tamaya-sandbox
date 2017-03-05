@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.etcd;
 
+import org.apache.tamaya.spi.PropertyValue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -55,15 +56,15 @@ public class EtcdPropertySourceTest {
 
     @Test
     public void testGet() throws Exception {
-        Map<String,String> props = propertySource.getProperties();
-        for(Map.Entry<String,String> en:props.entrySet()){
+        Map<String,PropertyValue> props = propertySource.getProperties();
+        for(Map.Entry<String,PropertyValue> en:props.entrySet()){
             assertNotNull("Key not found: " + en.getKey(), propertySource.get(en.getKey()));
         }
     }
 
     @Test
     public void testGetProperties() throws Exception {
-        Map<String,String> props = propertySource.getProperties();
+        Map<String,PropertyValue> props = propertySource.getProperties();
         assertNotNull(props);
     }
 

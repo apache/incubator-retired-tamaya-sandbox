@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.usagetracker.spi;
 
+import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.usagetracker.UsageStat;
 
 import java.util.Collection;
@@ -86,7 +87,7 @@ public interface ConfigUsageSpi {
      * @param key key to track for
      * @param value value to track for
      */
-    void trackSingleKeyAccess(String key, String value);
+    void trackSingleKeyAccess(String key, PropertyValue value);
 
     /**
      * Access the usage statistics for the recorded uses of configuration.
