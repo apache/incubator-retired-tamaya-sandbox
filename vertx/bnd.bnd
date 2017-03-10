@@ -1,0 +1,3 @@
+Export-Package: \
+	org.apache.tamaya.vertx
+Bundle-SymbolicName: org.apache.tamaya.vertx
