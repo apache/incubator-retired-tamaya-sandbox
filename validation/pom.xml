@@ -30,7 +30,7 @@
     <name>Apache Tamaya Modules - Validation</name>
     <description>This extension module provides functionality to validate configuration.
     </description>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <jdkVersion>1.7</jdkVersion>
@@ -87,27 +87,5 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.2.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Export-Package>
-                            org.apache.tamaya.model,
-                            org.apache.tamaya.model.spi
-                        </Export-Package>
-                        <Private-Package>
-                            org.apache.tamaya.model.internal
-                        </Private-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

@@ -755,6 +755,7 @@ under the License.
         <module>management</module>
         <module>metamodel</module>
         <module>uom</module>
+        <!--<module>vertx</module>-->
     </modules>
 
     <profiles>
