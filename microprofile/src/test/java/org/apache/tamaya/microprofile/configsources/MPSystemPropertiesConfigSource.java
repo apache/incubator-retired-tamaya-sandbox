@@ -16,33 +16,19 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.microprofile;
+package org.apache.tamaya.microprofile.configsources;
 
-
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
-import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.eclipse.microprofile.config.spi.Converter;
-
-import java.util.Objects;
+import org.apache.tamaya.microprofile.MicroprofileConfigSource;
+import org.apache.tamaya.spisupport.SystemPropertySource;
 
 /**
- * Property source implementation that wraps a Microprofile {@link ConfigSource} instance.
+ * Microprofile config source based on Tamaya's system property source.
+ * Created by atsticks on 30.03.17.
  */
-public class TamayaPropertyConverter<T> implements PropertyConverter<T> {
+public class MPSystemPropertiesConfigSource extends MicroprofileConfigSource {
 
-    private Converter<T> delegate;
-
-    public TamayaPropertyConverter(Converter<T> delegate){
-        this.delegate = Objects.requireNonNull(delegate);
+    public MPSystemPropertiesConfigSource() {
+        super(new SystemPropertySource());
     }
 
-    public Converter<T> getConverter(){
-        return this.delegate;
-    }
-
-    @Override
-    public T convert(String value, ConversionContext context) {
-        return delegate.convert(value);
-    }
 }

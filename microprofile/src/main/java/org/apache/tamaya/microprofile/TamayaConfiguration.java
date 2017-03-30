@@ -30,11 +30,11 @@ import java.util.*;
 /**
  * Created by atsticks on 23.03.17.
  */
-class TamayaConfiguration implements Configuration{
+public class TamayaConfiguration implements Configuration{
 
     private Config delegate;
 
-    TamayaConfiguration(Config config){
+    public TamayaConfiguration(Config config){
         this.delegate = Objects.requireNonNull(config);
     }
 

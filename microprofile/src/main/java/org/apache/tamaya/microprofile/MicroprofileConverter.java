@@ -30,11 +30,11 @@ import java.util.Objects;
 /**
  * Property source implementation that wraps a Microprofile {@link ConfigSource} instance.
  */
-final class MicroprofileConverter<T> implements Converter<T> {
+public class MicroprofileConverter<T> implements Converter<T> {
 
     private PropertyConverter<T> delegate;
 
-    MicroprofileConverter(PropertyConverter<T> delegate){
+    public MicroprofileConverter(PropertyConverter<T> delegate){
         this.delegate = Objects.requireNonNull(delegate);
     }
 

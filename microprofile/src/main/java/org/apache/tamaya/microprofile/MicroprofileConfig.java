@@ -29,11 +29,11 @@ import java.util.*;
 /**
  * Microprofile {@link ConfigSource} implementation that wraps a {@link PropertySource} instance.
  */
-final class MicroprofileConfig implements Config {
+public class MicroprofileConfig implements Config {
 
     private Configuration delegate;
 
-    MicroprofileConfig(Configuration delegate){
+    public MicroprofileConfig(Configuration delegate){
         this.delegate = Objects.requireNonNull(delegate);
     }
 

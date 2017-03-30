@@ -25,6 +25,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * Created by atsticks on 23.03.17.
@@ -56,7 +57,9 @@ public class MicroprofileConfigProviderResolver extends ConfigProviderResolver {
     @Override
     public void registerConfig(Config config, ClassLoader classLoader) {
         if(configs.containsKey(classLoader)){
-            throw new IllegalArgumentException("Alreadsy a config registered with classloader: " + classLoader);
+            Logger.getLogger(getClass().getName())
+                    .warning("Replacing existing config for classloader: " + classLoader);
+//            throw new IllegalArgumentException("Already a config registered with classloader: " + classLoader);
         }
         this.configs.put(classLoader, config);
     }

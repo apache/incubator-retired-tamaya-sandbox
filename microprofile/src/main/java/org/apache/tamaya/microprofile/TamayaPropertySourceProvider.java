@@ -29,11 +29,11 @@ import java.util.*;
 /**
  * Microprofile {@link ConfigSource} implementation that wraps a {@link PropertySource} instance.
  */
-final class TamayaPropertySourceProvider implements PropertySourceProvider{
+public class TamayaPropertySourceProvider implements PropertySourceProvider{
 
     private ConfigSourceProvider delegate;
 
-    TamayaPropertySourceProvider(ConfigSourceProvider configSourceProvider){
+    public TamayaPropertySourceProvider(ConfigSourceProvider configSourceProvider){
         this.delegate = Objects.requireNonNull(configSourceProvider);
     }
 
