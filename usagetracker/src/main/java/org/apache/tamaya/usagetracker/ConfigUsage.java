@@ -33,6 +33,7 @@ public final class ConfigUsage {
 
     /** The logger used. */
     private static final Logger LOG = Logger.getLogger(ConfigUsage.class.getName());
+
     private static final String NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE = "No UsageTrackerSpi component available.";
 
     /** The loaded usage tracking SPI. */
@@ -55,7 +56,7 @@ public final class ConfigUsage {
      * Returns a set of package names that are to be ignored when collecting usage data.
      * @return the ignored package names, not null.
      */
-    public static Set<String> getIgnoredUsagePackages(){
+    public static Set<String> getIgnoredPackages(){
         return spi().getIgnoredPackages();
     }
 
@@ -63,8 +64,8 @@ public final class ConfigUsage {
      * Adds the given packageNames to the list of packages to be ignored when collecting usage data.
      * @param packageName the package names to be added, not null.
      */
-    public static void addIgnoredUsagePackages(String... packageName){
-        spi().addIgnoredUsagePackages(packageName);
+    public static void addIgnoredPackages(String... packageName){
+        spi().addIgnoredPackages(packageName);
     }
 
     /**
@@ -81,23 +82,23 @@ public final class ConfigUsage {
      * @param key the fully qualified configuration key, not null.
      * @return the stats collected, or null.
      */
-    public static UsageStat getUsage(String key){
-        return spi().getUsage(key);
+    public static UsageStat getSinglePropertyStats(String key){
+        return spi().getSinglePropertyStats(key);
     }
 
     /**
      * Get the recorded usage references of configuration.
      * @return the recorded usge references, never null.
      */
-    public static Collection<UsageStat> getUsages() {
-        return spi().getUsages();
+    public static Collection<UsageStat> getUsageStats() {
+        return spi().getUsageStats();
     }
 
     /**
      * Clears all collected usage statistics.
      */
-    public static void clearUsageStats() {
-        spi().clearUsageStats();
+    public static void clearStats() {
+        spi().clearStats();
     }
 
     /**
@@ -105,24 +106,24 @@ public final class ConfigUsage {
      * If usage stats collection is not activated (default), this method returns null.
      * @return the stats collected, or null.
      */
-    public static UsageStat getUsageAllProperties(){
-        return spi().getUsageAllProperties();
+    public static UsageStat getAllPropertiesStats(){
+        return spi().getAllPropertiesStats();
     }
 
     /**
      * Allows to check if usage tracking is enabled (should be disbled by default).
      * @return true, if usage tracking is enabled.
      */
-    public static boolean isUsageTrackingEnabled(){
-        return spi().isUsageTrackingEnabled();
+    public static boolean isTrackingEnabled(){
+        return spi().isTrackingEnabled();
     }
 
     /**
      * Access the usage statistics for the recorded uses of configuration.
      * @return usage info or default message.
      */
-    public static String getUsageInfo(){
-        return spi().getUsageInfo();
+    public static String getInfo(){
+        return spi().getInfo();
     }
 
 }

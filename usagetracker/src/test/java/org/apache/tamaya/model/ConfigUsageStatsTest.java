@@ -36,7 +36,7 @@ public class ConfigUsageStatsTest {
         ConfigUsage.enableUsageTracking(true);
         TestConfigAccessor.readConfiguration();
         Configuration config = ConfigurationProvider.getConfiguration();
-        String info = ConfigUsage.getUsageInfo();
+        String info = ConfigUsage.getInfo();
         assertFalse(info.contains("java.version"));
         assertNotNull(info);
         config = TestConfigAccessor.readConfiguration();
@@ -45,7 +45,7 @@ public class ConfigUsageStatsTest {
         TestConfigAccessor.readProperty(config, "java.version");
         TestConfigAccessor.readProperty(config, "java.version");
         config.get("java.version");
-        info = ConfigUsage.getUsageInfo();
+        info = ConfigUsage.getInfo();
         System.out.println(info);
         assertTrue(info.contains("java.version"));
         assertNotNull(info);
@@ -55,10 +55,10 @@ public class ConfigUsageStatsTest {
     @Test
     public void testUsageWhenDisabled(){
         ConfigUsage.enableUsageTracking(false);
-        ConfigUsage.clearUsageStats();
+        ConfigUsage.clearStats();
         TestConfigAccessor.readConfiguration();
         Configuration config = ConfigurationProvider.getConfiguration();
-        String info = ConfigUsage.getUsageInfo();
+        String info = ConfigUsage.getInfo();
         assertNotNull(info);
         assertFalse(info.contains("java.version"));
         config = TestConfigAccessor.readConfiguration();
@@ -67,7 +67,7 @@ public class ConfigUsageStatsTest {
         TestConfigAccessor.readProperty(config, "java.version");
         TestConfigAccessor.readProperty(config, "java.version");
         config.get("java.version");
-        info = ConfigUsage.getUsageInfo();
+        info = ConfigUsage.getInfo();
         assertFalse(info.contains("java.version"));
         assertNotNull(info);
         ConfigUsage.enableUsageTracking(false);

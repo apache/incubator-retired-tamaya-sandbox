@@ -36,24 +36,24 @@ import java.util.logging.Logger;
  * Metrics container containing access statistics for a given configuration key.
  */
 public final class UsageStat {
-    private static final Logger LOG = Logger.getLogger(UsageStat.class.getName());
+
     private static final String[] EMPTY_TRACE = new String[0];
     /**
-     * the config section.
+     * the config entry's key.
      */
     private final String key;
 
     /**
-     * Maps with usage references, key is the fully qualified package name.
+     * Maps with access references, key is the fully qualified package name.
      */
-    private final Map<String,AccessDetail> accessDetails = new ConcurrentHashMap<>();
+    private final Map<String,AccessStats> accessDetails = new ConcurrentHashMap<>();
     /**
      * The maximal length of the stacktrace stored.
      */
     private static int maxTrace = 10;
 
     /**
-     * Creates a usage metric container for a given key.
+     * Creates a usage statistics container for a given key.
      * @param key the parameter (fully qualified).
      */
     public UsageStat(String key) {
@@ -64,7 +64,7 @@ public final class UsageStat {
      * Get the maximal length of the stack traces recorded, default is 10.
      * @return the maximal length of the stack traces recorded
      */
-    public static int getMaxTraceLength(){
+    public static int getMaxTrace(){
         return UsageStat.maxTrace;
     }
 
@@ -73,12 +73,12 @@ public final class UsageStat {
      * usage. Setting it to a negative value, disabled stacktrace logging.
      * @param maxTrace the maximal recorded stack length.
      */
-    public static void setMaxTraceLength(int maxTrace){
+    public static void setMaxTrace(int maxTrace){
         UsageStat.maxTrace =maxTrace;
     }
 
     /**
-     * Get the configModel section.
+     * Get the target key of this instance.
      *
      * @return the section, never null.
      */
@@ -94,42 +94,42 @@ public final class UsageStat {
     }
 
     /**
-     * Get the detail message.
+     * Get the detail number of access points recorded.
      *
-     * @return the detail message, or null.
+     * @return the detail numer of access points, or null.
      */
     public int getReferenceCount() {
         return accessDetails.size();
     }
 
     /**
-     * Get the detail message.
+     * Get the overall number of accesses, hereby summing up the access details tracked.
      *
-     * @return the detail message, or null.
+     * @return the overall number of accesses.
      */
     public int getUsageCount() {
         int count = 0;
-        for(AccessDetail ref: accessDetails.values()){
+        for(AccessStats ref: accessDetails.values()){
             count += ref.getAccessCount();
         }
         return count;
     }
 
     /**
-     * Access a usage reference for a given class.
-     * @param type class to get usage references for, not null.
+     * Access access details for a given class.
+     * @param type class to get usage access stats for, not null.
      * @return the usage ref, if present, or null.
      */
-    public Collection<AccessDetail> getAccessDetails(Class type){
+    public Collection<AccessStats> getAccessDetails(Class type){
         return getAccessDetails(type.getName() +"\\..*");
     }
 
     /**
-     * Access a usage reference for a given package.
-     * @param pack package to get usage references for, not null.
+     * Access access details for a given package.
+     * @param pack package to get usage access stats for, not null.
      * @return the usage ref, if present, or null.
      */
-    public Collection<AccessDetail> getAccessDetails(Package pack){
+    public Collection<AccessStats> getAccessDetails(Package pack){
         return getAccessDetails(pack.getName() +"\\..*");
     }
 
@@ -138,11 +138,11 @@ public final class UsageStat {
      * matched with the tracked reference identifier, which has the form
      * {@code f.q.n.ClassName#methodName(line: 123)}.
      * @param lookupExpression the target lookup expression, not null.
-     * @return the matching references, not null.
+     * @return the matching access statistics, not null.
      */
-    public Collection<AccessDetail> getAccessDetails(String lookupExpression){
-        List<AccessDetail> result = new ArrayList<>();
-        for(AccessDetail ref:this.accessDetails.values()){
+    public Collection<AccessStats> getAccessDetails(String lookupExpression){
+        List<AccessStats> result = new ArrayList<>();
+        for(AccessStats ref:this.accessDetails.values()){
             if(ref.getAccessPoint().matches(lookupExpression)){
                 result.add(ref);
             }
@@ -152,14 +152,16 @@ public final class UsageStat {
 
     @Override
     public String toString() {
-        return "Usage Count: " + key + " -> " + getUsageCount() + '\n';
+        return "Usage Stats{\n  key=" + key + '\n'+
+                "  usageCount " + getUsageCount() + '\n' +
+                "}";
     }
 
     /**
      * Get the access details (stacktrace etc) for this reference.
      * @return return the access details, not null.
      */
-    public Collection<AccessDetail> getAccessDetails(){
+    public Collection<AccessStats> getAccessDetails(){
         return Collections.unmodifiableCollection(accessDetails.values());
     }
 
@@ -186,7 +188,7 @@ public final class UsageStat {
             List<String> trace = new ArrayList<>();
             stack:
             for (StackTraceElement ste : e.getStackTrace()) {
-                for (String ignored : ConfigUsage.getIgnoredUsagePackages()) {
+                for (String ignored : ConfigUsage.getIgnoredPackages()) {
                     if (ste.getClassName().startsWith(ignored)) {
                         continue stack;
                     }
@@ -204,19 +206,19 @@ public final class UsageStat {
                 // all ignored, take first one, with different package
                 accessPoint = "<unknown/filtered/internal>";
             }
-            AccessDetail details = getAccessDetails(accessPoint, trace.toArray(new String[trace.size()]));
+            AccessStats details = getAccessDetails(accessPoint, trace.toArray(new String[trace.size()]));
             details.trackAccess(value);
         }else{
             accessPoint = "<disabled>";
-            AccessDetail details = getAccessDetails(accessPoint, EMPTY_TRACE);
+            AccessStats details = getAccessDetails(accessPoint, EMPTY_TRACE);
             details.trackAccess(value);
         }
     }
 
-    private AccessDetail getAccessDetails(String accessPoint, String[] trace) {
-        AccessDetail details = accessDetails.get(accessPoint);
+    private AccessStats getAccessDetails(String accessPoint, String[] trace) {
+        AccessStats details = accessDetails.get(accessPoint);
         if(details==null){
-            details = new AccessDetail(key, accessPoint, trace);
+            details = new AccessStats(key, accessPoint, trace);
             accessDetails.put(accessPoint, details);
         }
         return details;
@@ -225,7 +227,7 @@ public final class UsageStat {
     /**
      * Class modelling the access details tracked per detailed item, e.g. per class in the owning package.
      */
-    public static final class AccessDetail {
+    public static final class AccessStats {
         private String key;
         private AtomicLong accessCount = new AtomicLong();
         private long lastAccessTS;
@@ -234,7 +236,7 @@ public final class UsageStat {
         private String accessPoint;
         private Map<Long, PropertyValue> trackedValues;
 
-        public AccessDetail(String key, String accessPoint, String[] stackTrace){
+        public AccessStats(String key, String accessPoint, String[] stackTrace){
             this.key = Objects.requireNonNull(key);
             this.accessPoint = Objects.requireNonNull(accessPoint);
             this.stackTrace = stackTrace.clone();
@@ -299,14 +301,14 @@ public final class UsageStat {
 
         @Override
         public String toString() {
-            return "AccessDetails{" +
+            return "AccessStats{" +
                     "key=" + key +
                     ", accessCount=" + accessCount +
                     ", lastAccessTS=" + lastAccessTS +
                     ", firstAccessTS=" + firstAccessTS +
-                    ", stackTrace=" + Arrays.toString(stackTrace) +
                     ", accessPoint='" + accessPoint + '\'' +
                     ", trackedValues=" + trackedValues +
+                    ", stackTrace=" + Arrays.toString(stackTrace) +
                     '}';
         }
     }

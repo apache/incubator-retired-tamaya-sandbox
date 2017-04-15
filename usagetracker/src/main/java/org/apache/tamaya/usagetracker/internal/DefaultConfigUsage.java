@@ -35,13 +35,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by atsticks on 29.04.16.
+ * Default implementation of the module's SPI.
  */
 public class DefaultConfigUsage implements ConfigUsageSpi {
 
     private Set<String> ignoredPackages = new HashSet<>();
 
-    private Map<String, UsageStat> usages = new ConcurrentHashMap<>();
+    private Map<String, UsageStat> stats = new ConcurrentHashMap<>();
 
     /** By default usage tracking is not enabled. */
     private boolean usageTrackingEnabled = initEnabled();
@@ -78,7 +78,7 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
     }
 
     @Override
-    public boolean isUsageTrackingEnabled(){
+    public boolean isTrackingEnabled(){
         return usageTrackingEnabled;
     }
 
@@ -88,18 +88,18 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
     }
 
     @Override
-    public void addIgnoredUsagePackages(String... packageName) {
+    public void addIgnoredPackages(String... packageName) {
 
     }
 
     @Override
-    public UsageStat getUsage(String key) {
-        return this.usages.get(key);
+    public UsageStat getSinglePropertyStats(String key) {
+        return this.stats.get(key);
     }
 
     @Override
-    public UsageStat getUsageAllProperties() {
-        return this.usages.get("<<all>>");
+    public UsageStat getAllPropertiesStats() {
+        return this.stats.get("<<all>>");
     }
 
     /**
@@ -107,25 +107,25 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
      * @return the recorded usge references, never null.
      */
     @Override
-    public Collection<UsageStat> getUsages() {
-        return usages.values();
+    public Collection<UsageStat> getUsageStats() {
+        return stats.values();
     }
 
     @Override
-    public void trackAllPropertiesAccess(ConfigurationContext context){
-        trackSingleKeyAccess(PropertyValue.of("<<all>>","<not stored>","-"), context);
+    public void recordAllPropertiesAccess(ConfigurationContext context){
+        recordSingleKeyAccess(PropertyValue.of("<<all>>","<not stored>","-"), context);
     }
 
     @Override
-    public void trackSingleKeyAccess(PropertyValue value, ConfigurationContext context){
+    public void recordSingleKeyAccess(PropertyValue value, ConfigurationContext context){
         // Ignore meta-entries
-        if(!isUsageTrackingEnabled()){
+        if(!isTrackingEnabled()){
             return;
         }
-        UsageStat usage = this.usages.get(value.getKey());
+        UsageStat usage = this.stats.get(value.getKey());
         if(usage==null){
             usage = new UsageStat(value.getKey());
-            this.usages.put(value.getKey(), usage);
+            this.stats.put(value.getKey(), usage);
         }
         usage.trackUsage(value);
     }
@@ -135,12 +135,12 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
      * Access the usage statistics for the recorded uses of configuration.
      */
     @Override
-    public String getUsageInfo(){
+    public String getInfo(){
         StringBuilder b = new StringBuilder();
         b.append("Apache Tamaya Configuration Usage Metrics\n");
         b.append("=========================================\n");
         b.append("DATE: ").append(new Date()).append("\n\n");
-        List<UsageStat> usages = new ArrayList<>(getUsages());
+        List<UsageStat> usages = new ArrayList<>(getUsageStats());
         Collections.sort(usages, new Comparator<UsageStat>() {
             @Override
             public int compare(UsageStat k1, UsageStat k2) {
@@ -152,7 +152,7 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
             b.append(usageCount);
             b.append("       ".substring(0, 7-usageCount.length()));
             b.append(usage.getKey()).append(":\n");
-            for(UsageStat.AccessDetail details: usage.getAccessDetails()) {
+            for(UsageStat.AccessStats details: usage.getAccessDetails()) {
                 String accessCount = String.valueOf(details.getAccessCount());
                     b.append("  - ").append(accessCount);
                     b.append("      ".substring(0, 6-usageCount.length()));
@@ -171,8 +171,8 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
     }
 
     @Override
-    public void clearUsageStats() {
-        this.usages.clear();
+    public void clearStats() {
+        this.stats.clear();
     }
 
 }

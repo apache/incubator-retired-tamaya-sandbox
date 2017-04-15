@@ -41,7 +41,7 @@ public interface ConfigUsageSpi {
      * Allows to check if usage tracking is enabled (should be disbled by default).
      * @return true, if usage tracking is enabled.
      */
-    boolean isUsageTrackingEnabled();
+    boolean isTrackingEnabled();
 
     /**
      * Get the list of packages, which are not evaluated for tracking configuration access and usage statistics.
@@ -53,7 +53,7 @@ public interface ConfigUsageSpi {
      * Adds the given packageNames to the list of packages to be ignored when collecting usage data.
      * @param packageName the package names to be added, not null.
      */
-    void addIgnoredUsagePackages(String... packageName);
+    void addIgnoredPackages(String... packageName);
 
     /**
      * Access the usage statistics for a given key. If usage stats collection is not
@@ -61,27 +61,27 @@ public interface ConfigUsageSpi {
      * @param key the fully qualified configuration key, not null.
      * @return the stats collected, or null.
      */
-    UsageStat getUsage(String key);
+    UsageStat getSinglePropertyStats(String key);
 
     /**
      * Access the usage statistics for accessing {@link org.apache.tamaya.Configuration#getProperties()}.
      * If usage stats collection is not activated (default), this method returns null.
      * @return the stats collected, or null.
      */
-    UsageStat getUsageAllProperties();
+    UsageStat getAllPropertiesStats();
 
     /**
      * Get the recorded usage references of configuration.
      * @return the recorded usge references, never null.
      */
-    Collection<UsageStat> getUsages();
+    Collection<UsageStat> getUsageStats();
 
     /**
      * Track the access of {@code Configuration#getProperties()} for
      * usage statistics.
      * @param context the corresponding context.
      */
-    void trackAllPropertiesAccess(ConfigurationContext context);
+    void recordAllPropertiesAccess(ConfigurationContext context);
 
     /**
      * Track the access of {@code Configuration#get(String)} for
@@ -89,16 +89,16 @@ public interface ConfigUsageSpi {
      * @param context the corresponding context.
      * @param value value to track for
      */
-    void trackSingleKeyAccess(PropertyValue value, ConfigurationContext context);
+    void recordSingleKeyAccess(PropertyValue value, ConfigurationContext context);
 
     /**
      * Access the usage statistics for the recorded uses of configuration.
      * @return usage statistics info
      */
-    String getUsageInfo();
+    String getInfo();
 
     /**
      * Clears all collected usage statistics.
      */
-    void clearUsageStats();
+    void clearStats();
 }
