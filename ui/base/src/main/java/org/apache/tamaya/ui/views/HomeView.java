@@ -20,55 +20,17 @@ package org.apache.tamaya.ui.views;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Label;
-import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.ui.CurrentUser;
 import org.apache.tamaya.ui.UIConstants;
-import org.apache.tamaya.ui.ViewProvider;
-import org.apache.tamaya.ui.components.VerticalSpacedLayout;
-import org.apache.tamaya.ui.services.MessageProvider;
+import org.apache.tamaya.ui.internal.VerticalSpacedLayout;
 
-import javax.annotation.Priority;
 
 /**
  * Home view containing a title and a description, used as default entry point of the UI after login.
  */
 public class HomeView extends VerticalSpacedLayout implements View {
-
-    /**
-     * Provider to bew registered providing this view to the UI module.
-     */
-    @Priority(0)
-    public static final class Provider implements ViewProvider{
-
-        @Override
-        public ViewLifecycle getLifecycle() {
-            return ViewLifecycle.LAZY;
-        }
-
-        @Override
-        public String getName() {
-            return "view.home.name";
-        }
-
-        @Override
-        public String getUrlPattern() {
-            return "/home";
-        }
-
-        @Override
-        public String getDisplayName() {
-            return ServiceContextManager.getServiceContext().getService(MessageProvider.class)
-                    .getMessage(getName());
-        }
-
-        @Override
-        public View createView(Object... params) {
-            return new HomeView();
-        }
-
-    }
 
     /**
      * Constructor.
@@ -79,12 +41,12 @@ public class HomeView extends VerticalSpacedLayout implements View {
                 "<b>Apache Tamaya</b> is an API and extendable framework for accessing and managing configuration.<br/> \n" +
                         "Please check the project's home page <a href='http://tamaya.incubator.apache.org'>http://tamaya.incubator.apache.org</a>.",
                 ContentMode.HTML);
-
         addComponents(caption, description);
-
         caption.addStyleName(UIConstants.LABEL_HUGE);
         description.addStyleName(UIConstants.LABEL_LARGE);
-
+        setHeight("100%");
+        setWidth("100%");
+        setSizeFull();
     }
 
     @Override

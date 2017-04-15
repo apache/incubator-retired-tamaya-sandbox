@@ -18,27 +18,82 @@
  */
 package org.apache.tamaya.ui;
 
+import com.google.common.eventbus.Subscribe;
+import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Title;
+import com.vaadin.server.Page;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
 import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.ui.event.LogoutEvent;
+import org.apache.tamaya.ui.event.NavigationEvent;
+import org.apache.tamaya.ui.views.login.LoginEvent;
+import org.apache.tamaya.ui.views.login.LoginView;
 
 import java.io.File;
 import java.util.logging.Logger;
 
 /**
- * Tamaya UI Main class.
+ * This UI is the application entry point. A UI may either represent a browser window
+ * (or tab) or some part of a html page where a Vaadin application is embedded.
+ * <p>
+ * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
+ * overridden to add component to the user interface and initialize non-component functionality.
  */
-public class TamayaUI {
+@Theme("valo")
+@Title("Tamaya")
+public class TamayaUI extends UI {
 
     private static final Logger LOG = Logger.getLogger(TamayaUI.class.getName());
 
     /**
      * Not an instantiable class.
      */
-    private TamayaUI(){}
+    public TamayaUI(){
+        super(new Panel());
+        super.setPollInterval(2000);
+    }
+
+    @Override
+    protected void init(VaadinRequest vaadinRequest) {
+        setupEventBus();
+        if (CurrentUser.isLoggedIn()) {
+            setContent(new ApplicationLayout(this));
+        } else {
+            setContent(new LoginView());
+        }
+    }
+
+    @Subscribe
+    public void userLoggedIn(
+            LoginEvent event) {
+        CurrentUser.set(event.getUser());
+        setContent(new ApplicationLayout(this));
+    }
+
+    @Subscribe
+    public void navigateTo(NavigationEvent evt) {
+        if(getNavigator()==null){
+            return;
+        }
+        if(evt.getViewName().isEmpty()){
+            getNavigator().navigateTo("/home");
+
+        }else {
+            getNavigator().navigateTo(evt.getViewName());
+        }
+    }
+
+    public static TamayaUI getCurrent() {
+        return (TamayaUI) UI.getCurrent();
+    }
 
     /**
      * The main entry point, use configuration as follows:
@@ -64,7 +119,7 @@ public class TamayaUI {
         Wrapper wrapper = tomcat.addServlet(context, "vadiin-servlet",
                 VaadinServlet.class.getName());
         wrapper.addInitParameter("ui",
-                VadiinApp.class.getName());
+                TamayaUI.class.getName());
         wrapper.addInitParameter("productionMode",config.getOrDefault("tamaya.server.productionMode", String.class,
                 "false"));
         wrapper.addInitParameter("asyncSupported", "true");
@@ -74,4 +129,16 @@ public class TamayaUI {
         tomcat.getServer().await();
     }
 
+    @Subscribe
+    public void logout(LogoutEvent logoutEvent) {
+        // Don't invalidate the underlying HTTP session if you are using it for something else
+        VaadinSession.getCurrent().getSession().invalidate();
+        VaadinSession.getCurrent().close();
+        Page.getCurrent().reload();
+
+    }
+
+    private void setupEventBus() {
+        org.apache.tamaya.ui.event.EventBus.register(this);
+    }
 }

@@ -33,8 +33,8 @@ import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.ui.UIConstants;
 import org.apache.tamaya.ui.User;
 import org.apache.tamaya.ui.event.EventBus;
-import org.apache.tamaya.ui.services.MessageProvider;
-import org.apache.tamaya.ui.services.UserService;
+import org.apache.tamaya.ui.spi.MessageProvider;
+import org.apache.tamaya.ui.spi.UserService;
 
 /**
  * Login dialog centerd on the screen.

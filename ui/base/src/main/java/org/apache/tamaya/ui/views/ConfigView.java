@@ -18,26 +18,16 @@
  */
 package org.apache.tamaya.ui.views;
 
-import com.vaadin.data.Property;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Tree;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.*;
+import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.functions.ConfigurationFunctions;
+import org.apache.tamaya.functions.PropertyMatcher;
 import org.apache.tamaya.ui.UIConstants;
-import org.apache.tamaya.ui.ViewProvider;
-import org.apache.tamaya.ui.components.VerticalSpacedLayout;
-import org.apache.tamaya.ui.services.MessageProvider;
+import org.apache.tamaya.ui.internal.VerticalSpacedLayout;
 
 import javax.annotation.Priority;
 import java.util.Locale;
@@ -45,98 +35,38 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * View for evaluating the current convifugration tree.
+ * View for evaluating the current convifugration configArea.
  */
 @Priority(10)
 public class ConfigView extends VerticalSpacedLayout implements View {
 
-    /**
-     * Provider to register this view.
-     */
-    @Priority(10)
-    public static final class Provider implements ViewProvider{
-
-        @Override
-        public ViewLifecycle getLifecycle() {
-            return ViewLifecycle.CREATE;
-        }
-
-        @Override
-        public String getName() {
-            return "view.config.name";
-        }
-
-        @Override
-        public String getUrlPattern() {
-            return "/config";
-        }
-
-        @Override
-        public String getDisplayName() {
-            return ServiceContextManager.getServiceContext().getService(MessageProvider.class)
-                    .getMessage("view.config.name");
-        }
-
-        @Override
-        public View createView(Object... params){
-            return new ConfigView();
-        }
-    }
-
     private TextField keyFilter = new TextField("Key filter");
     private TextField valueFilter = new TextField("Value filter");
-    private CheckBox showMetaEntries = new CheckBox("Show Metadata", false);
-    private Tree tree = new Tree("Current Configuration");
+    private TextArea configArea = new TextArea("Current Configuration");
 
     public ConfigView() {
         Label caption = new Label("Raw Configuration");
         Label description = new Label(
-                "This view shows the overall <b>raw</b> configuration tree. Dependening on your access rights you" +
+                "This view shows the overall <b>raw</b> configuration configArea. Dependening on your access rights you" +
                         "may see partial or masked data. Similarly configuration can be <i>read-only</i> or <i>mutable</i>.",
                 ContentMode.HTML);
-
         TabSheet tabPane = new TabSheet();
-        VerticalLayout configLayout = new VerticalLayout();
+        tabPane.setHeight("100%");
+        tabPane.setWidth("100%");
+        tabPane.addTab(createConfigTab(), "Configuration");
+        tabPane.addTab(createEnvTab(), "Environment Properties");
+        tabPane.addTab(createSysPropsTab(), "System Properties");
+        tabPane.addTab(createRuntimeTab(), "Runtime Properties");
+        addComponents(caption, description, tabPane);
+        caption.addStyleName(UIConstants.LABEL_HUGE);
+        description.addStyleName(UIConstants.LABEL_LARGE);
+    }
 
-        HorizontalLayout filters = new HorizontalLayout();
-
-        Button filterButton = new Button("Filter", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                fillTree();
-            }
-        });
-        filters.setDefaultComponentAlignment(Alignment.BOTTOM_LEFT);
-        filters.addComponents(keyFilter, valueFilter, filterButton, showMetaEntries);
-        filters.setSpacing(true);
-
-        fillTree();
-        configLayout.addComponents(filters, tree);
-        tabPane.addTab(configLayout, "Configuration");
-        TextArea envProps = new TextArea();
-        StringBuilder b = new StringBuilder();
-        envProps.setHeight("100%");
-        envProps.setWidth("100%");
-        envProps.setSizeFull();
-        envProps.setRows(System.getenv().size());
-        for(Map.Entry<String,String> en:new TreeMap<>(System.getenv()).entrySet()){
-            b.append(en.getKey()).append("=").append(en.getValue()).append('\n');
-        }
-        envProps.setValue(b.toString());
-        envProps.setReadOnly(true);
-        tabPane.addTab(envProps, "Environment Properties");
-        TextArea sysProps = new TextArea();
-        sysProps.setSizeFull();
-        sysProps.setRows(System.getProperties().size());
-        b.setLength(0);
-        for(Map.Entry<Object,Object> en:new TreeMap<>(System.getProperties()).entrySet()){
-            b.append(en.getKey()).append("=").append(en.getValue()).append('\n');
-        }
-        sysProps.setValue(b.toString());
-        sysProps.setReadOnly(true);
-        tabPane.addTab(sysProps, "System Properties");
+    private Component createRuntimeTab() {
+        VerticalLayout tabLayout = new VerticalLayout();
         TextArea runtimeProps = new TextArea();
-        runtimeProps.setRows(5);
+        runtimeProps.setRows(25);
+        StringBuilder b = new StringBuilder();
         b.setLength(0);
         b.append("Available Processors : ").append(Runtime.getRuntime().availableProcessors()).append('\n');
         b.append("Free Memory          : ").append(Runtime.getRuntime().freeMemory()).append('\n');
@@ -145,85 +75,100 @@ public class ConfigView extends VerticalSpacedLayout implements View {
         b.append("Default Locale       : ").append(Locale.getDefault()).append('\n');
         runtimeProps.setValue(b.toString());
         runtimeProps.setReadOnly(true);
-        tabPane.addTab(runtimeProps, "Runtime Properties");
-        runtimeProps.setSizeFull();
-        addComponents(caption, description, tabPane);
-        caption.addStyleName(UIConstants.LABEL_HUGE);
-        description.addStyleName(UIConstants.LABEL_LARGE);
-        showMetaEntries.addValueChangeListener(new Property.ValueChangeListener() {
+        runtimeProps.setHeight("100%");
+        runtimeProps.setWidth("100%");
+        tabLayout.addComponents(runtimeProps);
+        tabLayout.setHeight("100%");
+        tabLayout.setWidth("100%");
+        return tabLayout;
+    }
+
+    private Component createSysPropsTab() {
+        VerticalLayout tabLayout = new VerticalLayout();
+        TextArea sysProps = new TextArea();
+        sysProps.setRows(25);
+        StringBuilder b = new StringBuilder();
+        for(Map.Entry<Object,Object> en:new TreeMap<>(System.getProperties()).entrySet()){
+            b.append(en.getKey()).append("=").append(en.getValue()).append('\n');
+        }
+        sysProps.setValue(b.toString());
+        sysProps.setReadOnly(true);
+        sysProps.setHeight("100%");
+        sysProps.setWidth("100%");
+        tabLayout.addComponents(sysProps);
+        tabLayout.setHeight("100%");
+        tabLayout.setWidth("100%");
+        return tabLayout;
+    }
+
+    private Component createEnvTab() {
+        VerticalLayout tabLayout = new VerticalLayout();
+        TextArea envProps = new TextArea();
+        StringBuilder b = new StringBuilder();
+        envProps.setRows(25);
+        for(Map.Entry<String,String> en:new TreeMap<>(System.getenv()).entrySet()){
+            b.append(en.getKey()).append("=").append(en.getValue()).append('\n');
+        }
+        envProps.setValue(b.toString());
+        envProps.setReadOnly(true);
+        envProps.setHeight("100%");
+        envProps.setWidth("100%");
+        tabLayout.addComponents(envProps);
+        tabLayout.setHeight("100%");
+        tabLayout.setWidth("100%");
+        return tabLayout;
+    }
+
+    private Component createConfigTab() {
+        VerticalLayout tabLayout = new VerticalLayout();
+        Component filters = createFilters();
+        configArea.setWordWrap(false);
+        configArea.setReadOnly(true);
+        configArea.setHeight("100%");
+        configArea.setWidth("100%");
+        configArea.setRows(20);
+        fillTree();
+        tabLayout.addComponents(filters, configArea);
+        tabLayout.setHeight("100%");
+        tabLayout.setWidth("100%");
+        return tabLayout;
+    }
+
+    private Component createFilters() {
+        HorizontalLayout filters = new HorizontalLayout();
+        Button filterButton = new Button("Filter", new Button.ClickListener() {
             @Override
-            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+            public void buttonClick(Button.ClickEvent clickEvent) {
                 fillTree();
             }
         });
+        filters.setDefaultComponentAlignment(Alignment.BOTTOM_LEFT);
+        filters.addComponents(keyFilter, valueFilter, filterButton);
+        filters.setSpacing(true);
+        return filters;
     }
 
     private void fillTree() {
-        String keyFilterExp = this.keyFilter.getValue();
-        if(keyFilterExp.isEmpty()){
-            keyFilterExp = null;
-        }
-        String valueFilterExp = this.valueFilter.getValue();
-        if(valueFilterExp.isEmpty()){
-            valueFilterExp = null;
-        }
-        tree.removeAllItems();
-        boolean showMetadata = showMetaEntries.getValue();
-        for(Map.Entry<String,String> entry: ConfigurationProvider.getConfiguration().getProperties().entrySet()){
-            String key = entry.getKey();
-            if(keyFilterExp!=null && !key.matches(keyFilterExp)){
-                continue;
-            }
-            if(valueFilterExp!=null && !entry.getValue().matches(valueFilterExp)){
-                continue;
-            }
-            if(!showMetadata && entry.getKey().startsWith("_")){
-                continue;
-            }
-            tree.addItem(key);
-            tree.setItemCaption(key, getCaption(key, entry.getValue()));
-            tree.setChildrenAllowed(key, false);
-            String parent = null;
-            int start = 0;
-            int index = key.indexOf('.', start);
-            while(index>0){
-                String subItem = key.substring(0,index);
-                String caption = key.substring(start, index);
-                tree.addItem(subItem);
-                tree.setItemCaption(subItem, caption);
-                if(parent!=null){
-                    tree.setParent(subItem, parent);
+        final String keyFilterExp = this.keyFilter.getValue();
+        final String valueFilterExp = this.valueFilter.getValue();
+        Configuration config = ConfigurationProvider.getConfiguration()
+                .with(ConfigurationFunctions.filter(new PropertyMatcher() {
+            @Override
+            public boolean test(String key, String value) {
+                if(!keyFilterExp.isEmpty() && !key.matches(keyFilterExp)){
+                    return false;
                 }
-                parent = subItem;
-                start = index+1;
-                index = key.indexOf('.', start);
-            }
-            String lastItem = key.substring(start);
-            if(!lastItem.equals(key)){
-                if(parent!=null){
-                    tree.setParent(key, parent);
-                }else{
-                    // should not happen
+                if(!valueFilterExp.isEmpty() && !value.matches(valueFilterExp)){
+                    return false;
                 }
-            }else{ // singl root entry
-                if(parent!=null) {
-                    tree.setParent(key, parent);
-                }
+                return true;
             }
-        }
-    }
-
-    private String getCaption(String key, String value) {
-        int index = key.lastIndexOf('.');
-        if(index<0){
-            return key + " = " + value;
-        }else{
-            return key.substring(index+1) + " = " + value;
-        }
+        }));
+        configArea.setValue(config.query(ConfigurationFunctions.textInfo()));
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-
+        fillTree();
     }
 }

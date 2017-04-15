@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.ui.components;
+package org.apache.tamaya.ui.internal;
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -28,5 +29,6 @@ public class VerticalSpacedLayout extends VerticalLayout {
     public VerticalSpacedLayout() {
         setMargin(true);
         setSpacing(true);
+        setDefaultComponentAlignment(Alignment.TOP_LEFT);
     }
 }

@@ -33,6 +33,10 @@ under the License.
     <artifactId>tamaya-ui-base_alpha</artifactId>
     <name>Apache Tamaya Modules - UI (Base)</name>
 
+    <properties>
+        <mainClass>org.apache.tamaya.ui.VadiinApp</mainClass>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -150,6 +154,11 @@ under the License.
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>vaadin-prereleases</id>
+            <name>Vaadin Pre-releases</name>
+            <url>https://maven.vaadin.com/vaadin-prereleases</url>
         </repository>
     </repositories>
 

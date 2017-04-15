@@ -21,7 +21,7 @@ package org.apache.tamaya.ui.internal;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
 import org.apache.tamaya.ui.User;
-import org.apache.tamaya.ui.services.UserService;
+import org.apache.tamaya.ui.spi.UserService;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

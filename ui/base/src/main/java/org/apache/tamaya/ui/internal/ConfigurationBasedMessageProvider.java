@@ -19,9 +19,11 @@
 package org.apache.tamaya.ui.internal;
 
 import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.core.propertysource.SimplePropertySource;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
+import org.apache.tamaya.spisupport.BasePropertySource;
 import org.apache.tamaya.spisupport.DefaultConfiguration;
-import org.apache.tamaya.ui.services.MessageProvider;
+import org.apache.tamaya.ui.spi.MessageProvider;
 
 import java.io.IOException;
 import java.net.URL;
@@ -95,7 +97,7 @@ public final class ConfigurationBasedMessageProvider implements MessageProvider{
                 Enumeration<URL> urls = getClass().getClassLoader().getResources(bundleID+"."+format);
                 while(urls.hasMoreElements()){
                     URL url = urls.nextElement();
-                    ctxBuilder.addPropertySources(new URLPropertySource(url));
+                    ctxBuilder.addPropertySources(new SimplePropertySource(url));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

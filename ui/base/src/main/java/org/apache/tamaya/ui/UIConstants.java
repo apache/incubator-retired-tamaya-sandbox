@@ -33,4 +33,6 @@ public class UIConstants extends ValoTheme {
 
     public static final String BUTTON_LOGOUT = "logout";
     public static final String BUTTON_SETTINGS = BUTTON_TINY;
+
+    public static final String FIXED_FONT = "font-face: fixed;";
 }

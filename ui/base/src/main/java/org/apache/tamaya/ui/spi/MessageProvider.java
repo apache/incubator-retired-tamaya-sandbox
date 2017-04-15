@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.ui.services;
+package org.apache.tamaya.ui.spi;
 
 import java.util.Locale;
 

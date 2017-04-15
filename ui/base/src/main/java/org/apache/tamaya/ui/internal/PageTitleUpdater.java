@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.ui.components;
+package org.apache.tamaya.ui.internal;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import org.apache.tamaya.spi.ServiceContextManager;
-import org.apache.tamaya.ui.services.MessageProvider;
+import org.apache.tamaya.ui.spi.MessageProvider;
 
 /**
  * Listener that updates the page title when a new view is shown.

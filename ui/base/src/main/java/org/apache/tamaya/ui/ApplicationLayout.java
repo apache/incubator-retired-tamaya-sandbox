@@ -18,11 +18,18 @@
  */
 package org.apache.tamaya.ui;
 
+import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
-import org.apache.tamaya.ui.components.PageTitleUpdater;
+import org.apache.tamaya.spi.ServiceContext;
+import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.ui.spi.MessageProvider;
+import org.apache.tamaya.ui.views.ConfigView;
 import org.apache.tamaya.ui.views.ErrorView;
+import org.apache.tamaya.ui.views.HomeView;
+import org.apache.tamaya.ui.views.SystemView;
 
 
 /**
@@ -32,7 +39,7 @@ public class ApplicationLayout extends HorizontalLayout {
 
     private NavBar navBar;
     private Panel content;
-    private NavigationBar navigator;
+    private Navigator navigator;
 
     public ApplicationLayout(UI ui) {
         addStyleName(UIConstants.MAIN_LAYOUT);
@@ -41,7 +48,7 @@ public class ApplicationLayout extends HorizontalLayout {
         setupNavigator(ui);
     }
 
-    public NavigationBar getNavigationBar(){
+    public Navigator getNavigator(){
         return navigator;
     }
 
@@ -56,16 +63,32 @@ public class ApplicationLayout extends HorizontalLayout {
         setExpandRatio(content, 1);
     }
 
+    public void addView(String uri, Class<? extends View> viewClass, String viewName){
+        navigator.addView(uri, viewClass);
+        navBar.addViewButton(uri, viewName);
+    }
+
 
     private void setupNavigator(UI ui) {
-        navigator = new NavigationBar(ui, content, navBar);
-
+        navigator = new Navigator(ui, content);
+        navigator.setErrorView(ErrorView.class);
         // Add view change listeners so we can do things like select the correct menu item and update the page title
         navigator.addViewChangeListener(navBar);
-        navigator.addViewChangeListener(new PageTitleUpdater());
-
+//        navigator.addViewChangeListener(new PageTitleUpdater());
+        addView("/home", HomeView.class, getViewName(HomeView.class));
+        addView("/system", SystemView.class, getViewName(SystemView.class));
+        addView("/config", ConfigView.class, getViewName(ConfigView.class));
         navigator.navigateTo("/home");
-        navigator.setErrorView(ErrorView.class);
+    }
+
+    private String getViewName(Class<? extends View> viewClass) {
+        MessageProvider prov = ServiceContextManager.getServiceContext()
+                .getService(MessageProvider.class);
+        String msg = null;
+        if(prov!=null){
+            msg = prov.getMessage("views."+viewClass.getSimpleName()+".name");
+        }
+        return msg;
     }
 
 

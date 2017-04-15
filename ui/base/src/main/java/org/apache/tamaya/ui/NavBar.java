@@ -20,7 +20,7 @@ package org.apache.tamaya.ui;
 
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -29,7 +29,7 @@ import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.ui.event.EventBus;
 import org.apache.tamaya.ui.event.LogoutEvent;
 import org.apache.tamaya.ui.event.NavigationEvent;
-import org.apache.tamaya.ui.services.MessageProvider;
+import org.apache.tamaya.ui.spi.MessageProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,8 +74,8 @@ public class NavBar extends VerticalLayout implements ViewChangeListener {
         Button settings = new Button("...", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                UISettingsDialog dlog = new UISettingsDialog(appLayout.getNavigationBar());
-                dlog.show();
+//                UISettingsDialog dlog = new UISettingsDialog(appLayout.getNavigationBar());
+//                dlog.show();
             }
         });
         settings.addStyleName(UIConstants.BUTTON_SETTINGS);

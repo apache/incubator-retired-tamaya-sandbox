@@ -16,6 +16,4 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-org.apache.tamaya.ui.views.HomeView$Provider
-org.apache.tamaya.ui.views.ConfigView$Provider
-org.apache.tamaya.ui.views.SystemView$Provider
+org.apache.tamaya.ui.views.TamayaGeneralSystemInfoProvider

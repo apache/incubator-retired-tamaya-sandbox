@@ -20,14 +20,15 @@ package org.apache.tamaya.ui.views;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Tree;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.ui.UIConstants;
-import org.apache.tamaya.ui.ViewProvider;
-import org.apache.tamaya.ui.components.VerticalSpacedLayout;
-import org.apache.tamaya.ui.services.MessageProvider;
+import org.apache.tamaya.ui.internal.VerticalSpacedLayout;
+import org.apache.tamaya.ui.spi.MessageProvider;
+import org.apache.tamaya.ui.spi.SystemInfoProvider;
 
 import javax.annotation.Priority;
 
@@ -37,43 +38,7 @@ import javax.annotation.Priority;
 @Priority(10000)
 public class SystemView extends VerticalSpacedLayout implements View {
 
-
-    /**
-     * Provider to register this view.
-     */
-    @Priority(20)
-    public static final class Provider implements ViewProvider{
-
-        @Override
-        public ViewLifecycle getLifecycle() {
-            return ViewLifecycle.CREATE;
-        }
-
-        @Override
-        public String getName() {
-            return "view.system.name";
-        }
-
-        @Override
-        public String getUrlPattern() {
-            return "/system";
-        }
-
-        @Override
-        public String getDisplayName() {
-            return ServiceContextManager.getServiceContext().getService(MessageProvider.class)
-                    .getMessage("view.system.name");
-        }
-
-        @Override
-        public View createView(Object... params){
-            return new SystemView();
-        }
-    }
-
-
-    private Tree configTree = new Tree(ServiceContextManager.getServiceContext().getService(MessageProvider.class)
-            .getMessage("default.label.system"));
+    private Accordion configTree = new Accordion();
 
 
     public SystemView() {
@@ -82,36 +47,32 @@ public class SystemView extends VerticalSpacedLayout implements View {
                 "This view shows the system components currently active. This information may be useful when checking if an" +
                         "configuration extension is loaded and for inspection of the configuration and property sources" +
                         "invovlved.",
-                ContentMode.HTML);
-
-        fillComponentTree();
+                ContentMode.TEXT);
+        configTree.setHeight("100%");
+        configTree.setWidth("100%");
+        fillAccordion();
 
         addComponents(caption, description, configTree);
-
         caption.addStyleName(UIConstants.LABEL_HUGE);
-        description.addStyleName(UIConstants.LABEL_LARGE);
-
     }
 
-    private void fillComponentTree() {
-        configTree.removeAllItems();
+    private void fillAccordion() {
+        configTree.removeAllComponents();
         for(SystemInfoProvider infoProvider:ServiceContextManager.getServiceContext()
                 .getServices(SystemInfoProvider.class)){
-            infoProvider.provideSystemInfo(configTree);
+            infoProvider.addSystemInfo(configTree);
         }
     }
 
-    private String getCaption(String key, String value) {
-        int index = key.lastIndexOf('.');
-        if(index<0){
-            return key + " = " + value;
-        }else{
-            return key.substring(index+1) + " = " + value;
+    private void updateAccordion() {
+        for(SystemInfoProvider infoProvider:ServiceContextManager.getServiceContext()
+                .getServices(SystemInfoProvider.class)){
+            infoProvider.updateSystemInfo(configTree);
         }
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-
+        fillAccordion();
     }
 }
