@@ -754,8 +754,9 @@ under the License.
         <module>osgi</module>
         <module>management</module>
         <module>metamodel</module>
+        <!-- Requires JAVA 8: <module>microprofile</module>-->
         <module>uom</module>
-        <!--<module>vertx</module>-->
+        <!-- Requires JAVA 8: <module>vertx</module>-->
     </modules>
 
     <profiles>
