@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -41,8 +42,17 @@ public final class ComponentConfigurator<T> {
     public static void configure(Object instance, Node node) {
         NodeList entryNodes = node.getChildNodes();
         Map<String,String> params = new HashMap<>();
+        for(int c=0;c<node.getAttributes().getLength();c++){
+            Node attr = node.getAttributes().item(c);
+            String key = attr.getNodeName();
+            String value = attr.getNodeValue();
+            params.put(key, value);
+        }
         for(int c=0;c<entryNodes.getLength();c++) {
             Node filterNode = entryNodes.item(c);
+            if(filterNode.getNodeType()!=Node.ELEMENT_NODE){
+                continue;
+            }
             if ("param".equals(filterNode.getNodeName())) {
                 String key = filterNode.getAttributes().getNamedItem("name").getNodeValue();
                 String value = filterNode.getTextContent();
@@ -71,8 +81,15 @@ public final class ComponentConfigurator<T> {
     }
 
     public static Map<String, String> extractParameters(Node node) {
-        NodeList entryNodes = node.getChildNodes();
         Map<String,String> params = new HashMap<>();
+        NamedNodeMap attributes = node.getAttributes();
+        for(int c=0;c<attributes.getLength();c++) {
+            Node pn = attributes.item(c);
+            String key = pn.getNodeName();
+            String value = pn.getNodeValue();
+            params.put(key, value);
+        }
+        NodeList entryNodes = node.getChildNodes();
         for(int c=0;c<entryNodes.getLength();c++) {
             Node filterNode = entryNodes.item(c);
             if ("param".equals(filterNode.getNodeName())) {

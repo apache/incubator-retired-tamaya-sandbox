@@ -41,15 +41,13 @@ public class ResourcePropertySourceFactory extends URLPropertySourceFactory{
 
     @Override
     public String getName() {
-        return "classpath";
+        return "resource";
     }
 
 
     protected String example() {
-        return "<source type=\""+getName()+"\">\n" +
-                "  <param name=\"location\">/META-INF/config.xml</param>\n" +
-                "  <param name=\"formats\">xml-properties</param>\n" +
-                "</source>\n";
+        return "<resource location=\"META-INF/config.xml\"\n" +
+                "     formats=\"xml-properties\")>\n";
     }
 
     protected URL createResource(String location) {

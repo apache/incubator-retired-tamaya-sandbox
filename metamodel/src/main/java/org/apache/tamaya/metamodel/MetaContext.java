@@ -18,31 +18,22 @@
  */
 package org.apache.tamaya.metamodel;
 
-import org.apache.tamaya.functions.Supplier;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Class managing the configuration system's shared context. This
+ * Class managing a configuration system's meta-context. This
  * context is used by the configuration system to evaluate the
  * right properties, e.g. by defining the current stage or labels
- * that apply to the current configuration. Hereby context are
+ * that apply to the current configuration. Hereby contexts are
  * <ul>
- *     <li>identified by unique names</li>
- *     <li>stackable into a context hierarchy, see {@link #combineWith(MetaContext...)}</li>
- *     <li>optionally be valid only in some contexts or for a limited time, see {@link #isValid()},
- *     {@link #getInstance(String, Supplier)}</li>
+ *     <li>stackable into a context hierarchy, see {@link #combineWith(MetaContext, MetaContext...)}</li>
  *     <li>providing key/values only valid for a certain time (assigned a TTL), see {@link #setProperty(String, String, int, TimeUnit)},
  *     {@link #setProperties(Map, long, TimeUnit)}</li>
  * </ul>
- * Additionally there is special support for thread related contexts, see {@link #getThreadInstance(boolean)}.
- * Finally there is also one special globally shared context instance, see {@link #getCurrentInstance(boolean)}.
+ * Additionally there is special support for thread related contexts, see {@link #getThreadInstance()}.
+ * Finally there is also one special globally shared context instance, see {@link #getInstance()}.
  */
 public final class MetaContext {
 
@@ -52,54 +43,32 @@ public final class MetaContext {
             return new MetaContext();
         }
     };
-    public static final String DEFAULT_CONTEXT_NAME = "<DEFAULT>";
-
-    private String id;
-
-    private Supplier<Boolean> validSupplier;
 
     private final Map<String,Value> properties = new ConcurrentHashMap<>();
 
-    private static final Map<String,MetaContext> CONTEXTS = new WeakHashMap<>();
+    private static final MetaContext globalContext = new MetaContext();
 
-    /**
-     * Access a context by name. Contexts are managed as weak references in this class. If no
-     * such context exists, a new instance is created.
-     * @param contextName the context name, not null.
-     * @return the context instance, never null.
-     */
-    public static MetaContext getInstance(String contextName) {
-        return getInstance(contextName, null);
+    /** The unique id of this context. */
+    private MetaContext(){
+        setProperty("_id", UUID.randomUUID().toString());
     }
 
     /**
-     * Access the default context. Contexts are managed as weak references in this class. If no
-     * such context exists, a new instance is created.
-     * @return the context instance, never null.
+     * Get the context's id.
+     * @return
      */
-    public static MetaContext getDefaultInstance(){
-        return getInstance(DEFAULT_CONTEXT_NAME);
+    public String getId() {
+        return getProperty("_id", "N/A");
     }
 
+
     /**
-     * Access a context by name. Contexts are managed as weak references in this class. If no
-     * such valid context exists, a new instance is created, using the given {@code validSupplier}.
-     * @param contextName the context name, not null.
+     * Access the global context. There might be other contexts used in the system, which also
+     * may delegate to the global context.
      * @return the context instance, never null.
      */
-    public static MetaContext getInstance(String contextName, Supplier<Boolean> validSupplier){
-        synchronized(CONTEXTS){
-            MetaContext ctx = CONTEXTS.get(contextName);
-            if(ctx!=null && ctx.isValid()){
-                return ctx;
-            }
-            ctx = new MetaContext();
-            ctx.id = Objects.requireNonNull(contextName);
-            ctx.validSupplier = validSupplier;
-            CONTEXTS.put(contextName, ctx);
-            return ctx;
-        }
-
+    public static MetaContext getInstance(){
+        return globalContext;
     }
 
     /**
@@ -109,7 +78,7 @@ public final class MetaContext {
      * @return the corresponding context, never null.
      */
     public static MetaContext getThreadInstance(boolean reinit){
-        MetaContext threadContext =THREAD_CONTEXT.get();
+        MetaContext threadContext = THREAD_CONTEXT.get();
         if(reinit){
             threadContext.properties.clear();
         }
@@ -121,44 +90,21 @@ public final class MetaContext {
      * context (overriding).
      * @return the corresponding context, never null.
      */
-    public MetaContext getCurrentInstance(){
-        return getCurrentInstance(false);
-    }
-
-    /**
-     * Access the current context, which actually is the current context, combined with the thread based
-     * context (overriding).
-     * @param reinit if true, clear's the thread's meta context.
-     * @return the corresponding context, never null.
-     */
-    public MetaContext getCurrentInstance(boolean reinit){
-        return this.combineWith(getThreadInstance(reinit));
-    }
-
-    /**
-     * Method to evaluate if a context is valid. This basically depends on the
-     * {@code validSupplier}, if any is set. If no supplier is present the context is valid.
-     *
-     * @return true, if this context is valid.
-     */
-    public boolean isValid(){
-        return this.validSupplier == null || validSupplier.get();
+    public MetaContext getThreadInstance(){
+        return getThreadInstance(false);
     }
 
 
     /**
-     * Combine this context with the other contexts given, hereby only contexts are included
-     * which are {@code valid}, see {@link #isValid()}.
+     * Combine this context with the other contexts given.
      * @param contexts the context to merge with this context.
      * @return the newly created Context.
      */
-    public MetaContext combineWith(MetaContext... contexts) {
+    public static MetaContext combineWith(MetaContext baseContext, MetaContext... contexts) {
         MetaContext newContext = new MetaContext();
-        newContext.properties.putAll(this.properties);
+        newContext.properties.putAll(baseContext.properties);
         for(MetaContext ctx:contexts) {
-            if(ctx.isValid()) {
-                newContext.properties.putAll(ctx.properties);
-            }
+            newContext.properties.putAll(ctx.properties);
         }
         return newContext;
     }
@@ -311,8 +257,10 @@ public final class MetaContext {
 
     @Override
     public String toString() {
-        return "Context{" +
-                properties +
+        return "MetaContext{" +
+                "id=" + getId() +
+                ", properties=" + properties +
+                ", global=" + (this == MetaContext.globalContext) +
                 '}';
     }
 

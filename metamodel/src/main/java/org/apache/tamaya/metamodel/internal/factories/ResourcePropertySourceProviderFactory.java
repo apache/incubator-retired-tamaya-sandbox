@@ -41,7 +41,7 @@ public class ResourcePropertySourceProviderFactory implements ItemFactory<Proper
 
     @Override
     public String getName() {
-        return "resource";
+        return "resources";
     }
 
     @Override
@@ -97,10 +97,8 @@ public class ResourcePropertySourceProviderFactory implements ItemFactory<Proper
     }
 
     protected String example() {
-        return "<source-provider type=\""+getName()+"\">\n" +
-                "  <param name=\"location\">/META-INF/**/config.xml</param>\n" +
-                "  <param name=\"formats\">xml-properties</param>\n" +
-                "</source-provider>\n";
+        return "<resources location\"/META-INF/**/config.xml\"\n" +
+                "          formats=\"xml-properties\"\n/>";
     }
 
     protected Collection<URL> createResources(String location) {

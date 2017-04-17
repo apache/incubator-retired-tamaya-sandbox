@@ -142,6 +142,21 @@ public final class FilteredPropertySource extends BasePropertySource {
     }
 
     /**
+     * Removes the (first) given filter, if present.
+     * @param filterClass the class of the filter to remove, not null.
+     */
+    public void removePropertyFilter(Class<? extends PropertyFilter> filterClass){
+        synchronized(filters){
+            for(PropertyFilter f:filters){
+                if(f.getClass().equals(filterClass)){
+                    filters.remove(f);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
      * Access the current filters present.
      * @return a copy of the current filter list.
      */
@@ -152,13 +167,11 @@ public final class FilteredPropertySource extends BasePropertySource {
     }
 
     @Override
-    public String toString() {
+    protected String toStringValues() {
         synchronized (filters) {
-            return "FilteredPropertySource{" +
-                    "\n wrapped=" + wrapped +
-                    "\n filters=" + this.filters +
-                    "\n base=" + super.toString() +
-                    "\n}";
+            return  super.toStringValues() +
+                    "  wrapped=" + wrapped + '\n' +
+                    "  filters=" + this.filters + '\n';
         }
     }
 }

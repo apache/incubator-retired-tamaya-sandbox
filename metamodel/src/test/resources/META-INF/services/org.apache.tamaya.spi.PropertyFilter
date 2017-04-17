@@ -16,11 +16,4 @@
 #  specific language governing permissions and limitations
 #  under the License.
 #
-
-org.apache.tamaya.metamodel.internal.PropertyFilterReader
-org.apache.tamaya.metamodel.internal.PropertyConverterReader
-org.apache.tamaya.metamodel.internal.PropertySourceReader
-org.apache.tamaya.metamodel.internal.MetaContextReader
-org.apache.tamaya.metamodel.internal.CombinationPolicyReader
-org.apache.tamaya.metamodel.internal.PropertyFilterOrderingReader
-org.apache.tamaya.metamodel.internal.PropertySourceOrderingReader
+org.apache.tamaya.metamodel.ImmutableFilter

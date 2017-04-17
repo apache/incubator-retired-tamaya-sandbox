@@ -48,7 +48,7 @@ public final class PropertiesResolver implements SimpleResolver{
         if(mainParts.length==1){
             return evaluate(expression, null);
         }else{
-            return evaluate(expression, mainParts[1].trim().substring("default=".length()));
+            return evaluate(mainParts[0], mainParts[1].trim().substring("default=".length()));
         }
 
     }
@@ -59,7 +59,7 @@ public final class PropertiesResolver implements SimpleResolver{
             return null;
         }
         switch(parts[0]){
-            case "sys":
+            case "system":
                 return System.getProperty(parts[1],defaultValue);
             case "env":
                 String val = System.getenv(parts[1]);
@@ -68,13 +68,8 @@ public final class PropertiesResolver implements SimpleResolver{
                 }
                 return val;
             case "ctx":
-                if(parts.length==3){
-                    return MetaContext.getInstance(parts[1])
-                            .getProperty(parts[2], defaultValue);
-                }else{
-                    return MetaContext.getDefaultInstance()
-                            .getProperty(parts[1], defaultValue);
-                }
+                return MetaContext.getInstance()
+                        .getProperty(parts[1], defaultValue);
             default:
                 return null;
         }

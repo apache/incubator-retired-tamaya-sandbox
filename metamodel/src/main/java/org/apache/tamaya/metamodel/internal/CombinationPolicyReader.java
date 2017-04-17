@@ -49,7 +49,7 @@ public class CombinationPolicyReader implements MetaConfigurationReader{
             throw new ConfigException("Only one combination policy can be applied.");
         }
         Node node = nodeList.item(0);
-        String type = node.getAttributes().getNamedItem("type").getNodeValue();
+        String type = node.getAttributes().getNamedItem("class").getNodeValue();
         LOG.finest("Loading combination policy configured: " + type);
         ItemFactory<PropertyValueCombinationPolicy> policyFactory = ItemFactoryManager.getInstance().getFactory(PropertyValueCombinationPolicy.class, type);
         PropertyValueCombinationPolicy policy = policyFactory.create(ComponentConfigurator.extractParameters(node));

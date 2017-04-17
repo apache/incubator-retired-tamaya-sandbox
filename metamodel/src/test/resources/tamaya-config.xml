@@ -19,77 +19,53 @@
 <configuration>
     <!-- Context is evaluated first. -->
     <context>
-        <context-entry name="stage">${properties:system:STAGE?default=DEV}</context-entry>
-        <context-entry name="configdir">${properties:system:configdir?default=.}</context-entry>
-        <context-entry name="app">${properties:system.APP?default=NONE}</context-entry>
-        <context-entry name="context">${java:org.apache.tamaya.context.Context#id()}</context-entry>
-        <context-entry name="company">Trivadis</context-entry>
-        <context-entry name="default-formats">yaml,json</context-entry>
-        <context-entry name="default-refresh-period">5 SECOND</context-entry>
+        <stage>${properties:system:STAGE?default=DEV}</stage>
+        <configdir>${properties:system:configdir?default=.}</configdir>
+        <app>${properties:system.APP?default=NONE}</app>
+        <context>${java:org.apache.tamaya.context.Context#id()}</context>
+        <company>Trivadis</company>
+        <default-formats>yaml,json</default-formats>
+        <default-refresh-period>5 SECOND</default-refresh-period>
     </context>
     <context name="APP">
-        <context-entry name="application">someAppName</context-entry>
+        <application>someAppName</application>
     </context>
 
-    <!-- combinationPolicy type="" / -->
+    <!-- combinationPolicy class="" / -->
 
     <!-- Configuration definition. -->
 
     <property-sources>
-       <source enabled="${stage=TEST || stage=PTA || stage=PROD}"
-           type="env-properties">
-           <filter type="PropertyMapping">
-               <param name="mapTarget">ENV.</param>
-           </filter>
-           <filter type="AccessMask">
-               <param name="roles">admin,power-user</param>
-               <param name="policy">mask</param>
-               <param name="mask">*****</param>
-               <param name="matchExpression">SEC_</param>
-           </filter>
-       </source>
-       <source type="sys-properties" >
-           <filter type="ImmutablePropertySource" />
-       </source>
-       <source type="file" refreshable="true">
-           <name>config.json</name>
-           <param name="location">config.json</param>
-       </source>
-        <source type="file" refreshable="true">
-            <name>config.xml</name>
-            <param name="location">config.xml</param>
-            <param name="formats">xml-properties</param>
-        </source>
-       <source-provider type="resource">
-           <name>classpath:application-config.yml</name>
-           <param name="location">/META-INF/application-config.yml</param>
-       </source-provider>
-       <source type="ch.mypack.MyClassSource" />
+       <env-properties enabled="${stage=TEST || stage=PTA || stage=PROD}">
+           <filters>
+               <Map target="ENV."/>
+               <Mask policy="MULTIVALUE"
+                   mask="*****"
+                   matches="SEC_"/>
+           </filters>
+       </env-properties>
+       <sys-properties >
+           <filters>
+               <Immutable />
+           </filters>
+       </sys-properties>
+       <file location="config.json" refreshable="true" />
+       <file location="config.xml" formats="xml-properties" refreshable="true" />
+       <resource location="/META-INF/application-config.yml"/>
+       <ch.mypack.MyClassSource />
        <!--<include enabled="${stage==TEST}">TEST-config.xml</include>-->
-       <source-provider type="resource" enabled="${configdir != null}">
-           <name>config-dir</name>
-           <param name="location">/${configdir}/**/*.json</param>
-       </source-provider>
-       <source type="url" refreshable="true">
-           <name>remote</name>
-           <param name="location">https://www.confdrive.com/cfg/customerId=1234</param>
-           <param name="formats">json</param>
-           <filter type="CachedPropertySource">
-               <param name="ttl">30 SECOND</param>
-           </filter>
-       </source>
+       <resources location="${configdir}/**/*.json" enabled="${configdir != null}" />
+       <url location="https://www.confdrive.com/cfg/customerId=1234"
+            formats="json"
+            refreshable="true">
+           <filters>
+               <Cached ttl="30 SECOND"/>
+           </filters>
+       </url>
     </property-sources>
     <property-filters>
-        <filter type="UsageTrackerFilter"/>
-        <filter type="AccessControl">
-            <param name="roles">admin,power-user</param>
-            <param name="policy">hide</param>
-            <param name="expression">*.secret</param>
-        </filter>
-        <filter type="Cache">
-            <param name="ttl">30000</param>
-            <param name="expression">cached.*</param>
-        </filter>
+        <Secured roles="admin,power-user" matches="*.secret" policy="hide"/>
+        <Cached timeout="30000" maxSize="300" matches="cached.*"/>
     </property-filters>
     <property-converters>
     <!--<converter type="AllInOneConverter"/>-->

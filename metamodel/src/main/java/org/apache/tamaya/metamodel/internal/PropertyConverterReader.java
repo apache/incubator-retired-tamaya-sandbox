@@ -18,14 +18,13 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
+import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.PropertyConverter;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertySourceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -49,38 +48,36 @@ public class PropertyConverterReader implements MetaConfigurationReader{
             return;
         }
         if(nodeList.getLength()>1){
-            LOG.warning("Multiple property-converters sections configured, onyl reading first...");
-            return;
+            throw new ConfigException("Only one single property-converters section allowed.");
         }
         nodeList = nodeList.item(0).getChildNodes();
         for(int i=0;i<nodeList.getLength();i++){
             Node node = nodeList.item(i);
-            try{
-                if(node.getNodeName().equals("converter")){
-                    String type = node.getAttributes().getNamedItem("type").getNodeValue();
-                    try {
-                        ItemFactory<PropertyConverter> converterFactory = ItemFactoryManager.getInstance().getFactory(PropertyConverter.class, type);
-                        if(converterFactory==null){
-                            LOG.severe("No such property converter: " + type);
-                            continue;
-                        }
-                        Map<String,String> params = ComponentConfigurator.extractParameters(node);
-                        PropertyConverter converter = converterFactory.create(params);
-                        if(converter!=null) {
-                            ComponentConfigurator.configure(converter, node);
-                            Class targetType = Class.forName(params.get("targetType"));
-                            LOG.finer("Adding converter for type " + targetType.getName() + ": " + converter.getClass());
-                            contextBuilder.addPropertyConverters(TypeLiteral.of(targetType), converter);
-                        }
-                    } catch (Exception e) {
-                        LOG.log(Level.SEVERE, "Failed to configure PropertyConverter: " + type, e);
-                    }
-                }else if(node.getNodeName().equals("default-converters")){
-                    LOG.finer("Adding default property converters...");
-                    contextBuilder.addDefaultPropertyConverters();
+            if(node.getNodeType()!=Node.ELEMENT_NODE) {
+                continue;
+            }
+            String type = node.getNodeName();
+            if("defaults".equals(type)){
+                LOG.finer("Adding default property converters...");
+                contextBuilder.addDefaultPropertyConverters();
+                continue;
+            }
+            try {
+                ItemFactory<PropertyConverter> converterFactory = ItemFactoryManager.getInstance().getFactory(PropertyConverter.class, type);
+                if(converterFactory==null){
+                    LOG.severe("No such property converter: " + type);
+                    continue;
                 }
-            }catch(Exception e){
-                LOG.log(Level.SEVERE, "Failed to read property converter configuration: " + node, e);
+                Map<String,String> params = ComponentConfigurator.extractParameters(node);
+                PropertyConverter converter = converterFactory.create(params);
+                if(converter!=null) {
+                    ComponentConfigurator.configure(converter, node);
+                    Class targetType = Class.forName(params.get("targetType"));
+                    LOG.finer("Adding converter for type " + targetType.getName() + ": " + converter.getClass());
+                    contextBuilder.addPropertyConverters(TypeLiteral.of(targetType), converter);
+                }
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Failed to configure PropertyConverter: " + type, e);
             }
         }
     }

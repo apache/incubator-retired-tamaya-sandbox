@@ -39,13 +39,13 @@ import java.util.logging.Logger;
  * Meta-configuration reader that reads the shared context data.
  */
 @Priority(-1)
-public class ContextReader implements MetaConfigurationReader {
+public class MetaContextReader implements MetaConfigurationReader {
 
-    private static final Logger LOG = Logger.getLogger(ContextReader.class.getName());
+    private static final Logger LOG = Logger.getLogger(MetaContextReader.class.getName());
 
     private Map<String,SimpleResolver> resolvers = new ConcurrentHashMap<>();
 
-    public ContextReader(){
+    public MetaContextReader(){
         for(SimpleResolver resolver: ServiceContextManager.getServiceContext()
                 .getServices(SimpleResolver.class)){
             this.resolvers.put(resolver.getResolverId(), resolver);
@@ -73,24 +73,19 @@ public class ContextReader implements MetaConfigurationReader {
     @Override
     public void read(Document document, ConfigurationContextBuilder contextBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("context");
-        String contextName = null;
         LOG.finer("Reading " + nodeList.getLength() + " meta context entries...");
         for(int i=0;i<nodeList.getLength();i++){
             Node node = nodeList.item(i);
             if(node.getNodeName().equals("context")){
-                Node nameNode = node.getAttributes().getNamedItem("name");
-                if(nameNode!=null){
-                    contextName = nameNode.getTextContent();
-                }
-                MetaContext context = contextName!=null?MetaContext.getInstance(contextName):MetaContext.getDefaultInstance();
+                MetaContext context = MetaContext.getInstance();
                 NodeList entryNodes = node.getChildNodes();
                 for(int c=0;c<entryNodes.getLength();c++){
                     Node entryNode = entryNodes.item(c);
-                    if("context-entry".equals(entryNode.getNodeName())){
-                        String key = entryNode.getAttributes().getNamedItem("name").getNodeValue();
+                    if(entryNode.getNodeType()==Node.ELEMENT_NODE) {
+                        String key = entryNode.getNodeName();
                         String value = entryNode.getTextContent();
-                        resolvePlaceholders(value);
-                        LOG.finest("Applying context entry: " + key + '=' + value + " on " + contextName);
+                        value = resolvePlaceholders(value);
+                        LOG.finest("MetaContext: " + key + '=' + value);
                         context.setProperty(key, value);
                     }
                 }
@@ -135,6 +130,7 @@ public class ContextReader implements MetaConfigurationReader {
                             result.append(token);
                             break;
                     }
+                    break;
                 case "}":
                     switch(state){
                         case INVALUE:
@@ -152,7 +148,15 @@ public class ContextReader implements MetaConfigurationReader {
                     }
                     break;
                 default:
-                    result.append(token);
+                    switch(state){
+                        case INEXP:
+                            exp.append(token);
+                            break;
+                        default:
+                            result.append(token);
+                            break;
+                    }
+
             }
         }
         return result.toString();

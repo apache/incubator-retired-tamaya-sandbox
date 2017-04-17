@@ -52,10 +52,8 @@ public final class FilePropertySourceFactory extends ResourcePropertySourceFacto
 
     @Override
     protected String example() {
-        return "<source type=\""+getName()+"\">\n" +
-                "  <param name=\"location\">c:/temp/config.xml</param>\n" +
-                "  <param name=\"formats\">xml-properties</param>\n" +
-                "</source>\n";
+        return "<file location=\"c:/temp/config.xml\"\n" +
+                "     formats=\"xml-properties\")>\n";
     }
 
     @Override
@@ -63,9 +61,9 @@ public final class FilePropertySourceFactory extends ResourcePropertySourceFacto
         try {
             Path path = Paths.get(location);
             if(!path.toFile().exists()){
-                LOG.info("Cannot read resource '" + location + "': no such file.");
+                LOG.info("Cannot read file '" + location + "': no such file.");
             }else if(!path.toFile().canRead()){
-                LOG.info("Cannot read resource '" + location + "': not readable.");
+                LOG.info("Cannot read file '" + location + "': not readable.");
             }
             return path.toUri().toURL();
         } catch (MalformedURLException e) {

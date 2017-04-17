@@ -24,3 +24,10 @@ org.apache.tamaya.metamodel.internal.factories.SysPropertiesFactory
 org.apache.tamaya.metamodel.internal.factories.URLPropertySourceFactory
 
 org.apache.tamaya.metamodel.internal.factories.ResourcePropertySourceProviderFactory
+
+org.apache.tamaya.metamodel.ImmutableFilter$ImmutableFilterFactory
+org.apache.tamaya.metamodel.MapFilter$MapFilterFactory
+org.apache.tamaya.metamodel.HideFilter$HideFilterFactory
+org.apache.tamaya.metamodel.CachedFilter$CachedFilterFactory
+org.apache.tamaya.metamodel.MaskFilter$MaskFilterFactory
+org.apache.tamaya.metamodel.SecuredFilter$SecuredFilterFactory
