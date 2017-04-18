@@ -237,4 +237,12 @@ implements MutablePropertySource{
         }
         return consulBackends;
     }
+
+    @Override
+    protected String toStringValues() {
+        return  super.toStringValues() +
+                "  prefix=" + prefix + '\n' +
+                "  backends=" + this.consulBackends + '\n';
+    }
+
 }

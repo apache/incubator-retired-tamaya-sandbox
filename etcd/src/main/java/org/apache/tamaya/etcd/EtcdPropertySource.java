@@ -271,4 +271,11 @@ public class EtcdPropertySource extends BasePropertySource
         }
         return etcdBackends;
     }
+
+    @Override
+    protected String toStringValues() {
+        return  super.toStringValues() +
+                "  prefix=" + prefix + '\n' +
+                "  backends=" + this.etcdBackends + '\n';
+    }
 }

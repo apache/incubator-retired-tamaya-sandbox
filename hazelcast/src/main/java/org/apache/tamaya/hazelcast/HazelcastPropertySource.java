@@ -227,13 +227,12 @@ implements MutablePropertySource{
     }
 
     @Override
-    public String toString() {
-        return "HazelcastPropertySource{" +
+    protected String toStringValues() {
+        return super.toStringValues() +
                 "\n  hazelcastInstance=" + hazelcastInstance +
                 "\n  name='" + getName() + '\'' +
                 "\n  mapReference='" + mapReference + '\'' +
-                "\n  readOnly=" + readOnly +
-                "\n}";
+                "\n  readOnly=" + readOnly + '\'';
     }
 
 }
