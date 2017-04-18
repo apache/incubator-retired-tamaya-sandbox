@@ -80,6 +80,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
                         ps = decoratePropertySource(ps, node, params);
                         LOG.finer("Adding configured property source: " + ps.getName());
                         contextBuilder.addPropertySources(ps);
+                        continue;
                     }
                 }
             } catch (Exception e) {

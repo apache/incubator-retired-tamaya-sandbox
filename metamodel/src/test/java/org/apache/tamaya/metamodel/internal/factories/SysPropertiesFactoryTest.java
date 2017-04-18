@@ -18,29 +18,37 @@
  */
 package org.apache.tamaya.metamodel.internal.factories;
 
-import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.CLIPropertySource;
-import org.apache.tamaya.spisupport.EnvironmentPropertySource;
+import org.apache.tamaya.spisupport.SystemPropertySource;
+import org.junit.Test;
 
-import java.util.Map;
+import java.util.Collections;
+
+import static org.junit.Assert.*;
+
 
 /**
- * Factory for configuring CLI argument based property sources.
+ * Created by atsticks on 18.04.17.
  */
-public final class CLIArgumentsFactory implements ItemFactory<PropertySource>{
-    @Override
-    public String getName() {
-        return "CLI";
+public class SysPropertiesFactoryTest {
+
+    private static SysPropertiesFactory f = new SysPropertiesFactory();
+
+    @Test
+    public void getName() throws Exception {
+        assertEquals("sys-properties", f.getName());
     }
 
-    @Override
-    public PropertySource create(Map<String,String> parameters) {
-        return new CLIPropertySource();
+    @Test
+    public void create() throws Exception {
+        PropertySource ps = f.create(Collections.EMPTY_MAP);
+        assertNotNull(ps);
+        assertTrue(ps instanceof SystemPropertySource);
     }
 
-    @Override
-    public Class<? extends PropertySource> getType() {
-        return PropertySource.class;
+    @Test
+    public void getType() throws Exception {
+        assertEquals(PropertySource.class, f.getType());
     }
+
 }

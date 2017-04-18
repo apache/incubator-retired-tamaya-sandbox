@@ -21,6 +21,7 @@ package org.apache.tamaya.metamodel.internal.resolver;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
@@ -59,16 +60,31 @@ public final class JavaResolver implements SimpleResolver{
         return null;
     }
 
-    private String evaluate(String className, String methodName) throws Exception{
+    private String evaluate(String className, String memberName) throws Exception{
         Objects.requireNonNull(className);
-        Objects.requireNonNull(methodName);
+        Objects.requireNonNull(memberName);
         Class clazz = Class.forName(className);
-        Method method = clazz.getMethod(methodName);
-        if(Modifier.isStatic(method.getModifiers())){
-            if(!method.isAccessible()){
-                method.setAccessible(true);
+        try {
+            Method method = clazz.getDeclaredMethod(memberName);
+            if (Modifier.isStatic(method.getModifiers())) {
+                if (!method.isAccessible()) {
+                    method.setAccessible(true);
+                }
+                return (String) method.invoke(null);
             }
-            return (String)method.invoke(null);
+        }catch(Exception e){
+            // ignore
+        }
+        try {
+            Field field = clazz.getDeclaredField(memberName);
+            if (Modifier.isStatic(field.getModifiers())) {
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
+                return (String) field.get(null);
+            }
+        }catch(Exception e){
+            // ignore
         }
         return null;
     }

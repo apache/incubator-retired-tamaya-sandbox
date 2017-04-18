@@ -26,6 +26,8 @@ import org.apache.tamaya.metamodel.MapFilter;
 import org.apache.tamaya.metamodel.MetaConfiguration;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.spi.PropertyFilter;
+import org.apache.tamaya.spi.PropertySource;
 import org.junit.Test;
 
 import java.net.URL;
@@ -153,6 +155,64 @@ public class IntegrationTest {
         assertTrue(config.getContext().getPropertyFilters().isEmpty());
         assertEquals(2, config.getContext().getPropertySources().size());
         assertTrue(config.getContext().getPropertySources().get(0) instanceof MyPropertySource);
+    }
+
+    @Test
+    public void testPropertyFilterConfig(){
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilter-config-test.xml"));
+        assertNotNull(config);
+        assertTrue(config.getProperties().isEmpty());
+        assertTrue(config.getContext().getPropertySources().isEmpty());
+        assertTrue(config.getContext().getPropertyConverters().isEmpty());
+        assertFalse(config.getContext().getPropertyFilters().isEmpty());
+        assertEquals(1, config.getContext().getPropertyFilters().size());
+        PropertyFilter filter = config.getContext().getPropertyFilters().get(0);
+        assertNotNull(filter);
+        assertTrue(filter instanceof MyFilter);
+        MyFilter myFilter = (MyFilter)filter;
+        assertEquals("my-filter-name", myFilter.getName());
+        assertEquals("attrValue1", myFilter.getAttrValue());
+        assertEquals("elemValue1", myFilter.getElemValue());
+        assertEquals("overrideValue2", myFilter.getOverrideValue());
+    }
+
+    @Test
+    public void testPropertySourceConfig(){
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysource-config-test.xml"));
+        assertNotNull(config);
+        assertTrue(config.getProperties().isEmpty());
+        assertFalse(config.getContext().getPropertySources().isEmpty());
+        assertTrue(config.getContext().getPropertyConverters().isEmpty());
+        assertTrue(config.getContext().getPropertyFilters().isEmpty());
+        assertEquals(1, config.getContext().getPropertySources().size());
+        PropertySource ps = config.getContext().getPropertySources().get(0);
+        assertNotNull(ps);
+        assertTrue(ps instanceof MyPropertySource);
+        MyPropertySource mySource = (MyPropertySource)ps;
+        assertEquals("my-source-name", mySource.getName2());
+        assertEquals("attrValue1", mySource.getAttrValue());
+        assertEquals("elemValue1", mySource.getElemValue());
+        assertEquals("overrideValue2", mySource.getOverrideValue());
+    }
+
+    @Test
+    public void testPropertyConverterConfig(){
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverter-config-test.xml"));
+        assertNotNull(config);
+        assertTrue(config.getProperties().isEmpty());
+        assertTrue(config.getContext().getPropertySources().isEmpty());
+        assertFalse(config.getContext().getPropertyConverters().isEmpty());
+        assertTrue(config.getContext().getPropertyFilters().isEmpty());
+        assertEquals(1, config.getContext().getPropertyConverters().size());
+        PropertyConverter converter = config.getContext().getPropertyConverters().values().iterator()
+                .next().get(0);
+        assertNotNull(converter);
+        assertTrue(converter instanceof MyConverter);
+        MyConverter myConverter = (MyConverter)converter;
+        assertEquals("my-converter-name", myConverter.getName());
+        assertEquals("attrValue1", myConverter.getAttrValue());
+        assertEquals("elemValue1", myConverter.getElemValue());
+        assertEquals("overrideValue2", myConverter.getOverrideValue());
     }
 
     private URL getConfig(String resource) {

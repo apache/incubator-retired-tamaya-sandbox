@@ -26,8 +26,45 @@ import org.apache.tamaya.spi.PropertyValue;
  * Created by atsticks on 17.04.17.
  */
 public class MyFilter implements PropertyFilter{
+
+    private String name;
+    private String attrValue;
+    private String elemValue;
+    private String overrideValue;
+
     @Override
     public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
         return value;
+    }
+
+    public String getAttrValue() {
+        return attrValue;
+    }
+
+    public MyFilter setAttrValue(String attrValue) {
+        this.attrValue = attrValue;
+        return this;
+    }
+
+    public String getElemValue() {
+        return elemValue;
+    }
+
+    public MyFilter setElemValue(String elemValue) {
+        this.elemValue = elemValue;
+        return this;
+    }
+
+    public String getOverrideValue() {
+        return overrideValue;
+    }
+
+    public MyFilter setOverrideValue(String overrideValue) {
+        this.overrideValue = overrideValue;
+        return this;
+    }
+
+    public String getName() {
+        return name;
     }
 }

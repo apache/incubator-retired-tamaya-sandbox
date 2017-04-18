@@ -26,8 +26,44 @@ import org.apache.tamaya.spi.PropertyConverter;
  */
 public class MyConverter implements PropertyConverter<String> {
 
+    private String name;
+    private String attrValue;
+    private String elemValue;
+    private String overrideValue;
+
     @Override
     public String convert(String value, ConversionContext context) {
         return value;
+    }
+
+    public String getAttrValue() {
+        return attrValue;
+    }
+
+    public MyConverter setAttrValue(String attrValue) {
+        this.attrValue = attrValue;
+        return this;
+    }
+
+    public String getElemValue() {
+        return elemValue;
+    }
+
+    public MyConverter setElemValue(String elemValue) {
+        this.elemValue = elemValue;
+        return this;
+    }
+
+    public String getOverrideValue() {
+        return overrideValue;
+    }
+
+    public MyConverter setOverrideValue(String overrideValue) {
+        this.overrideValue = overrideValue;
+        return this;
+    }
+
+    public String getName() {
+        return name;
     }
 }

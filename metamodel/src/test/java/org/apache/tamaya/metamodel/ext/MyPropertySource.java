@@ -28,8 +28,45 @@ import java.util.Map;
  * Created by atsticks on 17.04.17.
  */
 public class MyPropertySource extends org.apache.tamaya.spisupport.BasePropertySource{
+
+    private String name2;
+    private String attrValue;
+    private String elemValue;
+    private String overrideValue;
+
     @Override
     public Map<String, PropertyValue> getProperties() {
         return Collections.emptyMap();
+    }
+
+    public String getAttrValue() {
+        return attrValue;
+    }
+
+    public MyPropertySource setAttrValue(String attrValue) {
+        this.attrValue = attrValue;
+        return this;
+    }
+
+    public String getElemValue() {
+        return elemValue;
+    }
+
+    public MyPropertySource setElemValue(String elemValue) {
+        this.elemValue = elemValue;
+        return this;
+    }
+
+    public String getOverrideValue() {
+        return overrideValue;
+    }
+
+    public MyPropertySource setOverrideValue(String overrideValue) {
+        this.overrideValue = overrideValue;
+        return this;
+    }
+
+    public String getName2() {
+        return name2;
     }
 }
