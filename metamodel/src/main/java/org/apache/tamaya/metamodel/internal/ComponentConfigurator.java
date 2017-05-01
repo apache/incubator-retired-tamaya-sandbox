@@ -176,6 +176,10 @@ public final class ComponentConfigurator<T> {
                 case "Number":
                     return Float.valueOf(value);
                 default:
+                    if(Enum.class.isAssignableFrom(targetType)){
+                        Method m = targetType.getDeclaredMethod("valueOf", String.class);
+                        return m.invoke(null, value);
+                    }
                     Constructor c = targetType.getConstructor(String.class);
                     if (!Modifier.isPublic(c.getModifiers())) {
                         LOG.fine("Setting constructor as accessible: " + targetType.getSimpleName() + "#<constructor>(String)");

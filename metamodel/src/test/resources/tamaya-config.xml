@@ -64,7 +64,7 @@
        </url>
     </property-sources>
     <property-filters>
-        <Secured roles="admin,power-user" matches="*.secret" policy="hide"/>
+        <Secured roles="admin,power-user" matches="*.secret" policy="HIDE"/>
         <Cached timeout="30000" maxSize="300" matches="cached.*"/>
     </property-filters>
     <property-converters>
@@ -74,7 +74,7 @@
 
     <log>
         "METACONTEXT: " + MetaContext.getInstance().getProperties()
-        "CONFIG     : " + Configuration.getInstance().getProperties()
+        "CONFIG     : " + config
     </log>
 
 </configuration>
