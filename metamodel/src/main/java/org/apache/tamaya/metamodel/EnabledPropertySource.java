@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.metamodel;
 
+import org.apache.tamaya.metamodel.internal.resolver.JavaResolver;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spisupport.PropertySourceComparator;
@@ -42,6 +43,7 @@ public final class EnabledPropertySource
     private String enabledExpression;
     private PropertySource wrapped;
     private boolean enabled;
+    private static final JavaResolver resolver = new JavaResolver();
 
     public EnabledPropertySource(PropertySource wrapped, Map<String,String> context, String expression) {
         this.enabledExpression = Objects.requireNonNull(expression);
@@ -51,25 +53,8 @@ public final class EnabledPropertySource
 
     protected boolean calculateEnabled(Map<String, String> context) {
         try {
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("nashorn");
-            if(engine==null){
-                engine = manager.getEngineByName("rhino");
-            }
-            // init script engine
-            for(Map.Entry<String,String> entry: context.entrySet()) {
-                engine.put(entry.getKey(), entry.getValue());
-            }
-            Object o = engine.eval(enabledExpression);
-            if(!(o instanceof Boolean)){
-                LOG.severe("Enabled expression must evaluate to Boolean: '"
-                        +enabledExpression+"', but was " + o +
-                        ", property source will be disabled: " +
-                        wrapped.getName());
-                return false;
-            }
-            return (Boolean)o;
-        } catch (ScriptException e) {
+            return Boolean.TRUE.equals(resolver.evaluate(enabledExpression, context));
+        } catch (Exception e) {
             LOG.severe("Invalid Boolean expression: '"
                     +enabledExpression+"': " + e + ", property source will be disabled: " +
                     wrapped.getName());

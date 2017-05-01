@@ -18,9 +18,10 @@
  */
 package org.apache.tamaya.metamodel.internal.resolver;
 
+import org.apache.tamaya.metamodel.MetaContext;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -28,7 +29,8 @@ import static org.junit.Assert.*;
  */
 public class JavaResolverTest {
 
-    private static final String TEST = "ResTest";
+    public static final String TEST = "ResTest";
+
     private JavaResolver r = new JavaResolver();
 
     @Test
@@ -37,34 +39,46 @@ public class JavaResolverTest {
     }
 
     @Test
-    public void evaluate() throws Exception {
-        assertEquals(TEST, r.evaluate("org.apache.tamaya.metamodel.internal.resolver.JavaResolverTest#TEST"));
-        assertEquals(TEST, r.evaluate("org.apache.tamaya.metamodel.internal.resolver.JavaResolverTest#getTest4"));
-        assertEquals(TEST, r.evaluate("org.apache.tamaya.metamodel.internal.resolver.JavaResolverTest#getTest6"));
-        assertEquals(TEST, r.evaluate("org.apache.tamaya.metamodel.internal.resolver.JavaResolverTest#getTest7"));
+    public void evaluateDirect() throws Exception {
+        assertEquals("value", r.evaluate("\"value\""));
+        assertEquals("1.1", r.evaluate("1.1"));
+        assertEquals("1", r.evaluate("1"));
     }
 
-    private String getTest5(){
+    @Test
+    public void evaluateProperties() throws Exception {
+        assertEquals(System.getProperty("java.version"), r.evaluate("sys(\"java.version\")"));
+        String key = System.getenv().keySet().iterator().next();
+        assertEquals(System.getenv(key), r.evaluate("env(\""+key+"\")"));
+        MetaContext.getInstance().setProperty("foo", "bar");
+        assertEquals("bar", r.evaluate("context(\"foo\")"));
+    }
+
+    @Test
+    public void evaluateExpression() throws Exception {
+        assertEquals("true", r.evaluate("env(\"STAGE\") == null"));
+        assertEquals("true", r.evaluate("sys(\"STAGE\") == null"));
+        System.setProperty("STAGE", "DEV2");
+        assertEquals("false", r.evaluate("sys(\"STAGE\") == null"));
+        System.setProperty("STAGE", "DEV2");
+        assertEquals("DEV2", r.evaluate("sys(\"STAGE\") == null?env(\"STAGE\"):sys(\"STAGE\")"));
+        assertEquals("DEV2", r.evaluate("if(sys(\"STAGE\") == null)return env(\"STAGE\"); else return sys(\"STAGE\");"));
+        System.getProperties().remove("STAGE");
+        assertEquals("foo", r.evaluate("if(sys(\"STAGE\") == null)return \"foo\"; else return sys(\"STAGE\");"));
+    }
+
+    @Test
+    public void evaluateSimple() throws Exception {
+        assertEquals(TEST, r.evaluate("org.apache.tamaya.metamodel.internal.resolver.JavaResolverTest.TEST"));
+        assertEquals(TEST, r.evaluate("new org.apache.tamaya.metamodel.internal.resolver.JavaResolverTest().getTest1()"));
+        assertEquals(TEST, r.evaluate("org.apache.tamaya.metamodel.internal.resolver.JavaResolverTest.getTest2()"));
+    }
+
+    public String getTest1(){
         return TEST;
     }
 
-    String getTest2(){
-        return TEST;
-    }
-
-    public String getTest3(){
-        return TEST;
-    }
-
-    static String getTest4(){
-        return TEST;
-    }
-
-    private static String getTest6(){
-        return TEST;
-    }
-
-    public static String getTest7(){
+    public static String getTest2(){
         return TEST;
     }
 

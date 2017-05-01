@@ -22,7 +22,7 @@
         <stage>${properties:system:STAGE?default=DEV}</stage>
         <configdir>${properties:system:configdir?default=.}</configdir>
         <app>${properties:system.APP?default=NONE}</app>
-        <context>${java:org.apache.tamaya.context.Context#id()}</context>
+        <context>${java:java.util.UUID.randomUUID()}</context>
         <company>Trivadis</company>
         <default-formats>yaml,json</default-formats>
         <default-refresh-period>5 SECOND</default-refresh-period>
@@ -36,7 +36,7 @@
     <!-- Configuration definition. -->
 
     <property-sources>
-       <env-properties enabled="${stage=TEST || stage=PTA || stage=PROD}">
+       <env-properties enabled="${context('stage')=='TEST' || context('stage')=='PTA' || context('stage')=='PROD'}">
            <filters>
                <Map target="ENV."/>
                <Mask policy="MULTIVALUE"
@@ -53,8 +53,8 @@
        <file location="config.xml" formats="xml-properties" refreshable="true" />
        <resource location="/META-INF/application-config.yml"/>
        <ch.mypack.MyClassSource />
-       <!--<include enabled="${stage==TEST}">TEST-config.xml</include>-->
-       <resources location="${configdir}/**/*.json" enabled="${configdir != null}" />
+       <!--<include enabled="${CONTEXT('stage')==TEST}">TEST-config.xml</include>-->
+       <resources location="${context('configdir')}/**/*.json" enabled="${context('configdir') != null}" />
        <url location="https://www.confdrive.com/cfg/customerId=1234"
             formats="json"
             refreshable="true">
@@ -71,6 +71,11 @@
     <!--<converter type="AllInOneConverter"/>-->
         <default-converters/>
     </property-converters>
+
+    <log>
+        "METACONTEXT: " + MetaContext.getInstance().getProperties()
+        "CONFIG     : " + Configuration.getInstance().getProperties()
+    </log>
 
 </configuration>
 
