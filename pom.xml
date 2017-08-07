@@ -47,7 +47,7 @@ under the License.
         <tamaya.version>3.0-incubating-SNAPSHOT</tamaya.version>
         <commons-io.version>2.5</commons-io.version>
         <findbugs.skip>false</findbugs.skip>
-        <jdkVersion>1.7</jdkVersion>
+        <jdkVersion>1.8</jdkVersion>
         <osgi.version>5.0.0</osgi.version> <!-- 4.3.1 -->
         <osgi.compendium.version>${osgi.version}</osgi.compendium.version>
         <maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
