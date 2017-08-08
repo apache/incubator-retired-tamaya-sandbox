@@ -34,9 +34,6 @@
     <packaging>jar</packaging>
 
     <properties>
-        <jdkVersion>1.8</jdkVersion>
-        <maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
-        <maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
         <vertx.version>3.3.0</vertx.version>
     </properties>
 

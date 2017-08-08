@@ -31,7 +31,6 @@ under the License.
     <packaging>jar</packaging>
 
     <properties>
-        <jdkVersion>1.7</jdkVersion>
         <tomcat.version>7.0.57</tomcat.version>
     </properties>
 

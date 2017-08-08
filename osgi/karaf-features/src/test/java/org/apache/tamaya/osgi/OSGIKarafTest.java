@@ -78,7 +78,7 @@ public class OSGIKarafTest {
                 .artifactId("tamaya-osgi-features")
                 .type("xml")
                 .classifier("features")
-                .version("0.3-incubating-SNAPSHOT");
+                .version("0.4-incubating-SNAPSHOT");
         return options(
 //                KarafDistributionOption.karafDistributionConfiguration()
 //                        .frameworkUrl(CoreOptions.maven()
@@ -102,11 +102,11 @@ public class OSGIKarafTest {
 //                        "src/test/resources/org.ops4j.pax.logging.cfg")),
 
                 mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.2_spec", "1.0-alpha-1"),
-                mavenBundle("org.apache.tamaya", "tamaya-api", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya", "tamaya-core", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-spisupport", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-functions", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-osgi", "0.3-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya", "tamaya-api", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya", "tamaya-core", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-spisupport", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-functions", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-osgi", "0.4-incubating-SNAPSHOT"),
 //                KarafDistributionOption.features(
 //                        karafStandardRepo, "scr"),
 //                KarafDistributionOption.features(

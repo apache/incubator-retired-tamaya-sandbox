@@ -70,7 +70,7 @@ public class InjectionKarafTest {
                 .artifactId("tamaya-osgi-features")
                 .type("xml")
                 .classifier("features")
-                .version("0.3-incubating-SNAPSHOT");
+                .version("0.4-incubating-SNAPSHOT");
         return options(
                 KarafDistributionOption.karafDistributionConfiguration()
                         .frameworkUrl(CoreOptions.maven()
@@ -94,16 +94,16 @@ public class InjectionKarafTest {
                         "src/test/resources/org.ops4j.pax.logging.cfg")),
 
                 mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.2_spec", "1.0-alpha-1"),
-                mavenBundle("org.apache.tamaya", "tamaya-api", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya", "tamaya-core", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-spisupport", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-functions", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-osgi", "0.3-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya", "tamaya-api", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya", "tamaya-core", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-spisupport", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-functions", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-osgi", "0.4-incubating-SNAPSHOT"),
                 // injection libs
                 mavenBundle("org.apache.geronimo.specs", "geronimo-atinject_1.0_spec", "1.0"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-injection-api", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-injection", "0.3-incubating-SNAPSHOT"),
-                mavenBundle("org.apache.tamaya.ext", "tamaya-osgi-injection", "0.3-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-injection-api", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-injection", "0.4-incubating-SNAPSHOT"),
+                mavenBundle("org.apache.tamaya.ext", "tamaya-osgi-injection", "0.4-incubating-SNAPSHOT"),
                 KarafDistributionOption.features(
                         karafStandardRepo, "scr"),
                 KarafDistributionOption.features(

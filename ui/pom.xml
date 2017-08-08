@@ -33,9 +33,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jdkVersion>1.8</jdkVersion>
-        <maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
-        <maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
         <vaadin.plugin.version>2.1.0</vaadin.plugin.version>
         <vaadin.version>8.0.4</vaadin.version>
         <guava.version>21.0</guava.version>
