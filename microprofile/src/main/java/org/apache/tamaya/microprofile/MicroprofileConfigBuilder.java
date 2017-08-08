@@ -45,7 +45,18 @@ final class MicroprofileConfigBuilder implements ConfigBuilder{
 
     @Override
     public ConfigBuilder addDefaultSources() {
+        return this;
+    }
+
+    @Override
+    public ConfigBuilder addDiscoveredSources() {
         contextBuilder.addDefaultPropertySources();
+        return this;
+    }
+
+    @Override
+    public ConfigBuilder addDiscoveredConverters() {
+        contextBuilder.addDefaultPropertyConverters();
         return this;
     }
 
