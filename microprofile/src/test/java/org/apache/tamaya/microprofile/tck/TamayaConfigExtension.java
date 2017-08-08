@@ -16,19 +16,21 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.microprofile.configsources;
+package org.apache.tamaya.microprofile.tck;
 
-import org.apache.tamaya.microprofile.MicroprofileConfigSource;
-import org.apache.tamaya.spisupport.SystemPropertySource;
+import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
+import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
- * Microprofile config source based on Tamaya's system property source.
- * Created by atsticks on 30.03.17.
+ * Arquillian extension to load Tamaya into Arquillian context.
+ * @author <a href="mailto:anatole@apache.org">Anatole Tresch</a>
  */
-public class MPSystemPropertiesConfigSource extends MicroprofileConfigSource {
+public class TamayaConfigExtension implements LoadableExtension {
 
-    public MPSystemPropertiesConfigSource() {
-        super(new SystemPropertySource());
+    @Override
+    public void register(ExtensionBuilder extensionBuilder) {
+        extensionBuilder.service(
+                ApplicationArchiveProcessor.class,
+                TamayaConfigArchiveProcessor.class);
     }
-
 }

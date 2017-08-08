@@ -21,9 +21,14 @@ package org.apache.tamaya.microprofile;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
+import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.spisupport.EnvironmentPropertySource;
+import org.apache.tamaya.spisupport.PropertySourceComparator;
+import org.apache.tamaya.spisupport.SystemPropertySource;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 import org.eclipse.microprofile.config.spi.Converter;
 
 import java.util.Objects;
@@ -37,26 +42,63 @@ final class MicroprofileConfigBuilder implements ConfigBuilder{
 
     MicroprofileConfigBuilder(ConfigurationContextBuilder contextBuilder){
         this.contextBuilder = Objects.requireNonNull(contextBuilder);
+        contextBuilder.addDefaultPropertyConverters();
     }
 
     public ConfigurationContextBuilder getConfigurationContextBuilder(){
         return contextBuilder;
     }
 
+    /**
+     * Add the default config sources appearing on the builder's classpath
+     * including:
+     * <ol>
+     * <li>System properties</li>
+     * <li>Environment properties</li>
+     * <li>/META-INF/microprofile-config.properties</li>
+     * </ol>
+     *
+     * @return the ConfigBuilder with the default config sources
+     */
     @Override
     public ConfigBuilder addDefaultSources() {
+        contextBuilder.addPropertySources(
+                new SystemPropertySource(400),
+                new EnvironmentPropertySource(300),
+                new MicroprofileDefaultProperties());
+        contextBuilder.sortPropertySources(PropertySourceComparator.getInstance()
+                .setOrdinalKey("config_ordinal"));
         return this;
     }
 
+    /**
+     * Add ConfigSources registered using the ServiceLoader.
+     * @return the ConfigBuilder with the added config sources
+     */
     @Override
     public ConfigBuilder addDiscoveredSources() {
-        contextBuilder.addDefaultPropertySources();
+        for(ConfigSource configSource: ServiceContextManager.getServiceContext().getServices(ConfigSource.class)){
+            contextBuilder.addPropertySources(MicroprofileAdapter.toPropertySource(configSource));
+        }
+        for(ConfigSourceProvider configSourceProvider: ServiceContextManager.getServiceContext().getServices(ConfigSourceProvider.class)){
+            contextBuilder.addPropertySources(MicroprofileAdapter.toPropertySources(configSourceProvider.getConfigSources(
+                    Thread.currentThread().getContextClassLoader()
+            )));
+        }
+        contextBuilder.sortPropertySources(PropertySourceComparator.getInstance());
         return this;
     }
 
+    /**
+     * Add Converters registered using the ServiceLoader.
+     * @return the ConfigBuilder with the added config converters
+     */
     @Override
     public ConfigBuilder addDiscoveredConverters() {
-        contextBuilder.addDefaultPropertyConverters();
+        for(Converter<?> converter: ServiceContextManager.getServiceContext().getServices(Converter.class)){
+            TypeLiteral lit = TypeLiteral.of(TypeLiteral.of(converter.getClass()).getType());
+            contextBuilder.addPropertyConverters(lit, MicroprofileAdapter.toPropertyConverter(converter));
+        }
         return this;
     }
 

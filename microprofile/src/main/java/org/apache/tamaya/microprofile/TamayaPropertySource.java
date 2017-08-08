@@ -25,6 +25,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Property source implementation that wraps a Microprofile {@link ConfigSource} instance.
@@ -48,7 +49,8 @@ public class TamayaPropertySource implements PropertySource{
 
     @Override
     public String getName() {
-        return delegate.getName();
+        return Optional.ofNullable(delegate.getName())
+                .orElse(delegate.toString());
     }
 
     @Override

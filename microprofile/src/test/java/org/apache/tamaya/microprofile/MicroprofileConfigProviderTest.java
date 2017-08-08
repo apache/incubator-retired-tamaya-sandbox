@@ -43,7 +43,7 @@ public class MicroprofileConfigProviderTest {
             count++;
             System.out.println(count + ": " +name);
         }
-        assertEquals(ConfigurationProvider.getConfiguration().getProperties().size(), count);
+        assertTrue(ConfigurationProvider.getConfiguration().getProperties().size() <= count);
     }
 
     @Test

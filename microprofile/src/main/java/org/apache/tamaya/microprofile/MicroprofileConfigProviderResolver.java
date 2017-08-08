@@ -19,6 +19,7 @@
 package org.apache.tamaya.microprofile;
 
 import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
@@ -43,7 +44,12 @@ public class MicroprofileConfigProviderResolver extends ConfigProviderResolver {
     public Config getConfig(ClassLoader loader) {
         Config config = this.configs.get(loader);
         if(config==null){
-            config = MicroprofileAdapter.toConfig(ConfigurationProvider.getConfiguration());
+            ConfigurationContextBuilder builder = ConfigurationProvider.getConfigurationContextBuilder();
+            builder.addDefaultPropertyConverters();
+            MicroprofileConfigBuilder microConfigBuilder = new MicroprofileConfigBuilder(builder);
+            microConfigBuilder.addDefaultSources();
+            microConfigBuilder.addDiscoveredSources();
+            config = microConfigBuilder.build();
             this.configs.put(loader, config);
         }
         return config;

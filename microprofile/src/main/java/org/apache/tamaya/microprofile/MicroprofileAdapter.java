@@ -75,6 +75,7 @@ public final class MicroprofileAdapter{
         for(PropertySource ps:propertySources){
             configSources.add(toConfigSource(ps));
         }
+        Collections.reverse(configSources);
         return configSources;
     }
 
