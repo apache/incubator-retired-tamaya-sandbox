@@ -22,7 +22,7 @@ under the License.
     <parent>
         <groupId>org.apache.tamaya.ext</groupId>
         <artifactId>tamaya-sandbox</artifactId>
-        <version>0.3-incubating-SNAPSHOT</version>
+        <version>0.4-incubating-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -36,6 +36,9 @@ under the License.
         <microprofile.version>1.0</microprofile.version>
         <geronimo-atinject-1.0-spec.version>1.0</geronimo-atinject-1.0-spec.version>
         <geronimo-jcdi-1.1-spec.version>1.0</geronimo-jcdi-1.1-spec.version>
+        <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
+        <org.apache.tomcat.version>6.0.53</org.apache.tomcat.version>
+        <tamaya-version>0.4-incubating-SNAPSHOT</tamaya-version>
     </properties>
 
     <dependencies>
@@ -53,18 +56,18 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${tamaya-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${tamaya-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-functions</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${tamaya-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -97,6 +100,39 @@ under the License.
             <version>6.9.9</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <version>${version.shrinkwrap.resolvers}</version>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+        <!-- since microprofile requires a Java EE container ;-(
+             we need one for executing the TCK! -->
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.main.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>4.1.2</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools-jar</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -115,7 +151,7 @@ under the License.
                         <version>2.19.1</version>
                         <configuration>
                             <suiteXmlFiles>
-                                <suiteXmlFile>tck-suite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/tck-suite.xml</suiteXmlFile>
                             </suiteXmlFiles>
                         </configuration>
                     </plugin>

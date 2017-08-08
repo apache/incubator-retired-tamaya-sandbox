@@ -26,7 +26,7 @@ under the License.
     </parent>
     <groupId>org.apache.tamaya.ext</groupId>
     <artifactId>tamaya-sandbox</artifactId>
-    <version>0.3-incubating-SNAPSHOT</version>
+    <version>0.4-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Apache Tamaya Sandbox</name>
@@ -224,11 +224,11 @@ under the License.
                 </exclusions>
             </dependency>
 
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${findbugs.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>com.google.code.findbugs</groupId>-->
+                <!--<artifactId>jsr305</artifactId>-->
+                <!--<version>${findbugs.version}</version>-->
+            <!--</dependency>-->
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -425,8 +425,6 @@ under the License.
                     <configuration>
                         <debug>true</debug>
                         <optimize>${maven.compile.optimize}</optimize>
-                        <source>${maven.compile.sourceLevel}</source>
-                        <target>${maven.compile.targetLevel}</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <showDeprecation>${maven.compile.deprecation}</showDeprecation>
                     </configuration>
@@ -709,8 +707,8 @@ under the License.
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${jdkVersion}</source>
+                    <target>${jdkVersion}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -754,9 +752,9 @@ under the License.
         <module>osgi</module>
         <module>management</module>
         <module>metamodel</module>
-        <!-- Requires JAVA 8: <module>microprofile</module>-->
+        <module>microprofile</module>
         <module>uom</module>
-        <!-- Requires JAVA 8: <module>vertx</module>-->
+        <module>vertx</module>
     </modules>
 
     <profiles>
