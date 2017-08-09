@@ -20,9 +20,13 @@ package org.apache.tamaya.microprofile.tck;
 
 import org.apache.tamaya.microprofile.MicroprofileAdapter;
 import org.apache.tamaya.microprofile.MicroprofileConfigProviderResolver;
+import org.apache.tamaya.microprofile.cdi.MicroprofileCDIExtension;
+import org.apache.tamaya.microprofile.converter.ProviderConverter;
+import org.apache.tamaya.spi.PropertyConverter;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.test.spi.TestClass;
+import org.jboss.arquillian.testenricher.cdi.container.CDIExtension;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -57,8 +61,12 @@ public class TamayaConfigArchiveProcessor implements ApplicationArchiveProcessor
             JavaArchive configJar = ShrinkWrap
                     .create(JavaArchive.class, "tamaya-config-impl.jar")
                     .addPackage(MicroprofileAdapter.class.getPackage())
+                    .addPackage(MicroprofileCDIExtension.class.getPackage())
+                    .addPackage(ProviderConverter.class.getPackage())
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                    .addAsServiceProvider(ConfigProviderResolver.class, MicroprofileConfigProviderResolver.class);
+                    .addAsServiceProvider(ConfigProviderResolver.class, MicroprofileConfigProviderResolver.class)
+                    .addAsServiceProvider(PropertyConverter.class, ProviderConverter.class)
+                    .addAsServiceProvider(CDIExtension.class, MicroprofileCDIExtension.class);
             ((WebArchive) applicationArchive).addAsLibraries(
                     configJar)
                     .addAsLibraries(apiLibs)

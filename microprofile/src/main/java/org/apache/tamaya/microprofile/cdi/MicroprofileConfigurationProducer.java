@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tamaya.microprofile;
+package org.apache.tamaya.microprofile.cdi;
 
 import org.apache.tamaya.*;
 import org.apache.tamaya.spi.ConversionContext;
@@ -26,8 +26,7 @@ import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.New;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.reflect.AnnotatedElement;
@@ -93,7 +92,7 @@ public class MicroprofileConfigurationProducer {
 
     @Produces
     public Config getConfiguration(){
-        return ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
+        return ConfigProvider.getConfig();
     }
 
     @Produces

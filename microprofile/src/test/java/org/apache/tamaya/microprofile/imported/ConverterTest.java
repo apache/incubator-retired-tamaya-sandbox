@@ -21,12 +21,10 @@ package org.apache.tamaya.microprofile.imported;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.tck.converters.Duck;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.*;
@@ -40,8 +38,12 @@ public class ConverterTest {
 
     private Config config = ConfigProvider.getConfig();
 
-    private Duck namedDuck = config.getValue("tck.config.test.javaconfig.converter.duckname", Duck.class);
-
+    @Test
+    public void testCustomConverter() {
+        Duck namedDuck = config.getValue("tck.config.test.javaconfig.converter.duckname", Duck.class);
+        Assert.assertNotNull(namedDuck);
+        Assert.assertEquals(namedDuck.getName(), "Hannelore");
+    }
 
     @Test
     public void testInteger() {
@@ -217,10 +219,6 @@ public class ConverterTest {
         Assert.assertFalse(config.getValue("tck.config.test.javaconfig.configvalue.boolean.off", boolean.class));
     }
 
-    @Test
-    public void testCustomConverter() {
-        Assert.assertEquals(namedDuck.getName(), "Hannelore");
-    }
 
     @Test
     public void testURLConverter() throws MalformedURLException {
