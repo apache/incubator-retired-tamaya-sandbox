@@ -96,8 +96,10 @@ final class MicroprofileConfigBuilder implements ConfigBuilder{
     @Override
     public ConfigBuilder addDiscoveredConverters() {
         for(Converter<?> converter: ServiceContextManager.getServiceContext().getServices(Converter.class)){
-            TypeLiteral lit = TypeLiteral.of(TypeLiteral.of(converter.getClass()).getType());
-            contextBuilder.addPropertyConverters(lit, MicroprofileAdapter.toPropertyConverter(converter));
+            TypeLiteral targetType = TypeLiteral.of(
+                    TypeLiteral.getGenericInterfaceTypeParameters(converter.getClass(),Converter.class)[0]);
+            contextBuilder.addPropertyConverters(targetType,
+                    MicroprofileAdapter.toPropertyConverter(converter));
         }
         return this;
     }

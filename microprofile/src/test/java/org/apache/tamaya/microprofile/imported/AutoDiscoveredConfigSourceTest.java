@@ -19,9 +19,9 @@
  *******************************************************************************/
 package org.apache.tamaya.microprofile.imported;
 
+import org.apache.tamaya.microprofile.imported.converters.Pizza;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.eclipse.microprofile.config.tck.converters.Pizza;
 import org.junit.Assert;
 import org.junit.Test;
 

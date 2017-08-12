@@ -23,17 +23,17 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-
-/**
- * A bean contains a config property injection
- *
- * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
- * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
- */
-@RequestScoped
-public class ConfigOwner {
-
-    @Inject
-    @ConfigProperty(name="my.long.value")
-    private Long configValue;
-}
+//
+///**
+// * A bean contains a config property injection
+// *
+// * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
+// * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
+// */
+//@RequestScoped
+//public class ConfigOwner {
+//
+//    @Inject
+//    @ConfigProperty(name="my.long.value")
+//    private Long configValue;
+//}

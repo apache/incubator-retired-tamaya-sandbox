@@ -26,7 +26,6 @@ import org.apache.tamaya.spi.PropertyConverter;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.test.spi.TestClass;
-import org.jboss.arquillian.testenricher.cdi.container.CDIExtension;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -34,6 +33,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
+import javax.enterprise.inject.spi.Extension;
 import java.io.File;
 
 /**
@@ -66,7 +66,7 @@ public class TamayaConfigArchiveProcessor implements ApplicationArchiveProcessor
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                     .addAsServiceProvider(ConfigProviderResolver.class, MicroprofileConfigProviderResolver.class)
                     .addAsServiceProvider(PropertyConverter.class, ProviderConverter.class)
-                    .addAsServiceProvider(CDIExtension.class, MicroprofileCDIExtension.class);
+                    .addAsServiceProvider(Extension.class, MicroprofileCDIExtension.class);
             ((WebArchive) applicationArchive).addAsLibraries(
                     configJar)
                     .addAsLibraries(apiLibs)

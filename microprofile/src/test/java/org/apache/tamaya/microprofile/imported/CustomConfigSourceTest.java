@@ -24,9 +24,6 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.inject.Inject;
-
-import static org.eclipse.microprofile.config.tck.base.AbstractTest.addFile;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
@@ -34,24 +31,6 @@ import static org.eclipse.microprofile.config.tck.base.AbstractTest.addFile;
 public class CustomConfigSourceTest {
 
     private Config config = ConfigProvider.getConfig();
-
-//    @Deployment
-//    public static WebArchive deploy() {
-//        JavaArchive testJar = ShrinkWrap
-//                .create(JavaArchive.class, "customConfigSourceTest.jar")
-//                .addClasses(org.eclipse.microprofile.config.tck.CustomConfigSourceTest.class, CustomDbConfigSource.class, CustomConfigSourceProvider.class)
-//                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-//                .addAsServiceProvider(ConfigSource.class, CustomDbConfigSource.class)
-//                .addAsServiceProvider(ConfigSourceProvider.class, CustomConfigSourceProvider.class)
-//                .as(JavaArchive.class);
-//
-//        addFile(testJar, "META-INF/microprofile-config.properties");
-//
-//        WebArchive war = ShrinkWrap
-//                .create(WebArchive.class, "customConfigSourceTest.war")
-//                .addAsLibrary(testJar);
-//        return war;
-//    }
 
 
     @Test

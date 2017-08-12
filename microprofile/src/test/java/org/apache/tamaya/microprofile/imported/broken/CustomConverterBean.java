@@ -31,16 +31,16 @@ import javax.inject.Inject;
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  */
 
-public class CustomConverterBean {
-
-    @RequestScoped
-    public static class ConfigOwner {
-
-        @Inject
-        @ConfigProperty(name="my.customtype.value")
-        private CustomType configValue;
-    }
-
-    public static class CustomType {
-    }
-}
+//public class CustomConverterBean {
+//
+//    @RequestScoped
+//    public static class ConfigOwner {
+//
+//        @Inject
+//        @ConfigProperty(name="my.customtype.value")
+//        private CustomType configValue;
+//    }
+//
+//    public static class CustomType {
+//    }
+//}

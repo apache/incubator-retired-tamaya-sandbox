@@ -42,7 +42,10 @@ under the License.
         <arquillian.version>1.1.13.Final</arquillian.version>
         <arquillian-weld-embedded.version>2.0.0.Beta5</arquillian-weld-embedded.version>
         <cdi2-api.version>2.0</cdi2-api.version>
-        <weld.version>3.0.0.Final</weld.version>
+        <weld-shaded.version>3.0.0.Final</weld-shaded.version>
+        <weld.version>2.2.7.Final</weld.version>
+        <deltaspike.version>1.1.0</deltaspike.version>
+        <openejb.version>4.7.1</openejb.version>
     </properties>
 
     <dependencies>
@@ -73,29 +76,48 @@ under the License.
             <artifactId>tamaya-functions</artifactId>
             <version>${tamaya-version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>javax.enterprise</groupId>-->
-            <!--<artifactId>cdi-api</artifactId>-->
-            <!--<version>1.2</version>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.geronimo.specs</groupId>-->
-            <!--<artifactId>geronimo-jcdi_1.1_spec</artifactId>-->
-            <!--<version>${geronimo-jcdi-1.1-spec.version}</version>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.microprofile.config</groupId>
-            <artifactId>microprofile-config-tck</artifactId>
-            <version>1.0</version>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
+            <version>${geronimo-jcdi-1.1-spec.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${weld.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.cdictrl</groupId>
+            <artifactId>deltaspike-cdictrl-weld</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-test-control-module-api</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-test-control-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Microprofile TCK support only -->
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
@@ -115,19 +137,31 @@ under the License.
             <scope>test</scope>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>openejb-core</artifactId>
+            <version>${openejb.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
         <profile>
-            <id>Weld3</id>
+            <id>TCK</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <dependencies>
                 <dependency>
+                    <groupId>org.eclipse.microprofile.config</groupId>
+                    <artifactId>microprofile-config-tck</artifactId>
+                    <version>1.0</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
                     <groupId>org.jboss.weld.se</groupId>
                     <artifactId>weld-se-shaded</artifactId>
-                    <version>${weld.version}</version>
+                    <version>${weld-shaded.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>

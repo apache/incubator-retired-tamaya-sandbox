@@ -16,16 +16,13 @@
  */
 package org.apache.tamaya.microprofile.cdi;
 
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.*;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.logging.Logger;
@@ -65,16 +62,18 @@ public class MicroprofileCDIExtension implements Extension {
         for (InjectionPoint injectionPoint : ips) {
             if (injectionPoint.getAnnotated().isAnnotationPresent(ConfigProperty.class)) {
                 final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
-                String key = annotation!=null?annotation.name():injectionPoint.getMember().getName();
+                String key = !annotation.name().isEmpty()?annotation.name():injectionPoint.getMember().getName();
                 Member member = injectionPoint.getMember();
-                if(member instanceof Field){
-                    if(annotation!=null){
-                        types.add(((Field)member).getType());
-                        configured = true;
-                        LOG.finest(() -> "Enabling Tamaya Microprofile Configuration on bean: " + configuredType.getName());
-                        configuredType.addConfiguredMember(injectionPoint, key);
-                    }
+                if(member instanceof Field) {
+                    types.add(((Field) member).getType());
+                }else if(member instanceof Method){
+                    types.add(((Method) member).getParameterTypes()[0]);
+                }else{
+                    continue;
                 }
+                configured = true;
+                LOG.finest(() -> "Enabling Tamaya Microprofile Configuration on bean: " + configuredType.getName());
+                configuredType.addConfiguredMember(injectionPoint, key);
             }
         }
         if(configured) {
@@ -92,78 +91,9 @@ public class MicroprofileCDIExtension implements Extension {
 
     public void addConverter(@Observes final AfterBeanDiscovery abd, final BeanManager bm) {
         if(!types.isEmpty() && convBean!=null) {
-            abd.addBean(new ConverterBean(convBean, types));
+            abd.addBean(new BridgingConfigBean(convBean, types));
         }
     }
 
-
-    /**
-     * Internally used conversion bean.
-     */
-    private static class ConverterBean implements Bean<Object> {
-
-        private final Bean<Object> delegate;
-        private final Set<Type> types;
-
-        public ConverterBean(final Bean convBean, final Set<Type> types) {
-            this.types = types;
-            this.delegate = Objects.requireNonNull(convBean);
-        }
-
-        @Override
-        public Set<Type> getTypes() {
-            return types;
-        }
-
-        @Override
-        public Class<?> getBeanClass() {
-            return delegate.getBeanClass();
-        }
-
-        @Override
-        public Set<InjectionPoint> getInjectionPoints() {
-            return delegate.getInjectionPoints();
-        }
-
-        @Override
-        public String getName() {
-            return delegate.getName();
-        }
-
-        @Override
-        public Set<Annotation> getQualifiers() {
-            return delegate.getQualifiers();
-        }
-
-        @Override
-        public Class<? extends Annotation> getScope() {
-            return delegate.getScope();
-        }
-
-        @Override
-        public Set<Class<? extends Annotation>> getStereotypes() {
-            return delegate.getStereotypes();
-        }
-
-        @Override
-        public boolean isAlternative() {
-            return delegate.isAlternative();
-        }
-
-        @Override
-        public boolean isNullable() {
-            return delegate.isNullable();
-        }
-
-        @Override
-        public Object create(CreationalContext<Object> creationalContext) {
-            return delegate.create(creationalContext);
-        }
-
-        @Override
-        public void destroy(Object instance, CreationalContext<Object> creationalContext) {
-            delegate.destroy(instance, creationalContext);
-        }
-    }
 
 }

@@ -19,44 +19,42 @@
  */
 package org.apache.tamaya.microprofile.imported;
 
-import org.eclipse.microprofile.config.tck.OptionalValuesBean;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.testng.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.apache.deltaspike.testcontrol.api.TestControl;
+import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
+import org.apache.openejb.jee.EjbJar;
+import org.apache.openejb.junit.ApplicationComposer;
+import org.apache.openejb.testing.Classes;
+import org.apache.openejb.testing.Module;
+import org.apache.tamaya.microprofile.cdi.MicroprofileCDIExtension;
+import org.apache.tamaya.microprofile.cdi.MicroprofileConfigurationProducer;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Verify injection of {@code Optional<T>} fields.
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class CdiOptionalInjectionTest extends Arquillian{
+@RunWith(ApplicationComposer.class)
+public class CdiOptionalInjectionTest{
 
-    private @Inject OptionalValuesBean optionalValuesBean;
-
-    @Deployment
-    public static WebArchive deploy() {
-        JavaArchive testJar = ShrinkWrap
-                .create(JavaArchive.class, "cdiOptionalInjectionTest.jar")
-                .addClasses(org.eclipse.microprofile.config.tck.CdiOptionalInjectionTest.class, OptionalValuesBean.class)
-                .addAsManifestResource(new StringAsset("my.optional.int.property=1234\nmy.optional.string.property=hello"),
-                        "microprofile-config.properties")
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                .as(JavaArchive.class);
-
-        WebArchive war = ShrinkWrap
-                .create(WebArchive.class, "cdiOptionalInjectionTest.war")
-                .addAsLibrary(testJar);
-        return war;
+    @Module
+    @Classes(cdi = true, value = {
+            OptionalValuesBean.class,
+            MicroprofileCDIExtension.class,
+            MicroprofileConfigurationProducer.class
+    })
+    public EjbJar jar() {
+        return new EjbJar("config");
     }
 
+    private @Inject OptionalValuesBean optionalValuesBean;
 
     @Test
     public void testOptionalInjection() {

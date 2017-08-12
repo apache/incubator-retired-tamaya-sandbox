@@ -21,18 +21,11 @@ package org.apache.tamaya.microprofile.imported;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.eclipse.microprofile.config.tck.base.AbstractTest;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.inject.Inject;
 import java.io.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -45,23 +38,6 @@ import java.util.Properties;
 public class ConfigProviderTest {
 
     private Config config = ConfigProvider.getConfig();
-
-    @Deployment
-    public static WebArchive deploy() {
-        JavaArchive testJar = ShrinkWrap
-                .create(JavaArchive.class, "configProviderTest.jar")
-                .addPackage(AbstractTest.class.getPackage())
-                .addClass(org.eclipse.microprofile.config.tck.ConfigProviderTest.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                .as(JavaArchive.class);
-
-        AbstractTest.addFile(testJar, "META-INF/microprofile-config.properties");
-
-        WebArchive war = ShrinkWrap
-                .create(WebArchive.class, "configProviderTest.war")
-                .addAsLibrary(testJar);
-        return war;
-    }
 
     @Test
     public void testEnvironmentConfigSource() {
@@ -76,7 +52,10 @@ public class ConfigProviderTest {
         Properties properties = System.getProperties();
 
         for (Map.Entry<Object, Object> propEntry : properties.entrySet()) {
-            String propValue = (String) propEntry.getValue();
+            if(!String.class.equals(propEntry.getValue().getClass())){
+                continue;
+            }
+            String propValue = propEntry.getValue().toString();
             if (propValue != null && propValue.length() > 0) {
                 Assert.assertEquals(propValue, config.getValue((String) propEntry.getKey(), String.class));
             }

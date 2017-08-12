@@ -23,6 +23,8 @@ import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import javax.inject.Provider;
+import java.lang.reflect.Type;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -34,11 +36,15 @@ public class ProviderConverter implements PropertyConverter<Provider> {
 
     @Override
     public Provider<?> convert(String value, ConversionContext context) {
-        TypeLiteral<Provider> target = (TypeLiteral<Provider>)context.getTargetType();
+        TypeLiteral<Optional> target = (TypeLiteral<Optional>)context.getTargetType();
+        Type targetType = TypeLiteral.getTypeParameters(target.getType())[0];
         return () -> {
             Object result = null;
+            if(String.class.equals(targetType)){
+                result = value;
+            }
             for(PropertyConverter pv:context.getConfigurationContext().getPropertyConverters(
-                    TypeLiteral.of(target.getType()))){
+                    TypeLiteral.of(targetType))){
                 result = pv.convert(value, context);
                 if(result!=null){
                     break;

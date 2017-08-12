@@ -31,7 +31,7 @@ import java.util.Objects;
  * Event published for items configured by CDI extensions. This is for example used by the documentation module
  * to automatically track the configuration endpoints for documentation.
  */
-class ConfiguredType {
+public class ConfiguredType {
 
     private final Class<?> type;
     private final List<ConfiguredMethod> methods = new ArrayList<>();
@@ -63,7 +63,7 @@ class ConfiguredType {
 
     /**
      * Used to build up during injection point processing.
-     * @param injectionPoint the CDI injection ppint, not null.
+     * @param injectionPoint the CDI injection point, not null.
      * @param key the possible config key, not null.
      */
     void addConfiguredMember(InjectionPoint injectionPoint, String key) {

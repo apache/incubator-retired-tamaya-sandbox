@@ -19,10 +19,18 @@
 
 package org.apache.tamaya.microprofile.imported;
 
+import org.apache.openejb.jee.EjbJar;
+import org.apache.openejb.junit.ApplicationComposer;
+import org.apache.openejb.testing.Classes;
+import org.apache.openejb.testing.Module;
+import org.apache.tamaya.microprofile.cdi.MicroprofileCDIExtension;
+import org.apache.tamaya.microprofile.cdi.MicroprofileConfigurationProducer;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.jboss.arquillian.testng.Arquillian;
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.CDI;
@@ -31,19 +39,42 @@ import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.eclipse.microprofile.config.tck.matchers.AdditionalMatchers.floatCloseTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test cases for CDI-based API that test retrieving values from the configuration.
  * The tests depend only on CDI 1.2.
  * @author Ondrej Mihalyi
  */
-public class CDIPlainInjectionTest extends Arquillian{
+@RunWith(ApplicationComposer.class)
+public class CDIPlainInjectionTest{
 
     private static final String DEFAULT_PROPERTY_BEAN_KEY =
             "org.eclipse.microprofile.config.tck.CDIPlainInjectionTest.defaultPropertyBean.configProperty";
+
+    static{
+        System.setProperty("my.string.property", "text");
+        System.setProperty("my.boolean.property", "true");
+        System.setProperty("my.int.property", "5");
+        System.setProperty("my.long.property", "10");
+        System.setProperty("my.float.property", "10.5");
+        System.setProperty("my.double.property", "11.5");
+        System.setProperty(DEFAULT_PROPERTY_BEAN_KEY, "pathConfigValue");
+    }
+
+    @Module
+    @Classes(cdi = true, value = {
+            SimpleValuesBean.class,  DynamicValuesBean.class, DefaultPropertyBean.class,
+            MicroprofileCDIExtension.class,
+            MicroprofileConfigurationProducer.class
+    })
+    public EjbJar jar() {
+        ensure_all_property_values_are_defined();
+        return new EjbJar("config");
+    }
+
 
     @Test
     public void can_inject_simple_values_when_defined() {
@@ -55,13 +86,13 @@ public class CDIPlainInjectionTest extends Arquillian{
         assertThat(bean.booleanProperty, is(true));
         assertThat(bean.intProperty, is(equalTo(5)));
         assertThat(bean.longProperty, is(equalTo(10L)));
-        assertThat(bean.floatProperty, is(floatCloseTo(10.5f, 0.1f)));
+        assertEquals(bean.floatProperty, 10.5f, 0.1f);
         assertThat(bean.doubleProperty, is(closeTo(11.5, 0.1)));
 
         assertThat(bean.booleanObjProperty, is(true));
         assertThat(bean.integerProperty, is(equalTo(5)));
         assertThat(bean.longObjProperty, is(equalTo(10L)));
-        assertThat(bean.floatObjProperty, is(floatCloseTo(10.5f, 0.1f)));
+        assertEquals(bean.floatObjProperty, 10.5f, 0.1f);
         assertThat(bean.doubleObjProperty, is(closeTo(11.5, 0.1)));
 
         assertThat(bean.doublePropertyWithDefaultValue, is(closeTo(3.1415, 0.1)));
@@ -101,7 +132,8 @@ public class CDIPlainInjectionTest extends Arquillian{
         System.setProperty(DEFAULT_PROPERTY_BEAN_KEY, "pathConfigValue");
     }
 
-    private void clear_all_property_values() {
+    @After
+    public void clear_all_property_values() {
         System.getProperties().remove("my.string.property");
         System.getProperties().remove("my.boolean.property");
         System.getProperties().remove("my.int.property");

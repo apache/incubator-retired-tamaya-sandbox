@@ -28,9 +28,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Optional;
 
-@Dependent
+@Singleton
 public class OptionalValuesBean {
     @Inject
     @ConfigProperty(name="my.optional.int.property")

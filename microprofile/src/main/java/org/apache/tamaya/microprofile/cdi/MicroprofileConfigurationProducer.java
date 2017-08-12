@@ -26,10 +26,10 @@ import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,26 +50,43 @@ public class MicroprofileConfigurationProducer {
 
         // unless the extension is not installed, this should never happen because the extension
         // enforces the resolvability of the config
-        Configuration config = ConfigurationProvider.getConfiguration();
-        final Class<?> toType = (Class<?>) injectionPoint.getAnnotated().getBaseType();
+
         String defaultTextValue = annotation.defaultValue().isEmpty() ? null : annotation.defaultValue();
-        String textValue = config.get(key);
+        ConversionContext conversionContext = createConversionContext(key, injectionPoint);
+        Object value = resolveValue(defaultTextValue, conversionContext, injectionPoint);
+        if (value == null) {
+            throw new ConfigException(String.format(
+                    "Can't resolve any of the possible config keys: %s to the required target type: %s, supported formats: %s",
+                    key, conversionContext.getTargetType(), conversionContext.getSupportedFormats().toString()));
+        }
+        LOGGER.finest(String.format("Injecting %s for key %s in class %s", key, value.toString(), injectionPoint.toString()));
+        return value;
+    }
+
+    static ConversionContext createConversionContext(String key, InjectionPoint injectionPoint) {
+        final Type targetType = injectionPoint.getAnnotated().getBaseType();
+        Configuration config = ConfigurationProvider.getConfiguration();
         ConversionContext.Builder builder = new ConversionContext.Builder(config,
-                ConfigurationProvider.getConfiguration().getContext(), key, TypeLiteral.of(toType));
+                ConfigurationProvider.getConfiguration().getContext(), key, TypeLiteral.of(targetType));
         if (injectionPoint.getMember() instanceof AnnotatedElement) {
             builder.setAnnotatedElement((AnnotatedElement) injectionPoint.getMember());
         }
-        ConversionContext conversionContext = builder.build();
+        return builder.build();
+    }
+
+    static Object resolveValue(String defaultTextValue, ConversionContext context, InjectionPoint injectionPoint) {
+        Configuration config = ConfigurationProvider.getConfiguration();
+        String textValue = config.get(context.getKey());
         if (textValue == null) {
             textValue = defaultTextValue;
         }
         Object value = null;
         if (textValue != null) {
-            List<PropertyConverter<Object>> converters = ConfigurationProvider.getConfiguration().getContext()
-                    .getPropertyConverters(TypeLiteral.of(toType));
+            List<PropertyConverter> converters = ConfigurationProvider.getConfiguration().getContext()
+                    .getPropertyConverters((TypeLiteral)context.getTargetType());
             for (PropertyConverter<Object> converter : converters) {
                 try {
-                    value = converter.convert(textValue, conversionContext);
+                    value = converter.convert(textValue, context);
                     if (value != null) {
                         LOGGER.log(Level.FINEST, "Parsed default value from '" + textValue + "' into " +
                                 injectionPoint);
@@ -81,12 +98,6 @@ public class MicroprofileConfigurationProducer {
                 }
             }
         }
-        if (value == null) {
-            throw new ConfigException(String.format(
-                    "Can't resolve any of the possible config keys: %s to the required target type: %s, supported formats: %s",
-                    key, toType.getName(), conversionContext.getSupportedFormats().toString()));
-        }
-        LOGGER.finest(String.format("Injecting %s for key %s in class %s", key, value.toString(), injectionPoint.toString()));
         return value;
     }
 
@@ -99,5 +110,27 @@ public class MicroprofileConfigurationProducer {
     public ConfigBuilder getConfigBuilder(){
         return ConfigProviderResolver.instance().getBuilder();
     }
+
+//    @Produces
+//    @ConfigProperty
+//    public Provider getConfiguredProvider(InjectionPoint injectionPoint){
+//        final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
+//        String key = annotation.name();
+//
+//        // unless the extension is not installed, this should never happen because the extension
+//        // enforces the resolvability of the config
+//
+//        String defaultTextValue = annotation.defaultValue().isEmpty() ? null : annotation.defaultValue();
+//        ConversionContext conversionContext = createConversionContext(key, injectionPoint);
+//        return () -> {
+//            Object value = resolveValue(defaultTextValue, conversionContext, injectionPoint);
+//            if (value == null) {
+//                throw new ConfigException(String.format(
+//                        "Can't resolve any of the possible config keys: %s to the required target type: %s, supported formats: %s",
+//                        key, conversionContext.getTargetType(), conversionContext.getSupportedFormats().toString()));
+//            }
+//            return value;
+//        };
+//    }
 
 }

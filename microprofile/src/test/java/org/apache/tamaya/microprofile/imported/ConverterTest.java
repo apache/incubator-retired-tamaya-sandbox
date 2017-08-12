@@ -19,9 +19,9 @@
  */
 package org.apache.tamaya.microprofile.imported;
 
+import org.apache.tamaya.microprofile.imported.converters.Duck;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.tck.converters.Duck;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -28,6 +28,7 @@ public class PizzaConverter implements Converter<Pizza> {
 
     @Override
     public Pizza convert(String value) {
-        return new Pizza(value.split(":"));
+        String[] parts = value.split(":");
+        return new Pizza(parts[0], parts[1]);
     }
 }
