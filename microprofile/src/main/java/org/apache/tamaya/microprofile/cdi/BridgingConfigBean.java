@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Internally used conversion bean.
  */
-class BridgingConfigBean implements Bean<Object> {
+final class BridgingConfigBean implements Bean<Object> {
 
     private final Bean<Object> delegate;
     private final Set<Type> types;

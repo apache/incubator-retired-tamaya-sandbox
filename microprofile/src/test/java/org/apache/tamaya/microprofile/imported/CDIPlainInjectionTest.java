@@ -23,8 +23,7 @@ import org.apache.openejb.jee.EjbJar;
 import org.apache.openejb.junit.ApplicationComposer;
 import org.apache.openejb.testing.Classes;
 import org.apache.openejb.testing.Module;
-import org.apache.tamaya.microprofile.cdi.MicroprofileCDIExtension;
-import org.apache.tamaya.microprofile.cdi.MicroprofileConfigurationProducer;
+import org.apache.tamaya.microprofile.cdi.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.After;
@@ -68,7 +67,9 @@ public class CDIPlainInjectionTest{
     @Classes(cdi = true, value = {
             SimpleValuesBean.class,  DynamicValuesBean.class, DefaultPropertyBean.class,
             MicroprofileCDIExtension.class,
-            MicroprofileConfigurationProducer.class
+            MicroprofileConfigurationProducer.class,
+            ConfiguredType.class, ConfiguredMethod.class, ConfiguredField.class,
+            BridgingConfigBean.class
     })
     public EjbJar jar() {
         ensure_all_property_values_are_defined();

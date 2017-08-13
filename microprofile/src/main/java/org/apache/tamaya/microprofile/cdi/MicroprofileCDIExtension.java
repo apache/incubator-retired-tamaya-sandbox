@@ -61,6 +61,7 @@ public class MicroprofileCDIExtension implements Extension {
         boolean configured = false;
         for (InjectionPoint injectionPoint : ips) {
             if (injectionPoint.getAnnotated().isAnnotationPresent(ConfigProperty.class)) {
+                System.err.println("Configured: " + injectionPoint);
                 final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
                 String key = !annotation.name().isEmpty()?annotation.name():injectionPoint.getMember().getName();
                 Member member = injectionPoint.getMember();
@@ -86,7 +87,6 @@ public class MicroprofileCDIExtension implements Extension {
         if (ppm.getAnnotated().isAnnotationPresent(ConfigProperty.class)) {
             convBean = ppm.getBean();
         }
-
     }
 
     public void addConverter(@Observes final AfterBeanDiscovery abd, final BeanManager bm) {

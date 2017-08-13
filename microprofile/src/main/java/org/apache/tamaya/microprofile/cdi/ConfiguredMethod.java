@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 /**
  * Implementation of a configured methods for CDI module.
  */
-public class ConfiguredMethod {
+public final class ConfiguredMethod {
 
     private final Method method;
     private String key;

@@ -45,6 +45,7 @@ public class MicroprofileConfigurationProducer {
     @Produces
     @ConfigProperty
     public Object resolveAndConvert(final InjectionPoint injectionPoint) {
+        System.err.println("Inject: " + injectionPoint);
         final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
         String key = annotation.name();
 

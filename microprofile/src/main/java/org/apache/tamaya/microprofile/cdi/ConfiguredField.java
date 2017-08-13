@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 /**
  * CDI implementation for event publishing of configured instances.
  */
-class ConfiguredField {
+public final class ConfiguredField {
 
     private final Field field;
     private String key;

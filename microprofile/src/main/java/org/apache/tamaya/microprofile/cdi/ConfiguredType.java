@@ -31,7 +31,7 @@ import java.util.Objects;
  * Event published for items configured by CDI extensions. This is for example used by the documentation module
  * to automatically track the configuration endpoints for documentation.
  */
-public class ConfiguredType {
+public final class ConfiguredType {
 
     private final Class<?> type;
     private final List<ConfiguredMethod> methods = new ArrayList<>();
