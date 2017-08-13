@@ -85,16 +85,6 @@ final class BridgingConfigBean implements Bean<Object> {
 
     @Override
     public Object create(CreationalContext<Object> creationalContext) {
-//        Set<InjectionPoint> injectionPoints = delegate.getInjectionPoints();
-//        for(InjectionPoint injectionPoint:injectionPoints){
-//            final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
-//            String key = annotation.name();
-//            ConversionContext context =
-//                    MicroprofileConfigurationProducer.createConversionContext(key, injectionPoint);
-//            Object result = MicroprofileConfigurationProducer.resolveValue(annotation.defaultValue(), context, injectionPoint);
-//            creationalContext.push(result);
-//            return result;
-//        }
         return this.delegate.create(creationalContext);
     }
 

@@ -21,6 +21,7 @@ package org.apache.tamaya.microprofile.tck;
 import org.apache.tamaya.microprofile.MicroprofileAdapter;
 import org.apache.tamaya.microprofile.MicroprofileConfigProviderResolver;
 import org.apache.tamaya.microprofile.cdi.MicroprofileCDIExtension;
+import org.apache.tamaya.microprofile.converter.BooleanAsIntegerConverterFix;
 import org.apache.tamaya.spi.PropertyConverter;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
@@ -61,10 +62,10 @@ public class TamayaConfigArchiveProcessor implements ApplicationArchiveProcessor
                     .create(JavaArchive.class, "tamaya-config-impl.jar")
                     .addPackage(MicroprofileAdapter.class.getPackage())
                     .addPackage(MicroprofileCDIExtension.class.getPackage())
-//                    .addPackage(ProviderConverter.class.getPackage())
+                    .addPackage(BooleanAsIntegerConverterFix.class.getPackage())
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                     .addAsServiceProvider(ConfigProviderResolver.class, MicroprofileConfigProviderResolver.class)
-//                    .addAsServiceProvider(PropertyConverter.class, ProviderConverter.class)
+                    .addAsServiceProvider(PropertyConverter.class, BooleanAsIntegerConverterFix.class)
                     .addAsServiceProvider(Extension.class, MicroprofileCDIExtension.class);
             ((WebArchive) applicationArchive).addAsLibraries(
                     configJar)
