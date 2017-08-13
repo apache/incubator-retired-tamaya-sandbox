@@ -16,6 +16,7 @@
  */
 package org.apache.tamaya.microprofile.cdi;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.tamaya.*;
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.apache.commons.lang.WordUtils.uncapitalize;
+
 /**
  * Producer bean for configuration properties.
  */
@@ -45,9 +48,12 @@ public class MicroprofileConfigurationProducer {
     @Produces
     @ConfigProperty
     public Object resolveAndConvert(final InjectionPoint injectionPoint) {
-        System.err.println("Inject: " + injectionPoint);
+        LOGGER.finest( () -> "Inject: " + injectionPoint);
         final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
         String key = annotation.name();
+        if(key.isEmpty()){
+            key = getDefaultKey(injectionPoint);
+        }
 
         // unless the extension is not installed, this should never happen because the extension
         // enforces the resolvability of the config
@@ -64,6 +70,16 @@ public class MicroprofileConfigurationProducer {
         return value;
     }
 
+    static String getDefaultKey(InjectionPoint injectionPoint) {
+        String memberName = injectionPoint.getMember().getName();
+        String beanClassNames[] = injectionPoint.getBean().getBeanClass().getName().split("\\$");
+        if(beanClassNames.length==1) {
+            return beanClassNames[0] + "." + uncapitalize(memberName);
+        }else{
+            return beanClassNames[0] + "." + uncapitalize(beanClassNames[1]) + "." + uncapitalize(memberName);
+        }
+    }
+
     static ConversionContext createConversionContext(String key, InjectionPoint injectionPoint) {
         final Type targetType = injectionPoint.getAnnotated().getBaseType();
         Configuration config = ConfigurationProvider.getConfiguration();
@@ -76,12 +92,12 @@ public class MicroprofileConfigurationProducer {
     }
 
     static Object resolveValue(String defaultTextValue, ConversionContext context, InjectionPoint injectionPoint) {
-        Configuration config = ConfigurationProvider.getConfiguration();
-        String textValue = config.get(context.getKey());
-        if (textValue == null) {
-            textValue = defaultTextValue;
-        }
+        Config config = ConfigProviderResolver.instance().getConfig();
+        String textValue = config.getOptionalValue(context.getKey(), String.class).orElse(defaultTextValue);
         Object value = null;
+        if(String.class.equals(context.getTargetType().getRawType())){
+            value = textValue;
+        }
         if (textValue != null) {
             List<PropertyConverter> converters = ConfigurationProvider.getConfiguration().getContext()
                     .getPropertyConverters((TypeLiteral)context.getTargetType());

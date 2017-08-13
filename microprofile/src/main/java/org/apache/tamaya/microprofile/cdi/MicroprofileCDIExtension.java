@@ -63,7 +63,7 @@ public class MicroprofileCDIExtension implements Extension {
             if (injectionPoint.getAnnotated().isAnnotationPresent(ConfigProperty.class)) {
                 System.err.println("Configured: " + injectionPoint);
                 final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
-                String key = !annotation.name().isEmpty()?annotation.name():injectionPoint.getMember().getName();
+                String key = !annotation.name().isEmpty()?annotation.name():MicroprofileConfigurationProducer.getDefaultKey(injectionPoint);
                 Member member = injectionPoint.getMember();
                 if(member instanceof Field) {
                     types.add(((Field) member).getType());

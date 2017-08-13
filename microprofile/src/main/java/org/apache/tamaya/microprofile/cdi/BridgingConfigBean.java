@@ -79,7 +79,8 @@ final class BridgingConfigBean implements Bean<Object> {
 
     @Override
     public boolean isNullable() {
-        return delegate.isNullable();
+        return false;
+        // delegate.isNullable();
     }
 
     @Override

@@ -27,13 +27,12 @@ import org.apache.tamaya.microprofile.cdi.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.HashMap;
@@ -48,12 +47,11 @@ import static org.junit.Assert.assertEquals;
  * The tests depend only on CDI 1.2.
  * @author Ondrej Mihalyi
  */
-@Ignore
 @RunWith(ApplicationComposer.class)
 public class CDIPlainInjectionTest{
 
     private static final String DEFAULT_PROPERTY_BEAN_KEY =
-            "org.eclipse.microprofile.config.tck.CDIPlainInjectionTest.defaultPropertyBean.configProperty";
+            "org.apache.tamaya.microprofile.imported.CDIPlainInjectionTest.defaultPropertyBean.configProperty";
 
     static{
         System.setProperty("my.string.property", "text");
@@ -65,9 +63,12 @@ public class CDIPlainInjectionTest{
         System.setProperty(DEFAULT_PROPERTY_BEAN_KEY, "pathConfigValue");
     }
 
+    @Inject
+    private Instance<Object> instance;
+
     @Module
     @Classes(cdi = true, value = {
-            SimpleValuesBean.class,  DynamicValuesBean.class, DefaultPropertyBean.class,
+            SimpleValuesBean.class,  /*DynamicValuesBean.class, */ DefaultPropertyBean.class,
             MicroprofileCDIExtension.class,
             MicroprofileConfigurationProducer.class,
             ConfiguredType.class, ConfiguredMethod.class, ConfiguredField.class,
@@ -101,6 +102,7 @@ public class CDIPlainInjectionTest{
     }
 
     @Test
+    @Ignore
     public void can_inject_dynamic_values_via_CDI_provider() {
         clear_all_property_values();
 
@@ -146,7 +148,7 @@ public class CDIPlainInjectionTest{
     }
 
     private <T> T getBeanOfType(Class<T> beanClass) {
-        return CDI.current().select(beanClass).get();
+        return instance.select(beanClass).get();
     }
 
     @Dependent
@@ -204,7 +206,7 @@ public class CDIPlainInjectionTest{
 
     }
 
-    @Dependent
+//    @Dependent
     public static class DynamicValuesBean {
 
         @Inject
