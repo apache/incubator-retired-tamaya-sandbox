@@ -1,3 +1,32 @@
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - UI (MutableConfig)
+Bundle-SymbolicName: org.apache.tamaya.ui.mutableconfig
+Bundle-Description: Apacha Tamaya Configuration - Web UI (Mutable Config)
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev-tamaya@incubator.apache.org
+Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.ui.mutableconfig
-Bundle-SymbolicName: org.apache.tamaya.ui.mutableconfig
+Import-Package: \
+    org.apache.tamaya,\
+    org.apache.tamaya.spi,\
+    org.apache.tamaya.ui,\
+    org.apache.tamaya.ui.event,\
+    org.apache.tamaya.ui.spi,\
+    org.apache.tamaya.ui.views
+Export-Service: \
+    org.apache.tamaya.ui.ViewProvider

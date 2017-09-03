@@ -10,9 +10,9 @@ javac.source: 1.8
 javac.target: 1.8
 
 Bundle-Version: ${version}.${tstamp}
-Bundle-Name: Apache Tamaya - Usagetracker
-Bundle-SymbolicName: org.apache.tamaya.usagetracker
-Bundle-Description: Apacha Tamaya Configuration - UsageTracker
+Bundle-Name: Apache Tamaya - Microprofile
+Bundle-SymbolicName: org.apache.tamaya.microprofile
+Bundle-Description: Apacha Tamaya Config - Microprofile Implementation
 Bundle-Category: Implementation
 Bundle-Copyright: (C) Apache Foundation
 Bundle-License: Apache Licence version 2
@@ -20,14 +20,15 @@ Bundle-Vendor: Apache Software Foundation
 Bundle-ContactAddress: dev-tamaya@incubator.apache.org
 Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
-	org.apache.tamaya.usagetracker,\
-    org.apache.tamaya.usagetracker.spi
+	org.apache.tamaya.microprofile,\
+    org.apache.tamaya.microprofile.cdi,\
+    org.apache.tamaya.microprofile.converter
 Import-Package: \
     org.apache.tamaya,\
     org.apache.tamaya.spi,\
-    org.apache.tamaya.events
+    org.eclipse.microprofile.config
 Export-Service: \
-    org.apache.tamaya.events.ConfigEventListener,\
-    org.apache.tamaya.model.spi.ModelProviderSpi,\
-    org.apache.tamaya.spi.PropertyFilter,\
-    org.apache.tamaya.usagetracker.spi.ConfigUsageSpi
+    org.apache.tamaya.spi.PropertyConverter,\
+    org.apache.tamaya.spi.ProperySource,\
+    org.eclipse.microprofile.config.spi.ConfigProviderResolver,\
+    javax.enterprise.inject.spi.Extension

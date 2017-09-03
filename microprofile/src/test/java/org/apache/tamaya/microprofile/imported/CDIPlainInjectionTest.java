@@ -68,7 +68,7 @@ public class CDIPlainInjectionTest{
 
     @Module
     @Classes(cdi = true, value = {
-            SimpleValuesBean.class,  /*DynamicValuesBean.class, */ DefaultPropertyBean.class,
+            SimpleValuesBean.class,  DynamicValuesBean.class, DefaultPropertyBean.class,
             MicroprofileCDIExtension.class,
             MicroprofileConfigurationProducer.class,
             ConfiguredType.class, ConfiguredMethod.class, ConfiguredField.class,
@@ -102,7 +102,6 @@ public class CDIPlainInjectionTest{
     }
 
     @Test
-    @Ignore
     public void can_inject_dynamic_values_via_CDI_provider() {
         clear_all_property_values();
 
@@ -206,7 +205,7 @@ public class CDIPlainInjectionTest{
 
     }
 
-//    @Dependent
+    @Dependent
     public static class DynamicValuesBean {
 
         @Inject

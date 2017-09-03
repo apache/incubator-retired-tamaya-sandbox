@@ -26,9 +26,12 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.*;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Provider;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.List;

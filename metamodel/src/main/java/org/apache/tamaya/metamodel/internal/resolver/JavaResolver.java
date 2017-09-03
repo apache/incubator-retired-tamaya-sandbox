@@ -21,6 +21,7 @@ package org.apache.tamaya.metamodel.internal.resolver;
 import bsh.*;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
+import org.osgi.service.component.annotations.Component;
 
 import java.io.*;
 import java.util.Map;
@@ -37,6 +38,7 @@ import java.util.logging.Logger;
  *     <li>{@code ${java:expression} }, whereas <i>expression</i> evaluates to the required type.</li>
  * </ul>
  */
+@Component
 public final class JavaResolver implements SimpleResolver{
 
     private static final Logger LOG = Logger.getLogger(JavaResolver.class.getName());

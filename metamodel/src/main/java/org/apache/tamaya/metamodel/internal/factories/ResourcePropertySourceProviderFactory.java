@@ -26,6 +26,7 @@ import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.resource.ConfigResources;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertySourceProvider;
+import org.osgi.service.component.annotations.Component;
 
 import java.net.URL;
 import java.util.*;
@@ -35,6 +36,7 @@ import java.util.logging.Logger;
 /**
  * Factory for configuring resource based property sources.
  */
+@Component
 public class ResourcePropertySourceProviderFactory implements ItemFactory<PropertySourceProvider>{
 
     private static final Logger LOG = Logger.getLogger(ResourcePropertySourceProviderFactory.class.getName());

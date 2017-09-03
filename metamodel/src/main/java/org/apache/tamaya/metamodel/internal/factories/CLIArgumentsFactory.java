@@ -22,12 +22,14 @@ import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spisupport.CLIPropertySource;
 import org.apache.tamaya.spisupport.EnvironmentPropertySource;
+import org.osgi.service.component.annotations.Component;
 
 import java.util.Map;
 
 /**
  * Factory for configuring CLI argument based property sources.
  */
+@Component
 public final class CLIArgumentsFactory implements ItemFactory<PropertySource>{
     @Override
     public String getName() {

@@ -27,6 +27,7 @@ import org.apache.tamaya.metamodel.internal.ComponentConfigurator;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spisupport.PropertiesResourcePropertySource;
+import org.osgi.service.component.annotations.Component;
 
 import javax.security.auth.RefreshFailedException;
 import javax.security.auth.Refreshable;
@@ -40,6 +41,7 @@ import java.util.logging.Logger;
 /**
  * Factory for configuring resource based property sources.
  */
+@Component
 public class URLPropertySourceFactory implements ItemFactory<PropertySource>{
 
     private static final Logger LOG = Logger.getLogger(FilePropertySourceFactory.class.getName());

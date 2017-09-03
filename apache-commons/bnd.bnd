@@ -1,3 +1,28 @@
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - Commons Integration
+Bundle-SymbolicName: org.apache.tamaya.commons
+Bundle-Description: Apacha Tamaya Config - Commons Integration Support
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev-tamaya@incubator.apache.org
+Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.commons
-Bundle-SymbolicName: org.apache.tamaya.commons
+Import-Package: \
+    org.apache.tamaya,\
+    org.apache.tamaya.spi
+Export-Service: \
+    org.apache.tamaya.format.ConfigurationFormat

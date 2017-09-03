@@ -28,6 +28,7 @@ import org.apache.tamaya.spisupport.DefaultConfiguration;
 import org.apache.tamaya.spisupport.DefaultConfigurationContextBuilder;
 import org.apache.tamaya.spisupport.PropertyFilterComparator;
 import org.apache.tamaya.spisupport.PropertySourceComparator;
+import org.osgi.service.component.annotations.Component;
 
 import javax.annotation.Priority;
 import java.util.Objects;
@@ -37,6 +38,7 @@ import java.util.Objects;
  * Tamaya configuration context.
  */
 @Priority(10)
+@Component
 public class DSLLoadingConfigurationProviderSpi implements ConfigurationProviderSpi{
 
     private volatile Configuration config;

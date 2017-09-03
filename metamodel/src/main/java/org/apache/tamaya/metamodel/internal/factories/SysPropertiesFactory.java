@@ -22,12 +22,14 @@ package org.apache.tamaya.metamodel.internal.factories;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spisupport.SystemPropertySource;
+import org.osgi.service.component.annotations.Component;
 
 import java.util.Map;
 
 /**
  * Factory for configuring system properties based property sources.
  */
+@Component
 public final class SysPropertiesFactory implements ItemFactory<PropertySource>{
     @Override
     public String getName() {
