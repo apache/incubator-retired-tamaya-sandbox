@@ -23,7 +23,9 @@ Export-Package: \
 	org.apache.tamaya.consul
 Import-Package: \
     org.apache.tamaya,\
-    org.apache.tamaya.spi
+    org.apache.tamaya.spi,\
+    org.apache.tamaya.mutableconfig,\
+    org.apache.tamaya.mutableconfig.spi
 Export-Service: \
     org.apache.tamaya.spi.PropertySource
     
