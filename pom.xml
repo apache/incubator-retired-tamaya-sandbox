@@ -39,12 +39,8 @@ under the License.
         <url>https://apache.org</url>
     </organization>
 
-    <prerequisites>
-        <maven>3.0.5</maven>
-    </prerequisites>
-
     <properties>
-        <tamaya.version>3.0-incubating-SNAPSHOT</tamaya.version>
+        <tamaya.version>4.0-incubating-SNAPSHOT</tamaya.version>
         <commons-io.version>2.5</commons-io.version>
         <findbugs.skip>false</findbugs.skip>
         <jdkVersion>1.7</jdkVersion>
