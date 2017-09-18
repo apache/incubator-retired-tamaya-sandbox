@@ -10,24 +10,28 @@ javac.source: 1.8
 javac.target: 1.8
 
 Bundle-Version: ${version}.${tstamp}
-Bundle-Name: Apache Tamaya - OSGI ConfigurationPlugin
-Bundle-SymbolicName: org.apache.tamaya.osgi
-Bundle-Description: Apacha Tamaya Configuration - OSGI ConfigurationPlugin
+Bundle-Name: Apache Tamaya - Karaf Shell Commands
+Bundle-SymbolicName: org.apache.tamaya.osgi.karaf.shell
+Bundle-Description: Apacha Tamaya Configuration - Karaf Shell Extensions
 Bundle-Category: Implementation
 Bundle-Copyright: (C) Apache Foundation
 Bundle-License: Apache Licence version 2
 Bundle-Vendor: Apache Software Foundation
 Bundle-ContactAddress: dev-tamaya@incubator.apache.org
 Bundle-DocURL: http://tamaya.apache.org
-Bundle-Activator: org.apache.tamaya.osgi.Activator
 Export-Package: \
-	org.apache.tamaya.osgi
+	org.apache.tamaya.karaf.shell
 Import-Package: \
     org.osgi.service.cm,\
     org.osgi.framework,\
     org.apache.tamaya,\
     org.apache.tamaya.spi,\
     org.apache.tamaya.functions,\
-    org.apache.tamaya.spisupport
-Export-Service:   org.osgi.service.cm.ConfigurationPlugin,\
-    org.apache.tamaya.osgi.TamayaConfigPlugin
+    org.apache.tamaya.spisupport,\
+    org.apache.tamaya.osgi,\
+    org.apache.felix.service.command,\
+    org.apache.karaf.shell.api.console,\
+    org.apache.karaf.shell.api.action,\
+    org.apache.karaf.shell.api.action.lifecycle,\
+    org.apache.karaf.shell.support.completers
+Karaf-Commands: org.apache.tamaya.karaf.shell

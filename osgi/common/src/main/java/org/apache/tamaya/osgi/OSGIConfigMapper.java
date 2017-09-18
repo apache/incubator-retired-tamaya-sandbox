@@ -18,19 +18,21 @@
  */
 package org.apache.tamaya.osgi;
 
+import org.apache.tamaya.Configuration;
+import org.osgi.framework.ServiceReference;
+
 /**
  * Mapping function for mapping Tamaya configuration sections to OSGI pids.
  */
-public interface OSGIConfigRootMapper {
+public interface OSGIConfigMapper {
 
     /**
      * Map the given OSGI pid to a corresponding configuration section in Tamaya. Es an example (and this is also the
      * default implemented) a configuration mapping for {@code pid/factoryPid==myBundle} could be {@code [bundle:myBundle]}.
      * This mapping is used as a prefix when collecting the corresponding entries for the OSGI configuration.
      * @param pid the OSGI pid, or null
-     * @param factoryPid the OSGI factoryPid, or null
      * @return return the corresponding config root section. For ommitting any root section simply return an empty
      * String.
      */
-    String getTamayaConfigRoot(String pid, String factoryPid);
+    Configuration getConfiguration(String pid);
 }

@@ -27,63 +27,19 @@ limitations under the License.
     </parent>
 
     <artifactId>tamaya-karaf-features</artifactId>
-    <packaging>jar</packaging>
-    <description>Tamaya Karaf Integration Tests Suite.</description>
+    <packaging>feature</packaging>
     <name>Apache Tamaya :: Karaf :: Features</name>
-
-    <properties>
-        <karaf.version>4.0.7</karaf.version>
-        <pax.exam.version>4.5.0</pax.exam.version>
-    </properties>
+    <description>Tamaya Karaf Feature Descriptor.</description>
 
     <build>
         <plugins>
-
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>features</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/features</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                            <outputDirectory>target/features</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.12</version>
-                <executions>
-                    <execution>
-                        <id>attach-artifacts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>target/features/features.xml</file>
-                                    <type>xml</type>
-                                    <classifier>features</classifier>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <configuration>
+                    <startLevel>80</startLevel>
+                    <aggregateFeatures>true</aggregateFeatures>
+                </configuration>
             </plugin>
         </plugins>
     </build>

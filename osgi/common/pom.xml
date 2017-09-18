@@ -29,14 +29,14 @@
 
     <artifactId>tamaya-osgi_alpha</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tamaya :: OSGi Integration :: ConfigAdmin</name>
-    <description>Tamaya Based OSGI Implementation of ConfigAdmin and Config Injection</description>
+    <name>Apache Tamaya :: OSGi Integration :: ConfigurationPlugin</name>
+    <description>Tamaya Based OSGI ConfigurationPlugin Implementation</description>
 
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
