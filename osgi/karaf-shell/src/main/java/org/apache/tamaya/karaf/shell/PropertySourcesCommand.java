@@ -35,11 +35,16 @@ public class PropertySourcesCommand implements Action{
 
     public Object execute() throws IOException {
         Configuration config = ConfigurationProvider.getConfiguration();
+        System.out.print(StringUtil.format("ID", 20));
+        System.out.print(StringUtil.format("Ordinal", 20));
+        System.out.print(StringUtil.format("Class", 40));
+        System.out.println(StringUtil.format("Property Count", 5));
+        System.out.println(StringUtil.printRepeat("-", 80));
         for(PropertySource ps:config.getContext().getPropertySources()){
-            System.out.println("ID: " + ps.getName());
-            System.out.println("Ordinal: " + ps.getOrdinal());
-            System.out.println("Class: " + ps.getClass().getName());
-            System.out.println("Property Count:" + ps.getProperties().size());
+            System.out.print(StringUtil.format(ps.getName(), 20));
+            System.out.print(StringUtil.format(String.valueOf(ps.getOrdinal()), 20));
+            System.out.print(StringUtil.format(ps.getClass().getName(), 40));
+            System.out.println(StringUtil.format(String.valueOf(ps.getProperties().size()), 5));
             System.out.println("---");
         }
         return null;

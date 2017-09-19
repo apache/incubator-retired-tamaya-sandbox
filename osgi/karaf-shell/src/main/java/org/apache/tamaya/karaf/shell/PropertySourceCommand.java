@@ -44,12 +44,20 @@ public class PropertySourceCommand implements Action{
             if(ps==null){
                 System.out.println("No such propertysource: " + propertysource);
             }else {
-                System.out.println("ID: " + ps.getName());
-                System.out.println("Ordinal: " + ps.getOrdinal());
-                System.out.println("Class: " + ps.getClass().getName());
+                System.out.println(StringUtil.format("ID:", 20) + ps.getName());
+                System.out.println(StringUtil.format("Ordinal:", 20) + ps.getOrdinal());
+                System.out.println(StringUtil.format("Class:", 20) + ps.getClass().getName());
                 System.out.println("Properties:");
+                System.out.print(StringUtil.format("  Key", 20));
+                System.out.print(StringUtil.format("Value", 20));
+                System.out.print(StringUtil.format("Source", 20));
+                System.out.println(StringUtil.format("Meta-Entries", 20));
+                System.out.println(StringUtil.printRepeat("-", 80));
                 for(PropertyValue pv:ps.getProperties().values()) {
-                    System.out.println(pv);
+                    System.out.print("  " + StringUtil.format(pv.getKey(), 20));
+                    System.out.print(StringUtil.format(pv.getValue(), 20));
+                    System.out.print(StringUtil.format(pv.getSource(), 20));
+                    System.out.println(StringUtil.format(pv.getMetaEntries().toString(), 80));
                 }
             }
         }

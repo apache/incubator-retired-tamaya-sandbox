@@ -18,25 +18,29 @@
  */
 package org.apache.tamaya.karaf.shell;
 
-import org.apache.karaf.shell.api.action.Action;
-import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.lifecycle.Reference;
-import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
+/**
+ * Some String related helper methods.
+ */
+final class StringUtil {
 
-import java.io.IOException;
+    private StringUtil(){}
 
-@Command(scope = "tamaya", name = "get-policy", description="Get the current Tamaya overriding policy.")
-@Service
-public class GetPolicyCommand implements Action{
-
-    @Reference
-    private TamayaConfigPlugin configPlugin;
-
-    @Override
-    public Object execute() throws IOException {
-        System.out.println(this.configPlugin.getDefaultOperationMode());
-        return null;
+    public static String format(String in, int length){
+        if(in==null){
+            in = "";
+        }
+        int count = length - in.length();
+        if(count<0){
+            return in.substring(0,length-3) + "...";
+        }
+        return in + printRepeat(" ", count);
     }
 
+    public static String printRepeat(String s, int times) {
+        StringBuilder b = new StringBuilder();
+        for(int i=0;i<times;i++){
+            b.append(s);
+        }
+        return b.toString();
+    }
 }

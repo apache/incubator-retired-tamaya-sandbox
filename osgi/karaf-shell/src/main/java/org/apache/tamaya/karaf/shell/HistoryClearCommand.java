@@ -18,49 +18,49 @@
  */
 package org.apache.tamaya.karaf.shell;
 
-import org.apache.karaf.shell.api.action.Action;
-import org.apache.karaf.shell.api.action.Argument;
-import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Completion;
+import org.apache.karaf.shell.api.action.*;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.api.console.CommandLine;
 import org.apache.karaf.shell.api.console.Completer;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
-import org.apache.tamaya.osgi.OperationMode;
+import org.apache.tamaya.osgi.ConfigHistory;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-@Command(scope = "tamaya", name = "disable-by-default", description="Disables Tamaya by default for all bundles/services (default=false)." +
-        " Disabling it allows to explicitly enable bundles using 'Tamaya-Enable^manifest entries.")
+@Command(scope = "tamaya", name = "history-delete", description="Deletes the history of changes Tamaya applied to the OSGI configuration.")
 @Service
-public class DefaultDisableCommand implements Action{
+public class HistoryClearCommand implements Action{
 
     @Reference
     private TamayaConfigPlugin configPlugin;
 
-    @Argument(index = 0, name = "disabled", description = "The boolean value to disable Tamaya by default.",
-            required = true, multiValued = false)
-    @Completion(OperationModeCompleter.class)
-    boolean disabled;
+    @Argument(index = 0, name = "pid", description = "Allows to filter on the given PID.",
+            required = false, multiValued = false)
+    String pid;
 
     @Override
     public Object execute() throws IOException {
-        this.configPlugin.setDefaultDisabled(disabled);
+        int size = ConfigHistory.history(pid).size();
+        ConfigHistory.clearHistory(pid);
+        System.out.println("Deleted entries: " + size);
         return null;
     }
 
     @Service
-    public static final class OperationModeCompleter implements Completer {
+    public static final class FilterCompleter implements Completer {
 
         @Override
         public int complete(Session session, CommandLine commandLine, List<String> candidates) {
             StringsCompleter delegate = new StringsCompleter();
-            for(OperationMode mode: OperationMode.values()) {
-                delegate.getStrings().add(mode.toString());
+            for(ConfigHistory.TaskType taskType:ConfigHistory.TaskType.values()) {
+                delegate.getStrings().add(taskType.toString());
             }
             return delegate.complete(session, commandLine, candidates);
         }

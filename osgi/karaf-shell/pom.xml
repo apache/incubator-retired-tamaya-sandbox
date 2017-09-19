@@ -29,7 +29,7 @@
 
     <artifactId>tamaya-karaf-shell_alpha</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tamaya :: Karaf :: Shell</name>
+    <name>Apache Tamaya :: OSGI :: Karaf :: Shell</name>
     <description>Tamaya Karaf Shell Commands</description>
 
     <dependencies>
@@ -41,6 +41,11 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

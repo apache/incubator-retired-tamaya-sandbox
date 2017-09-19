@@ -38,8 +38,8 @@ public class InfoCommand  implements Action {
     public Object execute() throws IOException {
         Configuration config = ConfigurationProvider.getConfiguration();
         System.out.println(config.toString() + "\n\n"
-        + "OSGI OperationPolicy: " + configPlugin.getOperationMode() + '\n'
-        + "Default Disabled    : " + configPlugin.isDefaultDisabled());
+        + StringUtil.format("Default OperationMode:", 30) + configPlugin.getDefaultOperationMode() + '\n'
+        + StringUtil.format("Default Disabled: ", 30) + configPlugin.isDefaultDisabled());
         return null;
     }
 
