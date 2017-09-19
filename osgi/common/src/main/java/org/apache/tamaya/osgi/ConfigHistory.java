@@ -18,10 +18,12 @@
  */
 package org.apache.tamaya.osgi;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Class storing the history of changers done to the OSGI configuration by Tamaya.
@@ -86,6 +88,14 @@ public final class ConfigHistory {
             history.add(h);
         }
         return h;
+    }
+
+    public static void setMaxHistory(int maxHistory){
+        ConfigHistory.maxHistory = maxHistory;
+    }
+
+    public static int getMaxHistory(){
+        return maxHistory;
     }
 
     public static List<ConfigHistory> history(){
@@ -154,6 +164,27 @@ public final class ConfigHistory {
     public ConfigHistory setKey(String key) {
         this.key = key;
         return this;
+    }
+
+    public static void save(TamayaConfigPlugin plugin){
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(bos, "UTF-8", false, 4);
+        encoder.writeObject(history);
+        try {
+            bos.flush();
+            plugin.setConfigValue("history", new String(bos.toByteArray()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void restore(TamayaConfigPlugin plugin){
+        String serialized = (String)plugin.getConfigValue("history");
+        if(serialized!=null) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(serialized.getBytes());
+            XMLDecoder encoder = new XMLDecoder(bis);
+            ConfigHistory.history = (List<ConfigHistory>) encoder.readObject();
+        }
     }
 
     @Override

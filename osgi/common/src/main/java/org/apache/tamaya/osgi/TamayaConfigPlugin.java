@@ -23,7 +23,9 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +38,9 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     /** the logger. */
     private static final Logger LOG = Logger.getLogger(TamayaConfigPlugin.class.getName());
     private static final String TAMAYA_DISABLED = "tamaya.disabled";
+    public static final String TAMAYA_DISABLED_KEY = "Tamaya-Disabled";
+    public static final String TAMAYA_ENABLED_KEY = "Tamaya-Enabled";
+    public static final String TAMAYA_PID_KEY = "Tamaya-PID";
     private boolean disabled = false;
     private OperationMode defaultOpMode = OperationMode.OVERRIDE;
 
@@ -61,6 +66,8 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
      */
     TamayaConfigPlugin(BundleContext context) {
         configChanger = new ConfigChanger(context);
+        InitialState.restore(this);
+        ConfigHistory.restore(this);
         initDefaultEnabled();
         initDefaultOpMode();
         initConfigs();
@@ -113,19 +120,28 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         if(!isBundleEnabled(bundle)){
             return;
         }
-        String pid = (String)event.getServiceReference().getProperty("service.pid");
+        String pid = (String)event.getServiceReference().getProperty(Constants.SERVICE_PID);
         if(pid==null){
             LOG.finest("No service pid for: " + event.getServiceReference());
             return;
         }
         configChanger.configure(pid, event.getServiceReference().getBundle(), defaultOpMode);
+        InitialState.save(this);
+        ConfigHistory.save(this);
+    }
+
+    public void updateConfig(String pid) {
+        LOG.fine("Updating config for pid...: " + pid);
+        configChanger.configure(pid, null, defaultOpMode);
+        InitialState.save(this);
+        ConfigHistory.save(this);
     }
 
     private void configureBundle(Bundle bundle) {
         if(!isBundleEnabled(bundle)){
             return;
         }
-        String tamayaPid = bundle.getHeaders().get("Tamaya-PID");
+        String tamayaPid = bundle.getHeaders().get(TAMAYA_PID_KEY);
         String pid = tamayaPid!=null?tamayaPid:bundle.getSymbolicName();
         if(pid==null){
             pid = bundle.getLocation();
@@ -135,13 +151,15 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             return;
         }
         configChanger.configure(pid, bundle, defaultOpMode);
+        InitialState.save(this);
+        ConfigHistory.save(this);
     }
 
 
     public boolean isBundleEnabled(Bundle bundle){
         // Optional MANIFEST entries
-        String enabledTamaya = bundle.getHeaders().get("Tamaya-Enabled");
-        String disabledTamaya = bundle.getHeaders().get("Tamaya-Disabled");
+        String enabledTamaya = bundle.getHeaders().get(TAMAYA_ENABLED_KEY);
+        String disabledTamaya = bundle.getHeaders().get(TAMAYA_DISABLED_KEY);
 
         if(Boolean.parseBoolean(disabledTamaya)){
             LOG.finest("Bundle is disabled for Tamaya: " + bundle.getSymbolicName());
@@ -225,5 +243,6 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         }
         return null;
     }
+
 
 }

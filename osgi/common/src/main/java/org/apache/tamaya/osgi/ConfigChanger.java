@@ -55,12 +55,18 @@ final class ConfigChanger {
 
     public void configure(String pid, Bundle bundle, OperationMode defaultOpMode) {
         OperationMode opMode = Objects.requireNonNull(defaultOpMode);
-        String opVal = bundle.getHeaders().get("Tamaya-OperationMode");
-        if(opVal!=null){
-            opMode = OperationMode.valueOf(opVal.toUpperCase());
+        if(bundle!=null) {
+            String opVal = bundle.getHeaders().get("Tamaya-OperationMode");
+            if (opVal != null) {
+                opMode = OperationMode.valueOf(opVal.toUpperCase());
+            }
         }
         LOG.finest("Evaluating Tamaya Config for PID: " + pid);
-        ConfigHistory.configuring(pid, "operationMode="+opMode);
+        if(bundle!=null) {
+            ConfigHistory.configuring(pid, "bundle=" + bundle.getSymbolicName() + ", bundle-id=" + bundle.getBundleId() + ", operationMode=" + opMode);
+        }else{
+            ConfigHistory.configuring(pid, "trigger=Tamaya, operationMode=" + opMode);
+        }
         org.apache.tamaya.Configuration tamayaConfig = configMapper().getConfiguration(pid);
         if (tamayaConfig == null) {
             LOG.finest("No Tamaya configuration for PID: " + pid);
@@ -68,11 +74,15 @@ final class ConfigChanger {
         }
         try {
             // TODO Check for Bundle.getLocation() usage here...
-            Configuration osgiConfig = cm.getConfiguration(pid, bundle.getLocation());
+            Configuration osgiConfig = cm.getConfiguration(pid, bundle!=null?bundle.getLocation():null);
             if(osgiConfig!=null){
                 Dictionary<String, Object> dictionary = osgiConfig.getProperties();
                 if(dictionary==null){
                     dictionary = new Hashtable<>();
+                }else{
+                    if(!InitialState.contains(pid)){
+                        InitialState.set(pid, dictionary);
+                    }
                 }
                 modifyConfiguration(pid, tamayaConfig, dictionary, opMode);
                 if(!dictionary.isEmpty()) {
