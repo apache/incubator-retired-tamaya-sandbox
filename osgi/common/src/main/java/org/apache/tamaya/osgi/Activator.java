@@ -44,7 +44,9 @@ public class Activator implements BundleActivator {
 
     private static final Logger LOG = Logger.getLogger(Activator.class.getName());
 
-    private ServiceRegistration<?> registration;
+    private ServiceRegistration<TamayaConfigPlugin> registration;
+
+    private TamayaConfigPlugin plugin;
 
 
     @Override
@@ -71,11 +73,11 @@ public class Activator implements BundleActivator {
             LOG.fine("Using custom ranking for Tamaya OSGI Config plugin: " + ranking);
         }
         props.put(Constants.SERVICE_RANKING, DEFAULT_RANKING);
-        TamayaConfigPlugin plugin = new TamayaConfigPlugin(context);
+        this.plugin = new TamayaConfigPlugin(context);
         LOG.info("Registering Tamaya OSGI Config plugin with ranking: " + ranking);
         registration = context.registerService(
                 TamayaConfigPlugin.class,
-                plugin, props);
+                this.plugin, props);
         LOG.info("Registered Tamaya OSGI Config plugin.");
         configuration.update(props);
     }
@@ -83,6 +85,7 @@ public class Activator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         if (registration != null) {
+            context.removeBundleListener(this.plugin);
             registration.unregister();
         }
     }

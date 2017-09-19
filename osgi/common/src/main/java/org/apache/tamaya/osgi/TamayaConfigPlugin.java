@@ -21,7 +21,6 @@ package org.apache.tamaya.osgi;
 import org.osgi.framework.*;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationPlugin;
 
 import java.io.IOException;
 import java.util.*;
@@ -32,48 +31,74 @@ import java.util.logging.Logger;
  * Tamaya plugin that updates/extends the component configurations managed
  * by {@link ConfigurationAdmin}, based on the configured {@link OperationMode}.
  */
-public class TamayaConfigPlugin {
+public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     static final String COMPONENTID = "TamayaConfigPlugin";
     /** the logger. */
     private static final Logger LOG = Logger.getLogger(TamayaConfigPlugin.class.getName());
-    private static final OSGIConfigMapper DEFAULT_CONFIG_MAPPER = new DefaultOSGIConfigMapper();
     private static final String TAMAYA_DISABLED = "tamaya.disabled";
     private boolean disabled = false;
+    private OperationMode defaultOpMode = OperationMode.OVERRIDE;
 
-    /**
-     * Operation mode applied to the config read.
-     */
-    public enum OperationMode{
-        /** Only add properties not existing in the config. */
-        EXTEND,
-        /** Only override existing properties, but do not add any new ones. */
-        OVERRIDE,
-        /** Override existing properties and add new properties, but do not remove
-         * properties not existing in Tamaya. */
-        EXTEND_AND_OVERRIDE,
-        /** Use Tamaya config only. */
-        SYNCH
+    private ConfigChanger configChanger;
+
+    @Override
+    public void serviceChanged(ServiceEvent event) {
+        switch(event.getType()){
+            case ServiceEvent.REGISTERED:
+            case ServiceEvent.MODIFIED:
+                configureService(event);
+                break;
+            case ServiceEvent.UNREGISTERING:
+                // unconfigure...? Corrently nothing here.
+                break;
+        }
     }
 
-    private BundleContext context;
-    private OperationMode opMode = OperationMode.EXTEND_AND_OVERRIDE;
-    private ConfigurationAdmin cm;
 
     /**
      * Create a new config.
      * @param context the OSGI context
      */
     TamayaConfigPlugin(BundleContext context) {
-        this.context = context;
-        ServiceReference<ConfigurationAdmin> cmRef = context.getServiceReference(ConfigurationAdmin.class);
-        this.cm = context.getService(cmRef);
+        configChanger = new ConfigChanger(context);
+        initDefaultEnabled();
         initDefaultOpMode();
         initConfigs();
     }
 
+    public void setDefaultDisabled(boolean disabled){
+        this.disabled = disabled;
+        setConfigValue(TAMAYA_DISABLED, disabled);
+    }
+
+    public boolean isDefaultDisabled(){
+        return disabled;
+    }
+
+    public OperationMode getDefaultOperationMode(){
+        return defaultOpMode;
+    }
+
+    public void setDefaultOperationMode(OperationMode mode){
+        this.defaultOpMode = Objects.requireNonNull(mode);
+        setConfigValue(OperationMode.class.getSimpleName(), defaultOpMode.toString());
+    }
+
+    @Override
+    public void bundleChanged(BundleEvent event) {
+        switch(event.getType()){
+            case BundleEvent.STARTING:
+            case BundleEvent.LAZY_ACTIVATION:
+//            case BundleEvent.UPDATED:
+//              TODO add checks for preventing endlee loop for updates here...
+                configureBundle(event.getBundle());
+                break;
+        }
+    }
+
     private void initConfigs() {
         // Check for matching bundles already installed...
-        for(Bundle bundle:context.getBundles()){
+        for(Bundle bundle:configChanger.getContext().getBundles()){
             switch(bundle.getState()){
                 case Bundle.ACTIVE:
                     configureBundle(bundle);
@@ -82,24 +107,24 @@ public class TamayaConfigPlugin {
         }
     }
 
-    private void configureBundle(Bundle bundle) {
+    private void configureService(ServiceEvent event) {
         // Optional MANIFEST entries
-        String enabledTamaya = bundle.getHeaders().get("Tamaya-Enabled");
-        String disabledTamaya = bundle.getHeaders().get("Tamaya-Disabled");
+        Bundle bundle = event.getServiceReference().getBundle();
+        if(!isBundleEnabled(bundle)){
+            return;
+        }
+        String pid = (String)event.getServiceReference().getProperty("service.pid");
+        if(pid==null){
+            LOG.finest("No service pid for: " + event.getServiceReference());
+            return;
+        }
+        configChanger.configure(pid, event.getServiceReference().getBundle(), defaultOpMode);
+    }
 
-        if(Boolean.parseBoolean(disabledTamaya)){
-            LOG.finest("Bundle is disabled for Tamaya: " + bundle.getSymbolicName());
+    private void configureBundle(Bundle bundle) {
+        if(!isBundleEnabled(bundle)){
             return;
         }
-        if(enabledTamaya != null && !Boolean.parseBoolean(enabledTamaya)){
-            LOG.finest("Bundle is disabled for Tamaya: " + bundle.getSymbolicName());
-            return;
-        }
-        if(disabled){
-            LOG.finest("tamaya.disabled=false: not configuring bundle: " + bundle.getSymbolicName());
-            return;
-        }
-
         String tamayaPid = bundle.getHeaders().get("Tamaya-PID");
         String pid = tamayaPid!=null?tamayaPid:bundle.getSymbolicName();
         if(pid==null){
@@ -109,41 +134,30 @@ public class TamayaConfigPlugin {
             LOG.finest(() -> "No PID/location for bundle " + bundle.getSymbolicName() + '('+bundle.getBundleId()+')');
             return;
         }
-        LOG.finest("Evaluating Tamaya Config for PID: " + pid);
-        org.apache.tamaya.Configuration tamayaConfig = configMapper().getConfiguration(pid);
-        if (tamayaConfig == null) {
-            LOG.finest("No Tamaya configuration for PID: " + pid);
-            return;
-        }
-        try {
-            // TODO Check for Bundle.getLocation() usage here...
-            Configuration osgiConfig = cm.getConfiguration(pid, bundle.getLocation());
-            if(osgiConfig!=null){
-                Dictionary<String, Object> dictionary = osgiConfig.getProperties();
-                if(dictionary==null){
-                    dictionary = new Hashtable<>();
-                }
-                modifyConfiguration(pid, tamayaConfig, dictionary);
-                if(!dictionary.isEmpty()) {
-                    osgiConfig.update(dictionary);
-                    LOG.info("Updated configuration for PID: " + pid + ": " + dictionary);
-                }
-            }
-        } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to initialize configuration for PID: " + pid, e);
-        }
+        configChanger.configure(pid, bundle, defaultOpMode);
     }
 
-    private void initDefaultOpMode() {
-        String opVal = (String)getConfigValue(OperationMode.class.getName());
-        if(opVal!=null){
-            try{
-                opMode = OperationMode.valueOf(opVal);
-            }catch(Exception e){
-                LOG.warning("Invalid OperationMode: " + opMode +", using default: " + opMode);
-            }
+
+    public boolean isBundleEnabled(Bundle bundle){
+        // Optional MANIFEST entries
+        String enabledTamaya = bundle.getHeaders().get("Tamaya-Enabled");
+        String disabledTamaya = bundle.getHeaders().get("Tamaya-Disabled");
+
+        if(Boolean.parseBoolean(disabledTamaya)){
+            LOG.finest("Bundle is disabled for Tamaya: " + bundle.getSymbolicName());
+            return false;
         }
+        if(enabledTamaya != null && !Boolean.parseBoolean(enabledTamaya)){
+            LOG.finest("Bundle is disabled for Tamaya: " + bundle.getSymbolicName());
+            return false;
+        }
+        if(disabled){
+            LOG.finest("tamaya.disabled=false: not configuring bundle: " + bundle.getSymbolicName());
+            return false;
+        }
+        return true;
     }
+
 
     private void initDefaultEnabled() {
         String disabledVal = (String)getConfigValue("tamaya.disabled");
@@ -160,11 +174,22 @@ public class TamayaConfigPlugin {
         }
     }
 
+    private void initDefaultOpMode() {
+        String opVal = (String)getConfigValue(OperationMode.class.getName());
+        if(opVal!=null){
+            try{
+                defaultOpMode = OperationMode.valueOf(opVal);
+            }catch(Exception e){
+                LOG.warning("Invalid OperationMode: " + opVal +", using default: " + defaultOpMode);
+            }
+        }
+    }
+
 
     void setConfigValue(String key, Object value){
         Configuration config = null;
         try {
-            config = cm.getConfiguration(COMPONENTID);
+            config = configChanger.getConfigurationAdmin().getConfiguration(COMPONENTID);
             Dictionary<String, Object> props = null;
             if (config != null
                     && config.getProperties() != null) {
@@ -186,7 +211,7 @@ public class TamayaConfigPlugin {
     Object getConfigValue(String key){
         Configuration config = null;
         try {
-            config = cm.getConfiguration(COMPONENTID);
+            config = configChanger.getConfigurationAdmin().getConfiguration(COMPONENTID);
             Dictionary<String, Object> props = null;
             if (config != null
                     && config.getProperties() != null) {
@@ -200,96 +225,5 @@ public class TamayaConfigPlugin {
         }
         return null;
     }
-
-    public OperationMode getOperationMode(){
-        return opMode;
-    }
-
-    public void setDefaultDisabled(boolean disabled){
-        this.disabled = disabled;
-        setConfigValue(TAMAYA_DISABLED, disabled);
-    }
-
-    public boolean isDefaultDisabled(){
-        return disabled;
-    }
-
-    public void setOperationMode(OperationMode mode){
-        this.opMode = Objects.requireNonNull(mode);
-        setConfigValue(OperationMode.class.getSimpleName(), opMode.toString());
-    }
-
-    public void modifyConfiguration(String target, org.apache.tamaya.Configuration config, Dictionary<String, Object> dictionary) {
-        LOG.info(() -> "Updating configuration for " + target + "...");
-        dictionary.put("tamaya.opMode", getOperationMode().toString());
-        dictionary.put("tamaya.modified.at", new Date().toString());
-
-        Map<String, Object> dictionaryMap = new HashMap<>();
-        Enumeration<String> keys = dictionary.keys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            Object value = dictionary.get(key);
-            dictionaryMap.put(key, value);
-        }
-        for (Map.Entry<String, Object> dictEntry : dictionaryMap.entrySet()) {
-            Object configuredValue = config.getOrDefault(dictEntry.getKey(), dictEntry.getValue().getClass(), null);
-            switch (opMode) {
-                case OVERRIDE:
-                case EXTEND_AND_OVERRIDE:
-                    if (configuredValue != null) {
-                        LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
-                        dictionary.put(dictEntry.getKey(), configuredValue);
-                    }
-                    break;
-                case SYNCH:
-                    if (configuredValue != null) {
-                        LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
-                        dictionary.put(dictEntry.getKey(), configuredValue);
-                    } else {
-                        LOG.info(() -> "Removing key " + dictEntry.getKey());
-                        dictionary.remove(dictEntry.getKey());
-                    }
-            }
-        }
-        for (Map.Entry<String, String> configEntry : config.getProperties().entrySet()) {
-            Object dictValue = dictionary.get(configEntry.getKey());
-            switch (opMode) {
-                case EXTEND:
-                case EXTEND_AND_OVERRIDE:
-                    LOG.info(() -> "Setting key " + configEntry.getKey() + " to " + configEntry.getValue());
-                    dictionary.put(configEntry.getKey(), configEntry.getValue());
-                    break;
-                case SYNCH:
-                    if (dictValue != null) {
-                        LOG.info(() -> "Setting key " + configEntry.getKey() + " to " + configEntry.getValue());
-                        dictionary.put(configEntry.getKey(), configEntry.getValue());
-                    } else {
-                        LOG.info(() -> "Removing key " + configEntry.getKey());
-                        dictionary.remove(configEntry.getKey());
-                    }
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Loads the configuration toor mapper using the OSGIConfigRootMapper OSGI service resolving mechanism. If no
-     * such service is available it loads the default mapper.
-     * @return the mapper to be used, bever null.
-     */
-    private OSGIConfigMapper configMapper() {
-        OSGIConfigMapper mapper = null;
-        if(context!=null) {
-            ServiceReference<OSGIConfigMapper> ref = context.getServiceReference(OSGIConfigMapper.class);
-            if (ref != null) {
-                mapper = context.getService(ref);
-            }
-        }
-        if(mapper==null){
-            return DEFAULT_CONFIG_MAPPER;
-        }
-        return mapper;
-    }
-
 
 }
