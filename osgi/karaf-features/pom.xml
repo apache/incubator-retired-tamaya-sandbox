@@ -28,7 +28,7 @@ limitations under the License.
 
     <artifactId>tamaya-karaf-features</artifactId>
     <packaging>feature</packaging>
-    <name>Apache Tamaya :: Karaf :: Features</name>
+    <name>Apache Tamaya :: OSGI :: Karaf :: Features</name>
     <description>Tamaya Karaf Feature Descriptor.</description>
 
     <build>
