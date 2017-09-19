@@ -29,7 +29,7 @@
 
     <artifactId>tamaya-osgi_alpha</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tamaya :: OSGi Integration :: ConfigurationPlugin</name>
+    <name>Apache Tamaya :: OSGi :: ConfigurationPlugin</name>
     <description>Tamaya Based OSGI ConfigurationPlugin Implementation</description>
 
     <dependencies>
