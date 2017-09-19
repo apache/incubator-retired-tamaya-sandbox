@@ -288,6 +288,7 @@
 
     <modules>
         <module>common</module>
+        <module>updater</module>
         <module>karaf-shell</module>
         <!--<module>karaf-features</module>-->
     </modules>

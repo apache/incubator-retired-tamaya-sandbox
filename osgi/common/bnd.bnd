@@ -19,7 +19,7 @@ Bundle-License: Apache Licence version 2
 Bundle-Vendor: Apache Software Foundation
 Bundle-ContactAddress: dev-tamaya@incubator.apache.org
 Bundle-DocURL: http://tamaya.apache.org
-Bundle-Activator: org.apache.tamaya.osgi.updater.Activator
+Bundle-Activator: org.apache.tamaya.osgi.Activator
 Export-Package: \
 	org.apache.tamaya.osgi
 Import-Package: \

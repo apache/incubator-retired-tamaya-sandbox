@@ -20,16 +20,19 @@ package org.apache.tamaya.osgi;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class storing the history of changers done to the OSGI configuration by Tamaya.
  * This class can be used in the future to restore the previous state, if needed.
  */
-public final class ConfigHistory {
+public final class ConfigHistory implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOG = Logger.getLogger(ConfigHistory.class.getName());
 
     public enum TaskType{
         PROPERTY,
@@ -38,17 +41,7 @@ public final class ConfigHistory {
     }
 
     private static int maxHistory = 10000;
-    private static List<ConfigHistory> history = new LinkedList<ConfigHistory>(){
-
-        @Override
-        public boolean add(ConfigHistory o) {
-            boolean val = super.add(o);
-            if(val && size() > maxHistory){
-                remove();
-            }
-            return val;
-        }
-    };
+    private static List<ConfigHistory> history = new LinkedList<ConfigHistory>();
 
     private long timestamp = System.currentTimeMillis();
 
@@ -68,6 +61,7 @@ public final class ConfigHistory {
                 .setValue(info);
         synchronized (history){
             history.add(h);
+            checkHistorySize();
         }
         return h;
     }
@@ -76,6 +70,7 @@ public final class ConfigHistory {
                 .setValue(info);
         synchronized (history){
             history.add(h);
+            checkHistorySize();
         }
         return h;
     }
@@ -86,6 +81,7 @@ public final class ConfigHistory {
                 .setValue(value);
         synchronized (history){
             history.add(h);
+            checkHistorySize();
         }
         return h;
     }
@@ -167,23 +163,29 @@ public final class ConfigHistory {
     }
 
     public static void save(TamayaConfigPlugin plugin){
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        XMLEncoder encoder = new XMLEncoder(bos, "UTF-8", false, 4);
-        encoder.writeObject(history);
         try {
-            bos.flush();
-            plugin.setConfigValue("history", new String(bos.toByteArray()));
-        } catch (IOException e) {
-            e.printStackTrace();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(history);
+            oos.flush();
+            Base64.getEncoder().encode(bos.toByteArray());
+            plugin.setConfigValue("history", Base64.getEncoder().encode(bos.toByteArray()));
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Failed to store config change history.", e);
         }
     }
 
     public static void restore(TamayaConfigPlugin plugin){
-        String serialized = (String)plugin.getConfigValue("history");
-        if(serialized!=null) {
-            ByteArrayInputStream bis = new ByteArrayInputStream(serialized.getBytes());
-            XMLDecoder encoder = new XMLDecoder(bis);
-            ConfigHistory.history = (List<ConfigHistory>) encoder.readObject();
+        try{
+            String serialized = (String)plugin.getConfigValue("history");
+            if(serialized!=null) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(Base64.getDecoder().decode(serialized));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+                ConfigHistory.history = (List<ConfigHistory>) ois.readObject();
+                ois.close();
+            }
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Failed to store config change history.", e);
         }
     }
 
@@ -195,5 +197,11 @@ public final class ConfigHistory {
                 ", value=" + value +
                 ", key='" + key + '\'' +
                 '}';
+    }
+
+    private static void checkHistorySize(){
+        while(history.size() > maxHistory){
+            history.remove(0);
+        }
     }
 }

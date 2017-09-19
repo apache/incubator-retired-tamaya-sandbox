@@ -46,6 +46,7 @@ public class Activator implements BundleActivator {
         listener = new EventListener(context);
         ConfigEventManager.addListener(listener, ConfigurationChange.class);
         LOG.info("Registered Tamaya config trigger for OSGI.");
+        ConfigEventManager.enableChangeMonitoring(true);
     }
 
     @Override
@@ -53,6 +54,7 @@ public class Activator implements BundleActivator {
         if (listener != null) {
             ConfigEventManager.removeListener(this.listener, ConfigurationChange.class);
             LOG.info("Unregistered Tamaya config trigger for OSGI.");
+            ConfigEventManager.enableChangeMonitoring(false);
         }
     }
 

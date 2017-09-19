@@ -18,28 +18,43 @@
  */
 package org.apache.tamaya.osgi;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by atsticks on 19.09.17.
  */
 public final class InitialState {
 
-    private static Map<String, Dictionary<String,?>> initialConfigState = new ConcurrentHashMap<>();
+    private static final Logger LOG = Logger.getLogger(InitialState.class.getName());
+    private static Map<String, Hashtable<String,?>> initialConfigState = new ConcurrentHashMap<>();
 
     private InitialState(){}
 
     public static void set(String pid, Dictionary<String,?> config){
-        initialConfigState.put(pid, config);
+        initialConfigState.put(pid, toHashtable(config));
+    }
+
+    private static Hashtable<String, ?> toHashtable(Dictionary<String, ?> dictionary) {
+        if (dictionary == null) {
+            return null;
+        }
+        if(dictionary instanceof Hashtable){
+            return (Hashtable) dictionary;
+        }
+        Hashtable<String, Object> map = new Hashtable<>(dictionary.size());
+        Enumeration<String> keys = dictionary.keys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            map.put(key, dictionary.get(key));
+        }
+        return map;
     }
 
     public static Dictionary<String,?> remove(String pid){
@@ -67,23 +82,29 @@ public final class InitialState {
     }
 
     public static void save(TamayaConfigPlugin plugin){
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        XMLEncoder encoder = new XMLEncoder(bos, "UTF-8", false, 4);
-        encoder.writeObject(initialConfigState);
-        try {
-            bos.flush();
-            plugin.setConfigValue("backup", new String(bos.toByteArray()));
-        } catch (IOException e) {
-            e.printStackTrace();
+        try{
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(initialConfigState);
+            oos.flush();
+            Base64.getEncoder().encode(bos.toByteArray());
+            plugin.setConfigValue("backup", Base64.getEncoder().encode(bos.toByteArray()));
+        }catch(Exception e){
+            LOG.log(Level.SEVERE, "Failed to restore OSGI Backups.", e);
         }
     }
 
     public static void restore(TamayaConfigPlugin plugin){
-        String serialized = (String)plugin.getConfigValue("history");
-        if(serialized!=null) {
-            ByteArrayInputStream bis = new ByteArrayInputStream(serialized.getBytes());
-            XMLDecoder encoder = new XMLDecoder(bis);
-            InitialState.initialConfigState = (Map<String, Dictionary<String,?>>) encoder.readObject();
+        try{
+            String serialized = (String)plugin.getConfigValue("backup");
+            if(serialized!=null) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(Base64.getDecoder().decode(serialized));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+                initialConfigState = (Map<String, Hashtable<String,?>>) ois.readObject();
+                ois.close();
+            }
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Failed to store config change history.", e);
         }
     }
 }
