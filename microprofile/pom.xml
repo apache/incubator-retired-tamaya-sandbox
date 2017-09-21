@@ -33,17 +33,16 @@ under the License.
     <properties>
         <maven.compile.sourceLevel>1.8</maven.compile.sourceLevel>
         <maven.compile.targetLevel>1.8</maven.compile.targetLevel>
-        <microprofile.version>1.0</microprofile.version>
+        <microprofile.config.version>1.1</microprofile.config.version>
         <geronimo-atinject-1.0-spec.version>1.0</geronimo-atinject-1.0-spec.version>
         <geronimo-jcdi-1.1-spec.version>1.0</geronimo-jcdi-1.1-spec.version>
         <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
-        <org.apache.tomcat.version>6.0.53</org.apache.tomcat.version>
         <tamaya-version>0.4-incubating-SNAPSHOT</tamaya-version>
         <arquillian.version>1.1.13.Final</arquillian.version>
         <arquillian-weld-embedded.version>2.0.0.Beta5</arquillian-weld-embedded.version>
-        <cdi2-api.version>2.0</cdi2-api.version>
-        <weld-shaded.version>3.0.0.Final</weld-shaded.version>
-        <weld.version>2.2.7.Final</weld.version>
+        <cdi-api.version>2.0</cdi-api.version>
+        <weld-shaded.version>3.0.1.Final</weld-shaded.version>
+        <weld.version>3.0.1.Final</weld.version>
         <deltaspike.version>1.1.0</deltaspike.version>
         <openejb.version>4.7.1</openejb.version>
     </properties>
@@ -84,42 +83,18 @@ under the License.
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>1.0</version>
+            <version>${microprofile.config.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-            <version>1.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
-            <version>${geronimo-jcdi-1.1-spec.version}</version>
+            <version>${cdi-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se</artifactId>
+            <artifactId>weld-se-shaded</artifactId>
             <version>${weld.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.deltaspike.cdictrl</groupId>
-            <artifactId>deltaspike-cdictrl-weld</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-test-control-module-api</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-test-control-module-impl</artifactId>
-            <version>${deltaspike.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- Microprofile TCK support only -->
@@ -142,12 +117,6 @@ under the License.
             <scope>test</scope>
             <type>pom</type>
         </dependency>
-        <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>openejb-core</artifactId>
-            <version>${openejb.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <profiles>
@@ -160,13 +129,7 @@ under the License.
                 <dependency>
                     <groupId>org.eclipse.microprofile.config</groupId>
                     <artifactId>microprofile-config-tck</artifactId>
-                    <version>1.0</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.weld.se</groupId>
-                    <artifactId>weld-se-shaded</artifactId>
-                    <version>${weld-shaded.version}</version>
+                    <version>${microprofile.config.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
@@ -174,11 +137,6 @@ under the License.
                     <artifactId>arquillian-weld-embedded</artifactId>
                     <version>${arquillian-weld-embedded.version}</version>
                     <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>javax.enterprise</groupId>
-                    <artifactId>cdi-api</artifactId>
-                    <version>${cdi2-api.version}</version>
                 </dependency>
             </dependencies>
 

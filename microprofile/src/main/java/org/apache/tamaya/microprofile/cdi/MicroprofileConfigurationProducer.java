@@ -16,8 +16,10 @@
  */
 package org.apache.tamaya.microprofile.cdi;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.tamaya.*;
+import org.apache.tamaya.ConfigException;
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 import org.eclipse.microprofile.config.Config;
@@ -26,20 +28,15 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
-import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.*;
+import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Provider;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.apache.commons.lang.WordUtils.uncapitalize;
 
 /**
  * Producer bean for configuration properties.
@@ -76,12 +73,7 @@ public class MicroprofileConfigurationProducer {
 
     static String getDefaultKey(InjectionPoint injectionPoint) {
         String memberName = injectionPoint.getMember().getName();
-        String beanClassNames[] = injectionPoint.getBean().getBeanClass().getName().split("\\$");
-        if(beanClassNames.length==1) {
-            return beanClassNames[0] + "." + uncapitalize(memberName);
-        }else{
-            return beanClassNames[0] + "." + uncapitalize(beanClassNames[1]) + "." + uncapitalize(memberName);
-        }
+        return memberName;
     }
 
     static ConversionContext createConversionContext(String key, InjectionPoint injectionPoint) {
