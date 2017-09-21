@@ -1,0 +1,36 @@
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - Felix Shell Commands
+Bundle-SymbolicName: org.apache.tamaya.osgi.felix.shell
+Bundle-Description: Apacha Tamaya Configuration - Felix Shell Extensions
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev-tamaya@incubator.apache.org
+Bundle-DocURL: http://tamaya.apache.org
+Export-Package: \
+	org.apache.tamaya.felix.shell
+Import-Package: \
+    org.osgi.service.cm,\
+    org.osgi.framework,\
+    org.apache.tamaya,\
+    org.apache.tamaya.spi,\
+    org.apache.tamaya.functions,\
+    org.apache.tamaya.spisupport,\
+    org.apache.tamaya.osgi,\
+    org.apache.felix.service.command,\
+    org.apache.karaf.shell.api.console,\
+    org.apache.karaf.shell.api.action,\
+    org.apache.karaf.shell.api.action.lifecycle,\
+    org.apache.karaf.shell.support.completers
