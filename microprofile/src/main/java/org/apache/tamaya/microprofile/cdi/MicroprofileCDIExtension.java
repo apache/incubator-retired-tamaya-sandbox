@@ -20,13 +20,18 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.*;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.inject.Provider;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -63,25 +68,12 @@ public class MicroprofileCDIExtension implements Extension {
         boolean configured = false;
         for (InjectionPoint injectionPoint : ips) {
             if (injectionPoint.getAnnotated().isAnnotationPresent(ConfigProperty.class)) {
-                System.err.println("Configured: " + injectionPoint);
+                LOG.fine("Configuring: " + injectionPoint);
                 final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
                 String key = !annotation.name().isEmpty()?annotation.name():MicroprofileConfigurationProducer.getDefaultKey(injectionPoint);
-                Member member = injectionPoint.getMember();
-                if(member instanceof Field) {
-                    Field f = (Field)member;
-                    if(!Instance.class.equals(f.getType()) &&
-                            !Provider.class.equals(f.getType())){
-                        types.add(f.getType());
-                    }
-                }else if(member instanceof Method){
-                    Method m = (Method)member;
-                    if(!Instance.class.equals(m.getParameterTypes()[0]) &&
-                            !Provider.class.equals(m.getParameterTypes()[0])){
-                        types.add(m.getParameterTypes()[0]);
-                    }
-                }else{
-                    continue;
-                }
+                Type originalType = injectionPoint.getType();
+                Type convertedType = unwrapType(originalType);
+                types.add(convertedType);
                 configured = true;
                 LOG.finest(() -> "Enabling Tamaya Microprofile Configuration on bean: " + configuredType.getName());
                 configuredType.addConfiguredMember(injectionPoint, key);
@@ -105,5 +97,14 @@ public class MicroprofileCDIExtension implements Extension {
         }
     }
 
+    private Type unwrapType(Type type) {
+        if(type instanceof ParameterizedType) {
+            Type rawType = ((ParameterizedType) type).getRawType();
+            if(rawType == Provider.class || rawType == Instance.class) {
+                return ((ParameterizedType) type).getActualTypeArguments()[0];
+            }
+        }
+        return type;
+    }
 
 }
