@@ -30,6 +30,8 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
@@ -71,8 +73,9 @@ public class MicroprofileConfigurationProducer {
     }
 
     static String getDefaultKey(InjectionPoint injectionPoint) {
-        String memberName = injectionPoint.getMember().getName();
-        return memberName;
+        AnnotatedField field = (AnnotatedField)injectionPoint.getAnnotated();
+        AnnotatedType declaringType = field.getDeclaringType();
+        return declaringType.getJavaClass().getCanonicalName() + "." + field.getJavaMember().getName();
     }
 
     static ConversionContext createConversionContext(String key, InjectionPoint injectionPoint) {
