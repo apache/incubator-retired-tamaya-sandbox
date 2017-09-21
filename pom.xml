@@ -738,6 +738,7 @@ under the License.
     </build>
 
     <modules>
+        <module>collections</module>
         <module>hazelcast</module>
         <module>apache-commons</module>
         <module>jodatime</module>
