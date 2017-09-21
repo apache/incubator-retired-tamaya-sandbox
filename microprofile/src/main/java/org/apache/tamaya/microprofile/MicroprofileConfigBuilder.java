@@ -39,6 +39,7 @@ import java.util.Objects;
 final class MicroprofileConfigBuilder implements ConfigBuilder{
 
     private ConfigurationContextBuilder contextBuilder;
+    private ClassLoader classLoader;
 
     MicroprofileConfigBuilder(ConfigurationContextBuilder contextBuilder){
         this.contextBuilder = Objects.requireNonNull(contextBuilder);
@@ -66,8 +67,7 @@ final class MicroprofileConfigBuilder implements ConfigBuilder{
                 new SystemPropertySource(400),
                 new EnvironmentPropertySource(300),
                 new MicroprofileDefaultProperties());
-        contextBuilder.sortPropertySources(PropertySourceComparator.getInstance()
-                .setOrdinalKey("config_ordinal"));
+        contextBuilder.sortPropertySources(PropertySourceComparator.getInstance());
         return this;
     }
 
@@ -106,7 +106,8 @@ final class MicroprofileConfigBuilder implements ConfigBuilder{
 
     @Override
     public ConfigBuilder forClassLoader(ClassLoader loader) {
-        return null;
+        this.classLoader = loader;
+        return this;
     }
 
     @Override
