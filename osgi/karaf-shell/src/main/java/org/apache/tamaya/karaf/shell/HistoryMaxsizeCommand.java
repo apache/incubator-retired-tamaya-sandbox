@@ -19,28 +19,19 @@
 package org.apache.tamaya.karaf.shell;
 
 import org.apache.karaf.shell.api.action.*;
-import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.karaf.shell.api.console.CommandLine;
-import org.apache.karaf.shell.api.console.Completer;
-import org.apache.karaf.shell.api.console.Session;
-import org.apache.karaf.shell.support.completers.StringsCompleter;
 import org.apache.tamaya.osgi.ConfigHistory;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.HistoryCommands;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-@Command(scope = "tamaya", name = "history-size-get", description="Gets the maximal size of stored history entries.")
+@Command(scope = "tamaya", name = "tm_history_maxsize", description="Gets the maximal size of stored history entries.")
 @Service
-public class HistorySizeGetCommand implements Action{
+public class HistoryMaxsizeCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(ConfigHistory.getMaxHistory());
+        System.out.println(HistoryCommands.getMaxHistorySize());
         return null;
     }
 

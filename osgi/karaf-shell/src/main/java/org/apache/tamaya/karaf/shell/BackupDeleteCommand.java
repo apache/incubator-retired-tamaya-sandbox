@@ -23,10 +23,11 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.InitialState;
+import org.apache.tamaya.osgi.commands.BackupCommands;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "backup-delete", description="Deletes the OSGI configuration backup  of Tamya.")
+@Command(scope = "tamaya", name = "tm_backup_delete", description="Deletes the OSGI configuration backup  of Tamya.")
 @Service
 public class BackupDeleteCommand implements Action{
 
@@ -36,13 +37,7 @@ public class BackupDeleteCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        if("*".equals(pid)){
-            InitialState.removeAll();
-            System.out.println("All Backups deleted.");
-        }else {
-            InitialState.remove(pid);
-            System.out.println("Backup deleted: " + pid);
-        }
+        System.out.println(BackupCommands.deleteBackup(pid));
         return null;
     }
 

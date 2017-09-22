@@ -27,14 +27,12 @@ import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
 import org.apache.tamaya.osgi.ConfigHistory;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.HistoryCommands;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-@Command(scope = "tamaya", name = "history-get", description="Gets the history of changes Tamaya applied to the OSGI configuration.")
+@Command(scope = "tamaya", name = "tm_history", description="Gets the history of changes Tamaya applied to the OSGI configuration.")
 @Service
 public class HistoryGetCommand implements Action{
 
@@ -52,52 +50,8 @@ public class HistoryGetCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        List<ConfigHistory> history = ConfigHistory.history(pid);
-        history = filterTypes(history);
-        System.out.print(StringUtil.format("Typ", 10));
-        System.out.print(StringUtil.format("PID", 30));
-        System.out.print(StringUtil.format("Key", 30));
-        System.out.print(StringUtil.format("Value", 40));
-        System.out.println(StringUtil.format("Previous Value", 40));
-        System.out.println(StringUtil.printRepeat("-", 140));
-        for(ConfigHistory h:history){
-            System.out.print(StringUtil.format(h.getType().toString(), 10));
-            System.out.print(StringUtil.format(h.getPid(), 30));
-            System.out.print(StringUtil.format(h.getKey(), 30));
-            System.out.print(StringUtil.format(String.valueOf(h.getValue()), 40));
-            System.out.println(String.valueOf(h.getPreviousValue()));
-        }
+        System.out.println(HistoryCommands.getHistory(pid, eventTypes));
         return null;
-    }
-
-    private List<ConfigHistory> filterPid(List<ConfigHistory> history) {
-        if(pid==null){
-            return history;
-        }
-        List<ConfigHistory> result = new ArrayList<>();
-        for(ConfigHistory h:history){
-            if(h.getPid().equals(pid)){
-                result.add(h);
-            }
-        }
-        return result;
-    }
-
-    private List<ConfigHistory> filterTypes(List<ConfigHistory> history) {
-        if(eventTypes==null){
-            return history;
-        }
-        List<ConfigHistory> result = new ArrayList<>();
-        Set<ConfigHistory.TaskType> types = new HashSet<>();
-        for(String tVal:eventTypes) {
-            types.add(ConfigHistory.TaskType.valueOf(tVal));
-        }
-        for(ConfigHistory h:history){
-            if(types.contains(h.getType())){
-                result.add(h);
-            }
-        }
-        return result;
     }
 
     @Service

@@ -29,6 +29,7 @@ Import-Package: \
     org.apache.tamaya.functions,\
     org.apache.tamaya.spisupport,\
     org.apache.tamaya.osgi,\
+    org.apache.tamaya.osgi.commands,\
     org.apache.felix.service.command,\
     org.apache.karaf.shell.api.console,\
     org.apache.karaf.shell.api.action,\

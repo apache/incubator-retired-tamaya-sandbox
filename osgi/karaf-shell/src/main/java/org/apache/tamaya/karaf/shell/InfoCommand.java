@@ -27,8 +27,10 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.ConfigCommands;
+import org.apache.tamaya.osgi.commands.HistoryCommands;
 
-@Command(scope = "tamaya", name = "info", description="Show he current Tamaya status.")
+@Command(scope = "tamaya", name = "tm_info", description="Show he current Tamaya status.")
 @Service
 public class InfoCommand  implements Action {
 
@@ -36,10 +38,7 @@ public class InfoCommand  implements Action {
     private TamayaConfigPlugin configPlugin;
 
     public Object execute() throws IOException {
-        Configuration config = ConfigurationProvider.getConfiguration();
-        System.out.println(config.toString() + "\n\n"
-        + StringUtil.format("Default OperationMode:", 30) + configPlugin.getDefaultOperationMode() + '\n'
-        + StringUtil.format("Default Disabled: ", 30) + configPlugin.isDefaultDisabled());
+        System.out.println(ConfigCommands.getInfo(configPlugin));
         return null;
     }
 

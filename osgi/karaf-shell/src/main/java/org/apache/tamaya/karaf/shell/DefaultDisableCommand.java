@@ -30,11 +30,12 @@ import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
 import org.apache.tamaya.osgi.OperationMode;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.ConfigCommands;
 
 import java.io.IOException;
 import java.util.List;
 
-@Command(scope = "tamaya", name = "disable-by-default", description="Disables Tamaya by default for all bundles/services (default=false)." +
+@Command(scope = "tamaya", name = "tm_disable", description="Disables Tamaya by default for all bundles/services (default=false)." +
         " Disabling it allows to explicitly enable bundles using 'Tamaya-Enable^manifest entries.")
 @Service
 public class DefaultDisableCommand implements Action{
@@ -49,7 +50,7 @@ public class DefaultDisableCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        this.configPlugin.setDefaultDisabled(disabled);
+        System.out.println(ConfigCommands.setDefaultDisabled(configPlugin, disabled));
         return null;
     }
 

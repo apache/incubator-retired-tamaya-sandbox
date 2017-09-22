@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.karaf.shell;
+package org.apache.tamaya.osgi.commands;
 
 /**
  * Some String related helper methods.

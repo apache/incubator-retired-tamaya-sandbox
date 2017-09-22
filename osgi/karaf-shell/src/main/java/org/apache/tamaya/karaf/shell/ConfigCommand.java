@@ -21,14 +21,17 @@ package org.apache.tamaya.karaf.shell;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
+import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.ConfigCommands;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "config", description="Show the current Tamaya configuration.")
+@Command(scope = "tamaya", name = "tm_config", description="Show the current Tamaya configuration.")
 @Service
 public class ConfigCommand implements Action{
 
@@ -36,14 +39,20 @@ public class ConfigCommand implements Action{
             required = false, multiValued = false)
     String section = null;
 
+    @Option(name = "pid", aliases={"-p.--pid"}, description = "Apply filtering for the given OSGI component PID.",
+            required = false, multiValued = false)
+    String pid = null;
+
+    @org.apache.karaf.shell.api.action.lifecycle.Reference
+    TamayaConfigPlugin configPlugin;
+
+
     public Object execute() throws IOException {
-        Configuration config = ConfigurationProvider.getConfiguration();
-        if(section!=null){
-            return config
-                    .with(ConfigurationFunctions.section(section))
-                    .query(ConfigurationFunctions.textInfo());
+        if(pid!=null){
+            System.out.println(ConfigCommands.readConfig(configPlugin, pid, section));
+        }else {
+            System.out.println(ConfigCommands.readConfig(section));
         }
-        System.out.println(config.query(ConfigurationFunctions.textInfo()));
         return null;
     }
 

@@ -22,14 +22,11 @@ import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.osgi.InitialState;
+import org.apache.tamaya.osgi.commands.BackupCommands;
 
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Map;
 
-@Command(scope = "tamaya", name = "backup-list", description="Gets the OSGI configuration before Tamya applied changes.")
+@Command(scope = "tamaya", name = "tm_backup_list", description="List the backed-up OSGI configuration before Tamya applied changes.")
 @Service
 public class BackupListCommand implements Action{
 
@@ -39,34 +36,8 @@ public class BackupListCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        if(pid!=null){
-            Dictionary<String, ?> props = InitialState.get(pid);
-            if(props==null){
-                System.out.println("No backup found: " + pid);
-            }else{
-                System.out.println("PID: " + pid);
-                printProps(props);
-            }
-        }else {
-            for(Map.Entry<String, Dictionary<String,?>> en: InitialState.get().entrySet()){
-                System.out.println("PID: " + en.getKey());
-                printProps(en.getValue());
-            }
-        }
+        System.out.println(BackupCommands.listBackup(pid));
         return null;
-    }
-
-    public static void printProps(Dictionary<String, ?> props) {
-        System.out.print(StringUtil.format("  Key", 50));
-        System.out.println(StringUtil.format("  Value", 50));
-        System.out.println("  " + StringUtil.printRepeat("-", 100));
-        Enumeration<String> keys = props.keys();
-        while(keys.hasMoreElements()){
-            String key = keys.nextElement();
-            System.out.print("  " + StringUtil.format(key, 50));
-            System.out.println("  " + StringUtil.format(String.valueOf(props.get(key)), 50));
-        }
-        System.out.println();
     }
 
 }

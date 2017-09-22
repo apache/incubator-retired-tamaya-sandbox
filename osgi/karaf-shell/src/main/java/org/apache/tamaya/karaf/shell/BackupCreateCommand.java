@@ -24,15 +24,14 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.InitialState;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.BackupCommands;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.component.annotations.Reference;
 
 import java.io.IOException;
 import java.util.Dictionary;
 
-@Command(scope = "tamaya", name = "backup-create", description="Creates a backup of a current OSGI configuration.")
+@Command(scope = "tamaya", name = "tm_backup_create", description="Creates a backup of a current OSGI configuration.")
 @Service
 public class BackupCreateCommand implements Action{
 
@@ -49,19 +48,7 @@ public class BackupCreateCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        Configuration cfg = cm.getConfiguration(pid);
-        if(cfg!=null){
-            Dictionary<String,?> props = cfg.getProperties();
-            if(props!=null){
-                if(replace || !InitialState.contains(pid)){
-                    InitialState.set(pid, props);
-                    System.out.println("Backup created, PID = " + pid);
-                    BackupListCommand.printProps(props);
-                    return null;
-                }
-            }
-        }
-        System.out.println("No Config found, PID = " + pid);
+        System.out.println(BackupCommands.createBackup(cm, pid, replace));
         return null;
     }
 

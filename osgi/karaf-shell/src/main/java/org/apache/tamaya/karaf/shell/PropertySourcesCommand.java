@@ -19,34 +19,21 @@
 package org.apache.tamaya.karaf.shell;
 
 import org.apache.karaf.shell.api.action.Action;
-import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.osgi.commands.ConfigCommands;
 import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertyValue;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "propertysources", description="Get a list of currently registered propertysources.")
+@Command(scope = "tamaya", name = "tm_propertysources", description="Get a list of currently registered propertysources.")
 @Service
 public class PropertySourcesCommand implements Action{
 
     public Object execute() throws IOException {
-        Configuration config = ConfigurationProvider.getConfiguration();
-        System.out.print(StringUtil.format("ID", 20));
-        System.out.print(StringUtil.format("Ordinal", 20));
-        System.out.print(StringUtil.format("Class", 40));
-        System.out.println(StringUtil.format("Property Count", 5));
-        System.out.println(StringUtil.printRepeat("-", 80));
-        for(PropertySource ps:config.getContext().getPropertySources()){
-            System.out.print(StringUtil.format(ps.getName(), 20));
-            System.out.print(StringUtil.format(String.valueOf(ps.getOrdinal()), 20));
-            System.out.print(StringUtil.format(ps.getClass().getName(), 40));
-            System.out.println(StringUtil.format(String.valueOf(ps.getProperties().size()), 5));
-            System.out.println("---");
-        }
+        System.out.println(ConfigCommands.getPropertySourceOverview());
         return null;
     }
 

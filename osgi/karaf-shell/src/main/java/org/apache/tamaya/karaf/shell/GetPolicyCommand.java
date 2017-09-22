@@ -23,10 +23,11 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.ConfigCommands;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "get-policy", description="Get the current Tamaya overriding policy.")
+@Command(scope = "tamaya", name = "tm_policy", description="Get the current Tamaya overriding policy.")
 @Service
 public class GetPolicyCommand implements Action{
 
@@ -35,7 +36,7 @@ public class GetPolicyCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(this.configPlugin.getDefaultOperationMode());
+        System.out.println(ConfigCommands.getDefaultOpPolicy(configPlugin));
         return null;
     }
 

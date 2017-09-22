@@ -30,27 +30,26 @@ import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
 import org.apache.tamaya.osgi.OperationMode;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.ConfigCommands;
 
 import java.io.IOException;
 import java.util.List;
 
-@Command(scope = "tamaya", name = "policy-set", description="Sets the current Tamaya operation policy.")
+@Command(scope = "tamaya", name = "tamaya_policy_set", description="Sets the current Tamaya operation policy.")
 @Service
 public class PolicySetCommand implements Action{
 
     @Reference
     private TamayaConfigPlugin configPlugin;
 
-    @Argument(index = 0, name = "operationPolicy", description = "The operation policy how Tamaya intercepts OSGI configuration.",
+    @Argument(index = 0, name = "tm_policy_set", description = "The operation policy how Tamaya intercepts OSGI configuration.",
             required = true, multiValued = false)
     @Completion(OperationModeCompleter.class)
     String policy = null;
 
     @Override
     public Object execute() throws IOException {
-        OperationMode opMode = OperationMode.valueOf(policy);
-        this.configPlugin.setDefaultOperationMode(opMode);
-        System.out.println("OperationMode="+opMode.toString());
+        System.out.println(ConfigCommands.setDefaultOpPolicy(configPlugin, policy));
         return null;
     }
 
