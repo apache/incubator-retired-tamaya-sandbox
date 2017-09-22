@@ -177,4 +177,8 @@ final class ConfigChanger {
         }
         return mapper;
     }
+
+    public org.apache.tamaya.Configuration getTamayaConfiguration(String pid) {
+        return configMapper().getConfiguration(pid);
+    }
 }

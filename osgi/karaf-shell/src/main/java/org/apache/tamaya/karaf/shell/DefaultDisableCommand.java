@@ -50,8 +50,7 @@ public class DefaultDisableCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(ConfigCommands.setDefaultDisabled(configPlugin, disabled));
-        return null;
+        return(ConfigCommands.setDefaultDisabled(configPlugin, disabled));
     }
 
     @Service

@@ -41,7 +41,7 @@ public class ConfigCommands {
     }
 
     @Descriptor("Shows the current Tamaya configuration.")
-    public void config(@Parameter(absentValue = "", names={"-s", "--section"})
+    public void tm_config(@Parameter(absentValue = "", names={"-s", "--section"})
                        @Descriptor("The section start expression to filter.") String section,
                        @Parameter(absentValue = "", names={"-p", "--pid"})
                        @Descriptor("The pid to filter (required).") String pid) throws IOException {
@@ -54,7 +54,7 @@ public class ConfigCommands {
 
 
     @Descriptor("Gets the detailed property values.")
-    public void property_get(@Parameter(absentValue = "", names={"-ps", "--propertysource"})
+    public void tm_property(@Parameter(absentValue = "", names={"-ps", "--propertysource"})
                                  @Descriptor("The property source name")String propertysource,
                              @Parameter(absentValue = Parameter.UNSPECIFIED, names={"-k", "--key"})
                                 @Descriptor("The property key")String key,
@@ -64,13 +64,13 @@ public class ConfigCommands {
     }
 
     @Descriptor("Get details of a property source.")
-    public void propertysource_get(@Parameter(absentValue = "", names={"-ps", "--propertysource"})
+    public void tm_propertysource(@Parameter(absentValue = "", names={"-ps", "--propertysource"})
                                        @Descriptor("The property source name, empty returns a list of possible values")String propertysource) throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.getPropertySource(propertysource));
     }
 
     @Descriptor("Show details of all registered property sources.")
-    public void propertysources_get() throws IOException {
+    public void tm_propertysources() throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.getPropertySourceOverview());
     }
 }

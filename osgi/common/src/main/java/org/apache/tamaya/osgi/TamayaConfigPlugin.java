@@ -38,6 +38,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     /** the logger. */
     private static final Logger LOG = Logger.getLogger(TamayaConfigPlugin.class.getName());
     private static final String TAMAYA_DISABLED = "tamaya.disabled";
+    private static final String TAMAYA_AUTO_UPDATE_ENABLED = "tamaya.autoUpdateEnabled";
     public static final String TAMAYA_DISABLED_KEY = "Tamaya-Disabled";
     public static final String TAMAYA_ENABLED_KEY = "Tamaya-Enabled";
     public static final String TAMAYA_PID_KEY = "Tamaya-PID";
@@ -45,6 +46,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     private OperationMode defaultOpMode = OperationMode.OVERRIDE;
 
     private ConfigChanger configChanger;
+    private boolean autoUpdateEnabled;
 
     @Override
     public void serviceChanged(ServiceEvent event) {
@@ -61,7 +63,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
 
 
     /**
-     * Create a new config.
+     * Create a new getConfig.
      * @param context the OSGI context
      */
     TamayaConfigPlugin(BundleContext context) {
@@ -69,8 +71,14 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         InitialState.restore(this);
         ConfigHistory.restore(this);
         initDefaultEnabled();
+        initAutoUpdateEnabled();
         initDefaultOpMode();
         initConfigs();
+    }
+
+    public void setAutoUpdateEnabled(boolean enabled){
+        this.autoUpdateEnabled = enabled;
+        setConfigValue(TAMAYA_AUTO_UPDATE_ENABLED, enabled);
     }
 
     public void setDefaultDisabled(boolean disabled){
@@ -96,8 +104,6 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         switch(event.getType()){
             case BundleEvent.STARTING:
             case BundleEvent.LAZY_ACTIVATION:
-//            case BundleEvent.UPDATED:
-//              TODO add checks for preventing endlee loop for updates here...
                 configureBundle(event.getBundle());
                 break;
         }
@@ -131,7 +137,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     }
 
     public void updateConfig(String pid) {
-        LOG.fine("Updating config for pid...: " + pid);
+        LOG.fine("Updating getConfig for pid...: " + pid);
         configChanger.configure(pid, null, defaultOpMode);
         InitialState.save(this);
         ConfigHistory.save(this);
@@ -176,19 +182,30 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         return true;
     }
 
+    private void initAutoUpdateEnabled() {
+        String enabledVal = (String)getConfigValue(TAMAYA_AUTO_UPDATE_ENABLED);
+        if(enabledVal!=null){
+            this.autoUpdateEnabled = Boolean.parseBoolean(enabledVal);
+        }
+        if(this.autoUpdateEnabled) {
+            LOG.info("Tamaya Automatic Config Updating is enabled.");
+        }else{
+            LOG.info("Tamaya Automatic Config Updating is disabled.");
+        }
+    }
 
     private void initDefaultEnabled() {
-        String disabledVal = (String)getConfigValue("tamaya.disabled");
+        String disabledVal = (String)getConfigValue(TAMAYA_DISABLED);
         if(disabledVal==null){
-            disabledVal = System.getProperty("tamaya.disabled");
+            disabledVal = System.getProperty(TAMAYA_DISABLED);
         }
         if(disabledVal!=null){
             this.disabled = Boolean.parseBoolean(disabledVal);
-            if(this.disabled) {
-                LOG.info("Tamaya Config is disabled by default. Add Tamaya-Enabled to your bundle manifests to enable it.");
-            }else{
-                LOG.info("Tamaya Config is enabled by default. Add Tamaya-Disabled to your bundle manifests to disable it.");
-            }
+        }
+        if(this.disabled) {
+            LOG.info("Tamaya Config is disabled by default. Add Tamaya-Enabled to your bundle manifests to enable it.");
+        }else{
+            LOG.info("Tamaya Config is enabled by default. Add Tamaya-Disabled to your bundle manifests to disable it.");
         }
     }
 
@@ -220,9 +237,9 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
                 props.put(key, value);
                 config.update(props);
             }
-            LOG.finest("Updated Tamaya Plugin config: "+key + "=" + value);
+            LOG.finest("Updated Tamaya Plugin getConfig: "+key + "=" + value);
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Error writing Tamaya config.", e);
+            LOG.log(Level.WARNING, "Error writing Tamaya getConfig.", e);
         }
     }
 
@@ -239,10 +256,17 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
                 return props.get(key);
             }
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Error reading Tamaya config.", e);
+            LOG.log(Level.WARNING, "Error reading Tamaya getConfig.", e);
         }
         return null;
     }
 
 
+    public org.apache.tamaya.Configuration getTamayaConfiguration(String pid) {
+        return configChanger.getTamayaConfiguration(pid);
+    }
+
+    public boolean isAutoUpdateEnabled() {
+        return autoUpdateEnabled;
+    }
 }

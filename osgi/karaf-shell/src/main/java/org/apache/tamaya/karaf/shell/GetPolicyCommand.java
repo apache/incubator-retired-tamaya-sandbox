@@ -36,8 +36,7 @@ public class GetPolicyCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(ConfigCommands.getDefaultOpPolicy(configPlugin));
-        return null;
+        return ConfigCommands.getDefaultOpPolicy(configPlugin);
     }
 
 }

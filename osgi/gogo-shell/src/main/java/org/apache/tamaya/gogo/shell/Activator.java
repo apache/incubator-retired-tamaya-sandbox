@@ -45,26 +45,27 @@ public class Activator implements BundleActivator {
         Dictionary<String, Object> props = new Hashtable<>();
         props.put("osgi.command.scope", "tamaya");
         props.put("osgi.command.function",
-                new String[] {"config", "property_get",
-                        "propertysource_get","propertysources_get"});
+                new String[] {"tm_config", "tm_property",
+                        "tm_propertysource","tm_propertysources"});
         configReg = context.registerService(
                 ConfigCommands.class,
                 new ConfigCommands(context), props);
         props.put("osgi.command.function",
-                new String[] {"history_get","history_delete",
-                "maxhistory_get", "maxhistory_set"});
+                new String[] {"tm_history","tm_history_delete","tm_history_delete_all",
+                "tm_history_maxsize", "tm_history_maxsize_set"});
         histReg = context.registerService(
                 HistoryCommands.class,
                 new HistoryCommands(context), props);
         props.put("osgi.command.function",
-                new String[] {"backup_create","backup_delete",
-                "backup_get"});
+                new String[] {"tm_backup_create","tm_backup_delete",
+                "tm_backup"});
         backupReg = context.registerService(
                 BackupCommands.class,
                 new BackupCommands(context), props);
         props.put("osgi.command.function",
-                new String[] {"tamaya_disable","tamaya_policy_get",
-                "tamaya_policy_set","tamaya_info"});
+                new String[] {"tm_disable","tm_policy",
+                "tm_policy_set","tm_info", "tm_propagate_updates",
+                "tm_propagate_updates_set"});
         settingsReg = context.registerService(
                 SettingsCommands.class,
                 new SettingsCommands(context), props);

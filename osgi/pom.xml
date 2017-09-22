@@ -290,6 +290,7 @@
         <module>common</module>
         <module>updater</module>
         <module>karaf-shell</module>
+        <module>gogo-shell</module>
         <!--<module>karaf-features</module>-->
     </modules>
 

@@ -48,8 +48,7 @@ public class BackupCreateCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(BackupCommands.createBackup(cm, pid, replace));
-        return null;
+        return(BackupCommands.createBackup(cm, pid, replace));
     }
 
 }

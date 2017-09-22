@@ -33,8 +33,7 @@ import java.io.IOException;
 public class PropertySourcesCommand implements Action{
 
     public Object execute() throws IOException {
-        System.out.println(ConfigCommands.getPropertySourceOverview());
-        return null;
+        return(ConfigCommands.getPropertySourceOverview());
     }
 
 }

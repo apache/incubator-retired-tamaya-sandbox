@@ -24,8 +24,8 @@ Export-Package: \
 	org.apache.tamaya.osgi.updater
 Import-Package: \
     org.apache.tamaya.osgi,\
-    org.osgi.service.cm,\
     org.osgi.framework,\
+    org.osgi.service.cm,\
     org.apache.tamaya,\
     org.apache.tamaya.spi,\
     org.apache.tamaya.functions,\

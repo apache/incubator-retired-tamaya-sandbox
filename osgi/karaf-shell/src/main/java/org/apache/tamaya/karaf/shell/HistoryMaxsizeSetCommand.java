@@ -16,32 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.felix.shell;
+package org.apache.tamaya.karaf.shell;
 
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.HistoryCommands;
-import org.osgi.service.component.annotations.Component;
 
 import java.io.IOException;
 
-@Component(
-        immediate = true,
-        property = {
-                "osgi.command.scope=tamaya:history",
-                "osgi.command.function=getHistory"
-        },
-        service=HistoryGetCommand.class
-)
+@Command(scope = "tamaya", name = "tm_history_maxsize_set", description="Sets the maximal size of Tamaya history entries.")
 @Service
-public class HistoryGetCommand{
+public class HistoryMaxsizeSetCommand implements Action{
 
     @Reference
     private TamayaConfigPlugin configPlugin;
 
-    public String getHistory(String pid, String[] eventTypes) throws IOException {
-        return (HistoryCommands.getHistory(pid, eventTypes));
+    @Argument(index = 0, name = "size", description = "The maximum number of entries in the history.",
+            required = true, multiValued = false)
+    int maxSize;
+
+    @Override
+    public Object execute() throws IOException {
+        return(HistoryCommands.setMaxHistorySize(maxSize));
     }
 
 }

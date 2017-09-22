@@ -62,7 +62,8 @@ public final class HistoryCommands{
             pw.print(StringUtil.format(String.valueOf(h.getValue()), 40));
             pw.println(String.valueOf(h.getPreviousValue()));
         }
-        return pw.toString();
+        pw.flush();
+        return sw.toString();
     }
 
     public static int getMaxHistorySize(){

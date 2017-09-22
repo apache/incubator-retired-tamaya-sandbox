@@ -16,16 +16,19 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+org.apache.tamaya.karaf.shell.PropagateUpdatesCommand
+org.apache.tamaya.karaf.shell.PropagateUpdatesSetCommand
 org.apache.tamaya.karaf.shell.BackupCreateCommand
 org.apache.tamaya.karaf.shell.BackupDeleteCommand
 org.apache.tamaya.karaf.shell.BackupListCommand
 org.apache.tamaya.karaf.shell.ConfigCommand
 org.apache.tamaya.karaf.shell.DefaultDisableCommand
 org.apache.tamaya.karaf.shell.GetPolicyCommand
-org.apache.tamaya.karaf.shell.HistoryClearCommand
+org.apache.tamaya.karaf.shell.HistoryDeleteAllCommand
+org.apache.tamaya.karaf.shell.HistoryDeleteCommand
 org.apache.tamaya.karaf.shell.HistoryGetCommand
-org.apache.tamaya.karaf.shell.HistorySizeGetCommand
-org.apache.tamaya.karaf.shell.HistorySizeSetCommand
+org.apache.tamaya.karaf.shell.HistoryMaxsizeCommand
+org.apache.tamaya.karaf.shell.HistoryMaxsizeSetCommand
 org.apache.tamaya.karaf.shell.InfoCommand
 org.apache.tamaya.karaf.shell.PolicyGetCommand
 org.apache.tamaya.karaf.shell.PolicySetCommand

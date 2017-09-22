@@ -38,8 +38,7 @@ public class InfoCommand  implements Action {
     private TamayaConfigPlugin configPlugin;
 
     public Object execute() throws IOException {
-        System.out.println(ConfigCommands.getInfo(configPlugin));
-        return null;
+        return(ConfigCommands.getInfo(configPlugin));
     }
 
 }

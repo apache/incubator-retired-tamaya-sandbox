@@ -32,38 +32,38 @@ public class TamayaConfigPluginTest {
 
     @Test
     public void createConfigurationOverride() throws Exception {
-//        Configuration config = configAdmin.createFactoryConfiguration("tamaya");
-//        assertNotNull(config);
-//        assertFalse(config.getProperties().isEmpty());
-//        assertEquals(config.getProperties().size(), 4);
-//        assertEquals(config.getProperties().get("my.testProperty1"), "success1");
+//        Configuration getConfig = configAdmin.createFactoryConfiguration("tamaya");
+//        assertNotNull(getConfig);
+//        assertFalse(getConfig.getProperties().isEmpty());
+//        assertEquals(getConfig.getProperties().size(), 4);
+//        assertEquals(getConfig.getProperties().get("my.testProperty1"), "success1");
     }
 //
 //    @Test
 //    public void createFactoryConfigurationWithLocation() throws Exception {
-//        Configuration config = configAdmin.createFactoryConfiguration("tamaya", "location");
-//        assertNotNull(config);
-//        assertFalse(config.getProperties().isEmpty());
-//        assertEquals(config.getProperties().size(), 4);
-//        assertEquals(config.getProperties().get("my.testProperty2"), "success2");
+//        Configuration getConfig = configAdmin.createFactoryConfiguration("tamaya", "location");
+//        assertNotNull(getConfig);
+//        assertFalse(getConfig.getProperties().isEmpty());
+//        assertEquals(getConfig.getProperties().size(), 4);
+//        assertEquals(getConfig.getProperties().get("my.testProperty2"), "success2");
 //    }
 //
 //    @Test
-//    public void getConfiguration() throws Exception {
-//        Configuration config = configAdmin.getConfiguration("tamaya");
-//        assertNotNull(config);
-//        assertFalse(config.getProperties().isEmpty());
-//        assertEquals(config.getProperties().size(), 4);
-//        assertEquals(config.getProperties().get("my.testProperty3"), "success3");
+//    public void getTamayaConfiguration() throws Exception {
+//        Configuration getConfig = configAdmin.getTamayaConfiguration("tamaya");
+//        assertNotNull(getConfig);
+//        assertFalse(getConfig.getProperties().isEmpty());
+//        assertEquals(getConfig.getProperties().size(), 4);
+//        assertEquals(getConfig.getProperties().get("my.testProperty3"), "success3");
 //    }
 //
 //    @Test
 //    public void getConfigurationWithLocation() throws Exception {
-//        Configuration config = configAdmin.getConfiguration("tamaya", "location");
-//        assertNotNull(config);
-//        assertFalse(config.getProperties().isEmpty());
-//        assertEquals(config.getProperties().size(), 4);
-//        assertEquals(config.getProperties().get("my.testProperty4"), "success4");
+//        Configuration getConfig = configAdmin.getTamayaConfiguration("tamaya", "location");
+//        assertNotNull(getConfig);
+//        assertFalse(getConfig.getProperties().isEmpty());
+//        assertEquals(getConfig.getProperties().size(), 4);
+//        assertEquals(getConfig.getProperties().get("my.testProperty4"), "success4");
 //    }
 //
 //    @Test

@@ -42,21 +42,21 @@ public class BackupCommands {
 
 
     @Descriptor("Creates an OSGI ConfigAdmin configuration backup for a PID.")
-    public void backup_create(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
+    public void tm_backup_create(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
                                   @Descriptor("The PID (requred)") String pid,
-                              @Parameter(absentValue = Parameter.UNSPECIFIED, names={"-f", "--force"})
+                                 @Parameter(absentValue = Parameter.UNSPECIFIED, names={"-f", "--force"})
                                   @Descriptor("If set any existing backup will be overriden, default is false.") Boolean force) throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.BackupCommands.createBackup(getService(ConfigurationAdmin.class), pid, force));
     }
 
     @Descriptor("Deletes an OSGI ConfigAdmin configuration backup for a PID.")
-    public void backup_delete(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
+    public void tm_backup_delete(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
                                   @Descriptor("The target PID") String pid) throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.BackupCommands.deleteBackup(pid));
     }
 
     @Descriptor("Shows the contents of the OSGI ConfigAdmin configuration backup for a PID.")
-    public void backup_get(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
+    public void tm_backup_get(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
                                @Descriptor("The PID (requred)") String pid) throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.BackupCommands.listBackup(Objects.requireNonNull(pid)));
     }

@@ -104,7 +104,7 @@ public final class InitialState {
                 ois.close();
             }
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to store config change history.", e);
+            LOG.log(Level.WARNING, "Failed to store getConfig change history.", e);
         }
     }
 }

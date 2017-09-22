@@ -47,8 +47,7 @@ public class PropertyGetCommand implements Action{
     String propertysource = null;
 
     public Object execute() throws IOException {
-        System.out.println(ConfigCommands.getProperty(propertysource, key, extended));
-        return null;
+        return(ConfigCommands.getProperty(propertysource, key, extended));
     }
 
 }

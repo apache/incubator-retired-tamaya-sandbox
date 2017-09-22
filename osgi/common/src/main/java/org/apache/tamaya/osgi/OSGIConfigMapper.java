@@ -31,7 +31,7 @@ public interface OSGIConfigMapper {
      * default implemented) a configuration mapping for {@code pid/factoryPid==myBundle} could be {@code [bundle:myBundle]}.
      * This mapping is used as a prefix when collecting the corresponding entries for the OSGI configuration.
      * @param pid the OSGI pid, or null
-     * @return return the corresponding config root section. For ommitting any root section simply return an empty
+     * @return return the corresponding getConfig root section. For ommitting any root section simply return an empty
      * String.
      */
     Configuration getConfiguration(String pid);

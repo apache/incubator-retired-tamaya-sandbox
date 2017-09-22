@@ -39,8 +39,7 @@ public class PropertySourceCommand implements Action{
     String propertysource = null;
 
     public Object execute() throws IOException {
-        System.out.println(ConfigCommands.getPropertySource(propertysource));
-        return null;
+        return(ConfigCommands.getPropertySource(propertysource));
     }
 
 }

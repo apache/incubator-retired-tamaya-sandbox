@@ -19,10 +19,10 @@
 package org.apache.tamaya.osgi;
 
 /**
- * Operation mode applied to the config read.
+ * Operation mode applied to the getConfig read.
  */
 public enum OperationMode{
-    /** Only add properties not existing in the config. */
+    /** Only add properties not existing in the getConfig. */
     EXTEND,
     /** Override existing properties and add new properties. */
     OVERRIDE,

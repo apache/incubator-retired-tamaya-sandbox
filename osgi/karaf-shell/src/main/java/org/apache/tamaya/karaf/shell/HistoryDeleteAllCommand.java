@@ -16,27 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.felix.shell;
+package org.apache.tamaya.karaf.shell;
 
-import org.apache.felix.scr.annotations.Service;
-import org.apache.tamaya.osgi.commands.ConfigCommands;
-import org.osgi.service.component.annotations.Component;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.tamaya.osgi.commands.HistoryCommands;
 
 import java.io.IOException;
 
-@Component(
-        immediate = true,
-        property = {
-                "osgi.command.scope=tamaya:propertysources",
-                "osgi.command.function=propertysources"
-        },
-        service=PropertySourcesCommand.class
-)
+@Command(scope = "tamaya", name = "tm_history_delete_all", description="Deletes the full history of changes Tamaya applied to the OSGI configuration.")
 @Service
-public class PropertySourcesCommand{
+public class HistoryDeleteAllCommand implements Action{
 
-    public String propertysources() throws IOException {
-        return ConfigCommands.getPropertySourceOverview();
+    @Override
+    public String execute() throws IOException {
+        return HistoryCommands.clearHistory(null);
     }
 
 }

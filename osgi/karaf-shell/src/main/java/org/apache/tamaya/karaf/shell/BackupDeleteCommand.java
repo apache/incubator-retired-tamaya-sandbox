@@ -37,8 +37,7 @@ public class BackupDeleteCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(BackupCommands.deleteBackup(pid));
-        return null;
+        return(BackupCommands.deleteBackup(pid));
     }
 
 }

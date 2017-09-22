@@ -36,8 +36,7 @@ public class BackupListCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(BackupCommands.listBackup(pid));
-        return null;
+        return(BackupCommands.listBackup(pid));
     }
 
 }

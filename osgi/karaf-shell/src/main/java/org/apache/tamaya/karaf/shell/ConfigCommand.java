@@ -49,11 +49,9 @@ public class ConfigCommand implements Action{
 
     public Object execute() throws IOException {
         if(pid!=null){
-            System.out.println(ConfigCommands.readConfig(configPlugin, pid, section));
-        }else {
-            System.out.println(ConfigCommands.readConfig(section));
+            return(ConfigCommands.readConfig(configPlugin, pid, section));
         }
-        return null;
+        return(ConfigCommands.readConfig(section));
     }
 
 }

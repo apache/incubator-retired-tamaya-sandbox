@@ -31,8 +31,7 @@ public class HistoryMaxsizeCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(HistoryCommands.getMaxHistorySize());
-        return null;
+        return(HistoryCommands.getMaxHistorySize());
     }
 
 }

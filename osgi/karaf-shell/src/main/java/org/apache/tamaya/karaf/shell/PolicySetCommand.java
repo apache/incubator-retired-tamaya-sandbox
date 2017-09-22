@@ -35,7 +35,7 @@ import org.apache.tamaya.osgi.commands.ConfigCommands;
 import java.io.IOException;
 import java.util.List;
 
-@Command(scope = "tamaya", name = "tamaya_policy_set", description="Sets the current Tamaya operation policy.")
+@Command(scope = "tamaya", name = "tm_policy_set", description="Sets the current Tamaya operation policy.")
 @Service
 public class PolicySetCommand implements Action{
 
@@ -49,8 +49,7 @@ public class PolicySetCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        System.out.println(ConfigCommands.setDefaultOpPolicy(configPlugin, policy));
-        return null;
+        return(ConfigCommands.setDefaultOpPolicy(configPlugin, policy));
     }
 
     @Service

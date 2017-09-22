@@ -49,9 +49,8 @@ public class HistoryGetCommand implements Action{
     private String[] eventTypes;
 
     @Override
-    public Object execute() throws IOException {
-        System.out.println(HistoryCommands.getHistory(pid, eventTypes));
-        return null;
+    public String execute() throws IOException {
+        return HistoryCommands.getHistory(pid, eventTypes);
     }
 
     @Service

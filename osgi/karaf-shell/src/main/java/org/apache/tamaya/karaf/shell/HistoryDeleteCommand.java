@@ -29,13 +29,12 @@ import java.io.IOException;
 public class HistoryDeleteCommand implements Action{
 
     @Argument(index = 0, name = "pid", description = "Allows to filter on the given PID.",
-            required = false, multiValued = false)
+            required = true, multiValued = false)
     String pid;
 
     @Override
-    public Object execute() throws IOException {
-        System.out.println(HistoryCommands.clearHistory(pid));
-        return null;
+    public String execute() throws IOException {
+        return HistoryCommands.clearHistory(pid);
     }
 
 }

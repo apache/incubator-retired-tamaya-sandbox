@@ -40,18 +40,18 @@ public class HistoryCommands {
     }
 
     @Descriptor("Deletes the history of configuration changes.")
-    public void history_delete(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
+    public void tm_history_delete(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
                                    @Descriptor("The PID.") String pid) throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.clearHistory(pid));
     }
 
     @Descriptor("Deletes the full history of configuration changes.")
-    public void history_delete_all() throws IOException {
+    public void tm_history_delete_all() throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.clearHistory(null));
     }
 
     @Descriptor("Read the history of configuration changes.")
-    public void history_get(@Parameter(absentValue = "", names={"-p", "--pid"})
+    public void tm_history_get(@Parameter(absentValue = "", names={"-p", "--pid"})
                                 @Descriptor("The PID.")String pid,
                             @Parameter(absentValue = "", names={"-t", "--eventtypes"})
                             @Descriptor("The comma separated Event types to filter, valid types are " +
@@ -64,12 +64,12 @@ public class HistoryCommands {
     }
 
     @Descriptor("Get the maximum configuration change history size.")
-    public void maxhistory_get() throws IOException {
+    public void tm_history_maxsize() throws IOException {
         System.out.println(String.valueOf(org.apache.tamaya.osgi.commands.HistoryCommands.getMaxHistorySize()));
     }
 
     @Descriptor("Sets the maximum configuration change history size.")
-    public void maxhistory_set(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-s", "--size"})
+    public void tm_history_maxsize_set(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-s", "--size"})
                                    @Descriptor("The maximum size of history entries stored.")int maxSize) throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.setMaxHistorySize(maxSize));
     }

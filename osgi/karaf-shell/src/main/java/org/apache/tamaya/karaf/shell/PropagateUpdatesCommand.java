@@ -16,31 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tamaya.felix.shell;
+package org.apache.tamaya.karaf.shell;
 
-import org.apache.felix.scr.annotations.Service;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
-import org.osgi.service.component.annotations.Component;
 
 import java.io.IOException;
 
-@Component(
-        immediate = true,
-        property = {
-                "osgi.command.scope=tamaya:info",
-                "osgi.command.function=info"
-        },
-        service=InfoCommand.class
-)
+@Command(scope = "tamaya", name = "tm_propagate_updates",
+        description="Flag if Tamaya is automatically triggering OSGI config updates, when according " +
+                "Tamaya configuration changes.")
 @Service
-public class InfoCommand {
+public class PropagateUpdatesCommand implements Action{
 
-    @org.apache.felix.scr.annotations.Reference
+    @Reference
     private TamayaConfigPlugin configPlugin;
 
-    public String info() throws IOException {
-        return (ConfigCommands.getInfo(configPlugin));
+
+    @Override
+    public Object execute() throws IOException {
+        return(configPlugin.isAutoUpdateEnabled());
     }
 
 }

@@ -171,7 +171,7 @@ public final class ConfigHistory implements Serializable{
             Base64.getEncoder().encode(bos.toByteArray());
             plugin.setConfigValue("history", Base64.getEncoder().encode(bos.toByteArray()));
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to store config change history.", e);
+            LOG.log(Level.WARNING, "Failed to store getConfig change history.", e);
         }
     }
 
@@ -185,7 +185,7 @@ public final class ConfigHistory implements Serializable{
                 ois.close();
             }
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to store config change history.", e);
+            LOG.log(Level.WARNING, "Failed to store getConfig change history.", e);
         }
     }
 
