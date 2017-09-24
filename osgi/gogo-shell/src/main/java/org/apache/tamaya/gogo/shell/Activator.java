@@ -58,12 +58,12 @@ public class Activator implements BundleActivator {
                 new HistoryCommands(context), props);
         props.put("osgi.command.function",
                 new String[] {"tm_backup_create","tm_backup_delete",
-                "tm_backup"});
+                        "tm_backup","tm_backup_restore"});
         backupReg = context.registerService(
                 BackupCommands.class,
                 new BackupCommands(context), props);
         props.put("osgi.command.function",
-                new String[] {"tm_disable","tm_policy",
+                new String[] {"tm_enable","tm_enabled", "tm_policy",
                 "tm_policy_set","tm_info", "tm_propagate_updates",
                 "tm_propagate_updates_set"});
         settingsReg = context.registerService(

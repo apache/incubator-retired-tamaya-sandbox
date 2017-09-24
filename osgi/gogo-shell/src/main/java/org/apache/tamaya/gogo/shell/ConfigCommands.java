@@ -20,6 +20,7 @@ package org.apache.tamaya.gogo.shell;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.apache.tamaya.osgi.OperationMode;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -46,12 +47,24 @@ public class ConfigCommands {
                        @Parameter(absentValue = "", names={"-p", "--pid"})
                        @Descriptor("The pid to filter (required).") String pid) throws IOException {
         if(pid.isEmpty()){
-            System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.readConfig(section));
+            System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.readTamayaConfig(section, null));
         }else {
-            System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.readConfig(getService(TamayaConfigPlugin.class), pid, section));
+            System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.readTamayaConfig4PID(pid, section));
         }
     }
 
+    public void tm_apply_config(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
+                                @Descriptor("The target OSGI component PID.")
+                                        String pid,
+                                @Parameter(absentValue = "OVERRIDE", names={"-m", "--opmode"})
+                                @Descriptor("Explicitly set (override) the operation mode to use, one of: EXTEND, OVERRIDE, UPDATE_ONLY")
+                                        OperationMode operationMode,
+                                @Parameter(absentValue = "false", names={"-d", "--dryrun"})
+                                @Descriptor("If set to true no OSGI configuration gets changed.")
+                                        boolean dryRun){
+        System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.applyTamayaConfiguration(
+                getService(TamayaConfigPlugin.class), pid, operationMode.toString(), dryRun));
+    }
 
     @Descriptor("Gets the detailed property values.")
     public void tm_property(@Parameter(absentValue = "", names={"-ps", "--propertysource"})

@@ -20,6 +20,7 @@ package org.apache.tamaya.gogo.shell;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -53,6 +54,13 @@ public class BackupCommands {
     public void tm_backup_delete(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
                                   @Descriptor("The target PID") String pid) throws IOException {
         System.out.println(org.apache.tamaya.osgi.commands.BackupCommands.deleteBackup(pid));
+    }
+
+    @Descriptor("Restores an OSGI ConfigAdmin configuration backup for a PID and disabled Tamaya for the given PID.")
+    public void tm_backup_restore(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
+                                 @Descriptor("The target PID") String pid) throws IOException {
+        System.out.println(org.apache.tamaya.osgi.commands.BackupCommands.restoreBackup(
+                getService(TamayaConfigPlugin.class), pid));
     }
 
     @Descriptor("Shows the contents of the OSGI ConfigAdmin configuration backup for a PID.")

@@ -43,9 +43,14 @@ public class SettingsCommands {
     }
 
     @Descriptor("Allows to disable/enable Tamaya configuration by default.")
-    public void tm_disable(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-d", "--disable"})
-                                   @Descriptor("if true Tamaya is disabled by default (default=false)") boolean disabled) throws IOException {
-        System.out.println(ConfigCommands.setDefaultDisabled(getService(TamayaConfigPlugin.class), disabled));
+    public void tm_enable(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-e", "--enable"})
+                                   @Descriptor("if true Tamaya is enabled by default (default=false)") boolean enabled) throws IOException {
+        System.out.println(ConfigCommands.setDefaultEnabled(getService(TamayaConfigPlugin.class), enabled));
+    }
+
+    @Descriptor("Access if Tamaya is currently enabled by default to change OSGI configuration.")
+    public void tm_enabled(){
+        System.out.println(ConfigCommands.getDefaultEnabled(getService(TamayaConfigPlugin.class)));
     }
 
     @Descriptor("Get the default Tamaya configuration policy.")
