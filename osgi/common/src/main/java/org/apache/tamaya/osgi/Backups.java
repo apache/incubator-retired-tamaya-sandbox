@@ -30,12 +30,12 @@ import java.util.logging.Logger;
 /**
  * Created by atsticks on 19.09.17.
  */
-public final class InitialState {
+public final class Backups {
 
-    private static final Logger LOG = Logger.getLogger(InitialState.class.getName());
+    private static final Logger LOG = Logger.getLogger(Backups.class.getName());
     private static Map<String, Hashtable<String,?>> initialConfigState = new ConcurrentHashMap<>();
 
-    private InitialState(){}
+    private Backups(){}
 
     public static void set(String pid, Dictionary<String,?> config){
         initialConfigState.put(pid, toHashtable(config));

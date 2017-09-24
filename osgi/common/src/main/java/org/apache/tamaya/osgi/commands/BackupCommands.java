@@ -18,7 +18,8 @@
  */
 package org.apache.tamaya.osgi.commands;
 
-import org.apache.tamaya.osgi.InitialState;
+import org.apache.tamaya.osgi.Backups;
+import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -43,8 +44,8 @@ public final class BackupCommands {
         if(cfg!=null){
             Dictionary<String,?> props = cfg.getProperties();
             if(props!=null){
-                if(force || !InitialState.contains(pid)){
-                    InitialState.set(pid, props);
+                if(force || !Backups.contains(pid)){
+                    Backups.set(pid, props);
                     return "Backup created, PID = " + pid + '\n' +
                     printProps(props);
                 }
@@ -55,17 +56,46 @@ public final class BackupCommands {
 
     public static String deleteBackup(String pid) throws IOException {
         if("*".equals(pid)){
-            InitialState.removeAll();
+            Backups.removeAll();
             return "All Backups deleted.";
         }else {
-            InitialState.remove(pid);
+            Backups.remove(pid);
             return "Backup deleted: " + pid;
+        }
+    }
+
+    public static String restoreBackup(TamayaConfigPlugin plugin, String pid) throws IOException {
+        StringBuilder b = new StringBuilder("Restored Configurations:\n")
+                .append("------------------------\n");
+        if("*".equals(pid)){
+            for(String current: Backups.getPids()){
+                try{
+                    if(plugin.restoreBackup(current)){
+                        b.append(current).append(" -> restored.\n");
+                    }else{
+                        b.append(current).append(" -> no backup found.\n");
+                    }
+                }catch(Exception e){
+                    b.append(current).append(" -> failed: " + e).append('\n');
+                }
+            }
+            return b.toString();
+        }else {
+            try{
+                if(plugin.restoreBackup(pid)){
+                    return pid + " -> restored.\n";
+                }else{
+                    return pid + " -> no backup found.\n";
+                }
+            }catch(Exception e){
+                return pid + " -> failed: " + e + '\n';
+            }
         }
     }
 
     public static String listBackup(String pid) throws IOException {
         if(pid!=null){
-            Dictionary<String, ?> props = InitialState.get(pid);
+            Dictionary<String, ?> props = Backups.get(pid);
             if(props==null){
                 return "No backup found: " + pid;
             }else{
@@ -75,7 +105,7 @@ public final class BackupCommands {
         }else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            for(Map.Entry<String, Dictionary<String,?>> en: InitialState.get().entrySet()){
+            for(Map.Entry<String, Dictionary<String,?>> en: Backups.get().entrySet()){
                 pw.println("PID: " + en.getKey());
                 pw.println(printProps(en.getValue()));
             }
