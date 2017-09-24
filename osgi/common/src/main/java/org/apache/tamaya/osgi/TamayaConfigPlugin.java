@@ -24,6 +24,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 
 import java.io.IOException;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -37,12 +38,10 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     static final String COMPONENTID = "TamayaConfigPlugin";
     /** the logger. */
     private static final Logger LOG = Logger.getLogger(TamayaConfigPlugin.class.getName());
-    private static final String TAMAYA_DISABLED = "tamaya.disabled";
-    private static final String TAMAYA_AUTO_UPDATE_ENABLED = "tamaya.autoUpdateEnabled";
-    public static final String TAMAYA_DISABLED_KEY = "Tamaya-Disabled";
-    public static final String TAMAYA_ENABLED_KEY = "Tamaya-Enabled";
-    public static final String TAMAYA_PID_KEY = "Tamaya-PID";
-    private boolean disabled = false;
+    public static final String TAMAYA_ENABLED = "tamaya-enabled";
+    public static final String TAMAYA_AUTO_UPDATE_ENABLED = "tamaya.autoUpdateEnabled";
+    public static final String TAMAYA_ROOT_KEY = "tamaya-root";
+    private boolean enabledByDefault = false;
     private OperationMode defaultOpMode = OperationMode.OVERRIDE;
 
     private ConfigChanger configChanger;
@@ -68,7 +67,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
      */
     TamayaConfigPlugin(BundleContext context) {
         configChanger = new ConfigChanger(context);
-        InitialState.restore(this);
+        Backups.restore(this);
         ConfigHistory.restore(this);
         initDefaultEnabled();
         initAutoUpdateEnabled();
@@ -81,13 +80,13 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         setConfigValue(TAMAYA_AUTO_UPDATE_ENABLED, enabled);
     }
 
-    public void setDefaultDisabled(boolean disabled){
-        this.disabled = disabled;
-        setConfigValue(TAMAYA_DISABLED, disabled);
+    public void setTamayaEnabledByDefault(boolean enabledByDefault){
+        this.enabledByDefault = enabledByDefault;
+        setConfigValue(TAMAYA_ENABLED, enabledByDefault);
     }
 
-    public boolean isDefaultDisabled(){
-        return disabled;
+    public boolean isTamayaEnabledByDefault(){
+        return enabledByDefault;
     }
 
     public OperationMode getDefaultOperationMode(){
@@ -131,23 +130,36 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             LOG.finest("No service pid for: " + event.getServiceReference());
             return;
         }
-        configChanger.configure(pid, event.getServiceReference().getBundle(), defaultOpMode);
-        InitialState.save(this);
+        configChanger.configure(pid, event.getServiceReference().getBundle(), defaultOpMode, false, false);
+        Backups.save(this);
         ConfigHistory.save(this);
     }
 
-    public void updateConfig(String pid) {
-        LOG.fine("Updating getConfig for pid...: " + pid);
-        configChanger.configure(pid, null, defaultOpMode);
-        InitialState.save(this);
-        ConfigHistory.save(this);
+    public Dictionary<String,Object> updateConfig(String pid) {
+        return updateConfig(pid, defaultOpMode, false, false);
+    }
+
+    public Dictionary<String,Object> updateConfig(String pid, boolean dryRun) {
+        return updateConfig(pid, defaultOpMode, false, dryRun);
+    }
+
+    public Dictionary<String,Object> updateConfig(String pid, OperationMode opMode, boolean explicitMode, boolean dryRun) {
+        if(dryRun){
+            return configChanger.configure(pid, null, opMode, explicitMode, true);
+        }else {
+            LOG.fine("Updating getConfig for pid...: " + pid);
+            Dictionary<String,Object> result = configChanger.configure(pid, null, opMode, explicitMode, false);
+            Backups.save(this);
+            ConfigHistory.save(this);
+            return result;
+        }
     }
 
     private void configureBundle(Bundle bundle) {
         if(!isBundleEnabled(bundle)){
             return;
         }
-        String tamayaPid = bundle.getHeaders().get(TAMAYA_PID_KEY);
+        String tamayaPid = bundle.getHeaders().get(TAMAYA_ROOT_KEY);
         String pid = tamayaPid!=null?tamayaPid:bundle.getSymbolicName();
         if(pid==null){
             pid = bundle.getLocation();
@@ -156,54 +168,51 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             LOG.finest(() -> "No PID/location for bundle " + bundle.getSymbolicName() + '('+bundle.getBundleId()+')');
             return;
         }
-        configChanger.configure(pid, bundle, defaultOpMode);
-        InitialState.save(this);
+        configChanger.configure(pid, bundle, defaultOpMode, false, false);
+        Backups.save(this);
         ConfigHistory.save(this);
     }
 
-
     public boolean isBundleEnabled(Bundle bundle){
         // Optional MANIFEST entries
-        String enabledTamaya = bundle.getHeaders().get(TAMAYA_ENABLED_KEY);
-        String disabledTamaya = bundle.getHeaders().get(TAMAYA_DISABLED_KEY);
-
-        if(Boolean.parseBoolean(disabledTamaya)){
-            LOG.finest("Bundle is disabled for Tamaya: " + bundle.getSymbolicName());
+        String bundleEnabledVal = bundle.getHeaders().get(TAMAYA_ENABLED);
+        if(bundleEnabledVal==null && !enabledByDefault){
+            LOG.finest("tamaya.enabled=false: not configuring bundle: " + bundle.getSymbolicName());
             return false;
         }
-        if(enabledTamaya != null && !Boolean.parseBoolean(enabledTamaya)){
-            LOG.finest("Bundle is disabled for Tamaya: " + bundle.getSymbolicName());
+        if(bundleEnabledVal != null && !Boolean.parseBoolean(bundleEnabledVal)){
+            LOG.finest("Bundle is explcitly disabled for Tamaya: " + bundle.getSymbolicName());
             return false;
         }
-        if(disabled){
-            LOG.finest("tamaya.disabled=false: not configuring bundle: " + bundle.getSymbolicName());
-            return false;
+        if(bundleEnabledVal != null && Boolean.parseBoolean(bundleEnabledVal)){
+            LOG.finest("Bundle is explicitly enabled for Tamaya: " + bundle.getSymbolicName());
+            return true;
         }
         return true;
     }
 
     private void initAutoUpdateEnabled() {
-        String enabledVal = (String)getConfigValue(TAMAYA_AUTO_UPDATE_ENABLED);
+        Object enabledVal = getConfigValue(TAMAYA_AUTO_UPDATE_ENABLED);
         if(enabledVal!=null){
-            this.autoUpdateEnabled = Boolean.parseBoolean(enabledVal);
+            this.autoUpdateEnabled = Boolean.parseBoolean(enabledVal.toString());
         }
         if(this.autoUpdateEnabled) {
             LOG.info("Tamaya Automatic Config Updating is enabled.");
         }else{
-            LOG.info("Tamaya Automatic Config Updating is disabled.");
+            LOG.info("Tamaya Automatic Config Updating is enabledByDefault.");
         }
     }
 
     private void initDefaultEnabled() {
-        String disabledVal = (String)getConfigValue(TAMAYA_DISABLED);
-        if(disabledVal==null){
-            disabledVal = System.getProperty(TAMAYA_DISABLED);
+        Object disabledVal = getConfigValue(TAMAYA_ENABLED);
+        if(disabledVal==null && System.getProperty(TAMAYA_ENABLED)!=null){
+            disabledVal = Boolean.parseBoolean(System.getProperty(TAMAYA_ENABLED));
         }
         if(disabledVal!=null){
-            this.disabled = Boolean.parseBoolean(disabledVal);
+            this.enabledByDefault = Boolean.parseBoolean(disabledVal.toString());
         }
-        if(this.disabled) {
-            LOG.info("Tamaya Config is disabled by default. Add Tamaya-Enabled to your bundle manifests to enable it.");
+        if(this.enabledByDefault) {
+            LOG.info("Tamaya Config is enabledByDefault by default. Add Tamaya-Enabled to your bundle manifests to enable it.");
         }else{
             LOG.info("Tamaya Config is enabled by default. Add Tamaya-Disabled to your bundle manifests to disable it.");
         }
@@ -262,11 +271,52 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     }
 
 
-    public org.apache.tamaya.Configuration getTamayaConfiguration(String pid) {
-        return configChanger.getTamayaConfiguration(pid);
+    public org.apache.tamaya.Configuration getTamayaConfiguration(String root) {
+        return configChanger.getTamayaConfiguration(root);
     }
 
     public boolean isAutoUpdateEnabled() {
-        return autoUpdateEnabled;
+        return this.autoUpdateEnabled;
     }
+
+    public boolean restoreBackup(String pid)throws IOException{
+        Dictionary<String,Object> config = (Dictionary<String,Object>) Backups.get(pid);
+        if(config==null){
+            return false;
+        }
+        this.configChanger.restoreBackup(pid, config);
+        return true;
+    }
+
+    public Dictionary<String, Object> getOSGIConfiguration(String pid, String section) {
+        try {
+            Configuration config = configChanger.getConfigurationAdmin().getConfiguration(pid);
+            Dictionary<String, Object> props = null;
+            if (config == null
+                    || config.getProperties() == null) {
+                return null;
+            }
+            props = config.getProperties();
+            if(section!=null){
+                return filter(props, section);
+            }
+            return props;
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Error reading OSGI config for PID: " + pid, e);
+            return null;
+        }
+    }
+
+    private Dictionary<String, Object> filter(Dictionary<String, Object> props, String section) {
+        Hashtable<String, Object> result = new Hashtable<>();
+        Enumeration<String> keys = props.keys();
+        while(keys.hasMoreElements()){
+            String key = keys.nextElement();
+            if(key.startsWith(section)){
+                result.put(key, props.get(key));
+            }
+        }
+        return result;
+    }
+
 }

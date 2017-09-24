@@ -18,13 +18,22 @@
  */
 package org.apache.tamaya.osgi;
 
+import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.functions.ConfigurationFunctions;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +43,8 @@ import java.util.logging.Logger;
 final class ConfigChanger {
 
     private static final Logger LOG = Logger.getLogger(TamayaConfigPlugin.class.getName());
-    private static final OSGIConfigMapper DEFAULT_CONFIG_MAPPER = new DefaultOSGIConfigMapper();
+    private static final String TAMAYA_OPERATION_MODE = "tamaya-operationmode";
+    private static final String TAMAYA_ROOT = "tamaya-root";
 
     private BundleContext context;
     private ConfigurationAdmin cm;
@@ -53,55 +63,82 @@ final class ConfigChanger {
         return cm;
     }
 
-    public void configure(String pid, Bundle bundle, OperationMode defaultOpMode) {
-        OperationMode opMode = Objects.requireNonNull(defaultOpMode);
-        if(bundle!=null) {
-            String opVal = bundle.getHeaders().get("Tamaya-OperationMode");
-            if (opVal != null) {
-                opMode = OperationMode.valueOf(opVal.toUpperCase());
-            }
-        }
-        LOG.finest("Evaluating Tamaya Config for PID: " + pid);
-        if(bundle!=null) {
-            ConfigHistory.configuring(pid, "bundle=" + bundle.getSymbolicName() + ", bundle-id=" + bundle.getBundleId() + ", operationMode=" + opMode);
-        }else{
-            ConfigHistory.configuring(pid, "trigger=Tamaya, operationMode=" + opMode);
-        }
-        org.apache.tamaya.Configuration tamayaConfig = configMapper().getConfiguration(pid);
-        if (tamayaConfig == null) {
-            LOG.finest("No Tamaya configuration for PID: " + pid);
-            return;
-        }
+    public Dictionary<String, Object> configure(String pid, Bundle bundle, OperationMode operationMode, boolean opModeExplicit, boolean dryRun) {
         try {
+            String root = '[' + pid + ']';
             // TODO Check for Bundle.getLocation() usage here...
             Configuration osgiConfig = cm.getConfiguration(pid, bundle!=null?bundle.getLocation():null);
-            if(osgiConfig!=null){
-                Dictionary<String, Object> dictionary = osgiConfig.getProperties();
-                if(dictionary==null){
-                    dictionary = new Hashtable<>();
-                }else{
-                    if(!InitialState.contains(pid)){
-                        InitialState.set(pid, dictionary);
+            OperationMode opMode = Objects.requireNonNull(operationMode);
+            // Check manifest config
+            if(bundle!=null) {
+                if(!opModeExplicit) {
+                    String opVal = bundle.getHeaders().get(TAMAYA_OPERATION_MODE);
+                    if (opVal != null) {
+                        opMode = OperationMode.valueOf(opVal.toUpperCase());
                     }
                 }
-                modifyConfiguration(pid, tamayaConfig, dictionary, opMode);
-                if(!dictionary.isEmpty()) {
-                    osgiConfig.update(dictionary);
-                    LOG.info("Updated configuration for PID: " + pid + ": " + dictionary);
+                String customRoot = bundle.getHeaders().get(TAMAYA_ROOT);
+                if(customRoot!=null){
+                    root = customRoot;
                 }
             }
-            ConfigHistory.configured(pid, "SUCCESS");
+            // Check for dynamic OSGI overrides
+            if(osgiConfig!=null){
+                Dictionary<String,Object> props = osgiConfig.getProperties();
+                if(props!=null){
+                    if(!opModeExplicit) {
+                        String opVal = (String) props.get(TAMAYA_OPERATION_MODE);
+                        if (opVal != null) {
+                            opMode = OperationMode.valueOf(opVal.toUpperCase());
+                        }
+                    }
+                    String customRoot = (String)props.get(TAMAYA_ROOT);
+                    if(customRoot!=null){
+                        root = customRoot;
+                    }
+                }else{
+                    props = new Hashtable<>();
+                }
+                if(!dryRun && !Backups.contains(pid)){
+                    Backups.set(pid, props);
+                }
+                LOG.finest("Evaluating Tamaya Config for PID: " + pid);
+                org.apache.tamaya.Configuration tamayaConfig = getTamayaConfiguration(root);
+                if (tamayaConfig == null) {
+                    LOG.finest("No Tamaya configuration for root: " + root);
+                }else {
+                    if(dryRun){
+                        modifyConfiguration(pid, tamayaConfig, props, opMode);
+                    }else {
+                        try {
+                            if (bundle != null) {
+                                ConfigHistory.configuring(pid, "bundle=" + bundle.getSymbolicName() + ", opMode=" + opMode);
+                            } else {
+                                ConfigHistory.configuring(pid, "trigger=Tamaya, opMode=" + opMode);
+                            }
+                            modifyConfiguration(pid, tamayaConfig, props, opMode);
+                            if (!props.isEmpty()) {
+                                osgiConfig.update(props);
+                                LOG.info("Updated configuration for PID: " + pid + ": " + props);
+                                ConfigHistory.configured(pid, "SUCCESS");
+                            }
+                        }catch(Exception e){
+                            LOG.log(Level.WARNING, "Failed to update configuration for PID: " + pid, e);
+                            ConfigHistory.configured(pid, "FAILED: " + e);
+                        }
+                    }
+                }
+                return props;
+            }
+            return null;
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Failed to initialize configuration for PID: " + pid, e);
-            ConfigHistory.configured(pid, "FAILED: " + e);
+            return null;
         }
-
     }
 
     public void modifyConfiguration(String pid, org.apache.tamaya.Configuration config, Dictionary<String, Object> dictionary, OperationMode opMode) {
         LOG.info(() -> "Updating configuration for PID: " + pid + "...");
-        dictionary.put("tamaya.opMode", opMode.toString());
-        ConfigHistory.propertySet(pid, "tamaya.opMode", opMode.toString(), null);
         dictionary.put("tamaya.modified.at", new Date().toString());
         ConfigHistory.propertySet(pid, "tamaya.modified.at", dictionary.get("tamaya.modified.at"), null);
 
@@ -114,27 +151,30 @@ final class ConfigChanger {
         }
         for (Map.Entry<String, Object> dictEntry : dictionaryMap.entrySet()) {
             Object configuredValue = config.getOrDefault(dictEntry.getKey(), dictEntry.getValue().getClass(), null);
+            if (configuredValue != null) {
+                if(configuredValue.equals(dictEntry.getValue())){
+                    continue;
+                }
+            }
             switch (opMode) {
                 case EXTEND:
                     break;
                 case OVERRIDE:
-                    if (configuredValue != null) {
-                        LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
-                        ConfigHistory.propertySet(pid,dictEntry.getKey(), configuredValue, dictEntry.getValue());
-                        dictionary.put(dictEntry.getKey(), configuredValue);
-                    }
+                    LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
+                    ConfigHistory.propertySet(pid,dictEntry.getKey(), configuredValue, dictEntry.getValue());
+                    dictionary.put(dictEntry.getKey(), configuredValue);
                     break;
                 case UPDATE_ONLY:
-                    if (configuredValue != null) {
-                        LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
-                        ConfigHistory.propertySet(pid,dictEntry.getKey(), configuredValue, dictEntry.getValue());
-                        dictionary.put(dictEntry.getKey(), configuredValue);
-
-                    }
+                    LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
+                    ConfigHistory.propertySet(pid,dictEntry.getKey(), configuredValue, dictEntry.getValue());
+                    dictionary.put(dictEntry.getKey(), configuredValue);
             }
         }
         for (Map.Entry<String, String> configEntry : config.getProperties().entrySet()) {
             Object dictValue = dictionary.get(configEntry.getKey());
+            if(dictValue.equals(configEntry.getValue())){
+                continue;
+            }
             switch (opMode) {
                 case EXTEND:
                     if(dictValue==null){
@@ -159,26 +199,19 @@ final class ConfigChanger {
         }
     }
 
-    /**
-     * Loads the configuration toor mapper using the OSGIConfigRootMapper OSGI service resolving mechanism. If no
-     * such service is available it loads the default mapper.
-     * @return the mapper to be used, bever null.
-     */
-    private OSGIConfigMapper configMapper() {
-        OSGIConfigMapper mapper = null;
-        if(context!=null) {
-            ServiceReference<OSGIConfigMapper> ref = context.getServiceReference(OSGIConfigMapper.class);
-            if (ref != null) {
-                mapper = context.getService(ref);
-            }
+    public org.apache.tamaya.Configuration getTamayaConfiguration(String root) {
+        if (root != null) {
+            return ConfigurationProvider.getConfiguration()
+                    .with(ConfigurationFunctions.section(root, true));
         }
-        if(mapper==null){
-            return DEFAULT_CONFIG_MAPPER;
-        }
-        return mapper;
+        return null;
     }
 
-    public org.apache.tamaya.Configuration getTamayaConfiguration(String pid) {
-        return configMapper().getConfiguration(pid);
+    public void restoreBackup(String pid, Dictionary<String, Object> config)throws IOException{
+        Configuration osgiConfig = cm.getConfiguration(pid);
+        if(osgiConfig!=null){
+            config.put(TamayaConfigPlugin.TAMAYA_ENABLED, "false");
+            osgiConfig.update(Objects.requireNonNull(config));
+        }
     }
 }
