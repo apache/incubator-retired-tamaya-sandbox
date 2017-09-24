@@ -1,23 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2013 David Valeri.
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-     http://www.apache.org/licenses/LICENSE-2.0
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  -->
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.3.0" name="org-apache-tamaya">
-    <feature name="configadmin" version="0.3-incubating">
-        <bundle>mvn:org.apache.tamaya.ext/tamaya-osgi_alpha/0.4-incubating-SNAPSHOT/jar</bundle>
-        <bundle>mvn:org.apache.tamaya.ext/tamaya-functions/0.3-incubating/jar</bundle>
-        <bundle>mvn:org.apache.tamaya.ext/tamaya-spisupport/0.3-incubating/jar</bundle>
-        <bundle>mvn:org.apache.tamaya/tamaya-api/0.3-incubating/jar</bundle>
-        <bundle>mvn:org.apache.tamaya/tamaya-core/0.3-incubating/jar</bundle>
-        <bundle>mvn:org.apache.geronimo.specs/geronimo-annotation_1.2_spec/1.0-alpha-1/jar</bundle>
-    </feature>
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.3.0" name="org-apache-tamaya-all">
+    <features name="org-apache-tamaya-config" version="0.4-incubating">
+        <features name="org-apache-tamaya-configadmin" version="0.4-incubating">
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-osgi_alpha/0.4-incubating/jar</bundle>
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-functions/0.4-incubating/jar</bundle>
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-spisupport/0.4-incubating/jar</bundle>
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-osgi-karaf_alpha/0.4-incubating/jar</bundle>
+            <features name="org-apache-tamaya-minimal" version="0.4-incubating">
+                <feature name="org-apache-tamaya-api" version="0.4-incubating">
+                    <bundle>mvn:org.apache.tamaya/tamaya-api/0.4-incubating/jar</bundle>
+                    <bundle>mvn:org.apache.geronimo.specs/geronimo-annotation_1.2_spec/1.0-alpha-1/jar</bundle>
+                </feature>
+                <feature name="org-apache-tamaya-core" version="0.4-incubating">
+                    <bundle>mvn:org.apache.tamaya/tamaya-core/0.4-incubating/jar</bundle>
+                </feature>
+            </features>
+        </features>
+        <features name="org-apache-tamaya-config-injection" version="0.4-incubating">
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-osgi-injection_alpha/0.4-incubating/jar</bundle>
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-injection-api/0.4-incubating/jar</bundle>
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-injection-se/0.4-incubating/jar</bundle>
+        </features>
+        <feature name="org-apache-tamaya-config-updater" version="0.4-incubating">
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-events/0.4-incubating/jar</bundle>
+            <bundle>mvn:org.apache.tamaya.ext/tamaya-osgi-updater_alpha/0.4-incubating/jar</bundle>
+        </feature>
+    </features>
+    <features name="org-apache-tamaya-formats" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-formats/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-formats-json" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-formats-json/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-formats-yaml" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-formats-yaml/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-filter" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-filter/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-resources" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-resources/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-resolver" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-resolver/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-mutable-config" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-mutable-config/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-spring" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-spring/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-optional" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-optional/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-jndi" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-jndi/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-features" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-features/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-events" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-events/0.4-incubating/jar</bundle>
+    </features>
+    <features name="org-apache-tamaya-uom" version="0.4-incubating">
+        <bundle>mvn:org.apache.tamaya.ext/tamaya-uom/0.4-incubating/jar</bundle>
+    </features>
 </features>
