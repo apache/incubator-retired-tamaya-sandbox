@@ -23,24 +23,21 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.functions.ConfigurationFunctions;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "tm_config", description="Show the current Tamaya configuration.")
+@Command(scope = "tamaya", name = "tm_osgi_config", description="Show the current OSGI configuration.")
 @Service
-public class ConfigCommand implements Action{
+public class OSGIConfigCommand implements Action{
 
-    @Argument(index = 0, name = "section", description = "A regular expression selecting the section to be filtered.",
+    @Option(name = "section", aliases={"-s","--section"}, description = "A starting expression selecting the keys to be filtered.",
             required = false, multiValued = false)
     String section = null;
 
-    @Option(name = "pid", aliases={"-p.--pid"}, description = "Apply filtering for the given OSGI component PID.",
-            required = false, multiValued = false)
+    @Argument(index = 0, name = "pid", description = "The target OSGI component PID.",
+            required = true, multiValued = false)
     String pid = null;
 
     @org.apache.karaf.shell.api.action.lifecycle.Reference
@@ -48,10 +45,7 @@ public class ConfigCommand implements Action{
 
 
     public Object execute() throws IOException {
-        if(pid!=null){
-            return(ConfigCommands.readConfig(configPlugin, pid, section));
-        }
-        return(ConfigCommands.readConfig(section));
+        return(ConfigCommands.readOSGIConfiguration(configPlugin, pid, section));
     }
 
 }

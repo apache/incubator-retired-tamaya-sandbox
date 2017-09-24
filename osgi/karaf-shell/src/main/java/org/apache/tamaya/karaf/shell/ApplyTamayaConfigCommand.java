@@ -23,29 +23,33 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.osgi.commands.BackupCommands;
-import org.osgi.service.cm.ConfigurationAdmin;
+import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.ConfigCommands;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "tm_backup_create", description="Creates a backup of a current OSGI configuration.")
+@Command(scope = "tamaya", name = "tm_apply_config", description="Show the current Tamaya configuration.")
 @Service
-public class BackupCreateCommand implements Action{
+public class ApplyTamayaConfigCommand implements Action{
 
-    @Argument(index = 0, name = "pid", description = "The target pid to backup.",
+    @Argument(index = 0, name = "pid", description = "The target OSGI component PID.",
             required = true, multiValued = false)
-    String pid;
+    String pid = null;
 
-    @Option(name = "--force", aliases = "-f", description = "Forces to (over)write a backup, even if one already exists.",
+    @Option(name = "operationMode", aliases={"-m","--opmode"}, description = "Explicitly set (override) the operation mode to use.",
             required = false, multiValued = false)
-    boolean replace;
+    String opMode = null;
+
+    @Option(name = "dryRun", aliases={"-d","--dryrun"}, description = "If set to true no OSGI configuration gets changed.",
+            required = false, multiValued = false)
+    boolean dryRun = false;
 
     @org.apache.karaf.shell.api.action.lifecycle.Reference
-    ConfigurationAdmin cm;
+    TamayaConfigPlugin configPlugin;
 
-    @Override
+
     public Object execute() throws IOException {
-        return(BackupCommands.createBackup(cm, pid, replace));
+        return(ConfigCommands.applyTamayaConfiguration(configPlugin, pid, opMode, dryRun));
     }
 
 }

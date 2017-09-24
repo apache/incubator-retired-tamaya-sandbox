@@ -21,31 +21,26 @@ package org.apache.tamaya.karaf.shell;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.BackupCommands;
-import org.osgi.service.cm.ConfigurationAdmin;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "tm_backup_create", description="Creates a backup of a current OSGI configuration.")
+@Command(scope = "tamaya", name = "tm_backup_restore", description="Restores the OSGI configuration backup of Tamya and disabled the PID for Tamaya configuration.")
 @Service
-public class BackupCreateCommand implements Action{
+public class BackupRestoreCommand implements Action{
 
-    @Argument(index = 0, name = "pid", description = "The target pid to backup.",
+    @Argument(index = 0, name = "pid", description = "The target PID. '*' restores all backups.",
             required = true, multiValued = false)
     String pid;
 
-    @Option(name = "--force", aliases = "-f", description = "Forces to (over)write a backup, even if one already exists.",
-            required = false, multiValued = false)
-    boolean replace;
-
     @org.apache.karaf.shell.api.action.lifecycle.Reference
-    ConfigurationAdmin cm;
+    TamayaConfigPlugin configPlugin;
 
     @Override
     public Object execute() throws IOException {
-        return(BackupCommands.createBackup(cm, pid, replace));
+        return(BackupCommands.restoreBackup(configPlugin, pid));
     }
 
 }

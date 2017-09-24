@@ -23,29 +23,32 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.osgi.commands.BackupCommands;
-import org.osgi.service.cm.ConfigurationAdmin;
+import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.ConfigCommands;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "tm_backup_create", description="Creates a backup of a current OSGI configuration.")
+@Command(scope = "tamaya", name = "tm_config", description="Show the current Tamaya configuration.")
 @Service
-public class BackupCreateCommand implements Action{
+public class TamayaConfigCommand implements Action{
 
-    @Argument(index = 0, name = "pid", description = "The target pid to backup.",
-            required = true, multiValued = false)
-    String pid;
-
-    @Option(name = "--force", aliases = "-f", description = "Forces to (over)write a backup, even if one already exists.",
+    @Option(name = "section", aliases={"-s","--section"}, description = "A starting expression selecting the section to be filtered.",
             required = false, multiValued = false)
-    boolean replace;
+    String section = null;
+
+    @Option(name = "pid", aliases={"-p","--pid"}, description = "Apply filtering for the given OSGI component PID.",
+            required = false, multiValued = false)
+    String pid = null;
 
     @org.apache.karaf.shell.api.action.lifecycle.Reference
-    ConfigurationAdmin cm;
+    TamayaConfigPlugin configPlugin;
 
-    @Override
+
     public Object execute() throws IOException {
-        return(BackupCommands.createBackup(cm, pid, replace));
+        if(pid!=null){
+            return(ConfigCommands.readTamayaConfig4PID(pid, section));
+        }
+        return(ConfigCommands.readTamayaConfig(section, null));
     }
 
 }

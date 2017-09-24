@@ -22,7 +22,6 @@ import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.osgi.InitialState;
 import org.apache.tamaya.osgi.commands.BackupCommands;
 
 import java.io.IOException;

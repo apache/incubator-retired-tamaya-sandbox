@@ -21,7 +21,6 @@ package org.apache.tamaya.karaf.shell;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.api.console.CommandLine;
@@ -35,22 +34,17 @@ import org.apache.tamaya.osgi.commands.ConfigCommands;
 import java.io.IOException;
 import java.util.List;
 
-@Command(scope = "tamaya", name = "tm_disable", description="Disables Tamaya by default for all bundles/services (default=false)." +
-        " Disabling it allows to explicitly enable bundles using 'Tamaya-Enable^manifest entries.")
+@Command(scope = "tamaya", name = "tm_enabled", description="Check if Tamaya is currently by default enabled for all bundles/services (default: enabled=false)." +
+        " If disabled still Tamaya allows to explicitly enable bundles using 'tamaya-enable' manifest or OSGI config entries.")
 @Service
-public class DefaultDisableCommand implements Action{
+public class DefaultEnabledCommand implements Action{
 
     @Reference
     private TamayaConfigPlugin configPlugin;
 
-    @Argument(index = 0, name = "disabled", description = "The boolean value to disable Tamaya by default.",
-            required = true, multiValued = false)
-    @Completion(OperationModeCompleter.class)
-    boolean disabled;
-
     @Override
     public Object execute() throws IOException {
-        return(ConfigCommands.setDefaultDisabled(configPlugin, disabled));
+        return(ConfigCommands.getDefaultEnabled(configPlugin));
     }
 
     @Service
