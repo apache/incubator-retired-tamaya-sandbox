@@ -28,7 +28,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by atsticks on 19.09.17.
+ * Singleton class to store OSGI configuration backups before change the OSGI
+ * Config with Tamaya settings. This allows to restore the configuration in
+ * case of issues.
  */
 public final class Backups {
 
@@ -38,10 +40,20 @@ public final class Backups {
 
     private Backups(){}
 
+    /**
+     * Sets the given backup for a PID.
+     * @param pid the PID, not null.
+     * @param config the config to store.
+     */
     public static void set(String pid, Dictionary<String,?> config){
         initialConfigState.put(pid, toHashtable(config));
     }
 
+    /**
+     * Converts the dictionary to a hash table to enabled serialization.
+     * @param dictionary he config, not null.
+     * @return the correspoinding Hashtable
+     */
     private static Hashtable<String, ?> toHashtable(Dictionary<String, ?> dictionary) {
         if (dictionary == null) {
             return null;
@@ -58,30 +70,60 @@ public final class Backups {
         return map;
     }
 
+    /**
+     * Removes a backup.
+     * @param pid the PID, not null.
+     * @return
+     */
     public static Dictionary<String,?> remove(String pid){
         return initialConfigState.remove(pid);
     }
 
+    /**
+     * Removes all backups.
+     */
     public static void removeAll(){
         initialConfigState.clear();
     }
 
+    /**
+     * Get a backup for a PID.
+     * @param pid the PID, not null.
+     * @return the backup found, or null.
+     */
     public static Dictionary<String,?> get(String pid){
         return initialConfigState.get(pid);
     }
 
+    /**
+     * Get all current stored backups.
+     * @return The backups stored, by PID.
+     */
     public static Map<String,Dictionary<String,?>> get(){
         return new HashMap<>(initialConfigState);
     }
 
+    /**
+     * Get all current kjnown PIDs.
+     * @return the PIDs, never null.
+     */
     public static Set<String> getPids(){
         return initialConfigState.keySet();
     }
 
+    /**
+     * Checks if a backup exists for a given PID.
+     * @param pid the pid, not null.
+     * @return
+     */
     public static boolean contains(String pid){
         return initialConfigState.containsKey(pid);
     }
 
+    /**
+     * Saves the bachups into the given config.
+     * @param config the config, not nul.
+     */
     public static void save(Dictionary<String,Object> config){
         try{
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -89,12 +131,16 @@ public final class Backups {
             oos.writeObject(initialConfigState);
             oos.flush();
             Base64.getEncoder().encode(bos.toByteArray());
-            config.put(TAMAYA_BACKUP, Base64.getEncoder().encode(bos.toByteArray()));
+            config.put(TAMAYA_BACKUP, Base64.getEncoder().encodeToString(bos.toByteArray()));
         }catch(Exception e){
             LOG.log(Level.SEVERE, "Failed to restore OSGI Backups.", e);
         }
     }
 
+    /**
+     * Restores the backups ino the given config.
+     * @param config the config, not null.
+     */
     public static void restore(Dictionary<String,Object> config){
         try{
             String serialized = (String)config.get("tamaya.backup");
