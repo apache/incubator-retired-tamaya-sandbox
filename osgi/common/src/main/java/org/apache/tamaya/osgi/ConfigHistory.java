@@ -18,8 +18,6 @@
  */
 package org.apache.tamaya.osgi;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -33,22 +31,30 @@ public final class ConfigHistory implements Serializable{
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = Logger.getLogger(ConfigHistory.class.getName());
+    /** The key of the plugin OSGI configuration, where the history is stored/retrieved. */
+    private static final String HISTORY_KEY = "tamaya.history";
 
     public enum TaskType{
         PROPERTY,
         BEGIN,
         END,
     }
-
+    /** The max number of changes tracked. */
     private static int maxHistory = 10000;
+    /** The overall history. */
     private static List<ConfigHistory> history = new LinkedList<ConfigHistory>();
 
+    /** The entry timestamp. */
     private long timestamp = System.currentTimeMillis();
-
+    /** The entry type. */
     private TaskType type;
+    /** The previous value. */
     private Object previousValue;
+    /** The current value. */
     private Object value;
+    /** The key. */
     private String key;
+    /** The target PID. */
     private String pid;
 
     private ConfigHistory(TaskType taskType, String pid){
@@ -56,6 +62,12 @@ public final class ConfigHistory implements Serializable{
         this.pid = Objects.requireNonNull(pid);
     }
 
+    /**
+     * Creates and registers an entry when starting to configure a bundle.
+     * @param pid the PID
+     * @param info any info.
+     * @return the entry, never null.
+     */
     public static ConfigHistory configuring(String pid, String info){
         ConfigHistory h = new ConfigHistory(TaskType.BEGIN, pid)
                 .setValue(info);
@@ -65,6 +77,13 @@ public final class ConfigHistory implements Serializable{
         }
         return h;
     }
+
+    /**
+     * Creates and registers an entry when finished to configure a bundle.
+     * @param pid the PID
+     * @param info any info.
+     * @return the entry, never null.
+     */
     public static ConfigHistory configured(String pid, String info){
         ConfigHistory h = new ConfigHistory(TaskType.END, pid)
                 .setValue(info);
@@ -74,6 +93,15 @@ public final class ConfigHistory implements Serializable{
         }
         return h;
     }
+
+    /**
+     * Creates and registers an entry when a property has been changed.
+     * @param pid the PID
+     * @param key the key, not null.
+     * @param previousValue the previous value.
+     * @param value the new value.
+     * @return the entry, never null.
+     */
     public static ConfigHistory propertySet(String pid, String key, Object value, Object previousValue){
         ConfigHistory h = new ConfigHistory(TaskType.PROPERTY, pid)
                 .setKey(key)
@@ -86,22 +114,41 @@ public final class ConfigHistory implements Serializable{
         return h;
     }
 
+    /**
+     * Sets the maximum history size.
+     * @param maxHistory the size
+     */
     public static void setMaxHistory(int maxHistory){
         ConfigHistory.maxHistory = maxHistory;
     }
 
+    /**
+     * Get the max history size.
+     * @return the max size
+     */
     public static int getMaxHistory(){
         return maxHistory;
     }
 
+    /**
+     * Access the current history.
+     * @return the current history, never null.
+     */
     public static List<ConfigHistory> history(){
         return history(null);
     }
 
+    /**
+     * Clears the history.
+     */
     public static void clearHistory(){
         clearHistory(null);
     }
 
+    /**
+     * Ckears the history for a PID.
+     * @param pid the pid, null clears the full history.
+     */
     public static void clearHistory(String pid){
         synchronized (history){
             if(pid==null || pid.isEmpty()) {
@@ -112,6 +159,11 @@ public final class ConfigHistory implements Serializable{
         }
     }
 
+    /**
+     * Get the history for a PID.
+     * @param pid the pid, null returns the full history.
+     * @return
+     */
     public static List<ConfigHistory> history(String pid) {
         if(pid==null || pid.isEmpty()){
             return new ArrayList<>(history);
@@ -162,22 +214,30 @@ public final class ConfigHistory implements Serializable{
         return this;
     }
 
-    public static void save(TamayaConfigPlugin plugin){
+    /**
+     * This methd saves the (serialized) history in the plugin's OSGI configuration using
+     * the HISTORY_KEY key.
+     * @param osgiConfig the plugin config, not null.
+     */
+    public static void save(Dictionary<String,Object> osgiConfig){
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(bos);
             oos.writeObject(history);
             oos.flush();
-            Base64.getEncoder().encode(bos.toByteArray());
-            plugin.setConfigValue("history", Base64.getEncoder().encode(bos.toByteArray()));
+            osgiConfig.put(HISTORY_KEY, Base64.getEncoder().encodeToString(bos.toByteArray()));
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Failed to store getConfig change history.", e);
         }
     }
 
-    public static void restore(TamayaConfigPlugin plugin){
+    /**
+     * Restores the history from the plugin's OSGI configuration.
+     * @param osgiConfig
+     */
+    public static void restore(Dictionary<String,Object> osgiConfig){
         try{
-            String serialized = (String)plugin.getConfigValue("history");
+            String serialized = (String)osgiConfig.get(HISTORY_KEY);
             if(serialized!=null) {
                 ByteArrayInputStream bis = new ByteArrayInputStream(Base64.getDecoder().decode(serialized));
                 ObjectInputStream ois = new ObjectInputStream(bis);

@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 public final class Backups {
 
     private static final Logger LOG = Logger.getLogger(Backups.class.getName());
+    public static final String TAMAYA_BACKUP = "tamaya.backup";
     private static Map<String, Hashtable<String,?>> initialConfigState = new ConcurrentHashMap<>();
 
     private Backups(){}
@@ -81,22 +82,22 @@ public final class Backups {
         return initialConfigState.containsKey(pid);
     }
 
-    public static void save(TamayaConfigPlugin plugin){
+    public static void save(Dictionary<String,Object> config){
         try{
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(bos);
             oos.writeObject(initialConfigState);
             oos.flush();
             Base64.getEncoder().encode(bos.toByteArray());
-            plugin.setConfigValue("backup", Base64.getEncoder().encode(bos.toByteArray()));
+            config.put(TAMAYA_BACKUP, Base64.getEncoder().encode(bos.toByteArray()));
         }catch(Exception e){
             LOG.log(Level.SEVERE, "Failed to restore OSGI Backups.", e);
         }
     }
 
-    public static void restore(TamayaConfigPlugin plugin){
+    public static void restore(Dictionary<String,Object> config){
         try{
-            String serialized = (String)plugin.getConfigValue("backup");
+            String serialized = (String)config.get("tamaya.backup");
             if(serialized!=null) {
                 ByteArrayInputStream bis = new ByteArrayInputStream(Base64.getDecoder().decode(serialized));
                 ObjectInputStream ois = new ObjectInputStream(bis);

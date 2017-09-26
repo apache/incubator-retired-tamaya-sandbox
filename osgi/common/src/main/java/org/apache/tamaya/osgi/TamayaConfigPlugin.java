@@ -67,11 +67,12 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
      */
     TamayaConfigPlugin(BundleContext context) {
         configChanger = new ConfigChanger(context);
-        Backups.restore(this);
-        ConfigHistory.restore(this);
-        initDefaultEnabled();
-        initAutoUpdateEnabled();
-        initDefaultOpMode();
+        Dictionary<String,Object> props = getPluginConfig();
+        Backups.restore(props);
+        ConfigHistory.restore(props);
+        initDefaultEnabled(props);
+        initAutoUpdateEnabled(props);
+        initDefaultOpMode(props);
         initConfigs();
     }
 
@@ -131,8 +132,10 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             return;
         }
         configChanger.configure(pid, event.getServiceReference().getBundle(), defaultOpMode, false, false);
-        Backups.save(this);
-        ConfigHistory.save(this);
+        Dictionary<String,Object> props = getPluginConfig();
+        Backups.save(props);
+        ConfigHistory.save(props);
+        setPluginConfig(props);
     }
 
     public Dictionary<String,Object> updateConfig(String pid) {
@@ -149,8 +152,10 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         }else {
             LOG.fine("Updating getConfig for pid...: " + pid);
             Dictionary<String,Object> result = configChanger.configure(pid, null, opMode, explicitMode, false);
-            Backups.save(this);
-            ConfigHistory.save(this);
+            Dictionary<String,Object> props = getPluginConfig();
+            Backups.save(props);
+            ConfigHistory.save(props);
+            setPluginConfig(props);
             return result;
         }
     }
@@ -169,8 +174,10 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             return;
         }
         configChanger.configure(pid, bundle, defaultOpMode, false, false);
-        Backups.save(this);
-        ConfigHistory.save(this);
+        Dictionary<String,Object> props = getPluginConfig();
+        Backups.save(props);
+        ConfigHistory.save(props);
+        setPluginConfig(props);
     }
 
     public boolean isBundleEnabled(Bundle bundle){
@@ -191,8 +198,8 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         return true;
     }
 
-    private void initAutoUpdateEnabled() {
-        Object enabledVal = getConfigValue(TAMAYA_AUTO_UPDATE_ENABLED);
+    private void initAutoUpdateEnabled(Dictionary<String,Object> props) {
+        Object enabledVal = props.get(TAMAYA_AUTO_UPDATE_ENABLED);
         if(enabledVal!=null){
             this.autoUpdateEnabled = Boolean.parseBoolean(enabledVal.toString());
         }
@@ -203,8 +210,8 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         }
     }
 
-    private void initDefaultEnabled() {
-        Object disabledVal = getConfigValue(TAMAYA_ENABLED);
+    private void initDefaultEnabled(Dictionary<String,Object> props) {
+        Object disabledVal = props.get(TAMAYA_ENABLED);
         if(disabledVal==null && System.getProperty(TAMAYA_ENABLED)!=null){
             disabledVal = Boolean.parseBoolean(System.getProperty(TAMAYA_ENABLED));
         }
@@ -218,8 +225,8 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         }
     }
 
-    private void initDefaultOpMode() {
-        String opVal = (String)getConfigValue(OperationMode.class.getName());
+    private void initDefaultOpMode(Dictionary<String,Object> props) {
+        String opVal = (String)props.get(OperationMode.class.getName());
         if(opVal!=null){
             try{
                 defaultOpMode = OperationMode.valueOf(opVal);
@@ -229,8 +236,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         }
     }
 
-
-    void setConfigValue(String key, Object value){
+    Dictionary<String, Object> getPluginConfig(){
         Configuration config = null;
         try {
             config = configChanger.getConfigurationAdmin().getConfiguration(COMPONENTID);
@@ -241,31 +247,45 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             } else {
                 props = new Hashtable<String, Object>();
             }
-            Object val = props.get(key);
-            if(val==null) {
-                props.put(key, value);
+            return props;
+        } catch (IOException e) {
+            throw new IllegalStateException("No Tamaya plugin config.", e);
+        }
+    }
+
+    void setPluginConfig(Dictionary<String, Object> props){
+        Configuration config = null;
+        try {
+            config = configChanger.getConfigurationAdmin().getConfiguration(COMPONENTID);
+            if (config != null) {
                 config.update(props);
             }
-            LOG.finest("Updated Tamaya Plugin getConfig: "+key + "=" + value);
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Error writing Tamaya getConfig.", e);
+            LOG.log(Level.WARNING, "Failed to write Tamaya plugin config.", e);
+        }
+    }
+
+    void setConfigValue(String key, Object value){
+        try {
+            Dictionary<String, Object> props = getPluginConfig();
+            if(props!=null) {
+                props.put(key, value);
+                setPluginConfig(props);
+                LOG.finest("Updated Tamaya Plugin value: " + key + "=" + value);
+            }
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Error writing Tamaya config value: " + key, e);
         }
     }
 
     Object getConfigValue(String key){
-        Configuration config = null;
         try {
-            config = configChanger.getConfigurationAdmin().getConfiguration(COMPONENTID);
-            Dictionary<String, Object> props = null;
-            if (config != null
-                    && config.getProperties() != null) {
-                props = config.getProperties();
-            }
+            Dictionary<String, Object> props = getPluginConfig();
             if(props!=null){
                 return props.get(key);
             }
-        } catch (IOException e) {
-            LOG.log(Level.WARNING, "Error reading Tamaya getConfig.", e);
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Error reading Tamaya config value.", e);
         }
         return null;
     }

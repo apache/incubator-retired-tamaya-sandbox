@@ -102,14 +102,6 @@ public class OSGITest {
     }
 
     @Test
-    public void ensureEnvironmentIsWorkingAndTamayaIsActive()throws Exception {
-        assertNotNull(configAdmin);
-        assertEquals("Tamaya ConfigAdmin is not installed.",
-                "TamayaConfigAdminImpl", configAdmin.getClass().getSimpleName());
-        System.out.println("ConfigAdmin found in OSGI Container: " + configAdmin);
-    }
-
-    @Test
     public void testResourceIsVisible(){
         assertNotNull(ServiceContextManager.getServiceContext()
         .getResource("META-INF/javaconfiguration.properties", null));
