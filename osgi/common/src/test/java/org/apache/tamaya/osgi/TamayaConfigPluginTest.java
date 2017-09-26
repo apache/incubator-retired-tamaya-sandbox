@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.osgi;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.service.cm.Configuration;
 
@@ -26,6 +27,7 @@ import static org.junit.Assert.*;
 /**
  * Created by atsticks on 10.12.16.
  */
+@Ignore
 public class TamayaConfigPluginTest {
 
     private TamayaConfigPlugin configAdmin = new TamayaConfigPlugin(null);

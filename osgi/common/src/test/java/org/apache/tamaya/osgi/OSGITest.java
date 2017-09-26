@@ -22,6 +22,7 @@ import org.apache.tamaya.spi.ConfigurationProviderSpi;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -43,6 +44,7 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
+@Ignore
 public class OSGITest {
  
     @Inject
