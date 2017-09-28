@@ -18,60 +18,92 @@
  */
 package org.apache.tamaya.osgi;
 
+import javafx.beans.binding.Bindings;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+
+import javax.inject.Inject;
+
+import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.doReturn;
 
 /**
  * Created by atsticks on 10.12.16.
  */
-@Ignore
-public class TamayaConfigPluginTest {
-
-    private TamayaConfigPlugin configAdmin = new TamayaConfigPlugin(null);
+@RunWith(MockitoJUnitRunner.class)
+public class TamayaConfigPluginTest extends  AbstractOSGITest{
 
     @Test
-    public void createConfigurationOverride() throws Exception {
-//        Configuration getConfig = configAdmin.createFactoryConfiguration("tamaya");
-//        assertNotNull(getConfig);
-//        assertFalse(getConfig.getProperties().isEmpty());
-//        assertEquals(getConfig.getProperties().size(), 4);
-//        assertEquals(getConfig.getProperties().get("my.testProperty1"), "success1");
+    public void pluginLoaded() throws Exception {
+        assertNotNull(bundleContext.getService(bundleContext.getServiceReference(TamayaConfigPlugin.class)));
     }
-//
-//    @Test
-//    public void createFactoryConfigurationWithLocation() throws Exception {
-//        Configuration getConfig = configAdmin.createFactoryConfiguration("tamaya", "location");
-//        assertNotNull(getConfig);
-//        assertFalse(getConfig.getProperties().isEmpty());
-//        assertEquals(getConfig.getProperties().size(), 4);
-//        assertEquals(getConfig.getProperties().get("my.testProperty2"), "success2");
-//    }
-//
-//    @Test
-//    public void getTamayaConfiguration() throws Exception {
-//        Configuration getConfig = configAdmin.getTamayaConfiguration("tamaya");
-//        assertNotNull(getConfig);
-//        assertFalse(getConfig.getProperties().isEmpty());
-//        assertEquals(getConfig.getProperties().size(), 4);
-//        assertEquals(getConfig.getProperties().get("my.testProperty3"), "success3");
-//    }
-//
-//    @Test
-//    public void getConfigurationWithLocation() throws Exception {
-//        Configuration getConfig = configAdmin.getTamayaConfiguration("tamaya", "location");
-//        assertNotNull(getConfig);
-//        assertFalse(getConfig.getProperties().isEmpty());
-//        assertEquals(getConfig.getProperties().size(), 4);
-//        assertEquals(getConfig.getProperties().get("my.testProperty4"), "success4");
-//    }
-//
-//    @Test
-//    public void listConfigurations() throws Exception {
-//        Configuration[] configs = configAdmin.listConfigurations(".*");
-//        assertNotNull(configs);
-//    }
+
+    @Test
+    public void testOperationMode() throws Exception {
+        OperationMode om = tamayaConfigPlugin.getDefaultOperationMode();
+        tamayaConfigPlugin.setDefaultOperationMode(OperationMode.EXTEND);
+        assertEquals(OperationMode.EXTEND, tamayaConfigPlugin.getDefaultOperationMode());
+        tamayaConfigPlugin.setDefaultOperationMode(OperationMode.OVERRIDE);
+    }
+
+    @Test
+    public void testAutoUpdate() throws Exception {
+        boolean autoUpdate = tamayaConfigPlugin.isAutoUpdateEnabled();
+        tamayaConfigPlugin.setAutoUpdateEnabled(!autoUpdate);
+        assertEquals(tamayaConfigPlugin.isAutoUpdateEnabled(),!autoUpdate);
+        tamayaConfigPlugin.setAutoUpdateEnabled(autoUpdate);
+        assertEquals(tamayaConfigPlugin.isAutoUpdateEnabled(),autoUpdate);
+    }
+
+    @Test
+    public void testDefaulEnabled() throws Exception {
+        boolean enabled = tamayaConfigPlugin.isTamayaEnabledByDefault();
+        tamayaConfigPlugin.setTamayaEnabledByDefault(!enabled);
+        assertEquals(tamayaConfigPlugin.isTamayaEnabledByDefault(),!enabled);
+        tamayaConfigPlugin.setTamayaEnabledByDefault(enabled);
+        assertEquals(tamayaConfigPlugin.isTamayaEnabledByDefault(),enabled);
+    }
+
+    @Test
+    public void testSetPluginConfig() throws Exception {
+        Dictionary<String,Object> config = new Hashtable<>();
+        tamayaConfigPlugin.setPluginConfig(config);
+        assertEquals(tamayaConfigPlugin.getPluginConfig(), config);
+    }
+
+    @Test
+    public void testSetGetConfigValue() throws Exception {
+        Dictionary<String,Object> config = new Hashtable<>();
+        String val = (String)tamayaConfigPlugin.getConfigValue("foo");
+        tamayaConfigPlugin.setConfigValue("bar", "foo");
+        assertEquals(tamayaConfigPlugin.getConfigValue("bar"), "foo");
+    }
+
+    @Test
+    public void getTMUpdateConfig() throws Exception {
+        org.apache.tamaya.Configuration config = tamayaConfigPlugin.getTamayaConfiguration("java.");
+        assertNotNull(config);
+        assertNull(config.get("jlkjllj"));
+        assertEquals(config.get("home"),System.getProperty("java.home"));
+    }
+
+    public void getUpdateConfig() throws Exception {
+        Dictionary<String, Object> config = tamayaConfigPlugin.updateConfig("getUpdateConfig");
+        assertNotNull(config);
+        assertEquals(config.get("java.home"), System.getProperty("java.home"));
+    }
 
 }

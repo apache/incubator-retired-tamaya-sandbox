@@ -21,7 +21,7 @@ package org.apache.tamaya.osgi.commands;
 /**
  * Some String related helper methods.
  */
-final class StringUtil {
+public final class StringUtil {
 
     private StringUtil(){}
 

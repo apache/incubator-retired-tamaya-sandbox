@@ -30,5 +30,4 @@ Import-Package: \
     org.apache.tamaya.spi,\
     org.apache.tamaya.functions,\
     org.apache.tamaya.spisupport
-Export-Service:   org.osgi.service.cm.ConfigurationPlugin,\
-    org.apache.tamaya.osgi.TamayaConfigPlugin
+Export-Service:   org.apache.tamaya.osgi.TamayaConfigPlugin
