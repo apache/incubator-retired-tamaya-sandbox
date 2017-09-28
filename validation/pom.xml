@@ -23,6 +23,10 @@
         <groupId>org.apache.tamaya.ext</groupId>
         <artifactId>tamaya-sandbox</artifactId>
         <version>0.4-incubating-SNAPSHOT</version>
+<<<<<<< HEAD
+=======
+        <relativePath>..</relativePath>
+>>>>>>> java8
     </parent>
 
     <artifactId>tamaya-validation_alpha</artifactId>
@@ -30,10 +34,6 @@
     <description>This extension module provides functionality to validate configuration.
     </description>
     <packaging>jar</packaging>
-
-    <properties>
-        <jdkVersion>1.7</jdkVersion>
-    </properties>
 
     <dependencies>
         <dependency>

@@ -42,9 +42,9 @@ public final class MicroprofileAdapter{
     private MicroprofileAdapter(){}
 
     /**
-     * Converts a Tamaya {@link Configuration} into a Microprofile.io {@Config}.
+     * Converts a Tamaya {@link Configuration} into a Microprofile.io {@link Config}.
      * @param config the Tamaya {@link Configuration} instance, not null.
-     * @return the corresponding Microprofile.io {@Config} instance, never null.
+     * @return the corresponding Microprofile.io {@link Config} instance, never null.
      */
     public static Config toConfig(Configuration config){
         if(config instanceof TamayaConfiguration){
@@ -54,9 +54,9 @@ public final class MicroprofileAdapter{
     }
 
     /**
-     * Converts a Microprofile {@link Config}s into Tamaya {@Configuration}s.
+     * Converts a Microprofile {@link Config}s into Tamaya {@link Configuration}s.
      * @param config the Microprofile {@link Config} instance, not null.
-     * @return the corresponding Tamaya {@Configuration} instance, never null.
+     * @return the corresponding Tamaya {@link Configuration} instance, never null.
      */
     public static Configuration toConfiguration(Config config){
         if(config instanceof MicroprofileConfig){
@@ -66,22 +66,23 @@ public final class MicroprofileAdapter{
     }
 
     /**
-     * Converts a Tamaya {@link PropertySource}s into a Microprofile.io {@ConfigSource}.
+     * Converts a Tamaya {@link PropertySource}s into a Microprofile.io {@link ConfigSource}.
      * @param propertySources the Tamaya {@link PropertySource} instances, not null.
-     * @return the corresponding Microprofile.io {@ConfigSource} instance, never null.
+     * @return the corresponding Microprofile.io {@link ConfigSource} instance, never null.
      */
     public static List<ConfigSource> toConfigSources(Iterable<PropertySource> propertySources) {
         List<ConfigSource> configSources = new ArrayList<>();
         for(PropertySource ps:propertySources){
             configSources.add(toConfigSource(ps));
         }
+        Collections.reverse(configSources);
         return configSources;
     }
 
     /**
-     * Converts a Microprofile {@link ConfigSource}s into Tamaya {@PropertySource}s.
+     * Converts a Microprofile {@link ConfigSource}s into Tamaya {@link PropertySource}s.
      * @param configSources the Microprofile {@link ConfigSource} instances, not null.
-     * @return the corresponding Tamaya {@PropertySource} instances, never null.
+     * @return the corresponding Tamaya {@link PropertySource} instances, never null.
      */
     public static List<PropertySource> toPropertySources(Iterable<ConfigSource> configSources) {
         List<PropertySource> propertySources = new ArrayList<>();
@@ -92,9 +93,9 @@ public final class MicroprofileAdapter{
     }
 
     /**
-     * Converts a Tamaya {@link PropertySource} into a Microprofile.io {@ConfigSource}.
+     * Converts a Tamaya {@link PropertySource} into a Microprofile.io {@link ConfigSource}.
      * @param propertySource the Tamaya {@link PropertySource} instance, not null.
-     * @return the corresponding Microprofile.io {@ConfigSource} instance, never null.
+     * @return the corresponding Microprofile.io {@link ConfigSource} instance, never null.
      */
     public static ConfigSource toConfigSource(PropertySource propertySource) {
         if(propertySource instanceof TamayaPropertySource){
@@ -104,9 +105,9 @@ public final class MicroprofileAdapter{
     }
 
     /**
-     * Converts a Microprofile {@link ConfigSource} into a Tamaya {@PropertySource}.
+     * Converts a Microprofile {@link ConfigSource} into a Tamaya {@link PropertySource}.
      * @param configSource the Microprofile {@link ConfigSource} instance, not null.
-     * @return the corresponding Tamaya {@PropertySource} instance, never null.
+     * @return the corresponding Tamaya {@link PropertySource} instance, never null.
      */
     public static PropertySource toPropertySource(ConfigSource configSource) {
         if(configSource instanceof MicroprofileConfigSource){
@@ -116,9 +117,10 @@ public final class MicroprofileAdapter{
     }
 
     /**
-     * Converts a Microprofile {@link Converter} into a Tamaya {@PropertyConverter}.
+     * Converts a Microprofile {@link Converter} into a Tamaya {@link PropertyConverter}.
      * @param converter the Microprofile {@link Converter} instance, not null.
-     * @return the corresponding Tamaya {@PropertyConverter} instance, never null.
+     * @param <T> the target type
+     * @return the corresponding Tamaya {@link PropertyConverter} instance, never null.
      */
     public static <T> PropertyConverter<T> toPropertyConverter(Converter<T> converter) {
         if(converter instanceof MicroprofileConverter){
@@ -128,9 +130,10 @@ public final class MicroprofileAdapter{
     }
 
     /**
-     * Converts a Tamaya {@link PropertyConverter} into a Microprofile.io {@Converter}.
+     * Converts a Tamaya {@link PropertyConverter} into a Microprofile.io {@link Converter}.
      * @param converter the Tamaya {@link PropertyConverter} instance, not null.
-     * @return the corresponding Microprofile.io {@Converter} instance, never null.
+     * @param <T> the target type
+     * @return the corresponding Microprofile.io {@link Converter} instance, never null.
      */
     public static <T> Converter<T> toConverter(PropertyConverter<T> converter) {
         if(converter instanceof TamayaPropertyConverter){
@@ -140,9 +143,9 @@ public final class MicroprofileAdapter{
     }
 
     /**
-     * Converts a Tamaya {@link ConfigurationContextBuilder} into a Microprofile.io {@ConfigBuilder}.
+     * Converts a Tamaya {@link ConfigurationContextBuilder} into a Microprofile.io {@link ConfigBuilder}.
      * @param builder the Tamaya {@link ConfigurationContextBuilder} instance, not null.
-     * @return the corresponding Microprofile.io {@ConfigBuilder} instance, never null.
+     * @return the corresponding Microprofile.io {@link ConfigBuilder} instance, never null.
      */
     public static ConfigBuilder toConfigBuilder(ConfigurationContextBuilder builder) {
         return new MicroprofileConfigBuilder(builder);

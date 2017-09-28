@@ -23,6 +23,7 @@ import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.ServiceContextManager;
+import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -39,6 +40,7 @@ import java.util.logging.Logger;
  * Meta-configuration reader that reads the shared context data.
  */
 @Priority(-1)
+@Component
 public class MetaContextReader implements MetaConfigurationReader {
 
     private static final Logger LOG = Logger.getLogger(MetaContextReader.class.getName());

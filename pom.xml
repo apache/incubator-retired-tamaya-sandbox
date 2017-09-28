@@ -43,11 +43,10 @@ under the License.
         <tamaya.version>0.4-incubating-SNAPSHOT</tamaya.version>
         <commons-io.version>2.5</commons-io.version>
         <findbugs.skip>false</findbugs.skip>
-        <jdkVersion>1.7</jdkVersion>
         <osgi.version>5.0.0</osgi.version> <!-- 4.3.1 -->
         <osgi.compendium.version>${osgi.version}</osgi.compendium.version>
-        <maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
-        <maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
+        <maven.compile.targetLevel>1.8</maven.compile.targetLevel>
+        <maven.compile.sourceLevel>1.8</maven.compile.sourceLevel>
         <maven.compile.optimize>false</maven.compile.optimize>
         <maven.compile.deprecation>true</maven.compile.deprecation>
         <maven.javadoc.skip>false</maven.javadoc.skip>
@@ -220,11 +219,11 @@ under the License.
                 </exclusions>
             </dependency>
 
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${findbugs.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>com.google.code.findbugs</groupId>-->
+                <!--<artifactId>jsr305</artifactId>-->
+                <!--<version>${findbugs.version}</version>-->
+            <!--</dependency>-->
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -420,9 +419,9 @@ under the License.
                     <version>3.5.1</version>
                     <configuration>
                         <debug>true</debug>
-                        <optimize>${maven.compile.optimize}</optimize>
                         <source>${maven.compile.sourceLevel}</source>
                         <target>${maven.compile.targetLevel}</target>
+                        <optimize>${maven.compile.optimize}</optimize>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <showDeprecation>${maven.compile.deprecation}</showDeprecation>
                     </configuration>
@@ -705,8 +704,8 @@ under the License.
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${maven.compile.sourceLevel}</source>
+                    <target>${maven.compile.targetLevel}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -735,6 +734,7 @@ under the License.
     </build>
 
     <modules>
+        <module>collections</module>
         <module>hazelcast</module>
         <module>apache-commons</module>
         <module>jodatime</module>
@@ -750,9 +750,9 @@ under the License.
         <module>osgi</module>
         <module>management</module>
         <module>metamodel</module>
-        <!-- Requires JAVA 8: <module>microprofile</module>-->
+        <module>microprofile</module>
         <module>uom</module>
-        <!-- Requires JAVA 8: <module>vertx</module>-->
+        <module>vertx</module>
     </modules>
 
     <profiles>

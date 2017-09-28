@@ -1,4 +1,33 @@
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - Usagetracker
+Bundle-SymbolicName: org.apache.tamaya.usagetracker
+Bundle-Description: Apacha Tamaya Configuration - UsageTracker
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev-tamaya@incubator.apache.org
+Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.usagetracker,\
-	org.apache.tamaya.usagetracker.spi
-Bundle-SymbolicName: org.apache.tamaya.usagetracker
+    org.apache.tamaya.usagetracker.spi
+Import-Package: \
+    org.apache.tamaya,\
+    org.apache.tamaya.spi,\
+    org.apache.tamaya.events
+Export-Service: \
+    org.apache.tamaya.events.ConfigEventListener,\
+    org.apache.tamaya.model.spi.ModelProviderSpi,\
+    org.apache.tamaya.spi.PropertyFilter,\
+    org.apache.tamaya.usagetracker.spi.ConfigUsageSpi

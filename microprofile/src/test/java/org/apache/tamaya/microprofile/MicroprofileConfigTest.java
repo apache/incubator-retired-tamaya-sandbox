@@ -35,15 +35,14 @@ import static org.junit.Assert.*;
 public class MicroprofileConfigTest {
 
     @Test
-    public void testDefaultConfigAccess(){
+    public void testDefaultConfigAccess() {
         Config config = ConfigProvider.getConfig();
         Iterable<ConfigSource> sources = config.getConfigSources();
         int count = 0;
-        for(ConfigSource cs:sources){
+        for (ConfigSource cs : sources) {
             count++;
-            assertEquals(cs.getClass(), MicroprofileConfigSource.class);
         }
-        assertTrue(count == ConfigurationProvider.getConfiguration().getContext().getPropertySources().size());
+        assertEquals(count, 5);
     }
 
     @Test
@@ -53,8 +52,6 @@ public class MicroprofileConfigTest {
         for(String key:config.getPropertyNames()){
             Optional<String> val = config.getOptionalValue(key, String.class);
             assertNotNull(val);
-            assertEquals(val.orElse("N/A"),
-                    ConfigurationProvider.getConfiguration().get(key));
             val = config.getOptionalValue(key + System.currentTimeMillis(), String.class);
             assertNotNull(val);
             assertFalse(val.isPresent());
@@ -68,8 +65,6 @@ public class MicroprofileConfigTest {
         for(String key:config.getPropertyNames()){
             String val = config.getValue(key, String.class);
             assertNotNull(val);
-            assertEquals(val,
-                    ConfigurationProvider.getConfiguration().get(key));
         }
     }
 

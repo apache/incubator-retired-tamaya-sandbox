@@ -1,13 +1,33 @@
-Export-Package: \
-	org.apache.tamaya.osgi
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - OSGI ConfigurationPlugin
+Bundle-SymbolicName: org.apache.tamaya.osgi
+Bundle-Description: Apacha Tamaya Configuration - OSGI ConfigurationPlugin
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev-tamaya@incubator.apache.org
+Bundle-DocURL: http://tamaya.apache.org
 Bundle-Activator: org.apache.tamaya.osgi.Activator
-Export-Service:   org.osgi.service.cm.ConfigurationAdmin
+Export-Package: \
+	org.apache.tamaya.osgi,\
+	org.apache.tamaya.osgi.commands
 Import-Package: \
-    org.osgi.service.cm,\
     org.osgi.framework,\
+    org.osgi.service.cm,\
     org.apache.tamaya,\
-    org.apache.tamaya.core,\
     org.apache.tamaya.spi,\
     org.apache.tamaya.functions,\
     org.apache.tamaya.spisupport
-Bundle-SymbolicName: org.apache.tamaya.osgi
+Export-Service:   org.apache.tamaya.osgi.TamayaConfigPlugin

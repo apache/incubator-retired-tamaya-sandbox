@@ -1,3 +1,26 @@
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - System Integration
+Bundle-SymbolicName: org.apache.tamaya.sysprops
+Bundle-Description: Apacha Tamaya Config - System.getProperties() Wrapper
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev-tamaya@incubator.apache.org
+Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.sysprops
-Bundle-SymbolicName: org.apache.tamaya.sysprops
+Import-Package: \
+    org.apache.tamaya,\
+    org.apache.tamaya.spi

@@ -22,7 +22,7 @@
         <stage>${properties:system:STAGE?default=DEV}</stage>
         <configdir>${properties:system:configdir?default=.}</configdir>
         <app>${properties:system:APP?default=NONE}</app>
-        <context>${java:org.apache.tamaya.metamodel.MetaContext#id()}</context>
+        <context>${java:java.util.UUID.randomUUID()}</context>
     </context>
 
 </configuration>

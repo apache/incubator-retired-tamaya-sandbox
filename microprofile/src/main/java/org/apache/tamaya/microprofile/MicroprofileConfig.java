@@ -20,16 +20,21 @@ package org.apache.tamaya.microprofile;
 
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.Configuration;
+import org.apache.tamaya.events.FrozenConfiguration;
 import org.apache.tamaya.spi.PropertySource;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Microprofile {@link ConfigSource} implementation that wraps a {@link PropertySource} instance.
  */
-public class MicroprofileConfig implements Config {
+public class MicroprofileConfig implements Config, Serializable {
 
     private Configuration delegate;
 
@@ -79,4 +84,17 @@ public class MicroprofileConfig implements Config {
                 "delegate=" + delegate +
                 '}';
     }
+
+    private void writeObject(ObjectOutputStream out) throws IOException{
+        if(!(this.delegate instanceof Serializable)){
+            out.writeObject(FrozenConfiguration.of(this.delegate));
+        }else {
+            out.writeObject(this.delegate);
+        }
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+        this.delegate = (Configuration)in.readObject();
+    }
+
 }

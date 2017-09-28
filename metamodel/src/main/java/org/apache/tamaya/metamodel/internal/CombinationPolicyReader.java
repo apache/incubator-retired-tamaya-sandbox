@@ -24,6 +24,7 @@ import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.PropertyValueCombinationPolicy;
+import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -34,6 +35,7 @@ import java.util.logging.Logger;
 /**
  * Metaconfiguration reader that reads the configuration combination policy to be used.
  */
+@Component
 public class CombinationPolicyReader implements MetaConfigurationReader{
 
     private static final Logger LOG = Logger.getLogger(CombinationPolicyReader.class.getName());

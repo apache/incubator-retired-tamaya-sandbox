@@ -20,6 +20,7 @@ package org.apache.tamaya.metamodel.internal.resolver;
 
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
+import org.osgi.service.component.annotations.Component;
 
 import java.net.URI;
 
@@ -36,6 +37,7 @@ import java.net.URI;
  *
  * Hereby the _default_ parameter defines the default value to be applied, if no value was found.
  */
+@Component
 public final class PropertiesResolver implements SimpleResolver{
     @Override
     public String getResolverId() {

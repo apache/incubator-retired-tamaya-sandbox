@@ -27,6 +27,7 @@ import org.apache.tamaya.resource.ConfigResources;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spisupport.PropertiesResourcePropertySource;
 import org.apache.tamaya.spisupport.SimplePropertySource;
+import org.osgi.service.component.annotations.Component;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -41,6 +42,7 @@ import java.util.logging.Logger;
 /**
  * Factory for configuring file based property sources.
  */
+@Component
 public final class FilePropertySourceFactory extends ResourcePropertySourceFactory{
 
     private static final Logger LOG = Logger.getLogger(FilePropertySourceFactory.class.getName());

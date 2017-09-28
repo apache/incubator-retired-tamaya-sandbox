@@ -23,6 +23,10 @@ under the License.
         <groupId>org.apache.tamaya.ext</groupId>
         <artifactId>tamaya-sandbox</artifactId>
         <version>0.4-incubating-SNAPSHOT</version>
+<<<<<<< HEAD
+=======
+        <relativePath>..</relativePath>
+>>>>>>> java8
     </parent>
 
     <artifactId>tamaya-microprofile_alpha</artifactId>
@@ -35,25 +39,17 @@ under the License.
         <microprofile.version>1.0</microprofile.version>
         <geronimo-atinject-1.0-spec.version>1.0</geronimo-atinject-1.0-spec.version>
         <geronimo-jcdi-1.1-spec.version>1.0</geronimo-jcdi-1.1-spec.version>
+        <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
+        <org.apache.tomcat.version>6.0.53</org.apache.tomcat.version>
+        <tamaya-version>0.4-incubating-SNAPSHOT</tamaya-version>
+        <arquillian.version>1.1.13.Final</arquillian.version>
+        <arquillian-weld-embedded.version>2.0.0.Beta5</arquillian-weld-embedded.version>
+        <cdi2-api.version>2.0</cdi2-api.version>
+        <weld-shaded.version>3.0.0.Final</weld-shaded.version>
+        <weld.version>2.2.7.Final</weld.version>
+        <deltaspike.version>1.1.0</deltaspike.version>
+        <openejb.version>4.7.1</openejb.version>
     </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <debug>true</debug>
-                    <optimize>${maven.compile.optimize}</optimize>
-                    <source>${maven.compile.sourceLevel}</source>
-                    <target>${maven.compile.targetLevel}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <showDeprecation>${maven.compile.deprecation}</showDeprecation>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
@@ -70,38 +66,140 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${tamaya-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${tamaya-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-functions</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${tamaya-version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-atinject_1.0_spec</artifactId>
-            <version>${geronimo-atinject-1.0-spec.version}</version>
+            <groupId>org.apache.tamaya.ext</groupId>
+            <artifactId>tamaya-events</artifactId>
+            <version>${tamaya-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>1.2</version>
             <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jcdi_1.1_spec</artifactId>
             <version>${geronimo-jcdi-1.1-spec.version}</version>
             <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.microprofile.apis</groupId>-->
-            <!--<artifactId>microprofile-config_1.0_api</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${weld.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.cdictrl</groupId>
+            <artifactId>deltaspike-cdictrl-weld</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-test-control-module-api</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-test-control-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Microprofile TCK support only -->
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>${arquillian.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <version>${version.shrinkwrap.resolvers}</version>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>openejb-core</artifactId>
+            <version>${openejb.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>TCK</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.microprofile.config</groupId>
+                    <artifactId>microprofile-config-tck</artifactId>
+                    <version>1.0</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.weld.se</groupId>
+                    <artifactId>weld-se-shaded</artifactId>
+                    <version>${weld-shaded.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-weld-embedded</artifactId>
+                    <version>${arquillian-weld-embedded.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>javax.enterprise</groupId>
+                    <artifactId>cdi-api</artifactId>
+                    <version>${cdi2-api.version}</version>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.20</version>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/tck-suite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

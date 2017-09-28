@@ -24,6 +24,7 @@ import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.PropertyFilter;
+import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -35,6 +36,7 @@ import java.util.logging.Logger;
 /**
  * Metaconfiguration reader that reads the configuration filters to be used.
  */
+@Component
 public class PropertyFilterReader implements MetaConfigurationReader{
 
     private static final Logger LOG = Logger.getLogger(PropertyFilterReader.class.getName());

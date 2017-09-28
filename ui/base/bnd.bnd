@@ -1,6 +1,36 @@
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - UI
+Bundle-SymbolicName: org.apache.tamaya.ui
+Bundle-Description: Apacha Tamaya Configuration - Web UI
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev-tamaya@incubator.apache.org
+Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.ui,\
-	org.apache.tamaya.ui.event,\
-	org.apache.tamaya.ui.spi,\
-	org.apache.tamaya.ui.views
-Bundle-SymbolicName: org.apache.tamaya.ui
+    org.apache.tamaya.ui.event,\
+    org.apache.tamaya.ui.spi,\
+    org.apache.tamaya.ui.views
+Private-Package: \
+    org.apache.tamaya.ui.internal
+Import-Package: \
+    org.apache.tamaya,\
+    org.apache.tamaya.spi
+Export-Service: \
+    org.apache.tamaya.ui.spi.MessageProvider,\
+    org.apache.tamaya.ui.spi.SystemInfoProvider,\
+    org.apache.tamaya.ui.spi.UserService,\
+    org.apache.tamaya.ui.ViewProvider

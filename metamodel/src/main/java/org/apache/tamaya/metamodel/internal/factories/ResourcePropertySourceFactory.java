@@ -25,6 +25,7 @@ import org.apache.tamaya.format.MappedConfigurationDataPropertySource;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spisupport.PropertiesResourcePropertySource;
+import org.osgi.service.component.annotations.Component;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,6 +36,7 @@ import java.util.logging.Logger;
 /**
  * Factory for configuring resource based property sources.
  */
+@Component
 public class ResourcePropertySourceFactory extends URLPropertySourceFactory{
 
     private static final Logger LOG = Logger.getLogger(ResourcePropertySourceFactory.class.getName());

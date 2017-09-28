@@ -25,6 +25,10 @@
         <groupId>org.apache.tamaya.ext</groupId>
         <artifactId>tamaya-sandbox</artifactId>
         <version>0.4-incubating-SNAPSHOT</version>
+<<<<<<< HEAD
+=======
+        <relativePath>..</relativePath>
+>>>>>>> java8
     </parent>
 
     <artifactId>tamaya-osgi-all</artifactId>
@@ -53,6 +57,16 @@
     </properties>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>${dependency.karaf.version}</version>
+                    <extensions>true</extensions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -68,24 +82,25 @@
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.service.cm</artifactId>
                 <version>${osgi.config.version}</version>
-                <!--<scope>provided</scope>-->
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
                 <version>${osgi.version}</version>
-                <!--<scope>provided</scope>-->
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.compendium</artifactId>
                 <version>${osgi.compendium.version}</version>
-                <!--<scope>provided</scope>-->
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.util.tracker</artifactId>
                 <version>${osgi.tracker.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -174,51 +189,7 @@
                 <version>4.9.2</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.logging</groupId>
-                <artifactId>pax-logging-api</artifactId>
-                <version>${dependency.pax.logging.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${dependency.slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-ext</artifactId>
-                <version>${dependency.slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${dependency.slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${dependency.slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>${dependency.slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${dependency.slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${dependency.logback.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${dependency.logback.version}</version>
-            </dependency>
+
 
             <dependency>
                 <groupId>org.kohsuke.metainf-services</groupId>
@@ -277,111 +248,10 @@
 
     <modules>
         <module>common</module>
-        <!--<module>karaf-features</module>-->
+        <module>updater</module>
+        <module>karaf-shell</module>
+        <module>karaf-features</module>
+        <module>gogo-shell</module>
     </modules>
-
-    <profiles>
-        <profile>
-            <id>felix-osgi6</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>pax.exam.framework</name>
-                    <value>felix</value>
-                </property>
-            </activation>
-            <properties>
-                <pax.exam.framework>felix</pax.exam.framework>
-            </properties>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.felix</groupId>
-                        <artifactId>org.apache.felix.framework</artifactId>
-                        <version>4.6.1</version>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>org.apache.felix.framework</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>equinox</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>pax.exam.framework</name>
-                    <value>equinox</value>
-                </property>
-            </activation>
-            <properties>
-                <pax.exam.framework>equinox</pax.exam.framework>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>org.eclipse.osgi</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>equinox-osgi6</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>pax.exam.framework</name>
-                    <value>equinox</value>
-                </property>
-            </activation>
-            <properties>
-                <pax.exam.framework>equinox</pax.exam.framework>
-            </properties>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>org.eclipse.osgi</artifactId>
-                        <version>3.10.0.v20140606-1445</version>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>org.eclipse.osgi</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <!--<profile>-->
-            <!--<id>knopflerfish</id>-->
-            <!--<activation>-->
-                <!--<activeByDefault>false</activeByDefault>-->
-                <!--<property>-->
-                    <!--<name>pax.exam.framework</name>-->
-                    <!--<value>knopflerfish</value>-->
-                <!--</property>-->
-            <!--</activation>-->
-            <!--<properties>-->
-                <!--<pax.exam.framework>knopflerfish</pax.exam.framework>-->
-            <!--</properties>-->
-            <!--<repositories>-->
-                <!--<repository>-->
-                    <!--<id>knopflerfish-releases</id>-->
-                    <!--<url>http://www.knopflerfish.org/maven2</url>-->
-                <!--</repository>-->
-            <!--</repositories>-->
-            <!--<dependencies>-->
-                <!--<dependency>-->
-                    <!--<groupId>org.knopflerfish</groupId>-->
-                    <!--<artifactId>framework</artifactId>-->
-                    <!--<version>6.0.4</version>-->
-                <!--</dependency>-->
-            <!--</dependencies>-->
-        <!--</profile>-->
-    </profiles>
 
 </project>
