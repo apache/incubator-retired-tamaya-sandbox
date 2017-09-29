@@ -18,27 +18,14 @@
  */
 package org.apache.tamaya.osgi;
 
-import javafx.beans.binding.Bindings;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 
-import javax.inject.Inject;
-
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
 
 /**
  * Created by atsticks on 10.12.16.
@@ -100,10 +87,49 @@ public class TamayaConfigPluginTest extends  AbstractOSGITest{
         assertEquals(config.get("home"),System.getProperty("java.home"));
     }
 
+    @Test
     public void getUpdateConfig() throws Exception {
-        Dictionary<String, Object> config = tamayaConfigPlugin.updateConfig("getUpdateConfig");
+        Dictionary<String, Object> config = tamayaConfigPlugin.updateConfig(TamayaConfigPlugin.COMPONENTID);
         assertNotNull(config);
         assertEquals(config.get("java.home"), System.getProperty("java.home"));
+    }
+
+    @Test
+    public void getUpdateConfig_DryRun() throws Exception {
+        Dictionary<String, Object> config = tamayaConfigPlugin.updateConfig(TamayaConfigPlugin.COMPONENTID, true);
+        assertNotNull(config);
+        assertEquals(config.get("java.home"), System.getProperty("java.home"));
+    }
+
+    @Test
+    public void getUpdateConfig_Explicit_DryRun() throws Exception {
+        Dictionary<String, Object> config = tamayaConfigPlugin.updateConfig(TamayaConfigPlugin.COMPONENTID, OperationMode.EXTEND, true, true);
+        assertNotNull(config);
+        assertEquals(config.get("java.home"), System.getProperty("java.home"));
+    }
+
+    @Test
+    public void getPluginConfig() throws Exception {
+        Dictionary<String, Object> config = tamayaConfigPlugin.getPluginConfig();
+        assertNotNull(config);
+        assertEquals(config, super.getProperties(TamayaConfigPlugin.COMPONENTID));
+    }
+
+    @Test
+    public void getDefaultOperationMode() throws Exception {
+        OperationMode om = tamayaConfigPlugin.getDefaultOperationMode();
+        assertNotNull(om);
+        Dictionary<String,Object> pluginConfig = super.getProperties(TamayaConfigPlugin.COMPONENTID);
+        pluginConfig.put(OperationMode.class.getSimpleName(), OperationMode.UPDATE_ONLY.toString());
+        TamayaConfigPlugin plugin = new TamayaConfigPlugin(bundleContext);
+        om = plugin.getDefaultOperationMode();
+        assertNotNull(om);
+        assertEquals(om, OperationMode.UPDATE_ONLY);
+        pluginConfig.put(OperationMode.class.getSimpleName(), OperationMode.OVERRIDE.toString());
+        plugin = new TamayaConfigPlugin(bundleContext);
+        om = plugin.getDefaultOperationMode();
+        assertNotNull(om);
+        assertEquals(om, OperationMode.OVERRIDE);
     }
 
 }

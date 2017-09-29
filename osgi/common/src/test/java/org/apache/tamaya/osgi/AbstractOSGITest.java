@@ -55,11 +55,18 @@ public abstract class AbstractOSGITest {
 
     protected TamayaConfigPlugin tamayaConfigPlugin;
 
+    protected Dictionary<String,Object> getProperties(String pid){
+        return this.properties.get(pid);
+    }
+
     @Before
     public void setup()throws Exception{
-        when(cm.getConfiguration(any())).then(invocation -> {
+        doAnswer(invocation -> {
             return initConfigurationMock((String)invocation.getArguments()[0]);
-        });
+        }).when(cm).getConfiguration(any());
+        doAnswer(invocation -> {
+            return initConfigurationMock((String)invocation.getArguments()[0]);
+        }).when(cm).getConfiguration(any(), any());
         doReturn(new Bundle[0]).when(bundleContext).getBundles();
         doReturn(cmRef).when(bundleContext).getServiceReference(ConfigurationAdmin.class);
         doReturn(cm).when(bundleContext).getService(cmRef);
@@ -81,6 +88,9 @@ public abstract class AbstractOSGITest {
             if(props==null){
                 props = new Hashtable<>();
                 properties.put(pid, props);
+                for(Map.Entry en:System.getProperties().entrySet()){
+                    props.put(en.getKey().toString(), en.getValue());
+                }
             }
             return new Hashtable<>(props);
         }).when(config).getProperties();

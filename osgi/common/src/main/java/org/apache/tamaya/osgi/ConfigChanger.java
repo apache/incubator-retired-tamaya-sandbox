@@ -140,7 +140,6 @@ final class ConfigChanger {
     public void modifyConfiguration(String pid, org.apache.tamaya.Configuration config, Dictionary<String, Object> dictionary, OperationMode opMode) {
         LOG.info(() -> "Updating configuration for PID: " + pid + "...");
         dictionary.put("tamaya.modified.at", new Date().toString());
-        ConfigHistory.propertySet(pid, "tamaya.modified.at", dictionary.get("tamaya.modified.at"), null);
 
         Map<String, Object> dictionaryMap = new HashMap<>();
         Enumeration<String> keys = dictionary.keys();
@@ -155,19 +154,19 @@ final class ConfigChanger {
                 if(configuredValue.equals(dictEntry.getValue())){
                     continue;
                 }
-            }
-            switch (opMode) {
-                case EXTEND:
-                    break;
-                case OVERRIDE:
-                    LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
-                    ConfigHistory.propertySet(pid,dictEntry.getKey(), configuredValue, dictEntry.getValue());
-                    dictionary.put(dictEntry.getKey(), configuredValue);
-                    break;
-                case UPDATE_ONLY:
-                    LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
-                    ConfigHistory.propertySet(pid,dictEntry.getKey(), configuredValue, dictEntry.getValue());
-                    dictionary.put(dictEntry.getKey(), configuredValue);
+                switch (opMode) {
+                    case EXTEND:
+                        break;
+                    case OVERRIDE:
+                        LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
+                        ConfigHistory.propertySet(pid,dictEntry.getKey(), configuredValue, dictEntry.getValue());
+                        dictionary.put(dictEntry.getKey(), configuredValue);
+                        break;
+                    case UPDATE_ONLY:
+                        LOG.info(() -> "Setting key " + dictEntry.getKey() + " to " + configuredValue);
+                        ConfigHistory.propertySet(pid,dictEntry.getKey(), configuredValue, dictEntry.getValue());
+                        dictionary.put(dictEntry.getKey(), configuredValue);
+                }
             }
         }
         for (Map.Entry<String, String> configEntry : config.getProperties().entrySet()) {

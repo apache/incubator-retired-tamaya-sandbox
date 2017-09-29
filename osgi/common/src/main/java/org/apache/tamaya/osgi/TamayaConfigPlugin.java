@@ -226,7 +226,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     }
 
     private void initDefaultOpMode(Dictionary<String,Object> props) {
-        String opVal = (String)props.get(OperationMode.class.getName());
+        String opVal = (String)props.get(OperationMode.class.getSimpleName());
         if(opVal!=null){
             try{
                 defaultOpMode = OperationMode.valueOf(opVal);
