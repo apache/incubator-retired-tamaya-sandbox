@@ -55,7 +55,11 @@ public final class ConfigCommands {
         if(filter!=null){
             config = config.with(ConfigurationFunctions.section(filter, false));
         }
-        return config.query(ConfigurationFunctions.textInfo());
+        return "Tamaya Configuration\n" +
+                "--------------------\n" +
+                "Section:     "+section +"\n" +
+                (filter!=null?"Filter:      "+filter + "\n":"") +
+                config.query(ConfigurationFunctions.textInfo());
     }
 
     public static String readTamayaConfig4PID(String pid, String filter) {
@@ -93,8 +97,8 @@ public final class ConfigCommands {
             return "No Config present for PID: " + pid;
         }
         StringBuilder b = new StringBuilder();
-        b.append("OSGI Configuration for PID: " + pid);
-        b.append("------------------------------------------------");
+        b.append("OSGI Configuration for PID: " + pid + '\n');
+        b.append("-----------------------------------------------------\n");
         TreeMap<String,String> result = new TreeMap<>();
         Enumeration<String> keys = config.keys();
         while(keys.hasMoreElements()){
@@ -124,14 +128,14 @@ public final class ConfigCommands {
         if(propertysource!=null){
             PropertySource ps = config.getContext().getPropertySource(propertysource);
             if(ps==null){
-                return "ERR: No such propertysource: " + propertysource;
+                return "ERR: No such Property Source: " + propertysource;
             }else {
                 PropertyValue val = ps.get(key);
                 if(val==null){
-                    return "ERR: PropertySource: " + propertysource + " - undefined key: " + key;
+                    return "ERR: Property Source: " + propertysource + " - undefined key: " + key;
                 }else {
                     if(extended) {
-                        return StringUtil.format("PropertySource", 25) + StringUtil.format("Value", 25) + '\n' +
+                        return StringUtil.format("Property Source", 25) + StringUtil.format("Value", 25) + '\n' +
                                 StringUtil.format(propertysource, 25) + StringUtil.format(val.getValue(), 55);
                     }else{
                         return val.getValue();
@@ -141,7 +145,7 @@ public final class ConfigCommands {
         }else{
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            pw.println(StringUtil.format("PropertySource", 25) + StringUtil.format("Value", 25));
+            pw.println(StringUtil.format("Property Source", 25) + StringUtil.format("Value", 25));
             for(PropertySource ps:config.getContext().getPropertySources()){
                 PropertyValue val = ps.get(key);
                 if(val!=null){
@@ -162,10 +166,12 @@ public final class ConfigCommands {
         if(propertysource!=null){
             PropertySource ps = config.getContext().getPropertySource(propertysource);
             if(ps==null){
-                return "No such propertysource: " + propertysource;
+                return "No such Property Source: " + propertysource;
             }else {
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
+                pw.println("Property Source");
+                pw.println("---------------");
                 pw.println(StringUtil.format("ID:", 20) + ps.getName());
                 pw.println(StringUtil.format("Ordinal:", 20) + ps.getOrdinal());
                 pw.println(StringUtil.format("Class:", 20) + ps.getClass().getName());
@@ -201,13 +207,15 @@ public final class ConfigCommands {
         Configuration config = ConfigurationProvider.getConfiguration();
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        pw.print(StringUtil.format("ID", 20));
+        pw.println("Property Sources");
+        pw.println("----------------");
+        pw.print(StringUtil.format("ID", 30));
         pw.print(StringUtil.format("Ordinal", 20));
         pw.print(StringUtil.format("Class", 40));
         pw.println(StringUtil.format("Property Count", 5));
         pw.println(StringUtil.printRepeat("-", 80));
         for(PropertySource ps:config.getContext().getPropertySources()){
-            pw.print(StringUtil.format(ps.getName(), 20));
+            pw.print(StringUtil.format(ps.getName(), 30));
             pw.print(StringUtil.format(String.valueOf(ps.getOrdinal()), 20));
             pw.print(StringUtil.format(ps.getClass().getName(), 40));
             pw.println(StringUtil.format(String.valueOf(ps.getProperties().size()), 5));
@@ -219,7 +227,7 @@ public final class ConfigCommands {
 
     public static String setDefaultEnabled(TamayaConfigPlugin configPlugin, boolean enabled) throws IOException {
         configPlugin.setTamayaEnabledByDefault(enabled);
-        return "tamaya.enabled="+enabled;
+        return "tamaya.default-enabled="+enabled;
     }
 
     public static String getDefaultEnabled(TamayaConfigPlugin configPlugin) {
@@ -228,7 +236,7 @@ public final class ConfigCommands {
 
     public static String setAutoUpdateEnabled(TamayaConfigPlugin configPlugin, boolean enabled) {
         configPlugin.setAutoUpdateEnabled(enabled);
-        return "tamaya.autoUpdate="+enabled;
+        return "tamaya.auto-update="+enabled;
     }
 
     public static String getAutoUpdateEnabled(TamayaConfigPlugin configPlugin) {

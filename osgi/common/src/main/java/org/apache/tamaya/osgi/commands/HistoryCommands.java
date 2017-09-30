@@ -41,7 +41,7 @@ public final class HistoryCommands{
     public static String clearHistory(String pid) throws IOException {
         int size = ConfigHistory.history(pid).size();
         ConfigHistory.clearHistory(pid);
-        return "Deleted entries: " + size;
+        return "Deleted history for PID: " + pid;
     }
 
     public static String getHistory(String pid, String... events) throws IOException {
@@ -66,13 +66,13 @@ public final class HistoryCommands{
         return sw.toString();
     }
 
-    public static int getMaxHistorySize(){
-        return ConfigHistory.getMaxHistory();
+    public static String getMaxHistorySize(){
+        return String.valueOf(ConfigHistory.getMaxHistory());
     }
 
     public static String setMaxHistorySize(int maxSize){
         ConfigHistory.setMaxHistory(maxSize);
-        return "history.maxSize="+maxSize;
+        return "tamaya.max-history-size="+maxSize;
     }
 
     private static List<ConfigHistory> filterTypes(List<ConfigHistory> history, String... eventTypes) {

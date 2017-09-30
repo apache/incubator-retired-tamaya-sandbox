@@ -151,7 +151,7 @@ public final class ConfigHistory implements Serializable{
      */
     public static void clearHistory(String pid){
         synchronized (history){
-            if(pid==null || pid.isEmpty()) {
+            if("*".equals(pid)) {
                 history.clear();
             }else{
                 history.removeAll(history(pid));

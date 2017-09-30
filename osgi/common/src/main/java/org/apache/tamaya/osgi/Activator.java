@@ -53,39 +53,19 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         ServiceReference<ConfigurationAdmin> cmRef = context.getServiceReference(ConfigurationAdmin.class);
         ConfigurationAdmin cm = context.getService(cmRef);
-        Configuration configuration = cm.getConfiguration("tamaya-osgi", null);
-        Dictionary<String, Object> props = null;
-        if (configuration != null
-                && configuration.getProperties() != null) {
-            props = configuration.getProperties();
-        } else {
-            props = new Hashtable<>();
-        }
-        String ranking = context.getProperty(Constants.SERVICE_RANKING);
-        if (ranking == null) {
-            ranking = System.getProperty(Constants.SERVICE_RANKING);
-        }
-        if (ranking == null) {
-            ranking = DEFAULT_RANKING.toString();
-            LOG.fine("Using default ranking for Tamaya OSGI Config plugin: " + DEFAULT_RANKING);
-        } else {
-            ranking = Integer.valueOf(ranking).toString();
-            LOG.fine("Using custom ranking for Tamaya OSGI Config plugin: " + ranking);
-        }
-        props.put(Constants.SERVICE_RANKING, DEFAULT_RANKING);
+        Configuration configuration = cm.getConfiguration(TamayaConfigPlugin.COMPONENTID, null);
         this.plugin = new TamayaConfigPlugin(context);
-        LOG.info("Registering Tamaya OSGI Config plugin with ranking: " + ranking);
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put(Constants.SERVICE_RANKING, DEFAULT_RANKING);
+        LOG.info("Registering Tamaya OSGI Config plugin as service...");
         registration = context.registerService(
                 TamayaConfigPlugin.class,
                 this.plugin, props);
-        LOG.info("Registered Tamaya OSGI Config plugin.");
-        configuration.update(props);
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
         if (registration != null) {
-            context.removeBundleListener(this.plugin);
             registration.unregister();
         }
     }

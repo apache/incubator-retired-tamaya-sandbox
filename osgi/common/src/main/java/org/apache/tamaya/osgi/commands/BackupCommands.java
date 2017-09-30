@@ -48,10 +48,12 @@ public final class BackupCommands {
                     Backups.set(pid, props);
                     return "Backup created, PID = " + pid + '\n' +
                     printProps(props);
+                }else{
+                    return "Creating backup failed. Backup already existing, PID = " + pid;
                 }
             }
         }
-        return "No Config found, PID = " + pid;
+        return "Creating backup failed. No Config found, PID = " + pid;
     }
 
     public static String deleteBackup(String pid) throws IOException {
@@ -83,12 +85,12 @@ public final class BackupCommands {
         }else {
             try{
                 if(plugin.restoreBackup(pid)){
-                    return pid + " -> restored.\n";
+                    return "Backup restored for PID: "+pid+"\n";
                 }else{
-                    return pid + " -> no backup found.\n";
+                    return "Backup restore failed for PID "+pid+": no backup found.\n";
                 }
             }catch(Exception e){
-                return pid + " -> failed: " + e + '\n';
+                return "Backup restore failed for PID "+pid+", error: " + e + '\n';
             }
         }
     }
