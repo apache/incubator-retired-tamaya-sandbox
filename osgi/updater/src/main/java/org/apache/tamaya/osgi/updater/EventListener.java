@@ -21,7 +21,7 @@ package org.apache.tamaya.osgi.updater;
 import org.apache.tamaya.events.ConfigEvent;
 import org.apache.tamaya.events.ConfigEventListener;
 import org.apache.tamaya.events.ConfigurationChange;
-import org.apache.tamaya.osgi.OperationMode;
+import org.apache.tamaya.osgi.Policy;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.osgi.framework.*;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 
 /**
  * Tamaya plugin that updates/extends the component configurations managed
- * by {@link ConfigurationAdmin}, based on the configured {@link OperationMode}.
+ * by {@link ConfigurationAdmin}, based on the configured {@link Policy}.
  */
 final class EventListener implements ConfigEventListener{
     private static final Logger LOG = Logger.getLogger(EventListener.class.getName());
