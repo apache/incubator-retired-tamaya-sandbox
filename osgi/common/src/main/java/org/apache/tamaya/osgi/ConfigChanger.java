@@ -43,8 +43,6 @@ import java.util.logging.Logger;
 final class ConfigChanger {
 
     private static final Logger LOG = Logger.getLogger(TamayaConfigPlugin.class.getName());
-    private static final String TAMAYA_OPERATION_MODE = "tamaya-operationmode";
-    private static final String TAMAYA_ROOT = "tamaya-root";
 
     private BundleContext context;
     private ConfigurationAdmin cm;
@@ -63,21 +61,21 @@ final class ConfigChanger {
         return cm;
     }
 
-    public Dictionary<String, Object> configure(String pid, Bundle bundle, OperationMode operationMode, boolean opModeExplicit, boolean dryRun) {
+    public Dictionary<String, Object> configure(String pid, Bundle bundle, Policy policy, boolean opModeExplicit, boolean dryRun) {
         try {
             String root = '[' + pid + ']';
             // TODO Check for Bundle.getLocation() usage here...
             Configuration osgiConfig = cm.getConfiguration(pid, bundle!=null?bundle.getLocation():null);
-            OperationMode opMode = Objects.requireNonNull(operationMode);
+            Policy opMode = Objects.requireNonNull(policy);
             // Check manifest config
             if(bundle!=null) {
                 if(!opModeExplicit) {
-                    String opVal = bundle.getHeaders().get(TAMAYA_OPERATION_MODE);
+                    String opVal = bundle.getHeaders().get(TamayaConfigPlugin.TAMAYA_POLICY_MANIFEST);
                     if (opVal != null) {
-                        opMode = OperationMode.valueOf(opVal.toUpperCase());
+                        opMode = Policy.valueOf(opVal.toUpperCase());
                     }
                 }
-                String customRoot = bundle.getHeaders().get(TAMAYA_ROOT);
+                String customRoot = bundle.getHeaders().get(TamayaConfigPlugin.TAMAYA_CUSTOM_ROOT_MANIFEST);
                 if(customRoot!=null){
                     root = customRoot;
                 }
@@ -87,12 +85,12 @@ final class ConfigChanger {
                 Dictionary<String,Object> props = osgiConfig.getProperties();
                 if(props!=null){
                     if(!opModeExplicit) {
-                        String opVal = (String) props.get(TAMAYA_OPERATION_MODE);
+                        String opVal = (String) props.get(TamayaConfigPlugin.TAMAYA_POLICY_PROP);
                         if (opVal != null) {
-                            opMode = OperationMode.valueOf(opVal.toUpperCase());
+                            opMode = Policy.valueOf(opVal.toUpperCase());
                         }
                     }
-                    String customRoot = (String)props.get(TAMAYA_ROOT);
+                    String customRoot = (String)props.get(TamayaConfigPlugin.TAMAYA_CUSTOM_ROOT_PROP);
                     if(customRoot!=null){
                         root = customRoot;
                     }
@@ -101,6 +99,7 @@ final class ConfigChanger {
                 }
                 if(!dryRun && !Backups.contains(pid)){
                     Backups.set(pid, props);
+                    LOG.finest("Stored OSGI configuration backup for PID: " + pid);
                 }
                 LOG.finest("Evaluating Tamaya Config for PID: " + pid);
                 org.apache.tamaya.Configuration tamayaConfig = getTamayaConfiguration(root);
@@ -137,7 +136,7 @@ final class ConfigChanger {
         }
     }
 
-    public void modifyConfiguration(String pid, org.apache.tamaya.Configuration config, Dictionary<String, Object> dictionary, OperationMode opMode) {
+    public void modifyConfiguration(String pid, org.apache.tamaya.Configuration config, Dictionary<String, Object> dictionary, Policy opMode) {
         LOG.info(() -> "Updating configuration for PID: " + pid + "...");
         dictionary.put("tamaya.modified.at", new Date().toString());
 
@@ -171,7 +170,7 @@ final class ConfigChanger {
         }
         for (Map.Entry<String, String> configEntry : config.getProperties().entrySet()) {
             Object dictValue = dictionary.get(configEntry.getKey());
-            if(dictValue.equals(configEntry.getValue())){
+            if(dictValue!=null && dictValue.equals(configEntry.getValue())){
                 continue;
             }
             switch (opMode) {
@@ -209,7 +208,7 @@ final class ConfigChanger {
     public void restoreBackup(String pid, Dictionary<String, Object> config)throws IOException{
         Configuration osgiConfig = cm.getConfiguration(pid);
         if(osgiConfig!=null){
-            config.put(TamayaConfigPlugin.TAMAYA_ENABLED, "false");
+            config.put(TamayaConfigPlugin.TAMAYA_ENABLED_PROP, "false");
             osgiConfig.update(Objects.requireNonNull(config));
         }
     }

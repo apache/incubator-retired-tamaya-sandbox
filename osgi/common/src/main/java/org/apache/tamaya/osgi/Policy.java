@@ -21,7 +21,7 @@ package org.apache.tamaya.osgi;
 /**
  * Operation mode applied to the getConfig read.
  */
-public enum OperationMode{
+public enum Policy {
     /** Only add properties not existing in the getConfig. */
     EXTEND,
     /** Override existing properties and add new properties. */

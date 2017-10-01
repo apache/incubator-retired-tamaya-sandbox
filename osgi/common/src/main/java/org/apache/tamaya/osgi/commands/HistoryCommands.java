@@ -72,7 +72,7 @@ public final class HistoryCommands{
 
     public static String setMaxHistorySize(int maxSize){
         ConfigHistory.setMaxHistory(maxSize);
-        return "tamaya.max-history-size="+maxSize;
+        return "tamaya-max-history-size="+maxSize;
     }
 
     private static List<ConfigHistory> filterTypes(List<ConfigHistory> history, String... eventTypes) {

@@ -32,17 +32,24 @@ import java.util.logging.Logger;
 
 /**
  * Tamaya plugin that updates/extends the component configurations managed
- * by {@link ConfigurationAdmin}, based on the configured {@link OperationMode}.
+ * by {@link ConfigurationAdmin}, based on the configured {@link Policy}.
  */
 public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     static final String COMPONENTID = "TamayaConfigPlugin";
     /** the logger. */
     private static final Logger LOG = Logger.getLogger(TamayaConfigPlugin.class.getName());
-    public static final String TAMAYA_ENABLED = "tamaya-enabled";
-    public static final String TAMAYA_AUTO_UPDATE_ENABLED = "tamaya.autoUpdateEnabled";
-    public static final String TAMAYA_ROOT_KEY = "tamaya-root";
+
+    public static final String TAMAYA_POLICY_PROP = "tamaya-policy";
+    public static final String TAMAYA_POLICY_MANIFEST = "Tamaya-Policy";
+    public static final String TAMAYA_CUSTOM_ROOT_PROP = "tamaya-config-root";
+    public static final String TAMAYA_CUSTOM_ROOT_MANIFEST = "Tamaya-Config-Root";
+    public static final String TAMAYA_ENABLED_PROP = "tamaya-enabled";
+    public static final String TAMAYA_ENABLED_MANIFEST = "Tamaya-Enabled";
+    public static final String TAMAYA_AUTO_UPDATE_ENABLED_PROP = "tamaya-update-enabled";
+    public static final String TAMAYA_AUTO_UPDATE_ENABLED_MANIFEST = "Tamaya-Update-Enabled";
     private boolean enabledByDefault = false;
-    private OperationMode defaultOpMode = OperationMode.OVERRIDE;
+
+    private Policy defaultPolicy = Policy.OVERRIDE;
 
     private ConfigChanger configChanger;
     private boolean autoUpdateEnabled;
@@ -78,25 +85,25 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
 
     public void setAutoUpdateEnabled(boolean enabled){
         this.autoUpdateEnabled = enabled;
-        setConfigValue(TAMAYA_AUTO_UPDATE_ENABLED, enabled);
+        setConfigValue(TAMAYA_AUTO_UPDATE_ENABLED_PROP, enabled);
     }
 
     public void setTamayaEnabledByDefault(boolean enabledByDefault){
         this.enabledByDefault = enabledByDefault;
-        setConfigValue(TAMAYA_ENABLED, enabledByDefault);
+        setConfigValue(TAMAYA_ENABLED_PROP, enabledByDefault);
     }
 
     public boolean isTamayaEnabledByDefault(){
         return enabledByDefault;
     }
 
-    public OperationMode getDefaultOperationMode(){
-        return defaultOpMode;
+    public Policy getDefaultOperationMode(){
+        return defaultPolicy;
     }
 
-    public void setDefaultOperationMode(OperationMode mode){
-        this.defaultOpMode = Objects.requireNonNull(mode);
-        setConfigValue(OperationMode.class.getSimpleName(), defaultOpMode.toString());
+    public void setDefaultOperationMode(Policy mode){
+        this.defaultPolicy = Objects.requireNonNull(mode);
+        setConfigValue(Policy.class.getSimpleName(), defaultPolicy.toString());
     }
 
     @Override
@@ -131,7 +138,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             LOG.finest("No service pid for: " + event.getServiceReference());
             return;
         }
-        configChanger.configure(pid, event.getServiceReference().getBundle(), defaultOpMode, false, false);
+        configChanger.configure(pid, event.getServiceReference().getBundle(), defaultPolicy, false, false);
         Dictionary<String,Object> props = getPluginConfig();
         Backups.save(props);
         ConfigHistory.save(props);
@@ -139,14 +146,14 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     }
 
     public Dictionary<String,Object> updateConfig(String pid) {
-        return updateConfig(pid, defaultOpMode, false, false);
+        return updateConfig(pid, defaultPolicy, false, false);
     }
 
     public Dictionary<String,Object> updateConfig(String pid, boolean dryRun) {
-        return updateConfig(pid, defaultOpMode, false, dryRun);
+        return updateConfig(pid, defaultPolicy, false, dryRun);
     }
 
-    public Dictionary<String,Object> updateConfig(String pid, OperationMode opMode, boolean explicitMode, boolean dryRun) {
+    public Dictionary<String,Object> updateConfig(String pid, Policy opMode, boolean explicitMode, boolean dryRun) {
         if(dryRun){
             return configChanger.configure(pid, null, opMode, explicitMode, true);
         }else {
@@ -164,7 +171,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         if(!isBundleEnabled(bundle)){
             return;
         }
-        String tamayaPid = bundle.getHeaders().get(TAMAYA_ROOT_KEY);
+        String tamayaPid = bundle.getHeaders().get(TAMAYA_CUSTOM_ROOT_MANIFEST);
         String pid = tamayaPid!=null?tamayaPid:bundle.getSymbolicName();
         if(pid==null){
             pid = bundle.getLocation();
@@ -173,7 +180,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             LOG.finest(() -> "No PID/location for bundle " + bundle.getSymbolicName() + '('+bundle.getBundleId()+')');
             return;
         }
-        configChanger.configure(pid, bundle, defaultOpMode, false, false);
+        configChanger.configure(pid, bundle, defaultPolicy, false, false);
         Dictionary<String,Object> props = getPluginConfig();
         Backups.save(props);
         ConfigHistory.save(props);
@@ -182,7 +189,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
 
     public boolean isBundleEnabled(Bundle bundle){
         // Optional MANIFEST entries
-        String bundleEnabledVal = bundle.getHeaders().get(TAMAYA_ENABLED);
+        String bundleEnabledVal = bundle.getHeaders().get(TAMAYA_ENABLED_MANIFEST);
         if(bundleEnabledVal==null && !enabledByDefault){
             LOG.finest("tamaya.enabled=false: not configuring bundle: " + bundle.getSymbolicName());
             return false;
@@ -198,25 +205,42 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         return true;
     }
 
+    private boolean isAutoUpdateEnabled(Bundle bundle, Dictionary<String,Object> props) {
+        Object enabledVal = props.get(TAMAYA_AUTO_UPDATE_ENABLED_PROP);
+        if(enabledVal!=null){
+            return Boolean.parseBoolean(enabledVal.toString());
+        }
+        if(bundle!=null){
+            enabledVal = bundle.getHeaders().get(TAMAYA_AUTO_UPDATE_ENABLED_MANIFEST);
+            if(enabledVal!=null){
+                return Boolean.parseBoolean(enabledVal.toString());
+            }
+        }
+        return this.autoUpdateEnabled;
+    }
+
     private void initAutoUpdateEnabled(Dictionary<String,Object> props) {
-        Object enabledVal = props.get(TAMAYA_AUTO_UPDATE_ENABLED);
+        Object enabledVal = props.get(TAMAYA_AUTO_UPDATE_ENABLED_PROP);
+        if(enabledVal==null && System.getProperty(TAMAYA_AUTO_UPDATE_ENABLED_PROP)!=null){
+            enabledVal = Boolean.parseBoolean(System.getProperty(TAMAYA_AUTO_UPDATE_ENABLED_PROP));
+        }
         if(enabledVal!=null){
             this.autoUpdateEnabled = Boolean.parseBoolean(enabledVal.toString());
         }
         if(this.autoUpdateEnabled) {
-            LOG.info("Tamaya Automatic Config Updating is enabled.");
+            LOG.info("Tamaya Automatic Config Update is enabled by default.");
         }else{
-            LOG.info("Tamaya Automatic Config Updating is enabledByDefault.");
+            LOG.info("Tamaya Automatic Config Update is disabled by default.");
         }
     }
 
     private void initDefaultEnabled(Dictionary<String,Object> props) {
-        Object disabledVal = props.get(TAMAYA_ENABLED);
-        if(disabledVal==null && System.getProperty(TAMAYA_ENABLED)!=null){
-            disabledVal = Boolean.parseBoolean(System.getProperty(TAMAYA_ENABLED));
+        Object enabledVal = props.get(TAMAYA_ENABLED_PROP);
+        if(enabledVal==null && System.getProperty(TAMAYA_ENABLED_PROP)!=null){
+            enabledVal = Boolean.parseBoolean(System.getProperty(TAMAYA_ENABLED_PROP));
         }
-        if(disabledVal!=null){
-            this.enabledByDefault = Boolean.parseBoolean(disabledVal.toString());
+        if(enabledVal!=null){
+            this.enabledByDefault = Boolean.parseBoolean(enabledVal.toString());
         }
         if(this.enabledByDefault) {
             LOG.info("Tamaya Config is enabledByDefault by default. Add Tamaya-Enabled to your bundle manifests to enable it.");
@@ -226,12 +250,12 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
     }
 
     private void initDefaultOpMode(Dictionary<String,Object> props) {
-        String opVal = (String)props.get(OperationMode.class.getSimpleName());
+        String opVal = (String)props.get(Policy.class.getSimpleName());
         if(opVal!=null){
             try{
-                defaultOpMode = OperationMode.valueOf(opVal);
+                defaultPolicy = Policy.valueOf(opVal);
             }catch(Exception e){
-                LOG.warning("Invalid OperationMode: " + opVal +", using default: " + defaultOpMode);
+                LOG.warning("Invalid Policy: " + opVal +", using default: " + defaultPolicy);
             }
         }
     }

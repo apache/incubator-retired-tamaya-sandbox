@@ -18,10 +18,8 @@
  */
 package org.apache.tamaya.osgi.commands;
 
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.osgi.AbstractOSGITest;
-import org.apache.tamaya.osgi.OperationMode;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.Policy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -75,7 +73,7 @@ public class ConfigCommandsTest extends AbstractOSGITest{
 
     @Test
     public void applyTamayaConfiguration() throws Exception {
-        String result = ConfigCommands.applyTamayaConfiguration(tamayaConfigPlugin, "applyTamayaConfiguration", OperationMode.OVERRIDE.toString(), true);
+        String result = ConfigCommands.applyTamayaConfiguration(tamayaConfigPlugin, "applyTamayaConfiguration", Policy.OVERRIDE.toString(), true);
         assertNotNull(result);
         System.out.println(result);
         assertTrue(result.contains("OSGI Configuration for PID"));
@@ -97,7 +95,7 @@ public class ConfigCommandsTest extends AbstractOSGITest{
 
     @Test
     public void getDefaultOpPolicy() throws Exception {
-        OperationMode mode = tamayaConfigPlugin.getDefaultOperationMode();
+        Policy mode = tamayaConfigPlugin.getDefaultOperationMode();
         String result = ConfigCommands.getDefaultOpPolicy(tamayaConfigPlugin);
         assertNotNull(result);
         assertTrue(result.contains(mode.toString()));
@@ -105,14 +103,14 @@ public class ConfigCommandsTest extends AbstractOSGITest{
 
     @Test
     public void setDefaultOpPolicy() throws Exception {
-        String result = ConfigCommands.setDefaultOpPolicy(tamayaConfigPlugin, OperationMode.EXTEND.toString());
+        String result = ConfigCommands.setDefaultOpPolicy(tamayaConfigPlugin, Policy.EXTEND.toString());
         assertNotNull(result);
         assertTrue(result.contains("EXTEND"));
-        assertEquals(tamayaConfigPlugin.getDefaultOperationMode(), OperationMode.EXTEND);
-        result = ConfigCommands.setDefaultOpPolicy(tamayaConfigPlugin, OperationMode.UPDATE_ONLY.toString());
+        assertEquals(tamayaConfigPlugin.getDefaultOperationMode(), Policy.EXTEND);
+        result = ConfigCommands.setDefaultOpPolicy(tamayaConfigPlugin, Policy.UPDATE_ONLY.toString());
         assertNotNull(result);
         assertTrue(result.contains("UPDATE_ONLY"));
-        assertEquals(tamayaConfigPlugin.getDefaultOperationMode(), OperationMode.UPDATE_ONLY);
+        assertEquals(tamayaConfigPlugin.getDefaultOperationMode(), Policy.UPDATE_ONLY);
     }
 
     @Test
