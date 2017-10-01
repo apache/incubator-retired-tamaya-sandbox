@@ -65,7 +65,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
      * Create a new getConfig.
      * @param context the OSGI context
      */
-    TamayaConfigPlugin(BundleContext context) {
+    public TamayaConfigPlugin(BundleContext context) {
         configChanger = new ConfigChanger(context);
         Dictionary<String,Object> props = getPluginConfig();
         Backups.restore(props);
