@@ -74,7 +74,7 @@ public class HistoryCommandsTest {
         String result = HistoryCommands.getMaxHistorySize();
         assertEquals(result, String.valueOf(ConfigHistory.getMaxHistory()));
         result = HistoryCommands.setMaxHistorySize(111);
-        assertEquals(result, "tamaya.max-history-size=111");
+        assertEquals(result, "tamaya-max-history-size=111");
         result = HistoryCommands.getMaxHistorySize();
         assertEquals(result, "111");
     }

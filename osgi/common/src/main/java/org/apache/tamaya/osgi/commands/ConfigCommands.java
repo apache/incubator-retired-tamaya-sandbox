@@ -227,7 +227,7 @@ public final class ConfigCommands {
 
     public static String setDefaultEnabled(TamayaConfigPlugin configPlugin, boolean enabled) throws IOException {
         configPlugin.setTamayaEnabledByDefault(enabled);
-        return TamayaConfigPlugin.TAMAYA_ENABLED_PROP+"d="+enabled;
+        return TamayaConfigPlugin.TAMAYA_ENABLED_PROP+"="+enabled;
     }
 
     public static String getDefaultEnabled(TamayaConfigPlugin configPlugin) {
