@@ -28,7 +28,7 @@ import org.apache.karaf.shell.api.console.CommandLine;
 import org.apache.karaf.shell.api.console.Completer;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
-import org.apache.tamaya.osgi.OperationMode;
+import org.apache.tamaya.osgi.Policy;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
 
@@ -58,7 +58,7 @@ public class PolicySetCommand implements Action{
         @Override
         public int complete(Session session, CommandLine commandLine, List<String> candidates) {
             StringsCompleter delegate = new StringsCompleter();
-            for(OperationMode mode:OperationMode.values()) {
+            for(Policy mode: Policy.values()) {
                 delegate.getStrings().add(mode.toString());
             }
             return delegate.complete(session, commandLine, candidates);
