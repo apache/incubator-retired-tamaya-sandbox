@@ -20,7 +20,7 @@ package org.apache.tamaya.gogo.shell;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.apache.tamaya.osgi.OperationMode;
+import org.apache.tamaya.osgi.Policy;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
 import org.osgi.framework.BundleContext;
@@ -60,7 +60,7 @@ public class SettingsCommands {
 
     @Descriptor("Set the default Tamaya configuration policy.")
     public void tm_policy_set(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--policy"})
-                                      @Descriptor("The policy to apply (required), one of: EXTEND, OVERRIDE, UPDATE_ONLY") OperationMode policy) throws IOException {
+                                      @Descriptor("The policy to apply (required), one of: EXTEND, OVERRIDE, UPDATE_ONLY") Policy policy) throws IOException {
         System.out.println(ConfigCommands.setDefaultOpPolicy(getService(TamayaConfigPlugin.class), policy.toString()));
     }
 

@@ -20,7 +20,7 @@ package org.apache.tamaya.gogo.shell;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.apache.tamaya.osgi.OperationMode;
+import org.apache.tamaya.osgi.Policy;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -58,12 +58,12 @@ public class ConfigCommands {
                                         String pid,
                                 @Parameter(absentValue = "OVERRIDE", names={"-m", "--opmode"})
                                 @Descriptor("Explicitly set (override) the operation mode to use, one of: EXTEND, OVERRIDE, UPDATE_ONLY")
-                                        OperationMode operationMode,
+                                        Policy policy,
                                 @Parameter(absentValue = "false", names={"-d", "--dryrun"})
                                 @Descriptor("If set to true no OSGI configuration gets changed.")
                                         boolean dryRun){
         System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.applyTamayaConfiguration(
-                getService(TamayaConfigPlugin.class), pid, operationMode.toString(), dryRun));
+                getService(TamayaConfigPlugin.class), pid, policy.toString(), dryRun));
     }
 
     @Descriptor("Gets the detailed property values.")
