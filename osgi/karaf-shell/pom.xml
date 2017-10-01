@@ -27,7 +27,7 @@
         <version>0.4-incubating-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tamaya-osgi-karaf-shell_alpha</artifactId>
+    <artifactId>tamaya-osgi-karaf-shell</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tamaya :: OSGI :: Karaf :: Shell</name>
     <description>Tamaya Karaf Shell Commands</description>
@@ -35,18 +35,16 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
-            <artifactId>tamaya-osgi_alpha</artifactId>
+            <artifactId>tamaya-osgi</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.shell</groupId>
@@ -59,17 +57,6 @@
             <artifactId>org.apache.karaf.shell.console</artifactId>
             <version>${dependency.karaf.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-
-        <!-- Testing -->
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>java-hamcrest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
 

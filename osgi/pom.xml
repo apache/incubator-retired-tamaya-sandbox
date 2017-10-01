@@ -37,19 +37,12 @@
         <osgi.config.version>1.5.0</osgi.config.version>
         <osgi.tracker.version>1.5.1</osgi.tracker.version>
 
-        <dependency.pax.exam.version>4.7.0</dependency.pax.exam.version>
-        <dependency.paxurl.version>2.5.2</dependency.paxurl.version>
-        <dependency.pax.logging.version>1.8.4</dependency.pax.logging.version>
-        <dependency.swissbox.version>1.8.2</dependency.swissbox.version>
-        <dependency.tinybundles.version>2.1.1</dependency.tinybundles.version>
         <dependency.base.version>1.5.0</dependency.base.version>
-        <dependency.slf4j.version>1.6.6</dependency.slf4j.version>
         <dependency.mockito.version>1.9.5</dependency.mockito.version>
         <dependency.asm.version>3.0</dependency.asm.version>
         <dependency.atinject.version>1.0</dependency.atinject.version>
         <dependency.karaf.version>4.0.7</dependency.karaf.version>
         <dependency.felix.version>5.6.1</dependency.felix.version>
-        <!-- 1.0.8 and higher require slf4j 1.7 -->
         <dependency.logback.version>1.0.7</dependency.logback.version>
     </properties>
 
@@ -99,149 +92,8 @@
                 <version>${osgi.tracker.version}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>${dependency.mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam</artifactId>
-                <version>${dependency.pax.exam.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-junit4</artifactId>
-                <version>${dependency.pax.exam.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-container-native</artifactId>
-                <version>${dependency.pax.exam.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-container-forked</artifactId>
-                <version>${dependency.pax.exam.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-container-karaf</artifactId>
-                <version>${dependency.pax.exam.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- URL Handlers are runtime artifacts. -->
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-aether</artifactId>
-                <version>${dependency.paxurl.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-reference</artifactId>
-                <version>${dependency.paxurl.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-classpath</artifactId>
-                <version>${dependency.paxurl.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-assembly</artifactId>
-                <version>${dependency.paxurl.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-wrap</artifactId>
-                <version>${dependency.paxurl.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-link</artifactId>
-                <version>${dependency.paxurl.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-mvn</artifactId>
-                <version>${dependency.paxurl.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-link-mvn</artifactId>
-                <version>4.9.2</version>
-                <scope>test</scope>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.kohsuke.metainf-services</groupId>
-                <artifactId>metainf-services</artifactId>
-                <version>1.2</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-atinject_1.0_spec</artifactId>
-                <version>${dependency.atinject.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-core</artifactId>
-                <version>${dependency.swissbox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-extender</artifactId>
-                <version>${dependency.swissbox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-optional-jcl</artifactId>
-                <version>${dependency.swissbox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-property</artifactId>
-                <version>${dependency.swissbox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-tracker</artifactId>
-                <version>${dependency.swissbox.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>org.apache.felix.framework</artifactId>
-                <version>${dependency.felix.version}</version>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tamaya</groupId>
-            <artifactId>tamaya-api</artifactId>
-            <version>0.4-incubating-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 
     <modules>
         <module>common</module>

@@ -27,7 +27,7 @@
         <version>0.4-incubating-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tamaya-osgi-gogo-shell_alpha</artifactId>
+    <artifactId>tamaya-osgi-gogo-shell</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tamaya :: OSGI :: Gogo :: Shell</name>
     <description>Tamaya Gogo Shell Commands</description>
@@ -35,7 +35,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
-            <artifactId>tamaya-osgi_alpha</artifactId>
+            <artifactId>tamaya-osgi</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
@@ -46,17 +46,11 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.gogo.runtime</artifactId>
             <version>1.0.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.scr.annotations</artifactId>
-            <version>1.12.0</version>
         </dependency>
 
         <!-- Testing -->

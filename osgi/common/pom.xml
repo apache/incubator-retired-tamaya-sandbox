@@ -27,7 +27,7 @@
         <version>0.4-incubating-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tamaya-osgi_alpha</artifactId>
+    <artifactId>tamaya-osgi</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tamaya :: OSGi :: ConfigurationPlugin</name>
     <description>Tamaya Based OSGI ConfigurationPlugin Implementation</description>
@@ -35,12 +35,6 @@
     <properties>
         <osgi.config.version>1.5.0</osgi.config.version>
         <osgi.tracker.version>1.5.1</osgi.tracker.version>
-
-        <pax.exam.version>4.9.2</pax.exam.version>
-        <pax.url.version>2.5.2</pax.url.version>
-        <slf4j.version>1.6.6</slf4j.version>
-        <mockito.version>1.9.5</mockito.version>
-        <atinject.version>1.0</atinject.version>
     </properties>
 
     <dependencies>
@@ -57,10 +51,6 @@
             <artifactId>org.osgi.util.tracker</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-atinject_1.0_spec</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
@@ -96,61 +86,6 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
 
-        <!-- OSGI Testing -->
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-container-karaf</artifactId>
-            <version>${pax.exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-junit4</artifactId>
-            <version>${pax.exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-link-mvn</artifactId>
-            <version>${pax.exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-aether</artifactId>
-            <version>${pax.url.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.tinybundles</groupId>
-            <artifactId>tinybundles</artifactId>
-            <version>2.1.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>5.6.8</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.configadmin</artifactId>
-            <version>1.8.16</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.2.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>
