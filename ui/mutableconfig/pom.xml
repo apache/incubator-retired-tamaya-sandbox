@@ -25,10 +25,7 @@ under the License.
         <groupId>org.apache.tamaya.ext</groupId>
         <artifactId>tamaya-ui-parent</artifactId>
         <version>0.4-incubating-SNAPSHOT</version>
-<<<<<<< HEAD
-=======
         <relativePath>..</relativePath>
->>>>>>> java8
     </parent>
 
     <packaging>jar</packaging>
