@@ -72,11 +72,6 @@ public class TamayaConfiguration implements Configuration{
     }
 
     @Override
-    public <T> T getFromValue(String value, TypeLiteral<T> targetType) {
-        return ConfigurationProvider.getConfiguration().getFromValue(value, targetType);
-    }
-
-    @Override
     public Map<String, String> getProperties() {
         return null;
     }

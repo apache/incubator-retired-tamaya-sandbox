@@ -26,7 +26,6 @@ import org.apache.tamaya.spi.PropertyConverter;
 import javax.annotation.Priority;
 import javax.inject.Provider;
 import java.lang.reflect.Type;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -42,7 +41,7 @@ public class ProviderConverter implements PropertyConverter<Provider> {
         return () -> {
             try{
                 Type targetType = context.getTargetType().getType();
-                return context.getConfiguration().getFromValue(value, TypeLiteral.of(targetType));
+                return context.getConfiguration().get(value, TypeLiteral.of(targetType));
             }catch(Exception e){
                 throw new ConfigException("Error evaluating config value.", e);
             }

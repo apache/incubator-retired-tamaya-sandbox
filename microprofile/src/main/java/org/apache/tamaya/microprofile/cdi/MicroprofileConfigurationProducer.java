@@ -33,6 +33,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Provider;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -84,14 +85,16 @@ public class MicroprofileConfigurationProducer {
         Configuration config = ConfigurationProvider.getConfiguration();
         ConversionContext.Builder builder = new ConversionContext.Builder(config,
                 ConfigurationProvider.getConfiguration().getContext(), key, TypeLiteral.of(targetType));
-        if (injectionPoint.getMember() instanceof AnnotatedElement) {
-            builder.setAnnotatedElement((AnnotatedElement) injectionPoint.getMember());
-        }
         if(targetType instanceof ParameterizedType){
             ParameterizedType pt = (ParameterizedType)targetType;
             if(pt.getRawType().equals(Provider.class)) {
-                builder.setTargetType(TypeLiteral.of(pt.getActualTypeArguments()[0]));
+                builder = new ConversionContext.Builder(config,
+                        ConfigurationProvider.getConfiguration().getContext(), key,
+                        TypeLiteral.of(pt.getActualTypeArguments()[0]));
             }
+        }
+        if (injectionPoint.getMember() instanceof AnnotatedElement) {
+            builder.setAnnotatedElement((AnnotatedElement) injectionPoint.getMember());
         }
         return builder.build();
     }
