@@ -101,6 +101,7 @@
         <module>karaf-shell</module>
         <module>karaf-features</module>
         <module>gogo-shell</module>
+        <module>injection</module>
     </modules>
 
 </project>
