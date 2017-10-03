@@ -18,3 +18,4 @@
 #
 
 org.apache.tamaya.microprofile.converter.BooleanAsIntegerConverterFix
+org.apache.tamaya.microprofile.converter.ProviderConverter

@@ -18,10 +18,7 @@
  */
 package org.apache.tamaya.microprofile;
 
-import org.apache.tamaya.ConfigOperator;
-import org.apache.tamaya.ConfigQuery;
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.TypeLiteral;
+import org.apache.tamaya.*;
 import org.apache.tamaya.spi.ConfigurationContext;
 import org.eclipse.microprofile.config.Config;
 
@@ -72,6 +69,11 @@ public class TamayaConfiguration implements Configuration{
     @Override
     public <T> T getOrDefault(String key, TypeLiteral<T> type, T defaultValue) {
         return null;
+    }
+
+    @Override
+    public <T> T getFromValue(String value, TypeLiteral<T> targetType) {
+        return ConfigurationProvider.getConfiguration().getFromValue(value, targetType);
     }
 
     @Override

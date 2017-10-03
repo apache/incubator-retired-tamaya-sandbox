@@ -19,7 +19,9 @@ package org.apache.tamaya.microprofile.cdi;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.*;
+import javax.inject.Provider;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -66,9 +68,17 @@ public class MicroprofileCDIExtension implements Extension {
                 String key = !annotation.name().isEmpty()?annotation.name():MicroprofileConfigurationProducer.getDefaultKey(injectionPoint);
                 Member member = injectionPoint.getMember();
                 if(member instanceof Field) {
-                    types.add(((Field) member).getType());
+                    Field f = (Field)member;
+                    if(!Instance.class.equals(f.getType()) &&
+                            !Provider.class.equals(f.getType())){
+                        types.add(f.getType());
+                    }
                 }else if(member instanceof Method){
-                    types.add(((Method) member).getParameterTypes()[0]);
+                    Method m = (Method)member;
+                    if(!Instance.class.equals(m.getParameterTypes()[0]) &&
+                            !Provider.class.equals(m.getParameterTypes()[0])){
+                        types.add(m.getParameterTypes()[0]);
+                    }
                 }else{
                     continue;
                 }
