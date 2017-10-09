@@ -49,7 +49,7 @@ public final class HistoryCommands{
         PrintWriter pw = new PrintWriter(sw);
         List<ConfigHistory> history = ConfigHistory.history(pid);
         history = filterTypes(history, events);
-        pw.print(StringUtil.format("Typ", 10));
+        pw.print(StringUtil.format("Type", 10));
         pw.print(StringUtil.format("PID", 30));
         pw.print(StringUtil.format("Key", 30));
         pw.print(StringUtil.format("Value", 40));

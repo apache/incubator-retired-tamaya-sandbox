@@ -78,7 +78,7 @@ public final class BackupCommands {
                         b.append(current).append(" -> no backup found.\n");
                     }
                 }catch(Exception e){
-                    b.append(current).append(" -> failed: " + e).append('\n');
+                    b.append(current).append(" -> failed: ").append(e).append('\n');
                 }
             }
             return b.toString();

@@ -146,7 +146,7 @@ public final class ConfigHistory implements Serializable{
     }
 
     /**
-     * Ckears the history for a PID.
+     * Clears the history for a PID.
      * @param pid the pid, null clears the full history.
      */
     public static void clearHistory(String pid){

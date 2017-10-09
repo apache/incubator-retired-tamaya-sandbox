@@ -97,7 +97,7 @@ public final class ConfigCommands {
             return "No Config present for PID: " + pid;
         }
         StringBuilder b = new StringBuilder();
-        b.append("OSGI Configuration for PID: " + pid + '\n');
+        b.append("OSGI Configuration for PID: ").append(pid).append('\n');
         b.append("-----------------------------------------------------\n");
         TreeMap<String,String> result = new TreeMap<>();
         Enumeration<String> keys = config.keys();
@@ -150,9 +150,9 @@ public final class ConfigCommands {
                 PropertyValue val = ps.get(key);
                 if(val!=null){
                     if(extended) {
-                        pw.println(StringUtil.format(propertysource, 25) + StringUtil.format(val.toString(), 55));
+                        pw.println(StringUtil.format("", 25) + StringUtil.format(val.toString(), 55));
                     }else{
-                        pw.println(StringUtil.format(propertysource, 25) + StringUtil.format(val.getValue(), 55));
+                        pw.println(StringUtil.format("", 25) + StringUtil.format(val.getValue(), 55));
                     }
                 }
             }

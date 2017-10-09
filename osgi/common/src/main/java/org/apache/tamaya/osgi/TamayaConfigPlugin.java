@@ -62,7 +62,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
                 configureService(event);
                 break;
             case ServiceEvent.UNREGISTERING:
-                // unconfigure...? Corrently nothing here.
+                // unconfigure...? Currently nothing here.
                 break;
         }
     }
