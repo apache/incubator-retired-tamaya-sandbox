@@ -40,7 +40,7 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
     private static final Logger LOG = Logger.getLogger(AdaptiveCombinationPolicy.class.getName());
 
     /**
-     * Collecting combination policy using (optional) {@code item-separator} parameter for determining the sparator
+     * Collecting combination policy using (optional) {@code item-separator} parameter for determining the separator
      * to combine multiple config entries found.
      */
     private static final PropertyValueCombinationPolicy COLLECTING_POLICY = new PropertyValueCombinationPolicy(){
@@ -96,7 +96,7 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
                 if(LOG.isLoggable(Level.FINEST)){
                     LOG.finest("Using default (overriding) combination policy for key: " + key + "");
                 }
-                combinationPolicy = PropertyValueCombinationPolicy.DEFAULT_OVERRIDING_COLLECTOR;
+                combinationPolicy = PropertyValueCombinationPolicy.DEFAULT_OVERRIDING_POLICY;
                 break;
             default:
                 try{
@@ -114,7 +114,7 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
                 } catch(Exception e){
                     LOG.log(Level.SEVERE, "Error loading configured PropertyValueCombinationPolicy for " +
                             "key: " + key + ", using default (overriding) policy.", e);
-                    combinationPolicy = PropertyValueCombinationPolicy.DEFAULT_OVERRIDING_COLLECTOR;
+                    combinationPolicy = PropertyValueCombinationPolicy.DEFAULT_OVERRIDING_POLICY;
                 }
         }
         return combinationPolicy.collect(currentValue, key, propertySource);
