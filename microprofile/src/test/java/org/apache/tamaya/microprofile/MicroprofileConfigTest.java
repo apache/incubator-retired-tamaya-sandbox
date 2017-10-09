@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.microprofile;
 
-import org.apache.tamaya.ConfigurationProvider;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -42,7 +41,7 @@ public class MicroprofileConfigTest {
         for (ConfigSource cs : sources) {
             count++;
         }
-        assertEquals(count, 5);
+        assertEquals(3, count);
     }
 
     @Test
