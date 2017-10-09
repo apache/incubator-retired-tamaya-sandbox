@@ -83,7 +83,6 @@ public class MicroprofileConfigBuilderTest {
     }
 
     @Test
-//    @Ignore
     public void testBuildDefaultConfig(){
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         assertNotNull(builder);

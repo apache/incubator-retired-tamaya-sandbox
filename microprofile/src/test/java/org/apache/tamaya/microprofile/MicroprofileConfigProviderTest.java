@@ -59,5 +59,4 @@ public class MicroprofileConfigProviderTest {
         assertTrue(count>0);
     }
 
-
 }

@@ -38,7 +38,7 @@ import java.io.File;
 
 /**
  * Adds the whole Config implementation classes and resources to the
- * Arqillian deployment archive. This is needed to have the container
+ * Arquillian deployment archive. This is needed to have the container
  * pick up the beans from within the impl for the TCK tests.
  *
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>

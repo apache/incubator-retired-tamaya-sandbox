@@ -79,5 +79,4 @@ public class MicroprofileConfigTest {
         config.getValue("java.version", Integer.class);
     }
 
-
 }
