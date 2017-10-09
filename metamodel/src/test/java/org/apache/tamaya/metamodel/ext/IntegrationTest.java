@@ -22,7 +22,6 @@ import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.metamodel.CachedFilter;
-import org.apache.tamaya.metamodel.MapFilter;
 import org.apache.tamaya.metamodel.MetaConfiguration;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.spi.PropertyConverter;
@@ -33,10 +32,7 @@ import org.junit.Test;
 import java.net.URL;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 
 /**
  * Created by atsticks on 06.12.16.
