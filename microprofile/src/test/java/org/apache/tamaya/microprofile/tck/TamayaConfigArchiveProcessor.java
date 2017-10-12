@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.microprofile.tck;
 
+import org.apache.tamaya.core.internal.converters.OptionalConverter;
 import org.apache.tamaya.microprofile.MicroprofileAdapter;
 import org.apache.tamaya.microprofile.MicroprofileConfigProviderResolver;
 import org.apache.tamaya.microprofile.cdi.MicroprofileCDIExtension;
@@ -66,6 +67,7 @@ public class TamayaConfigArchiveProcessor implements ApplicationArchiveProcessor
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                     .addAsServiceProvider(ConfigProviderResolver.class, MicroprofileConfigProviderResolver.class)
                     .addAsServiceProvider(PropertyConverter.class, BooleanAsIntegerConverterFix.class)
+                    .addAsServiceProvider(PropertyConverter.class, OptionalConverter.class)
                     .addAsServiceProvider(Extension.class, MicroprofileCDIExtension.class);
             ((WebArchive) applicationArchive).addAsLibraries(
                     configJar)

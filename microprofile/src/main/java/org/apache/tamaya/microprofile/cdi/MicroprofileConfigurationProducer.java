@@ -136,26 +136,5 @@ public class MicroprofileConfigurationProducer {
         return ConfigProviderResolver.instance().getBuilder();
     }
 
-//    @Produces
-//    @ConfigProperty
-//    public Provider getConfiguredProvider(InjectionPoint injectionPoint){
-//        final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
-//        String key = annotation.name();
-//
-//        // unless the extension is not installed, this should never happen because the extension
-//        // enforces the resolvability of the config
-//
-//        String defaultTextValue = annotation.defaultValue().isEmpty() ? null : annotation.defaultValue();
-//        ConversionContext conversionContext = createConversionContext(key, injectionPoint);
-//        return () -> {
-//            Object value = resolveValue(defaultTextValue, conversionContext, injectionPoint);
-//            if (value == null) {
-//                throw new ConfigException(String.format(
-//                        "Can't resolve any of the possible config keys: %s to the required target type: %s, supported formats: %s",
-//                        key, conversionContext.getTargetType(), conversionContext.getSupportedFormats().toString()));
-//            }
-//            return value;
-//        };
-//    }
 
 }

@@ -19,6 +19,8 @@
 package org.apache.tamaya.microprofile.converter;
 
 import org.apache.tamaya.ConfigException;
+import org.apache.tamaya.ConfigQuery;
+import org.apache.tamaya.Configuration;
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
@@ -26,6 +28,9 @@ import org.apache.tamaya.spi.PropertyConverter;
 import javax.annotation.Priority;
 import javax.inject.Provider;
 import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -34,14 +39,15 @@ import java.util.logging.Logger;
 @Priority(-1)
 public class ProviderConverter implements PropertyConverter<Provider> {
 
-    private final Logger LOG = Logger.getLogger(getClass().getName());
+    private static final Logger LOG = Logger.getLogger(ProviderConverter.class.getName());
 
     @Override
     public Provider convert(String value, ConversionContext context) {
         return () -> {
             try{
                 Type targetType = context.getTargetType().getType();
-                return context.getConfiguration().get(value, TypeLiteral.of(targetType));
+                ConvertQuery converter = new ConvertQuery(value, TypeLiteral.of(targetType));
+                return context.getConfiguration().query(converter);
             }catch(Exception e){
                 throw new ConfigException("Error evaluating config value.", e);
             }
@@ -56,5 +62,37 @@ public class ProviderConverter implements PropertyConverter<Provider> {
     @Override
     public int hashCode(){
         return getClass().hashCode();
+    }
+
+    private static final class ConvertQuery<T> implements ConfigQuery<T> {
+
+        private String rawValue;
+        private TypeLiteral<T> type;
+
+        public ConvertQuery(String rawValue, TypeLiteral<T> type) {
+            this.rawValue = Objects.requireNonNull(rawValue);
+            this.type = Objects.requireNonNull(type);
+        }
+
+        @Override
+        public T query(Configuration config) {
+            List<PropertyConverter<T>> converters = config.getContext().getPropertyConverters(type);
+            ConversionContext context = new ConversionContext.Builder(type).setConfigurationContext(config.getContext())
+                    .setConfiguration(config).setKey(ConvertQuery.class.getName()).build();
+            for(PropertyConverter<?> conv: converters) {
+                try{
+                    if(conv instanceof ProviderConverter){
+                        continue;
+                    }
+                    T result = (T)conv.convert(rawValue, context);
+                    if(result!=null){
+                        return result;
+                    }
+                }catch(Exception e){
+                    LOG.log(Level.FINEST,  e, () -> "Converter "+ conv +" failed to convert to " + type);
+                }
+            }
+            return null;
+        }
     }
 }
