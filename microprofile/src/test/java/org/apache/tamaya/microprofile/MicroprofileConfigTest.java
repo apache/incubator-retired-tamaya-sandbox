@@ -79,4 +79,17 @@ public class MicroprofileConfigTest {
         config.getValue("java.version", Integer.class);
     }
 
+    @Test
+    public void testEmptySystemProperty(){
+        System.setProperty("my.empty.property", "");
+        Config config = ConfigProvider.getConfig();
+        assertEquals("", config.getValue("my.empty.property", String.class));
+    }
+
+    @Test
+    public void testEmptyConfigProperty(){
+        Config config = ConfigProvider.getConfig();
+        assertEquals("", config.getValue("my.empty.property.in.config.file", String.class));
+    }
+
 }
