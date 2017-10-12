@@ -62,7 +62,7 @@ public class MicroprofileConfigurationProducer {
         // unless the extension is not installed, this should never happen because the extension
         // enforces the resolvability of the config
 
-        String defaultTextValue = annotation.defaultValue().isEmpty() ? null : annotation.defaultValue();
+        String defaultTextValue = annotation.defaultValue().equals(ConfigProperty.UNCONFIGURED_VALUE) ? null : annotation.defaultValue();
         ConversionContext conversionContext = createConversionContext(key, injectionPoint);
         Object value = resolveValue(defaultTextValue, conversionContext, injectionPoint);
         if (value == null) {
