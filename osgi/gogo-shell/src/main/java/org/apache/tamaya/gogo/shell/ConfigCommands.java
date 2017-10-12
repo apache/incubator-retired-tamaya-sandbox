@@ -21,7 +21,7 @@ package org.apache.tamaya.gogo.shell;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.apache.tamaya.osgi.Policy;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -63,7 +63,7 @@ public class ConfigCommands {
                                 @Descriptor("If set to true no OSGI configuration gets changed.")
                                         boolean dryRun){
         System.out.println(org.apache.tamaya.osgi.commands.ConfigCommands.applyTamayaConfiguration(
-                getService(TamayaConfigPlugin.class), pid, policy.toString(), dryRun));
+                getService(TamayaConfigService.class), pid, policy.toString(), dryRun));
     }
 
     @Descriptor("Gets the detailed property values.")

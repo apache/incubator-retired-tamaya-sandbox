@@ -19,8 +19,6 @@
 package org.apache.tamaya.osgi.commands;
 
 import org.apache.tamaya.osgi.AbstractOSGITest;
-import org.apache.tamaya.osgi.Backups;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -36,47 +34,47 @@ import static org.junit.Assert.*;
 public class BackupCommandsTest extends AbstractOSGITest {
     @Test
     public void createBackup() throws Exception {
-        String result = BackupCommands.createBackup(cm, "createBackup", false);
+        String result = BackupCommands.createBackup(tamayaConfigPlugin, cm, "createBackup", false);
         assertNotNull(result);
         assertTrue(result.contains("createBackup"));
         assertTrue(result.contains("Backup created"));
-        assertTrue(Backups.contains("createBackup"));
+        assertTrue(tamayaConfigPlugin.containsBackup("createBackup"));
         // A backup with the given name already exists, so it fails
-        result = BackupCommands.createBackup(cm, "createBackup", false);
+        result = BackupCommands.createBackup(tamayaConfigPlugin, cm, "createBackup", false);
         assertNotNull(result);
         assertTrue(result.contains("createBackup"));
         assertTrue(result.contains("Creating backup failed"));
         assertTrue(result.contains("already existing"));
-        assertTrue(Backups.contains("createBackup"));
+        assertTrue(tamayaConfigPlugin.containsBackup("createBackup"));
         // any existing backups gets overridden
-        result = BackupCommands.createBackup(cm, "createBackup", true);
+        result = BackupCommands.createBackup(tamayaConfigPlugin, cm, "createBackup", true);
         assertNotNull(result);
         assertTrue(result.contains("createBackup"));
         assertTrue(result.contains("Backup created"));
-        assertTrue(Backups.contains("createBackup"));
+        assertTrue(tamayaConfigPlugin.containsBackup("createBackup"));
     }
 
     @Test
     public void deleteBackup() throws Exception {
-        BackupCommands.createBackup(cm, "deleteBackup", false);
-        assertTrue(Backups.contains("deleteBackup"));
-        String result = BackupCommands.deleteBackup("deleteBackup");
+        BackupCommands.createBackup(tamayaConfigPlugin, cm, "deleteBackup", false);
+        assertTrue(tamayaConfigPlugin.containsBackup("deleteBackup"));
+        String result = BackupCommands.deleteBackup(tamayaConfigPlugin, "deleteBackup");
         assertNotNull(result);
         assertTrue(result.contains("deleteBackup"));
         assertTrue(result.contains("Backup deleted"));
-        assertFalse(Backups.contains("deleteBackup"));
+        assertFalse(tamayaConfigPlugin.containsBackup("deleteBackup"));
     }
 
     @Test
     public void restoreBackup() throws Exception {
-        BackupCommands.createBackup(cm, "restoreBackup", false);
-        assertTrue(Backups.contains("restoreBackup"));
+        BackupCommands.createBackup(tamayaConfigPlugin, cm, "restoreBackup", false);
+        assertTrue(tamayaConfigPlugin.containsBackup("restoreBackup"));
         String result = BackupCommands.restoreBackup(tamayaConfigPlugin, "restoreBackup");
         assertNotNull(result);
         assertTrue(result.contains("restoreBackup"));
         assertTrue(result.contains("Backup restored"));
-        BackupCommands.deleteBackup("restoreBackup");
-        assertFalse(Backups.contains("restoreBackup"));
+        BackupCommands.deleteBackup(tamayaConfigPlugin, "restoreBackup");
+        assertFalse(tamayaConfigPlugin.containsBackup("restoreBackup"));
         result = BackupCommands.restoreBackup(tamayaConfigPlugin, "restoreBackup");
         assertTrue(result.contains("Backup restore failed"));
         assertTrue(result.contains("no backup found"));
@@ -84,8 +82,8 @@ public class BackupCommandsTest extends AbstractOSGITest {
 
     @Test
     public void listBackup() throws Exception {
-        BackupCommands.createBackup(cm, "listBackup", false);
-        String result = BackupCommands.listBackup("listBackup");
+        BackupCommands.createBackup(tamayaConfigPlugin, cm, "listBackup", false);
+        String result = BackupCommands.listBackup(tamayaConfigPlugin, "listBackup");
         result.concat("listBackup");
         result.contains("pid");
     }

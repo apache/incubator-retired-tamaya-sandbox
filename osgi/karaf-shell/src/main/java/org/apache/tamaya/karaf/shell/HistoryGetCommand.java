@@ -26,18 +26,18 @@ import org.apache.karaf.shell.api.console.Completer;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
 import org.apache.tamaya.osgi.ConfigHistory;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.HistoryCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 import java.util.List;
 
-@Command(scope = "tamaya", name = "tm_history", description="Gets the history of changes Tamaya applied to the OSGI configuration.")
+@Command(scope = "tamaya", name = "tm_history", description="Gets the getHistory of changes Tamaya applied to the OSGI configuration.")
 @Service
 public class HistoryGetCommand implements Action{
 
     @Reference
-    private TamayaConfigPlugin configPlugin;
+    private TamayaConfigService configPlugin;
 
     @Argument(index = 0, name = "pid", description = "Allows to filter on the given PID.",
             required = false, multiValued = false)
@@ -50,7 +50,7 @@ public class HistoryGetCommand implements Action{
 
     @Override
     public String execute() throws IOException {
-        return HistoryCommands.getHistory(pid, eventTypes);
+        return HistoryCommands.getHistory(configPlugin, pid, eventTypes);
     }
 
     @Service

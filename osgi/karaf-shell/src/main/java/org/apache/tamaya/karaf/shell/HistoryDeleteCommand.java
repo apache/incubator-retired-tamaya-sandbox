@@ -19,12 +19,14 @@
 package org.apache.tamaya.karaf.shell;
 
 import org.apache.karaf.shell.api.action.*;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.commands.HistoryCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "tm_history_delete", description="Deletes the history of changes Tamaya applied to the OSGI configuration.")
+@Command(scope = "tamaya", name = "tm_history_delete", description="Deletes the getHistory of changes Tamaya applied to the OSGI configuration.")
 @Service
 public class HistoryDeleteCommand implements Action{
 
@@ -32,9 +34,12 @@ public class HistoryDeleteCommand implements Action{
             required = true, multiValued = false)
     String pid;
 
+    @Reference
+    private TamayaConfigService configPlugin;
+
     @Override
     public String execute() throws IOException {
-        return HistoryCommands.clearHistory(pid);
+        return HistoryCommands.clearHistory(configPlugin, pid);
     }
 
 }

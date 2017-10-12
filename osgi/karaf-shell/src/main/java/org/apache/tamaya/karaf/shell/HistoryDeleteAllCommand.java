@@ -21,18 +21,23 @@ package org.apache.tamaya.karaf.shell;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.commands.HistoryCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 
-@Command(scope = "tamaya", name = "tm_history_delete_all", description="Deletes the full history of changes Tamaya applied to the OSGI configuration.")
+@Command(scope = "tamaya", name = "tm_history_delete_all", description="Deletes the full getHistory of changes Tamaya applied to the OSGI configuration.")
 @Service
 public class HistoryDeleteAllCommand implements Action{
 
+    @Reference
+    private TamayaConfigService configPlugin;
+
     @Override
     public String execute() throws IOException {
-        return HistoryCommands.clearHistory(null);
+        return HistoryCommands.clearHistory(configPlugin, null);
     }
 
 }

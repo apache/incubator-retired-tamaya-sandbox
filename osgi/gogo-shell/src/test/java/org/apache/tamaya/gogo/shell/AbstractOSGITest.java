@@ -19,6 +19,7 @@
 package org.apache.tamaya.gogo.shell;
 
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.osgi.framework.Bundle;
@@ -51,9 +52,9 @@ public abstract class AbstractOSGITest {
     @Mock
     private ServiceReference<ConfigurationAdmin> cmRef;
     @Mock
-    private ServiceReference<TamayaConfigPlugin> tamayaRef;
+    private ServiceReference<TamayaConfigService> tamayaRef;
 
-    protected TamayaConfigPlugin tamayaConfigPlugin;
+    protected TamayaConfigService tamayaConfigPlugin;
 
     protected Dictionary<String,Object> getProperties(String pid){
         return this.properties.get(pid);
@@ -70,7 +71,7 @@ public abstract class AbstractOSGITest {
         doReturn(new Bundle[0]).when(bundleContext).getBundles();
         doReturn(cmRef).when(bundleContext).getServiceReference(ConfigurationAdmin.class);
         doReturn(cm).when(bundleContext).getService(cmRef);
-        doReturn(tamayaRef).when(bundleContext).getServiceReference(TamayaConfigPlugin.class);
+        doReturn(tamayaRef).when(bundleContext).getServiceReference(TamayaConfigService.class);
         tamayaConfigPlugin = new TamayaConfigPlugin(bundleContext);
         doReturn(tamayaConfigPlugin).when(bundleContext).getService(tamayaRef);
     }

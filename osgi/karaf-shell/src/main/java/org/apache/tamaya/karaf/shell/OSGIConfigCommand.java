@@ -23,8 +23,8 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 
@@ -41,7 +41,7 @@ public class OSGIConfigCommand implements Action{
     String pid = null;
 
     @org.apache.karaf.shell.api.action.lifecycle.Reference
-    TamayaConfigPlugin configPlugin;
+    TamayaConfigService configPlugin;
 
 
     public Object execute() throws IOException {

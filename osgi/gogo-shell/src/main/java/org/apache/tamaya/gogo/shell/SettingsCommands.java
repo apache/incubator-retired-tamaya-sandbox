@@ -21,8 +21,8 @@ package org.apache.tamaya.gogo.shell;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.apache.tamaya.osgi.Policy;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -45,39 +45,39 @@ public class SettingsCommands {
     @Descriptor("Allows to disable/enable Tamaya configuration by default.")
     public void tm_enable(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-e", "--enable"})
                                    @Descriptor("if true Tamaya is enabled by default (default=false)") boolean enabled) throws IOException {
-        System.out.println(ConfigCommands.setDefaultEnabled(getService(TamayaConfigPlugin.class), enabled));
+        System.out.println(ConfigCommands.setDefaultEnabled(getService(TamayaConfigService.class), enabled));
     }
 
     @Descriptor("Access if Tamaya is currently enabled by default to change OSGI configuration.")
     public void tm_enabled(){
-        System.out.println(ConfigCommands.getDefaultEnabled(getService(TamayaConfigPlugin.class)));
+        System.out.println(ConfigCommands.getDefaultEnabled(getService(TamayaConfigService.class)));
     }
 
     @Descriptor("Get the default Tamaya configuration policy.")
     public void tm_policy() throws IOException {
-        System.out.println(ConfigCommands.getDefaultOpPolicy(getService(TamayaConfigPlugin.class)));
+        System.out.println(ConfigCommands.getDefaultOpPolicy(getService(TamayaConfigService.class)));
     }
 
     @Descriptor("Set the default Tamaya configuration policy.")
     public void tm_policy_set(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--policy"})
                                       @Descriptor("The policy to apply (required), one of: EXTEND, OVERRIDE, UPDATE_ONLY") Policy policy) throws IOException {
-        System.out.println(ConfigCommands.setDefaultOpPolicy(getService(TamayaConfigPlugin.class), policy.toString()));
+        System.out.println(ConfigCommands.setDefaultOpPolicy(getService(TamayaConfigService.class), policy.toString()));
     }
 
     @Descriptor("Get info about the current Tamaya configuration settings.")
     public void tm_info() throws IOException {
-        System.out.println(ConfigCommands.getInfo(getService(TamayaConfigPlugin.class)));
+        System.out.println(ConfigCommands.getInfo(getService(TamayaConfigService.class)));
     }
 
     @Descriptor("Flag if Tamaya is automatically triggering OSGI config updates, when according " +
             "Tamaya configuration changes.")
     public void tm_propagate_updates() throws IOException {
-        System.out.println(getService(TamayaConfigPlugin.class).isAutoUpdateEnabled());
+        System.out.println(getService(TamayaConfigService.class).isAutoUpdateEnabled());
     }
 
     @Descriptor("Configure if Tamaya is automatically triggering OSGI config updates, when according " +
             "Tamaya configuration changes.")
     public void tm_propagate_updates_set(boolean enabled) throws IOException {
-        System.out.println(ConfigCommands.setAutoUpdateEnabled(getService(TamayaConfigPlugin.class), enabled));
+        System.out.println(ConfigCommands.setAutoUpdateEnabled(getService(TamayaConfigService.class), enabled));
     }
 }

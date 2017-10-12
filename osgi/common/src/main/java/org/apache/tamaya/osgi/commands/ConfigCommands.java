@@ -22,7 +22,6 @@ import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
 import org.apache.tamaya.osgi.Policy;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 
@@ -39,10 +38,10 @@ public final class ConfigCommands {
     /** Singleton constructor. */
     private ConfigCommands(){}
 
-    public static String getInfo(TamayaConfigPlugin configPlugin) throws IOException {
+    public static String getInfo(TamayaConfigService configPlugin) throws IOException {
         Configuration config = ConfigurationProvider.getConfiguration();
         return config.toString() + "\n\n"
-                + StringUtil.format("Default Policy:", 30) + configPlugin.getDefaultOperationMode() + '\n'
+                + StringUtil.format("Default Policy:", 30) + configPlugin.getDefaultPolicy() + '\n'
                 + StringUtil.format("Default Enabled: ", 30) + configPlugin.isTamayaEnabledByDefault();
     }
 
@@ -66,7 +65,7 @@ public final class ConfigCommands {
         return readTamayaConfig("["+pid+"]", filter);
     }
 
-    public static String applyTamayaConfiguration(TamayaConfigPlugin configPlugin, String pid, String operationMode, boolean dryRun){
+    public static String applyTamayaConfiguration(TamayaConfigService configPlugin, String pid, String operationMode, boolean dryRun){
         Dictionary<String,Object> config = null;
         if(operationMode!=null){
             config = configPlugin.updateConfig(pid, Policy.valueOf(operationMode), true, dryRun);
@@ -81,13 +80,13 @@ public final class ConfigCommands {
             return  "Full configuration\n" +
                     "------------------\n" +
                     "PID           : " + pid + "\n" +
-                    "Policy : "+ configPlugin.getDefaultOperationMode() + "\n" +
+                    "Policy : "+ configPlugin.getDefaultPolicy() + "\n" +
                     "Applied       : " + !dryRun + "\n" +
                     printOSGIConfig(pid, config);
         }
     }
 
-    public static String readOSGIConfiguration(TamayaConfigPlugin configPlugin, String pid, String section) {
+    public static String readOSGIConfiguration(TamayaConfigService configPlugin, String pid, String section) {
         Dictionary<String,Object> config = configPlugin.getOSGIConfiguration(pid, section);
         return printOSGIConfig(pid, config);
     }
@@ -113,13 +112,13 @@ public final class ConfigCommands {
         return b.toString();
     }
 
-    public static String getDefaultOpPolicy(TamayaConfigPlugin configPlugin) throws IOException {
-        return String.valueOf(configPlugin.getDefaultOperationMode());
+    public static String getDefaultOpPolicy(TamayaConfigService configPlugin) throws IOException {
+        return String.valueOf(configPlugin.getDefaultPolicy());
     }
 
-    public static String setDefaultOpPolicy(TamayaConfigPlugin configPlugin, String policy) throws IOException {
+    public static String setDefaultOpPolicy(TamayaConfigService configPlugin, String policy) throws IOException {
         Policy opMode = Policy.valueOf(policy);
-        configPlugin.setDefaultOperationMode(opMode);
+        configPlugin.setDefaultPolicy(opMode);
         return "Policy="+opMode.toString();
     }
 
@@ -225,21 +224,21 @@ public final class ConfigCommands {
         return sw.toString();
     }
 
-    public static String setDefaultEnabled(TamayaConfigPlugin configPlugin, boolean enabled) throws IOException {
+    public static String setDefaultEnabled(TamayaConfigService configPlugin, boolean enabled) throws IOException {
         configPlugin.setTamayaEnabledByDefault(enabled);
-        return TamayaConfigPlugin.TAMAYA_ENABLED_PROP+"="+enabled;
+        return TamayaConfigService.TAMAYA_ENABLED_PROP+"="+enabled;
     }
 
-    public static String getDefaultEnabled(TamayaConfigPlugin configPlugin) {
+    public static String getDefaultEnabled(TamayaConfigService configPlugin) {
         return String.valueOf(configPlugin.isTamayaEnabledByDefault());
     }
 
-    public static String setAutoUpdateEnabled(TamayaConfigPlugin configPlugin, boolean enabled) {
+    public static String setAutoUpdateEnabled(TamayaConfigService configPlugin, boolean enabled) {
         configPlugin.setAutoUpdateEnabled(enabled);
-        return TamayaConfigPlugin.TAMAYA_AUTO_UPDATE_ENABLED_PROP+"="+enabled;
+        return TamayaConfigService.TAMAYA_AUTO_UPDATE_ENABLED_PROP+"="+enabled;
     }
 
-    public static String getAutoUpdateEnabled(TamayaConfigPlugin configPlugin) {
+    public static String getAutoUpdateEnabled(TamayaConfigService configPlugin) {
         return String.valueOf(configPlugin.isAutoUpdateEnabled());
     }
 }

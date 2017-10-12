@@ -118,7 +118,7 @@ public final class ConfigHistory implements Serializable{
      * Sets the maximum history size.
      * @param maxHistory the size
      */
-    public static void setMaxHistory(int maxHistory){
+    static void setMaxHistory(int maxHistory){
         ConfigHistory.maxHistory = maxHistory;
     }
 
@@ -126,7 +126,7 @@ public final class ConfigHistory implements Serializable{
      * Get the max history size.
      * @return the max size
      */
-    public static int getMaxHistory(){
+    static int getMaxHistory(){
         return maxHistory;
     }
 
@@ -134,14 +134,14 @@ public final class ConfigHistory implements Serializable{
      * Access the current history.
      * @return the current history, never null.
      */
-    public static List<ConfigHistory> history(){
-        return history(null);
+    static List<ConfigHistory> getHistory(){
+        return getHistory(null);
     }
 
     /**
      * Clears the history.
      */
-    public static void clearHistory(){
+    static void clearHistory(){
         clearHistory(null);
     }
 
@@ -149,12 +149,12 @@ public final class ConfigHistory implements Serializable{
      * Clears the history for a PID.
      * @param pid the pid, null clears the full history.
      */
-    public static void clearHistory(String pid){
+    static void clearHistory(String pid){
         synchronized (history){
             if("*".equals(pid)) {
                 history.clear();
             }else{
-                history.removeAll(history(pid));
+                history.removeAll(getHistory(pid));
             }
         }
     }
@@ -164,7 +164,7 @@ public final class ConfigHistory implements Serializable{
      * @param pid the pid, null returns the full history.
      * @return
      */
-    public static List<ConfigHistory> history(String pid) {
+    public static List<ConfigHistory> getHistory(String pid) {
         if(pid==null || pid.isEmpty()){
             return new ArrayList<>(history);
         }
@@ -214,12 +214,23 @@ public final class ConfigHistory implements Serializable{
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "ConfigHistory{" +
+                "timestamp=" + timestamp +
+                ", previousValue=" + previousValue +
+                ", value=" + value +
+                ", key='" + key + '\'' +
+                '}';
+    }
+
+
     /**
      * This methd saves the (serialized) history in the plugin's OSGI configuration using
      * the HISTORY_KEY key.
      * @param osgiConfig the plugin config, not null.
      */
-    public static void save(Dictionary<String,Object> osgiConfig){
+    static void save(Dictionary<String,Object> osgiConfig){
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -235,7 +246,7 @@ public final class ConfigHistory implements Serializable{
      * Restores the history from the plugin's OSGI configuration.
      * @param osgiConfig
      */
-    public static void restore(Dictionary<String,Object> osgiConfig){
+    static void restore(Dictionary<String,Object> osgiConfig){
         try{
             String serialized = (String)osgiConfig.get(HISTORY_KEY);
             if(serialized!=null) {
@@ -247,16 +258,6 @@ public final class ConfigHistory implements Serializable{
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Failed to store getConfig change history.", e);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "ConfigHistory{" +
-                "timestamp=" + timestamp +
-                ", previousValue=" + previousValue +
-                ", value=" + value +
-                ", key='" + key + '\'' +
-                '}';
     }
 
     private static void checkHistorySize(){

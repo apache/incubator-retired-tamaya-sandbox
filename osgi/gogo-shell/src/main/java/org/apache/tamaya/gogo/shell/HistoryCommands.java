@@ -20,6 +20,7 @@ package org.apache.tamaya.gogo.shell;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -39,39 +40,50 @@ public class HistoryCommands {
         this.context = Objects.requireNonNull(context);
     }
 
-    @Descriptor("Deletes the history of configuration changes.")
+    @Descriptor("Deletes the getHistory of configuration changes.")
     public void tm_history_delete(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-p", "--pid"})
                                    @Descriptor("The PID.") String pid) throws IOException {
-        System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.clearHistory(pid));
+        System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.clearHistory(
+                getService(TamayaConfigService.class),
+                pid));
     }
 
-    @Descriptor("Deletes the full history of configuration changes.")
+    @Descriptor("Deletes the full getHistory of configuration changes.")
     public void tm_history_delete_all() throws IOException {
-        System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.clearHistory(null));
+        System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.clearHistory(
+                getService(TamayaConfigService.class),
+                null));
     }
 
-    @Descriptor("Read the history of configuration changes.")
+    @Descriptor("Read the getHistory of configuration changes.")
     public void tm_history_get(@Parameter(absentValue = "", names={"-p", "--pid"})
                                 @Descriptor("The PID.")String pid,
                             @Parameter(absentValue = "", names={"-t", "--eventtypes"})
                             @Descriptor("The comma separated Event types to filter, valid types are " +
                             "PROPERTY,BEGIN,END")String eventTypes) throws IOException {
         if(eventTypes.isEmpty()){
-            System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.getHistory(pid, null));
+            System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.getHistory(
+                    getService(TamayaConfigService.class),
+                    pid, null));
         }else {
-            System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.getHistory(pid, eventTypes.split(",")));
+            System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.getHistory(
+                    getService(TamayaConfigService.class),
+                    pid, eventTypes.split(",")));
         }
     }
 
-    @Descriptor("Get the maximum configuration change history size.")
+    @Descriptor("Get the maximum configuration change getHistory size.")
     public void tm_history_maxsize() throws IOException {
-        System.out.println(String.valueOf(org.apache.tamaya.osgi.commands.HistoryCommands.getMaxHistorySize()));
+        System.out.println(String.valueOf(org.apache.tamaya.osgi.commands.HistoryCommands.getMaxHistorySize(
+                getService(TamayaConfigService.class))));
     }
 
-    @Descriptor("Sets the maximum configuration change history size.")
+    @Descriptor("Sets the maximum configuration change getHistory size.")
     public void tm_history_maxsize_set(@Parameter(absentValue = Parameter.UNSPECIFIED, names={"-s", "--size"})
-                                   @Descriptor("The maximum size of history entries stored.")int maxSize) throws IOException {
-        System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.setMaxHistorySize(maxSize));
+                                   @Descriptor("The maximum size of getHistory entries stored.")int maxSize) throws IOException {
+        System.out.println(org.apache.tamaya.osgi.commands.HistoryCommands.setMaxHistorySize(
+                getService(TamayaConfigService.class),
+                maxSize));
     }
 
 }

@@ -22,8 +22,8 @@ import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.BackupCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 
@@ -36,7 +36,7 @@ public class BackupRestoreCommand implements Action{
     String pid;
 
     @org.apache.karaf.shell.api.action.lifecycle.Reference
-    TamayaConfigPlugin configPlugin;
+    TamayaConfigService configPlugin;
 
     @Override
     public Object execute() throws IOException {

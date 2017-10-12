@@ -18,8 +18,6 @@
  */
 package org.apache.tamaya.osgi.commands;
 
-import org.apache.tamaya.osgi.Backups;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -28,7 +26,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Map;
 
 
 /**
@@ -39,15 +36,16 @@ public final class BackupCommands {
     /** Singleton constructor. */
     private BackupCommands(){}
 
-    public static String createBackup(ConfigurationAdmin cm, String pid, boolean force) throws IOException {
+    public static String createBackup(TamayaConfigService service, ConfigurationAdmin cm, String pid, boolean force) throws IOException {
         Configuration cfg = cm.getConfiguration(pid);
         if(cfg!=null){
             Dictionary<String,?> props = cfg.getProperties();
             if(props!=null){
-                if(force || !Backups.contains(pid)){
-                    Backups.set(pid, props);
-                    return "Backup created, PID = " + pid + '\n' +
-                    printProps(props);
+                if(force && service.getBackup(pid)!=null) {
+                    service.deleteBackup(pid);
+                }
+                if(service.createBackup(pid)){
+                    return "Backup created, PID = " + pid + '\n' +  printProps(props);
                 }else{
                     return "Creating backup failed. Backup already existing, PID = " + pid;
                 }
@@ -56,21 +54,23 @@ public final class BackupCommands {
         return "Creating backup failed. No Config found, PID = " + pid;
     }
 
-    public static String deleteBackup(String pid) throws IOException {
+    public static String deleteBackup(TamayaConfigService service, String pid) throws IOException {
         if("*".equals(pid)){
-            Backups.removeAll();
+            for(String current: service.getBackupPids()){
+                service.deleteBackup(current);
+            }
             return "All Backups deleted.";
         }else {
-            Backups.remove(pid);
+            service.deleteBackup(pid);
             return "Backup deleted: " + pid;
         }
     }
 
-    public static String restoreBackup(TamayaConfigPlugin plugin, String pid) throws IOException {
+    public static String restoreBackup(TamayaConfigService plugin, String pid) throws IOException {
         StringBuilder b = new StringBuilder("Restored Configurations:\n")
                 .append("------------------------\n");
         if("*".equals(pid)){
-            for(String current: Backups.getPids()){
+            for(String current: plugin.getBackupPids()){
                 try{
                     if(plugin.restoreBackup(current)){
                         b.append(current).append(" -> restored.\n");
@@ -95,9 +95,9 @@ public final class BackupCommands {
         }
     }
 
-    public static String listBackup(String pid) throws IOException {
+    public static String listBackup(TamayaConfigService plugin, String pid) throws IOException {
         if(pid!=null){
-            Dictionary<String, ?> props = Backups.get(pid);
+            Dictionary<String, ?> props = plugin.getBackup(pid);
             if(props==null){
                 return "No backup found: " + pid;
             }else{
@@ -107,9 +107,9 @@ public final class BackupCommands {
         }else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            for(Map.Entry<String, Dictionary<String,?>> en: Backups.get().entrySet()){
-                pw.println("PID: " + en.getKey());
-                pw.println(printProps(en.getValue()));
+            for(String current: plugin.getBackupPids()){
+                pw.println("PID: " + current);
+                pw.println(printProps(plugin.getBackup(current)));
             }
             return sw.toString();
         }

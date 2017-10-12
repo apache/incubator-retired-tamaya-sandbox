@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.osgi;
 
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.osgi.framework.*;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -44,7 +45,7 @@ public class Activator implements BundleActivator {
 
     private static final Logger LOG = Logger.getLogger(Activator.class.getName());
 
-    private ServiceRegistration<TamayaConfigPlugin> registration;
+    private ServiceRegistration<TamayaConfigService> registration;
 
     private TamayaConfigPlugin plugin;
 
@@ -57,9 +58,9 @@ public class Activator implements BundleActivator {
         this.plugin = new TamayaConfigPlugin(context);
         Dictionary<String, Object> props = new Hashtable<>();
         props.put(Constants.SERVICE_RANKING, DEFAULT_RANKING);
-        LOG.info("Registering Tamaya OSGI Config plugin as service...");
+        LOG.info("Registering Tamaya OSGI Config Service...");
         registration = context.registerService(
-                TamayaConfigPlugin.class,
+                TamayaConfigService.class,
                 this.plugin, props);
     }
 

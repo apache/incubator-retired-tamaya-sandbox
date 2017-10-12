@@ -40,10 +40,10 @@ public class TamayaConfigPluginTest extends  AbstractOSGITest{
 
     @Test
     public void testOperationMode() throws Exception {
-        Policy om = tamayaConfigPlugin.getDefaultOperationMode();
-        tamayaConfigPlugin.setDefaultOperationMode(Policy.EXTEND);
-        assertEquals(Policy.EXTEND, tamayaConfigPlugin.getDefaultOperationMode());
-        tamayaConfigPlugin.setDefaultOperationMode(Policy.OVERRIDE);
+        Policy om = tamayaConfigPlugin.getDefaultPolicy();
+        tamayaConfigPlugin.setDefaultPolicy(Policy.EXTEND);
+        assertEquals(Policy.EXTEND, tamayaConfigPlugin.getDefaultPolicy());
+        tamayaConfigPlugin.setDefaultPolicy(Policy.OVERRIDE);
     }
 
     @Test
@@ -67,21 +67,21 @@ public class TamayaConfigPluginTest extends  AbstractOSGITest{
     @Test
     public void testSetPluginConfig() throws Exception {
         Dictionary<String,Object> config = new Hashtable<>();
-        tamayaConfigPlugin.setPluginConfig(config);
-        assertEquals(tamayaConfigPlugin.getPluginConfig(), config);
+        ((TamayaConfigPlugin)tamayaConfigPlugin).setPluginConfig(config);
+        assertEquals(((TamayaConfigPlugin)tamayaConfigPlugin).getPluginConfig(), config);
     }
 
     @Test
     public void testSetGetConfigValue() throws Exception {
         Dictionary<String,Object> config = new Hashtable<>();
-        String val = (String)tamayaConfigPlugin.getConfigValue("foo");
-        tamayaConfigPlugin.setConfigValue("bar", "foo");
-        assertEquals(tamayaConfigPlugin.getConfigValue("bar"), "foo");
+        String val = (String)((TamayaConfigPlugin)tamayaConfigPlugin).getConfigValue("foo");
+        ((TamayaConfigPlugin)tamayaConfigPlugin).setConfigValue("bar", "foo");
+        assertEquals(((TamayaConfigPlugin)tamayaConfigPlugin).getConfigValue("bar"), "foo");
     }
 
     @Test
     public void getTMUpdateConfig() throws Exception {
-        org.apache.tamaya.Configuration config = tamayaConfigPlugin.getTamayaConfiguration("java.");
+        org.apache.tamaya.Configuration config = ((TamayaConfigPlugin)tamayaConfigPlugin).getTamayaConfiguration("java.");
         assertNotNull(config);
         assertNull(config.get("jlkjllj"));
         assertEquals(config.get("home"),System.getProperty("java.home"));
@@ -110,24 +110,24 @@ public class TamayaConfigPluginTest extends  AbstractOSGITest{
 
     @Test
     public void getPluginConfig() throws Exception {
-        Dictionary<String, Object> config = tamayaConfigPlugin.getPluginConfig();
+        Dictionary<String, Object> config = ((TamayaConfigPlugin)tamayaConfigPlugin).getPluginConfig();
         assertNotNull(config);
         assertEquals(config, super.getProperties(TamayaConfigPlugin.COMPONENTID));
     }
 
     @Test
     public void getDefaultOperationMode() throws Exception {
-        Policy om = tamayaConfigPlugin.getDefaultOperationMode();
+        Policy om = tamayaConfigPlugin.getDefaultPolicy();
         assertNotNull(om);
         Dictionary<String,Object> pluginConfig = super.getProperties(TamayaConfigPlugin.COMPONENTID);
         pluginConfig.put(Policy.class.getSimpleName(), Policy.UPDATE_ONLY.toString());
         TamayaConfigPlugin plugin = new TamayaConfigPlugin(bundleContext);
-        om = plugin.getDefaultOperationMode();
+        om = plugin.getDefaultPolicy();
         assertNotNull(om);
         assertEquals(om, Policy.UPDATE_ONLY);
         pluginConfig.put(Policy.class.getSimpleName(), Policy.OVERRIDE.toString());
         plugin = new TamayaConfigPlugin(bundleContext);
-        om = plugin.getDefaultOperationMode();
+        om = plugin.getDefaultPolicy();
         assertNotNull(om);
         assertEquals(om, Policy.OVERRIDE);
     }

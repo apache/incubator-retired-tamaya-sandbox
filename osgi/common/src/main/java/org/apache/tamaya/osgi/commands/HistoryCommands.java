@@ -19,7 +19,6 @@
 package org.apache.tamaya.osgi.commands;
 
 import org.apache.tamaya.osgi.ConfigHistory;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,23 +30,23 @@ import java.util.Set;
 
 
 /**
- * Utility class implementing the available change history related commands.
+ * Utility class implementing the available change getHistory related commands.
  */
 public final class HistoryCommands{
 
     /** Singleton constructor. */
     private HistoryCommands(){}
 
-    public static String clearHistory(String pid) throws IOException {
-        int size = ConfigHistory.history(pid).size();
-        ConfigHistory.clearHistory(pid);
-        return "Deleted history for PID: " + pid;
+    public static String clearHistory(TamayaConfigService service, String pid) throws IOException {
+        int size = service.getHistory(pid).size();
+        service.clearHistory(pid);
+        return "Deleted getHistory for PID: " + pid;
     }
 
-    public static String getHistory(String pid, String... events) throws IOException {
+    public static String getHistory(TamayaConfigService service, String pid, String... events) throws IOException {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        List<ConfigHistory> history = ConfigHistory.history(pid);
+        List<ConfigHistory> history = service.getHistory(pid);
         history = filterTypes(history, events);
         pw.print(StringUtil.format("Type", 10));
         pw.print(StringUtil.format("PID", 30));
@@ -66,13 +65,13 @@ public final class HistoryCommands{
         return sw.toString();
     }
 
-    public static String getMaxHistorySize(){
-        return String.valueOf(ConfigHistory.getMaxHistory());
+    public static String getMaxHistorySize(TamayaConfigService service){
+        return String.valueOf(service.getMaxHistorySize());
     }
 
-    public static String setMaxHistorySize(int maxSize){
-        ConfigHistory.setMaxHistory(maxSize);
-        return "tamaya-max-history-size="+maxSize;
+    public static String setMaxHistorySize(TamayaConfigService service, int maxSize){
+        service.setMaxHistorySize(maxSize);
+        return "tamaya-max-getHistory-size="+maxSize;
     }
 
     private static List<ConfigHistory> filterTypes(List<ConfigHistory> history, String... eventTypes) {

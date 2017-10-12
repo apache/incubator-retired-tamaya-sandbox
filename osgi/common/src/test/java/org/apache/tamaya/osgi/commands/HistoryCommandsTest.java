@@ -18,35 +18,40 @@
  */
 package org.apache.tamaya.osgi.commands;
 
+import org.apache.tamaya.osgi.AbstractOSGITest;
 import org.apache.tamaya.osgi.ConfigHistory;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
 /**
  * Created by atsti on 30.09.2017.
  */
-public class HistoryCommandsTest {
+@RunWith(MockitoJUnitRunner.class)
+public class HistoryCommandsTest extends AbstractOSGITest {
+
     @Test
     public void clearHistory() throws Exception {
         ConfigHistory.configured("clearHistory1", "test");
         ConfigHistory.configured("clearHistory2", "test");
-        assertTrue(ConfigHistory.history("clearHistory1").size()==1);
-        assertTrue(ConfigHistory.history("clearHistory2").size()==1);
-        assertTrue(ConfigHistory.history("clearHistory3").size()==0);
-        String result = HistoryCommands.clearHistory("clearHistory1");
+        assertTrue(ConfigHistory.getHistory("clearHistory1").size()==1);
+        assertTrue(ConfigHistory.getHistory("clearHistory2").size()==1);
+        assertTrue(ConfigHistory.getHistory("clearHistory3").size()==0);
+        String result = HistoryCommands.clearHistory(tamayaConfigPlugin, "clearHistory1");
         assertTrue(result.contains("PID"));
         assertTrue(result.contains("clearHistory1"));
-        assertTrue(ConfigHistory.history("clearHistory1").size()==0);
-        assertTrue(ConfigHistory.history("clearHistory2").size()==1);
-        assertTrue(ConfigHistory.history("clearHistory3").size()==0);
+        assertTrue(ConfigHistory.getHistory("clearHistory1").size()==0);
+        assertTrue(ConfigHistory.getHistory("clearHistory2").size()==1);
+        assertTrue(ConfigHistory.getHistory("clearHistory3").size()==0);
         ConfigHistory.configured("clearHistory1", "test");
-        result = HistoryCommands.clearHistory("*");
+        result = HistoryCommands.clearHistory(tamayaConfigPlugin, "*");
         assertTrue(result.contains("PID"));
         assertTrue(result.contains("*"));
-        assertTrue(ConfigHistory.history("clearHistory1").size()==0);
-        assertTrue(ConfigHistory.history("clearHistory2").size()==0);
-        assertTrue(ConfigHistory.history("clearHistory3").size()==0);
+        assertTrue(ConfigHistory.getHistory("clearHistory1").size()==0);
+        assertTrue(ConfigHistory.getHistory("clearHistory2").size()==0);
+        assertTrue(ConfigHistory.getHistory("clearHistory3").size()==0);
 
     }
 
@@ -56,12 +61,12 @@ public class HistoryCommandsTest {
         ConfigHistory.configuring("getHistory", "test");
         ConfigHistory.propertySet("getHistory", "k1", "v1", null);
         ConfigHistory.propertySet("getHistory", "k2", null, "v2");
-        String result = HistoryCommands.getHistory("getHistory");
+        String result = HistoryCommands.getHistory(tamayaConfigPlugin, "getHistory");
         assertNotNull(result);
         assertTrue(result.contains("k1"));
         assertTrue(result.contains("v1"));
         assertTrue(result.contains("test"));
-        result = HistoryCommands.getHistory("getHistory", ConfigHistory.TaskType.BEGIN.toString());
+        result = HistoryCommands.getHistory(tamayaConfigPlugin, "getHistory", ConfigHistory.TaskType.BEGIN.toString());
         assertNotNull(result);
         assertTrue(result.contains("getHistory"));
         assertTrue(result.contains("test"));
@@ -71,11 +76,11 @@ public class HistoryCommandsTest {
 
     @Test
     public void getSetMaxHistorySize() throws Exception {
-        String result = HistoryCommands.getMaxHistorySize();
-        assertEquals(result, String.valueOf(ConfigHistory.getMaxHistory()));
-        result = HistoryCommands.setMaxHistorySize(111);
-        assertEquals(result, "tamaya-max-history-size=111");
-        result = HistoryCommands.getMaxHistorySize();
+        String result = HistoryCommands.getMaxHistorySize(tamayaConfigPlugin);
+        assertEquals(result, String.valueOf(tamayaConfigPlugin.getMaxHistorySize()));
+        result = HistoryCommands.setMaxHistorySize(tamayaConfigPlugin, 111);
+        assertEquals(result, "tamaya-max-getHistory-size=111");
+        result = HistoryCommands.getMaxHistorySize(tamayaConfigPlugin);
         assertEquals(result, "111");
     }
 

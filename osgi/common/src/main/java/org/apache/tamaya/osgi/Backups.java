@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  * Config with Tamaya settings. This allows to restore the configuration in
  * case of issues.
  */
-public final class Backups {
+final class Backups {
 
     private static final Logger LOG = Logger.getLogger(Backups.class.getName());
     public static final String TAMAYA_BACKUP = "tamaya.backup";
@@ -151,7 +151,7 @@ public final class Backups {
                 ois.close();
             }
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to store getConfig change history.", e);
+            LOG.log(Level.WARNING, "Failed to store getConfig change getHistory.", e);
         }
     }
 }

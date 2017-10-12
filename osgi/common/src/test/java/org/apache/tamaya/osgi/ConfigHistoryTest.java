@@ -69,9 +69,9 @@ public class ConfigHistoryTest {
     @Test
     public void history() throws Exception {
         for(int i=0;i<100;i++){
-            ConfigHistory.propertySet("history", "history"+i, "prev"+i, "new"+i);
+            ConfigHistory.propertySet("getHistory", "getHistory"+i, "prev"+i, "new"+i);
         }
-        List<ConfigHistory> hist = ConfigHistory.history();
+        List<ConfigHistory> hist = ConfigHistory.getHistory();
         assertNotNull(hist);
         assertTrue(hist.size()>=100);
     }
@@ -80,19 +80,19 @@ public class ConfigHistoryTest {
     public void history_pid() throws Exception {
         ConfigHistory.configuring("history1", "history_pid");
         for(int i=0;i<100;i++){
-            ConfigHistory.propertySet("history1", "history"+i, "prev"+i, "new"+i);
+            ConfigHistory.propertySet("history1", "getHistory"+i, "prev"+i, "new"+i);
         }
         ConfigHistory.configured("history1", "history_pid");
         for(int i=0;i<100;i++){
-            ConfigHistory.propertySet("history2", "history"+i, "prev"+i, "new"+i);
+            ConfigHistory.propertySet("history2", "getHistory"+i, "prev"+i, "new"+i);
         }
-        List<ConfigHistory> hist = ConfigHistory.history("history1");
+        List<ConfigHistory> hist = ConfigHistory.getHistory("history1");
         assertNotNull(hist);
         assertTrue(hist.size()==102);
-        hist = ConfigHistory.history("history2");
+        hist = ConfigHistory.getHistory("history2");
         assertNotNull(hist);
         assertTrue(hist.size()==100);
-        hist = ConfigHistory.history(null);
+        hist = ConfigHistory.getHistory(null);
         assertNotNull(hist);
         assertTrue(hist.size()>=202);
     }
@@ -100,21 +100,21 @@ public class ConfigHistoryTest {
     @Test
     public void clearHistory() throws Exception {
         for(int i=0;i<100;i++){
-            ConfigHistory.propertySet("history3", "history"+i, "prev"+i, "new"+i);
+            ConfigHistory.propertySet("history3", "getHistory"+i, "prev"+i, "new"+i);
         }
         for(int i=0;i<100;i++){
-            ConfigHistory.propertySet("history4", "history"+i, "prev"+i, "new"+i);
+            ConfigHistory.propertySet("history4", "getHistory"+i, "prev"+i, "new"+i);
         }
-        List<ConfigHistory> hist = ConfigHistory.history("history3");
+        List<ConfigHistory> hist = ConfigHistory.getHistory("history3");
         assertNotNull(hist);
         assertTrue(hist.size()==100);
-        assertEquals(ConfigHistory.history("history4").size(), 100);
+        assertEquals(ConfigHistory.getHistory("history4").size(), 100);
         ConfigHistory.clearHistory("history3");
-        assertEquals(ConfigHistory.history("history3").size(), 0);
-        assertEquals(ConfigHistory.history("history4").size(), 100);
+        assertEquals(ConfigHistory.getHistory("history3").size(), 0);
+        assertEquals(ConfigHistory.getHistory("history4").size(), 100);
         ConfigHistory.clearHistory(null);
-        assertEquals(ConfigHistory.history().size(), 0);
-        assertEquals(ConfigHistory.history("history4").size(), 0);
+        assertEquals(ConfigHistory.getHistory().size(), 0);
+        assertEquals(ConfigHistory.getHistory("history4").size(), 0);
     }
 
 
@@ -133,16 +133,16 @@ public class ConfigHistoryTest {
     @Test
     public void saveRestore() throws Exception {
         for(int i=0;i<10;i++){
-            ConfigHistory.propertySet("save", "history"+i, "prev"+i, "new"+i);
+            ConfigHistory.propertySet("save", "getHistory"+i, "prev"+i, "new"+i);
         }
-        assertEquals(ConfigHistory.history("save").size(), 10);
+        assertEquals(ConfigHistory.getHistory("save").size(), 10);
         Dictionary<String,Object> config = new Hashtable<>();
         ConfigHistory.save(config);
-        assertEquals(ConfigHistory.history("save").size(), 10);
+        assertEquals(ConfigHistory.getHistory("save").size(), 10);
         ConfigHistory.clearHistory();
-        assertEquals(ConfigHistory.history("save").size(), 0);
+        assertEquals(ConfigHistory.getHistory("save").size(), 0);
         ConfigHistory.restore(config);
-        assertEquals(ConfigHistory.history("save").size(), 10);
+        assertEquals(ConfigHistory.getHistory("save").size(), 10);
     }
 
 }

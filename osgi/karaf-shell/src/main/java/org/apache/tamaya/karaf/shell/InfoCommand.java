@@ -24,18 +24,15 @@ import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
-import org.apache.tamaya.osgi.commands.HistoryCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 @Command(scope = "tamaya", name = "tm_info", description="Show he current Tamaya status.")
 @Service
 public class InfoCommand  implements Action {
 
     @Reference
-    private TamayaConfigPlugin configPlugin;
+    private TamayaConfigService configPlugin;
 
     public Object execute() throws IOException {
         return(ConfigCommands.getInfo(configPlugin));

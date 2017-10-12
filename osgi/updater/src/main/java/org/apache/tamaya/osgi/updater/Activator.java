@@ -20,7 +20,7 @@ package org.apache.tamaya.osgi.updater;
 
 import org.apache.tamaya.events.ConfigEventManager;
 import org.apache.tamaya.events.ConfigurationChange;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.osgi.framework.*;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -53,8 +53,8 @@ public class Activator implements BundleActivator {
         listener = new EventListener(context);
         ConfigEventManager.addListener(listener, ConfigurationChange.class);
         LOG.info("Registered Tamaya getConfig trigger for OSGI.");
-        ServiceReference<TamayaConfigPlugin> pluginRef = context.getServiceReference(TamayaConfigPlugin.class);
-        TamayaConfigPlugin tamayaPlugin = context.getService(pluginRef);
+        ServiceReference<TamayaConfigService> pluginRef = context.getServiceReference(TamayaConfigService.class);
+        TamayaConfigService tamayaPlugin = context.getService(pluginRef);
         updateTimer.schedule(new TimerTask() {
             @Override
             public void run() {

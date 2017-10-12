@@ -22,8 +22,10 @@ import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.commands.BackupCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import java.io.IOException;
@@ -31,6 +33,9 @@ import java.io.IOException;
 @Command(scope = "tamaya", name = "tm_backup_create", description="Creates a backup of a current OSGI configuration.")
 @Service
 public class BackupCreateCommand implements Action{
+
+    @Reference
+    private TamayaConfigService configPlugin;
 
     @Argument(index = 0, name = "pid", description = "The target pid to backup.",
             required = true, multiValued = false)
@@ -45,7 +50,7 @@ public class BackupCreateCommand implements Action{
 
     @Override
     public Object execute() throws IOException {
-        return(BackupCommands.createBackup(cm, pid, replace));
+        return(BackupCommands.createBackup(configPlugin, cm, pid, replace));
     }
 
 }

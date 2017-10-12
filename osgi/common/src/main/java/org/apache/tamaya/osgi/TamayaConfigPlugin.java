@@ -18,15 +18,13 @@
  */
 package org.apache.tamaya.osgi;
 
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.osgi.framework.*;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +32,7 @@ import java.util.logging.Logger;
  * Tamaya plugin that updates/extends the component configurations managed
  * by {@link ConfigurationAdmin}, based on the configured {@link Policy}.
  */
-public class TamayaConfigPlugin implements BundleListener, ServiceListener{
+public class TamayaConfigPlugin implements TamayaConfigService,BundleListener, ServiceListener{
     static final String COMPONENTID = "TamayaConfigPlugin";
     /** the logger. */
     private static final Logger LOG = Logger.getLogger(TamayaConfigPlugin.class.getName());
@@ -83,25 +81,30 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         initConfigs();
     }
 
+    @Override
     public void setAutoUpdateEnabled(boolean enabled){
         this.autoUpdateEnabled = enabled;
         setConfigValue(TAMAYA_AUTO_UPDATE_ENABLED_PROP, enabled);
     }
 
+    @Override
     public void setTamayaEnabledByDefault(boolean enabledByDefault){
         this.enabledByDefault = enabledByDefault;
         setConfigValue(TAMAYA_ENABLED_PROP, enabledByDefault);
     }
 
+    @Override
     public boolean isTamayaEnabledByDefault(){
         return enabledByDefault;
     }
 
-    public Policy getDefaultOperationMode(){
+    @Override
+    public Policy getDefaultPolicy(){
         return defaultPolicy;
     }
 
-    public void setDefaultOperationMode(Policy mode){
+    @Override
+    public void setDefaultPolicy(Policy mode){
         this.defaultPolicy = Objects.requireNonNull(mode);
         setConfigValue(Policy.class.getSimpleName(), defaultPolicy.toString());
     }
@@ -145,14 +148,17 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         setPluginConfig(props);
     }
 
+    @Override
     public Dictionary<String,Object> updateConfig(String pid) {
         return updateConfig(pid, defaultPolicy, false, false);
     }
 
+    @Override
     public Dictionary<String,Object> updateConfig(String pid, boolean dryRun) {
         return updateConfig(pid, defaultPolicy, false, dryRun);
     }
 
+    @Override
     public Dictionary<String,Object> updateConfig(String pid, Policy opMode, boolean explicitMode, boolean dryRun) {
         if(dryRun){
             return configChanger.configure(pid, null, opMode, explicitMode, true);
@@ -187,6 +193,7 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         setPluginConfig(props);
     }
 
+    @Override
     public boolean isBundleEnabled(Bundle bundle){
         // Optional MANIFEST entries
         String bundleEnabledVal = bundle.getHeaders().get(TAMAYA_ENABLED_MANIFEST);
@@ -319,19 +326,85 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
         return configChanger.getTamayaConfiguration(root);
     }
 
+    @Override
     public boolean isAutoUpdateEnabled() {
         return this.autoUpdateEnabled;
     }
 
-    public boolean restoreBackup(String pid)throws IOException{
+    @Override
+    public Dictionary<String, ?> getBackup(String pid) {
+        return Backups.get(pid);
+    }
+
+    @Override
+    public Set<String> getBackupPids() {
+        return Backups.getPids();
+    }
+
+    @Override
+    public boolean restoreBackup(String pid){
         Dictionary<String,Object> config = (Dictionary<String,Object>) Backups.get(pid);
         if(config==null){
             return false;
         }
-        this.configChanger.restoreBackup(pid, config);
-        return true;
+        try {
+            this.configChanger.restoreBackup(pid, config);
+            return true;
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Error restoring backup for PID: " + pid, e);
+            return false;
+        }
     }
 
+    @Override
+    public boolean createBackup(String pid) {
+        if(!Backups.contains(pid)) {
+            Backups.set(pid, getOSGIConfiguration(pid, null));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteBackup(String pid) {
+        if(Backups.contains(pid)) {
+            Backups.remove(pid);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setMaxHistorySize(int maxHistory) {
+        ConfigHistory.setMaxHistory(maxHistory);
+    }
+
+    @Override
+    public int getMaxHistorySize() {
+        return ConfigHistory.getMaxHistory();
+    }
+
+    @Override
+    public List<ConfigHistory> getHistory() {
+        return ConfigHistory.getHistory();
+    }
+
+    @Override
+    public void clearHistory() {
+        ConfigHistory.clearHistory();
+    }
+
+    @Override
+    public void clearHistory(String pid) {
+        ConfigHistory.clearHistory(pid);
+    }
+
+    @Override
+    public List<ConfigHistory> getHistory(String pid) {
+        return ConfigHistory.getHistory(pid);
+    }
+
+    @Override
     public Dictionary<String, Object> getOSGIConfiguration(String pid, String section) {
         try {
             Configuration config = configChanger.getConfigurationAdmin().getConfiguration(pid);
@@ -349,6 +422,11 @@ public class TamayaConfigPlugin implements BundleListener, ServiceListener{
             LOG.log(Level.WARNING, "Error reading OSGI config for PID: " + pid, e);
             return null;
         }
+    }
+
+    @Override
+    public boolean containsBackup(String pid) {
+        return Backups.contains(pid);
     }
 
     private Dictionary<String, Object> filter(Dictionary<String, Object> props, String section) {

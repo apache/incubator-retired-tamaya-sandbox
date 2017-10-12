@@ -21,8 +21,10 @@ package org.apache.tamaya.karaf.shell;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.commands.BackupCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 
@@ -30,13 +32,16 @@ import java.io.IOException;
 @Service
 public class BackupListCommand implements Action{
 
+    @Reference
+    private TamayaConfigService configPlugin;
+
     @Argument(index = 0, name = "pid", description = "Allows to filter on the given PID.",
             required = false, multiValued = false)
     String pid;
 
     @Override
     public Object execute() throws IOException {
-        return(BackupCommands.listBackup(pid));
+        return(BackupCommands.listBackup(configPlugin, pid));
     }
 
 }

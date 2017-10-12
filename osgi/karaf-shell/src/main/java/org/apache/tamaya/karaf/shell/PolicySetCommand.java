@@ -29,8 +29,8 @@ import org.apache.karaf.shell.api.console.Completer;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
 import org.apache.tamaya.osgi.Policy;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.List;
 public class PolicySetCommand implements Action{
 
     @Reference
-    private TamayaConfigPlugin configPlugin;
+    private TamayaConfigService configPlugin;
 
     @Argument(index = 0, name = "tm_policy_set", description = "The operation policy how Tamaya intercepts OSGI configuration.",
             required = true, multiValued = false)

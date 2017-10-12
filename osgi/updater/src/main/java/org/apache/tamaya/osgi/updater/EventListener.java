@@ -22,7 +22,7 @@ import org.apache.tamaya.events.ConfigEvent;
 import org.apache.tamaya.events.ConfigEventListener;
 import org.apache.tamaya.events.ConfigurationChange;
 import org.apache.tamaya.osgi.Policy;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.osgi.framework.*;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -61,8 +61,8 @@ final class EventListener implements ConfigEventListener{
         }
         LOG.finest("Tamya Config change for pids: " + changedPids);
         // Reload the given pids
-        ServiceReference<TamayaConfigPlugin> pluginRef = context.getServiceReference(TamayaConfigPlugin.class);
-        TamayaConfigPlugin tamayaPlugin = context.getService(pluginRef);
+        ServiceReference<TamayaConfigService> pluginRef = context.getServiceReference(TamayaConfigService.class);
+        TamayaConfigService tamayaPlugin = context.getService(pluginRef);
         for(String pid:changedPids) {
             tamayaPlugin.updateConfig(pid);
         }

@@ -20,7 +20,6 @@ package org.apache.tamaya.osgi.commands;
 
 import org.apache.tamaya.osgi.AbstractOSGITest;
 import org.apache.tamaya.osgi.Policy;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -96,7 +95,7 @@ public class ConfigCommandsTest extends AbstractOSGITest{
 
     @Test
     public void getDefaultOpPolicy() throws Exception {
-        Policy mode = tamayaConfigPlugin.getDefaultOperationMode();
+        Policy mode = tamayaConfigPlugin.getDefaultPolicy();
         String result = ConfigCommands.getDefaultOpPolicy(tamayaConfigPlugin);
         assertNotNull(result);
         assertTrue(result.contains(mode.toString()));
@@ -107,11 +106,11 @@ public class ConfigCommandsTest extends AbstractOSGITest{
         String result = ConfigCommands.setDefaultOpPolicy(tamayaConfigPlugin, Policy.EXTEND.toString());
         assertNotNull(result);
         assertTrue(result.contains("EXTEND"));
-        assertEquals(tamayaConfigPlugin.getDefaultOperationMode(), Policy.EXTEND);
+        assertEquals(tamayaConfigPlugin.getDefaultPolicy(), Policy.EXTEND);
         result = ConfigCommands.setDefaultOpPolicy(tamayaConfigPlugin, Policy.UPDATE_ONLY.toString());
         assertNotNull(result);
         assertTrue(result.contains("UPDATE_ONLY"));
-        assertEquals(tamayaConfigPlugin.getDefaultOperationMode(), Policy.UPDATE_ONLY);
+        assertEquals(tamayaConfigPlugin.getDefaultPolicy(), Policy.UPDATE_ONLY);
     }
 
     @Test
@@ -156,11 +155,11 @@ public class ConfigCommandsTest extends AbstractOSGITest{
         String result = ConfigCommands.setDefaultEnabled(tamayaConfigPlugin, true);
         assertNotNull(result);
         System.out.println(result);
-        assertTrue(result.contains(TamayaConfigPlugin.TAMAYA_ENABLED_PROP+"=true"));
+        assertTrue(result.contains(TamayaConfigService.TAMAYA_ENABLED_PROP+"=true"));
         assertTrue(tamayaConfigPlugin.isTamayaEnabledByDefault());
         result = ConfigCommands.setDefaultEnabled(tamayaConfigPlugin, false);
         assertNotNull(result);
-        assertTrue(result.contains(TamayaConfigPlugin.TAMAYA_ENABLED_PROP+"=false"));
+        assertTrue(result.contains(TamayaConfigService.TAMAYA_ENABLED_PROP+"=false"));
         assertFalse(tamayaConfigPlugin.isTamayaEnabledByDefault());
     }
 
@@ -181,12 +180,12 @@ public class ConfigCommandsTest extends AbstractOSGITest{
         assertNotNull(result);
         System.out.println(result);
         assertTrue(result.contains("true"));
-        assertTrue(result.contains(TamayaConfigPlugin.TAMAYA_AUTO_UPDATE_ENABLED_PROP));
+        assertTrue(result.contains(TamayaConfigService.TAMAYA_AUTO_UPDATE_ENABLED_PROP));
         assertTrue(tamayaConfigPlugin.isAutoUpdateEnabled());
         result = ConfigCommands.setAutoUpdateEnabled(tamayaConfigPlugin, false);
         assertNotNull(result);
         assertTrue(result.contains("false"));
-        assertTrue(result.contains(TamayaConfigPlugin.TAMAYA_AUTO_UPDATE_ENABLED_PROP));
+        assertTrue(result.contains(TamayaConfigService.TAMAYA_AUTO_UPDATE_ENABLED_PROP));
         assertFalse(tamayaConfigPlugin.isAutoUpdateEnabled());
     }
 

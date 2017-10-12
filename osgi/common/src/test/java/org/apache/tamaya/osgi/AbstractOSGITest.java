@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.osgi;
 
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
@@ -53,7 +54,7 @@ public abstract class AbstractOSGITest {
     @Mock
     private ServiceReference<TamayaConfigPlugin> tamayaRef;
 
-    protected TamayaConfigPlugin tamayaConfigPlugin;
+    protected TamayaConfigService tamayaConfigPlugin;
 
     protected Dictionary<String,Object> getProperties(String pid){
         return this.properties.get(pid);

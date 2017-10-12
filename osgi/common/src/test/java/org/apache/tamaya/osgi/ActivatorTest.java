@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.osgi;
 
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -36,7 +37,7 @@ public class ActivatorTest extends AbstractOSGITest{
     public void startStop() throws Exception {
         Activator activator = new Activator();
         activator.start(super.bundleContext);
-        verify(bundleContext).registerService(eq(TamayaConfigPlugin.class), anyObject(), anyObject());
+        verify(bundleContext).registerService(eq(TamayaConfigService.class), anyObject(), anyObject());
         activator.stop(super.bundleContext);
     }
 

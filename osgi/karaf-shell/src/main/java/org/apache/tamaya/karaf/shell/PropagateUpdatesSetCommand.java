@@ -23,8 +23,8 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 
@@ -35,7 +35,7 @@ import java.io.IOException;
 public class PropagateUpdatesSetCommand implements Action{
 
     @Reference
-    private TamayaConfigPlugin configPlugin;
+    private TamayaConfigService configPlugin;
 
     @Argument(index = 0, name = "enabled", description = "Set to true to enable Tamaya's updating trigger.",
             required = true, multiValued = false)
