@@ -28,6 +28,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.inject.Provider;
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -77,6 +79,21 @@ public class MicroprofileCDIExtension implements Extension {
                 configured = true;
                 LOG.finest(() -> "Enabling Tamaya Microprofile Configuration on bean: " + configuredType.getName());
                 configuredType.addConfiguredMember(injectionPoint, key);
+            }else if(injectionPoint.getMember() instanceof Method){
+                Method method = (Method)injectionPoint.getMember();
+                for(AnnotatedType paramType: method.getAnnotatedParameterTypes()){
+                    if(paramType.isAnnotationPresent(ConfigProperty.class)) {
+                        LOG.fine("Configuring method: " + injectionPoint);
+                        final ConfigProperty annotation = paramType.getAnnotation(ConfigProperty.class);
+                        String key = !annotation.name().isEmpty() ? annotation.name() : MicroprofileConfigurationProducer.getDefaultKey(injectionPoint);
+                        Type originalType = paramType.getType();
+                        Type convertedType = unwrapType(originalType);
+                        types.add(convertedType);
+                        configured = true;
+                        LOG.finest(() -> "Enabling Tamaya Microprofile Configuration on bean: " + configuredType.getName());
+                        configuredType.addConfiguredMember(injectionPoint, key);
+                    }
+                }
             }
         }
         if(configured) {

@@ -35,9 +35,11 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Provider;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,7 +96,20 @@ public class MicroprofileConfigurationProducer {
             }
         }
         if (injectionPoint.getMember() instanceof AnnotatedElement) {
-            builder.setAnnotatedElement((AnnotatedElement) injectionPoint.getMember());
+            AnnotatedElement annotated = (AnnotatedElement)injectionPoint.getMember();
+            if(annotated.isAnnotationPresent(ConfigProperty.class)) {
+                builder.setAnnotatedElement(annotated);
+            }
+        }else if(injectionPoint.getMember() instanceof Method){
+            Method method = (Method)injectionPoint.getMember();
+            for(Type type:method.getParameterTypes()){
+                if(type instanceof AnnotatedElement){
+                    AnnotatedElement annotated = (AnnotatedElement)type;
+                    if(annotated.isAnnotationPresent(ConfigProperty.class)) {
+                        builder.setAnnotatedElement(annotated);
+                    }
+                }
+            }
         }
         return builder.build();
     }
@@ -106,7 +121,8 @@ public class MicroprofileConfigurationProducer {
         if(String.class.equals(context.getTargetType().getRawType())){
             value = textValue;
         }
-        if (textValue != null) {
+        if (textValue != null || Optional.class.equals(context.getTargetType().getRawType())) {
+            LOGGER.log(Level.FINEST, () -> "Converting KEY: " + context.getKey() + "("+context.getTargetType()+"), textValue: " + textValue);
             List<PropertyConverter> converters = ConfigurationProvider.getConfiguration().getContext()
                     .getPropertyConverters((TypeLiteral)context.getTargetType());
             for (PropertyConverter<Object> converter : converters) {
