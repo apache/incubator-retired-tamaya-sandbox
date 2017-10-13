@@ -25,6 +25,7 @@ import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
 import org.apache.tamaya.osgi.commands.ConfigCommands;
+import org.apache.tamaya.osgi.commands.TamayaConfigService;
 
 import java.io.IOException;
 
@@ -45,7 +46,7 @@ public class ApplyTamayaConfigCommand implements Action{
     boolean dryRun = false;
 
     @org.apache.karaf.shell.api.action.lifecycle.Reference
-    TamayaConfigPlugin configPlugin;
+    TamayaConfigService configPlugin;
 
 
     public Object execute() throws IOException {
