@@ -19,7 +19,6 @@
 package org.apache.tamaya.osgi.injection;
 
 import org.apache.tamaya.osgi.TamayaConfigPlugin;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
