@@ -747,10 +747,8 @@ under the License.
         <module>camel</module>
         <module>propertysources</module>
         <!--<module>ui</module>-->
-        <module>osgi</module>
         <module>management</module>
         <module>metamodel</module>
-        <module>microprofile</module>
         <module>uom</module>
         <module>vertx</module>
     </modules>
