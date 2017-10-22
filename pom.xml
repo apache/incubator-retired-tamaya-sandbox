@@ -52,13 +52,14 @@ under the License.
         <maven.javadoc.skip>false</maven.javadoc.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <json.spec.version>1.0-alpha-1</json.spec.version>
+        <json.spec.version>1.0</json.spec.version>
+        <johnzon.version>1.1.4</johnzon.version>
         <johnzon.version>0.9-incubating</johnzon.version>
         <junit.version>4.12</junit.version>
 
         <!-- Dependency and plugin relate version properties go here -->
         <arquillian.version>1.1.7.Final</arquillian.version>
-        <arquillian.deamon.version>1.0.0.Alpha1</arquillian.deamon.version>
+        <arquillian.daemon.version>1.0.0.Alpha1</arquillian.daemon.version>
 
         <!-- Keep the JRuby version in sync with the one used by Asciidoctor -->
         <asciidoctor.version>1.5.2</asciidoctor.version>
@@ -219,12 +220,6 @@ under the License.
                 </exclusions>
             </dependency>
 
-            <!--<dependency>-->
-                <!--<groupId>com.google.code.findbugs</groupId>-->
-                <!--<artifactId>jsr305</artifactId>-->
-                <!--<version>${findbugs.version}</version>-->
-            <!--</dependency>-->
-
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>java-hamcrest</artifactId>
@@ -244,42 +239,42 @@ under the License.
             <dependency>
                 <groupId>org.jboss.arquillian.daemon</groupId>
                 <artifactId>arquillian-daemon-container-managed</artifactId>
-                <version>${arquillian.deamon.version}</version>
+                <version>${arquillian.daemon.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.arquillian.daemon</groupId>
                 <artifactId>arquillian-daemon-container-common</artifactId>
-                <version>${arquillian.deamon.version}</version>
+                <version>${arquillian.daemon.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.arquillian.daemon</groupId>
                 <artifactId>arquillian-daemon-main</artifactId>
-                <version>${arquillian.deamon.version}</version>
+                <version>${arquillian.daemon.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.arquillian.daemon</groupId>
                 <artifactId>arquillian-daemon-protocol-arquillian</artifactId>
-                <version>${arquillian.deamon.version}</version>
+                <version>${arquillian.daemon.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.arquillian.daemon</groupId>
                 <artifactId>arquillian-daemon-protocol-wire</artifactId>
-                <version>${arquillian.deamon.version}</version>
+                <version>${arquillian.daemon.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.arquillian.daemon</groupId>
                 <artifactId>arquillian-daemon-server</artifactId>
-                <version>${arquillian.deamon.version}</version>
+                <version>${arquillian.daemon.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -292,7 +287,7 @@ under the License.
 
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-json_1.0_spec</artifactId>
+                <artifactId>geronimo-json_1.1_spec</artifactId>
                 <version>${json.spec.version}</version>
             </dependency>
 
@@ -416,7 +411,7 @@ under the License.
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.7.0</version>
                     <configuration>
                         <debug>true</debug>
                         <source>${maven.compile.sourceLevel}</source>
@@ -636,6 +631,9 @@ under the License.
                                 <requireMavenVersion>
                                     <version>3.0.5</version>
                                 </requireMavenVersion>
+		                <requireJavaVersion>
+		                    <version>1.8</version>
+		                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
@@ -723,7 +721,7 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.5</version>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
