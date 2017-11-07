@@ -19,6 +19,7 @@
 package org.apache.tamaya.etcd;
 
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.util.Map;
@@ -27,7 +28,7 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 
 /**
- * Tests for th etcd backend integration. You must have set a system property so, theses tests are executed, e.g.
+ * Tests for the etcd backend integration. You must have set a system property so, theses tests are executed, e.g.
  * {@code -Detcd.url=http://127.0.0.1:4001}.
  */
 public class EtcdAccessorTest {
@@ -47,70 +48,69 @@ public class EtcdAccessorTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testGetVersion() throws Exception {
         if(!execute)return;
         assertEquals(accessor.getVersion(), "etcd 0.4.9");
     }
 
-    @org.junit.Test
+    @Test
     public void testGet() throws Exception {
         if(!execute)return;
         Map<String,String> result = accessor.get("test1");
         assertNotNull(result);
     }
 
-    @org.junit.Test
+    @Test
     public void testSetNormal() throws Exception {
         if(!execute)return;
         String value = UUID.randomUUID().toString();
         Map<String,String> result = accessor.set("testSetNormal", value);
         assertNull(result.get("_testSetNormal.ttl"));
-        assertEquals(accessor.get("testSetNormal").get("testSetNormal"), value);
+        assertEquals(value, accessor.get("testSetNormal").get("testSetNormal"));
     }
 
-    @org.junit.Test
+    @Test
     public void testSetNormal2() throws Exception {
         if(!execute)return;
         String value = UUID.randomUUID().toString();
         Map<String,String> result = accessor.set("testSetNormal2", value, null);
         assertNull(result.get("_testSetNormal2.ttl"));
-        assertEquals(accessor.get("testSetNormal2").get("testSetNormal2"), value);
+        assertEquals(value, accessor.get("testSetNormal2").get("testSetNormal2"));
     }
 
-    @org.junit.Test
+    @Test
     public void testSetWithTTL() throws Exception {
         if(!execute)return;
         String value = UUID.randomUUID().toString();
         Map<String,String> result = accessor.set("testSetWithTTL", value, 1);
         assertNotNull(result.get("_testSetWithTTL.ttl"));
-        assertEquals(accessor.get("testSetWithTTL").get("testSetWithTTL"), value);
+        assertEquals(value, accessor.get("testSetWithTTL").get("testSetWithTTL"));
         Thread.sleep(2000L);
         result = accessor.get("testSetWithTTL");
         assertNull(result.get("testSetWithTTL"));
     }
 
-
-    @org.junit.Test
+    @Test
     public void testDelete() throws Exception {
         if(!execute)return;
         String value = UUID.randomUUID().toString();
         Map<String,String> result = accessor.set("testDelete", value, null);
-        assertEquals(accessor.get("testDelete").get("testDelete"), value);
+        assertEquals(value, accessor.get("testDelete").get("testDelete"));
         assertNotNull(result.get("_testDelete.createdIndex"));
         result = accessor.delete("testDelete");
-        assertEquals(result.get("_testDelete.prevNode.value"),value);
+        assertEquals(value, result.get("_testDelete.prevNode.value"));
         assertNull(accessor.get("testDelete").get("testDelete"));
     }
 
-    @org.junit.Test
+    @Test
     public void testGetProperties() throws Exception {
         if(!execute)return;
         String value = UUID.randomUUID().toString();
         accessor.set("testGetProperties1", value);
         Map<String,String> result = accessor.getProperties("");
         assertNotNull(result);
-        assertEquals(result.get("testGetProperties1"), value);
+        assertEquals(value, result.get("testGetProperties1"));
         assertNotNull(result.get("_testGetProperties1.createdIndex"));
     }
 }

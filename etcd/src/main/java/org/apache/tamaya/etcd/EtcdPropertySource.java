@@ -35,9 +35,9 @@ import java.util.logging.Logger;
 
 /**
  * Propertysource that is reading configuration from a configured etcd endpoint. Setting
- * {@code etcd.prefix} as system property maps the etcd based onfiguration
+ * {@code etcd.prefix} as system property maps the etcd based configuration
  * to this prefix namespace. Etcd servers are configured as {@code etcd.server.urls} system or environment property.
- * ETcd can be disabled by setting {@code tamaya.etcdprops.disable} either as env or system property.
+ * Etcd can be disabled by setting {@code tamaya.etcdprops.disable} either as environment or system property.
  */
 public class EtcdPropertySource extends BasePropertySource
         implements MutablePropertySource{
@@ -130,7 +130,7 @@ public class EtcdPropertySource extends BasePropertySource
                 return Integer.parseInt(configuredOrdinal.getValue());
             } catch(Exception e){
                 Logger.getLogger(getClass().getName()).log(Level.WARNING,
-                        "Configured Ordinal is not an int number: " + configuredOrdinal, e);
+                        "Configured ordinal is not an int number: " + configuredOrdinal, e);
             }
         }
         return getDefaultOrdinal();
@@ -150,7 +150,7 @@ public class EtcdPropertySource extends BasePropertySource
             try{
                 props = accessor.get(key);
                 if(!props.containsKey("_ERROR")) {
-                    // No repfix mapping necessary here, since we only access/return the value...
+                    // No prefix mapping necessary here, since we only access/return the value...
                     return PropertyValue.builder(key, props.get(key), getName()).setMetaEntries(metaData)
                             .addMetaEntries(props).removeMetaEntry(key).build();
                 } else{

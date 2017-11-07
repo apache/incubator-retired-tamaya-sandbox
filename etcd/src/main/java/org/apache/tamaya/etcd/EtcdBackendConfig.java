@@ -29,21 +29,24 @@ import java.util.logging.Logger;
  */
 public final class EtcdBackendConfig {
 
-    private static final Logger LOG = Logger.getLogger(EtcdBackendConfig.class.getName());
+	private static final Logger LOG = Logger.getLogger(EtcdBackendConfig.class.getName());
+	private static final String TAMAYA_ETCD_SERVER_URLS = "tamaya.etcd.server.urls";
+	private static final String TAMAYA_ETCD_TIMEOUT = "tamaya.etcd.timeout";
+    private static final String TAMAYA_ETCD_DISABLE = "tamaya.etcd.disable";
     private static List<EtcdAccessor> etcdBackends = new ArrayList<>();
 
     static{
         int timeout = 2;
-        String val = System.getProperty("tamaya.etcd.timeout");
+        String val = System.getProperty(TAMAYA_ETCD_TIMEOUT);
         if(val == null){
-            val = System.getenv("tamaya.etcd.timeout");
+            val = System.getenv(TAMAYA_ETCD_TIMEOUT);
         }
         if(val!=null){
             timeout = Integer.parseInt(val);
         }
-        String serverURLs = System.getProperty("tamaya.etcd.server.urls");
+        String serverURLs = System.getProperty(TAMAYA_ETCD_SERVER_URLS);
         if(serverURLs==null){
-            serverURLs = System.getenv("tamaya.etcd.server.urls");
+            serverURLs = System.getenv(TAMAYA_ETCD_SERVER_URLS);
         }
         if(serverURLs==null){
             serverURLs = "http://127.0.0.1:4001";
@@ -61,9 +64,9 @@ public final class EtcdBackendConfig {
     private EtcdBackendConfig(){}
 
     private static boolean isEtcdDisabled() {
-        String value = System.getProperty("tamaya.etcd.disable");
+        String value = System.getProperty(TAMAYA_ETCD_DISABLE);
         if(value==null){
-            value = System.getenv("tamaya.etcd.disable");
+            value = System.getenv(TAMAYA_ETCD_DISABLE);
         }
         if(value==null){
             return false;

@@ -67,7 +67,7 @@ public class EtcdAccessor {
     private final int connectTimeout = 1000;
 
     /**
-     * Property that make Johnzon accept commentc.
+     * Property that makes Johnzon accept comments.
      */
     public static final String JOHNZON_SUPPORTS_COMMENTS_PROP = "org.apache.johnzon.supports-comments";
     /**
@@ -109,7 +109,6 @@ public class EtcdAccessor {
         } else {
             serverURL = server;
         }
-
     }
 
     /**
@@ -327,7 +326,7 @@ public class EtcdAccessor {
      * </pre>
      *
      * @param key the key to be deleted.
-     * @return the response mpas as described above.
+     * @return the response maps as described above.
      */
     public Map<String, String> delete(String key) {
         final Map<String, String> result = new HashMap<>();
