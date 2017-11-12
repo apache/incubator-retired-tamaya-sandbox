@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 
 /**
  * Propertysource that is reading configuration from a configured consul endpoint. Setting
- * {@code consul.prefix} as system property maps the consul based onfiguration
+ * {@code consul.prefix} as system property maps the consul based configuration
  * to this prefix namespace. Consul servers are configured as {@code consul.urls} system or environment property.
  */
 public class ConsulPropertySource extends BasePropertySource
@@ -140,7 +140,7 @@ implements MutablePropertySource{
                 if(!valueOpt.isPresent()) {
                     LOG.log(Level.FINE, "key not found in consul: " + reqKey);
                 }else{
-                    // No repfix mapping necessary here, since we only access/return the value...
+                    // No prefix mapping necessary here, since we only access/return the value...
                     Value value = valueOpt.get();
                     Map<String,String> props = new HashMap<>();
                     props.put(reqKey+".createIndex", String.valueOf(value.getCreateIndex()));
@@ -174,7 +174,7 @@ implements MutablePropertySource{
 //                    LOG.log(Level.FINE, "consul access failed on " + hostAndPort + ", trying next...", e);
 //                }
 //            } catch(Exception e){
-//                LOG.log(Level.FINE, "etcd access failed on " + hostAndPort + ", trying next...", e);
+//                LOG.log(Level.FINE, "consul access failed on " + hostAndPort + ", trying next...", e);
 //            }
 //        }
         return Collections.emptyMap();

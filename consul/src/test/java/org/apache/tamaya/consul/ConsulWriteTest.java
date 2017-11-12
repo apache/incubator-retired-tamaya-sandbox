@@ -18,35 +18,41 @@
  */
 package org.apache.tamaya.consul;
 
-import com.google.common.net.HostAndPort;
-import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
-import org.apache.tamaya.spi.PropertyValue;
-import org.junit.BeforeClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
+import org.apache.tamaya.spi.PropertyValue;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * Tests for th consul backend integration for writing to the consul backend.
+ * Tests for the consul backend integration for writing to the consul backend.
  */
 public class ConsulWriteTest {
 
-    private static HostAndPort accessor;
+	/**
+	 * Needs to be enabled manually in case you want to do integration tests.
+	 */
     static boolean execute = false;
     private static ConsulPropertySource propertySource;
 
     @BeforeClass
     public static void setup() throws MalformedURLException, URISyntaxException {
         System.setProperty("consul.urls", "http://127.0.0.1:8300");
-        accessor = HostAndPort.fromString("127.0.0.1:8500");
         propertySource = new ConsulPropertySource();
+        
+        System.out.println("At the moment no write-tests can be executed to verify the Consul integration. You can manually edit this test class.");
     }
 
-    @org.junit.Test
+    @Test
     public void testSetNormal() throws Exception {
         if (!execute) return;
         String taID = UUID.randomUUID().toString();
@@ -56,14 +62,14 @@ public class ConsulWriteTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void testDelete() throws Exception {
         if(!execute)return;
         String taID = UUID.randomUUID().toString();
         ConfigChangeRequest request = new ConfigChangeRequest("testDelete");
         request.put(taID, "testDelete");
         propertySource.applyChange(request);
-        assertEquals(propertySource.get("testDelete").getValue(), taID.toString());
+        assertEquals(taID.toString(), propertySource.get("testDelete").getValue());
         assertNotNull(propertySource.get("_testDelete.createdIndex"));
         request = new ConfigChangeRequest("testDelete2");
         request.remove("testDelete");
@@ -71,7 +77,7 @@ public class ConsulWriteTest {
         assertNull(propertySource.get("testDelete"));
     }
 
-    @org.junit.Test
+    @Test
     public void testGetProperties() throws Exception {
         if(!execute)return;
         Map<String,PropertyValue> result = propertySource.getProperties();

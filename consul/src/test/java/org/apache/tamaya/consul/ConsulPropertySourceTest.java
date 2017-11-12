@@ -42,12 +42,12 @@ public class ConsulPropertySourceTest {
 
     @Test
     public void testGetOrdinal() throws Exception {
-        assertEquals(propertySource.getOrdinal(), 1000);
+        assertEquals(1000, propertySource.getOrdinal());
     }
 
     @Test
     public void testGetDefaultOrdinal() throws Exception {
-        assertEquals(propertySource.getDefaultOrdinal(), 1000);
+        assertEquals(1000, propertySource.getDefaultOrdinal());
     }
 
     @Test

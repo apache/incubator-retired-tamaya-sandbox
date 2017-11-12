@@ -31,13 +31,15 @@ import java.util.logging.Logger;
  */
 public final class ConsulBackendConfig {
 
-    private static final Logger LOG = Logger.getLogger(ConsulBackendConfig.class.getName());
+    private static final String TAMAYA_CONSUL_DISABLE = "tamaya.consul.disable";
+	private static final String TAMAYA_CONSUL_URLS = "tamaya.consul.urls";
+	private static final Logger LOG = Logger.getLogger(ConsulBackendConfig.class.getName());
     private static List<HostAndPort> consulBackends = new ArrayList<>();
 
     static{
-        String serverURLs = System.getProperty("tamaya.consul.urls");
+        String serverURLs = System.getProperty(TAMAYA_CONSUL_URLS);
         if(serverURLs==null){
-            serverURLs = System.getenv("tamaya.consul.urls");
+            serverURLs = System.getenv(TAMAYA_CONSUL_URLS);
         }
         if(serverURLs==null){
             serverURLs = "127.0.0.1:8300";
@@ -55,9 +57,9 @@ public final class ConsulBackendConfig {
     private ConsulBackendConfig(){}
 
     private static boolean isConsulDisabled() {
-        String value = System.getProperty("tamaya.consul.disable");
+        String value = System.getProperty(TAMAYA_CONSUL_DISABLE);
         if(value==null){
-            value = System.getenv("tamaya.consul.disable");
+            value = System.getenv(TAMAYA_CONSUL_DISABLE);
         }
         if(value==null){
             return false;
