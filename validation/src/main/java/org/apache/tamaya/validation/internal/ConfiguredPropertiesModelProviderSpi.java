@@ -22,7 +22,7 @@ import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.validation.ConfigModel;
 import org.apache.tamaya.validation.spi.ConfigModelReader;
 import org.apache.tamaya.validation.spi.ModelProviderSpi;
-import org.apache.tamaya.spisupport.MapPropertySource;
+import org.apache.tamaya.spisupport.propertysource.MapPropertySource;
 
 import java.io.InputStream;
 import java.net.URL;

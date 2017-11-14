@@ -19,7 +19,7 @@
 package org.apache.tamaya.metamodel.ext;
 
 import org.apache.tamaya.spi.*;
-import org.apache.tamaya.spisupport.BasePropertySource;
+import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 import org.apache.tamaya.spisupport.DefaultConfigurationContextBuilder;
 import org.apache.tamaya.spisupport.PropertySourceComparator;
 

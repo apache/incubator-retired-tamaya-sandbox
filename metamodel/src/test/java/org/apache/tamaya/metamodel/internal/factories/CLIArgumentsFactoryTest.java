@@ -19,7 +19,7 @@
 package org.apache.tamaya.metamodel.internal.factories;
 
 import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.CLIPropertySource;
+import org.apache.tamaya.spisupport.propertysource.CLIPropertySource;
 import org.junit.Test;
 
 import java.util.Collections;

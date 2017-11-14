@@ -19,7 +19,7 @@
 package org.apache.tamaya.metamodel.internal.factories;
 
 import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.SystemPropertySource;
+import org.apache.tamaya.spisupport.propertysource.SystemPropertySource;
 import org.junit.Test;
 
 import java.util.Collections;

@@ -26,7 +26,6 @@ import org.apache.tamaya.functions.Supplier;
 import org.apache.tamaya.metamodel.internal.ComponentConfigurator;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.PropertiesResourcePropertySource;
 import org.osgi.service.component.annotations.Component;
 
 import javax.security.auth.RefreshFailedException;

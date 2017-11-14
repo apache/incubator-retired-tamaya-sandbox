@@ -20,6 +20,7 @@ package org.apache.tamaya.metamodel.ext;
 
 
 import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 
 import java.util.Collections;
 import java.util.Map;
@@ -27,7 +28,7 @@ import java.util.Map;
 /**
  * Created by atsticks on 17.04.17.
  */
-public class MyPropertySource extends org.apache.tamaya.spisupport.BasePropertySource{
+public class MyPropertySource extends BasePropertySource {
 
     private String name2;
     private String attrValue;

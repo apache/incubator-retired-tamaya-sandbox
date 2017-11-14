@@ -19,18 +19,9 @@
 
 package org.apache.tamaya.metamodel.internal.factories;
 
-import org.apache.tamaya.format.ConfigurationData;
-import org.apache.tamaya.format.ConfigurationFormats;
-import org.apache.tamaya.format.MappedConfigurationDataPropertySource;
-import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.PropertiesResourcePropertySource;
 import org.osgi.service.component.annotations.Component;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

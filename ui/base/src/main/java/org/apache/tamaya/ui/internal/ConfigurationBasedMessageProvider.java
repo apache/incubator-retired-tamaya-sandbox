@@ -19,9 +19,9 @@
 package org.apache.tamaya.ui.internal;
 
 import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.core.propertysource.SimplePropertySource;
+import org.apache.tamaya.spisupport.propertysource.SimplePropertySource;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
-import org.apache.tamaya.spisupport.BasePropertySource;
+import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 import org.apache.tamaya.spisupport.DefaultConfiguration;
 import org.apache.tamaya.ui.spi.MessageProvider;
 

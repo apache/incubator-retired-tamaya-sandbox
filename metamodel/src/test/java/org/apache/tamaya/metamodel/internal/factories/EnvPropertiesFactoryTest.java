@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.metamodel.internal.factories;
 
-import org.apache.tamaya.spisupport.EnvironmentPropertySource;
+import org.apache.tamaya.spisupport.propertysource.EnvironmentPropertySource;
 import org.apache.tamaya.spi.PropertySource;
 import org.junit.Test;
 

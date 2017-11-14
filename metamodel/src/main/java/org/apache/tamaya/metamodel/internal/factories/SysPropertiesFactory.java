@@ -21,7 +21,7 @@ package org.apache.tamaya.metamodel.internal.factories;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.SystemPropertySource;
+import org.apache.tamaya.spisupport.propertysource.SystemPropertySource;
 import org.osgi.service.component.annotations.Component;
 
 import java.util.Map;

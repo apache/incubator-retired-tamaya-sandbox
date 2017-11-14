@@ -49,7 +49,7 @@ public class FullStackIT {
         assertThat(dateTimeString, notNullValue());
         assertThat(dateTimeString, equalTo("2010-08-08T14:00:15.5+10:00"));
         assertThat(dateTimeValue, notNullValue());
-        assertThat(dateTimeValue, equalTo(dateTime().parseDateTime("2010-08-08T14:00:15.5+10:00")));
+        assertThat(dateTimeValue.getMillis(), equalTo(dateTime().parseDateTime(dateTimeString).getMillis()));
     }
 
     @Test

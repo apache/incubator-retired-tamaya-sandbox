@@ -26,8 +26,7 @@ import com.orbitz.consul.model.kv.Value;
 import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
 import org.apache.tamaya.mutableconfig.spi.MutablePropertySource;
 import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spi.PropertyValueBuilder;
-import org.apache.tamaya.spisupport.BasePropertySource;
+import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 
 import java.util.*;
 import java.util.logging.Level;

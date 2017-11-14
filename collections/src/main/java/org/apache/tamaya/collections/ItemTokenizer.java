@@ -133,7 +133,7 @@ final class ItemTokenizer {
      * @return the parsed value, or null.
      */
     public static Object convertValue(String value, ConversionContext context) {
-        String converterClass = context.getConfiguration().get('_' + context.getKey() + ".item-converter");
+        String converterClass = context.getConfiguration().get('_' + context.getKey() + ".item-converters");
         List<PropertyConverter<Object>> valueConverters = new ArrayList<>(1);
         if (converterClass != null) {
             try {
