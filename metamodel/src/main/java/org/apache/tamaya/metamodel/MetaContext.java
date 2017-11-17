@@ -141,7 +141,7 @@ public final class MetaContext {
      * Sets the given context property.
      * @param key the key, not null.
      * @param value the value, not null.
-     * @return the porevious value, or null.
+     * @return the previous value, or null.
      */
     public String setProperty(String key, String value){
        return setProperty(key, value, 0, TimeUnit.MILLISECONDS);
@@ -153,7 +153,7 @@ public final class MetaContext {
      * @param value the value, not null.
      * @param ttl the time to live. Zero or less than zero means, no timeout.
      * @param unit the target time unit.
-     * @return the porevious value, or null.
+     * @return the previous value, or null.
      */
     public String setProperty(String key, String value, int ttl, TimeUnit unit){
         Value previous = this.properties.put(key, new Value(key, value, ttl));
@@ -201,7 +201,7 @@ public final class MetaContext {
      * @param unit the target time unit.
      */
     public void setProperties(Map<String,String> properties, long ttl, TimeUnit unit){
-        for(Map.Entry en:properties.entrySet()) {
+        for(Map.Entry<String, String> en:properties.entrySet()) {
             this.properties.put(
                     en.getKey().toString(),
                     new Value(en.getKey().toString(), en.getValue().toString(), unit.toMillis(ttl)));
@@ -247,7 +247,6 @@ public final class MetaContext {
         MetaContext context = (MetaContext) o;
 
         return getProperties().equals(context.getProperties());
-
     }
 
     @Override
@@ -265,9 +264,9 @@ public final class MetaContext {
     }
 
     private static final class Value{
-        String key;
-        String value;
-        long validUntil;
+        private String key;
+        private String value;
+        private long validUntil;
 
         Value(String key, String value, long ttl){
             this.key = Objects.requireNonNull(key);
@@ -292,7 +291,7 @@ public final class MetaContext {
             if (this == o) return true;
             if (!(o instanceof Value)) return false;
             Value value = (Value) o;
-            return Objects.equals(value, value.value);
+            return Objects.equals(value, this);
         }
 
         @Override
