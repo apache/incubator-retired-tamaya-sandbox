@@ -116,7 +116,7 @@ public class JavaConfigConfigBuilderTest {
                   .containsExactlyInAnyOrder("paris",
                                              "SystemPropertySource",
                                              "environment-properties",
-                                             "META-INF/JavaConfig-config.properties");
+                                             "META-INF/javaconfig.properties");
     }
 
     @Test
