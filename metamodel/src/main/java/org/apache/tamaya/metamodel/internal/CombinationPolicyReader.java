@@ -22,6 +22,7 @@ import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.PropertyValueCombinationPolicy;
 import org.osgi.service.component.annotations.Component;
@@ -41,7 +42,7 @@ public class CombinationPolicyReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(CombinationPolicyReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(Document document, ConfigurationBuilder configBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("combination-policy");
         if(nodeList.getLength()==0){
             LOG.finest("No explicit combination policy configured, using default.");
@@ -56,7 +57,7 @@ public class CombinationPolicyReader implements MetaConfigurationReader{
         ItemFactory<PropertyValueCombinationPolicy> policyFactory = ItemFactoryManager.getInstance().getFactory(PropertyValueCombinationPolicy.class, type);
         PropertyValueCombinationPolicy policy = policyFactory.create(ComponentConfigurator.extractParameters(node));
         ComponentConfigurator.configure(policy, node);
-        contextBuilder.setPropertyValueCombinationPolicy(policy);
+        configBuilder.setPropertyValueCombinationPolicy(policy);
     }
 
 

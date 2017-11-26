@@ -23,6 +23,7 @@ import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.PropertyConverter;
 import org.osgi.service.component.annotations.Component;
@@ -43,7 +44,7 @@ public class PropertyConverterReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertyConverterReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(Document document, ConfigurationBuilder configBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-converters");
         if(nodeList.getLength()==0){
             LOG.finer("No property converters configured");
@@ -61,7 +62,7 @@ public class PropertyConverterReader implements MetaConfigurationReader{
             String type = node.getNodeName();
             if("defaults".equals(type)){
                 LOG.finer("Adding default property converters...");
-                contextBuilder.addDefaultPropertyConverters();
+                configBuilder.addDefaultPropertyConverters();
                 continue;
             }
             try {
@@ -76,7 +77,7 @@ public class PropertyConverterReader implements MetaConfigurationReader{
                     ComponentConfigurator.configure(converter, node);
                     Class targetType = Class.forName(params.get("targetType"));
                     LOG.finer("Adding converter for type " + targetType.getName() + ": " + converter.getClass());
-                    contextBuilder.addPropertyConverters(TypeLiteral.of(targetType), converter);
+                    configBuilder.addPropertyConverters(TypeLiteral.of(targetType), converter);
                 }
             } catch (Exception e) {
                 LOG.log(Level.SEVERE, "Failed to configure PropertyConverter: " + type, e);

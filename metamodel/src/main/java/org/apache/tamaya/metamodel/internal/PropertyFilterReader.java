@@ -22,6 +22,7 @@ import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.osgi.service.component.annotations.Component;
@@ -42,7 +43,7 @@ public class PropertyFilterReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertyFilterReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(Document document, ConfigurationBuilder configBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-filters");
         if(nodeList.getLength()==0){
             LOG.finer("No property filters configured.");
@@ -60,7 +61,7 @@ public class PropertyFilterReader implements MetaConfigurationReader{
             String type = node.getNodeName();
             if ("defaults".equals(type)) {
                 LOG.finer("Adding default property filters...");
-                contextBuilder.addDefaultPropertyFilters();
+                configBuilder.addDefaultPropertyFilters();
                 continue;
             }
             ItemFactory<PropertyFilter> filterFactory = ItemFactoryManager.getInstance().getFactory(PropertyFilter.class, type);
@@ -73,7 +74,7 @@ public class PropertyFilterReader implements MetaConfigurationReader{
             if(filter!=null) {
                 ComponentConfigurator.configure(filter, params);
                 LOG.finer("Adding configured property filter: " + filter.getClass().getName());
-                contextBuilder.addPropertyFilters(filter);
+                configBuilder.addPropertyFilters(filter);
             }
         }
     }

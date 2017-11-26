@@ -79,8 +79,8 @@ public class IntegrationTest {
         assertTrue(config.getProperties().isEmpty());
         assertFalse(config.getContext().getPropertyConverters().isEmpty());
         assertTrue(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(config.getContext(),
-                ConfigurationProvider.getConfigurationContextBuilder()
+        assertEquals(config,
+                ConfigurationProvider.getConfigurationBuilder()
                         .addDefaultPropertyConverters()
                         .build());
 
@@ -94,8 +94,8 @@ public class IntegrationTest {
         assertFalse(config.getContext().getPropertySources().isEmpty());
         assertTrue(config.getContext().getPropertyConverters().isEmpty());
         assertTrue(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(config.getContext(),
-                ConfigurationProvider.getConfigurationContextBuilder()
+        assertEquals(config,
+                ConfigurationProvider.getConfigurationBuilder()
                         .addDefaultPropertySources()
                         .build());
 
@@ -109,8 +109,8 @@ public class IntegrationTest {
         assertTrue(config.getContext().getPropertySources().isEmpty());
         assertTrue(config.getContext().getPropertyConverters().isEmpty());
         assertFalse(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(config.getContext(),
-                ConfigurationProvider.getConfigurationContextBuilder()
+        assertEquals(config,
+                ConfigurationProvider.getConfigurationBuilder()
                         .addDefaultPropertyFilters()
                         .build());
 

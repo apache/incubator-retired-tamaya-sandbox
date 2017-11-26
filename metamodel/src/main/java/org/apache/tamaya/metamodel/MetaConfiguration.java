@@ -22,8 +22,8 @@ import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ConfigurationContext;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -107,14 +107,14 @@ public final class MetaConfiguration {
      * @return a new configuration context builder, never null.
      * @throws ConfigException If the URL cannot be read.
      */
-    public static ConfigurationContextBuilder createContextBuilder(URL metaConfig){
+    public static ConfigurationBuilder createConfigBuilder(URL metaConfig){
         URL configFile = Objects.requireNonNull(metaConfig);
         LOG.info("TAMAYA: Loading tamaya-config.xml...");
         Document document = null;
         try {
             document = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder().parse(configFile.openStream());
-            ConfigurationContextBuilder builder = ConfigurationProvider.getConfigurationContextBuilder();
+            ConfigurationBuilder builder = ConfigurationProvider.getConfigurationBuilder();
             for(MetaConfigurationReader reader: ServiceContextManager.getServiceContext().getServices(
                     MetaConfigurationReader.class
             )){
@@ -135,8 +135,7 @@ public final class MetaConfiguration {
      * @return the new configuration instance.
      */
     public static Configuration createConfiguration(URL metaConfig){
-        ConfigurationContext context = createContextBuilder(metaConfig).build();
-        return ConfigurationProvider.createConfiguration(context);
+        return createConfigBuilder(metaConfig).build();
     }
 
 }

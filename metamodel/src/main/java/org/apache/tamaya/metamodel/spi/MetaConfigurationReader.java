@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.metamodel.spi;
 
+import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.w3c.dom.Document;
 
@@ -32,8 +33,8 @@ public interface MetaConfigurationReader {
      * context builder. The priority of readers is determined by the priorization policy
      * implemented by the {@link org.apache.tamaya.spi.ServiceContext},
      * @param document the meta-configuration document
-     * @param contextBuilder the context builder to use.
+     * @param configBuilder the context builder to use.
      */
-    void read(Document document, ConfigurationContextBuilder contextBuilder);
+    void read(Document document, ConfigurationBuilder configBuilder);
 
 }

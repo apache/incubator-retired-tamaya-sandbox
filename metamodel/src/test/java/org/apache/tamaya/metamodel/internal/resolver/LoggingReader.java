@@ -22,6 +22,7 @@ import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ConfigurationContext;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.w3c.dom.Document;
@@ -44,7 +45,7 @@ public class LoggingReader implements MetaConfigurationReader{
     private static final JavaResolver resolver = new JavaResolver();
 
     @Override
-    public void read(final Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(final Document document, ConfigurationBuilder configBuilder) {
         new Timer(true).schedule(new TimerTask() {
             @Override
             public void run() {

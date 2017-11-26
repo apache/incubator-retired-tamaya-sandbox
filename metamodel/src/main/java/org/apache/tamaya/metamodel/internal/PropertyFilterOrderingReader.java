@@ -22,6 +22,7 @@ import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
@@ -43,7 +44,7 @@ public class PropertyFilterOrderingReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertyFilterOrderingReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(Document document, ConfigurationBuilder configBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-filter-order");
         if(nodeList.getLength()==0){
             LOG.finer("No property filter ordering configured.");
@@ -58,7 +59,7 @@ public class PropertyFilterOrderingReader implements MetaConfigurationReader{
         Comparator comparator = comparatorFactory.create(ComponentConfigurator.extractParameters(node));
         ComponentConfigurator.configure(comparator, node);
         LOG.finer("Sorting property filters using comparator: " + comparator.getClass().getName());
-        contextBuilder.sortPropertyFilter(comparator);
+        configBuilder.sortPropertyFilter(comparator);
     }
 
 

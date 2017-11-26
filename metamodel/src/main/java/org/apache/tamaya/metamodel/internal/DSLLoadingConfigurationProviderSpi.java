@@ -20,14 +20,9 @@ package org.apache.tamaya.metamodel.internal;
 
 import org.apache.tamaya.metamodel.MetaConfiguration;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.spi.ConfigurationContext;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
-import org.apache.tamaya.spi.ConfigurationProviderSpi;
-import org.apache.tamaya.spi.ServiceContextManager;
-import org.apache.tamaya.spisupport.DefaultConfiguration;
-import org.apache.tamaya.spisupport.DefaultConfigurationContextBuilder;
-import org.apache.tamaya.spisupport.PropertyFilterComparator;
-import org.apache.tamaya.spisupport.PropertySourceComparator;
+import org.apache.tamaya.spi.*;
+import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spisupport.*;
 import org.osgi.service.component.annotations.Component;
 
 import javax.annotation.Priority;
@@ -47,6 +42,11 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
     @Override
     public ConfigurationContextBuilder getConfigurationContextBuilder() {
         return ServiceContextManager.getServiceContext().create(ConfigurationContextBuilder.class);
+    }
+
+    @Override
+    public ConfigurationBuilder getConfigurationBuilder() {
+        return new DefaultConfigurationBuilder();
     }
 
     @Override

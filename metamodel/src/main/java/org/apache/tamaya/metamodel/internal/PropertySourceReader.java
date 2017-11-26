@@ -28,10 +28,7 @@ import org.apache.tamaya.metamodel.ext.RefreshablePropertySourceProvider;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
-import org.apache.tamaya.spi.PropertyFilter;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertySourceProvider;
+import org.apache.tamaya.spi.*;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -50,7 +47,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertySourceReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(Document document, ConfigurationBuilder configBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-sources");
         if(nodeList.getLength()==0){
             LOG.finer("No property sources configured.");
@@ -68,7 +65,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
             String type = node.getNodeName();
             if("defaults".equals(type)){
                 LOG.fine("Adding default property sources.");
-                contextBuilder.addDefaultPropertySources();
+                configBuilder.addDefaultPropertySources();
                 continue;
             }
             try {
@@ -81,7 +78,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
                         ComponentConfigurator.configure(ps, params);
                         ps = decoratePropertySource(ps, node, params);
                         LOG.finer("Adding configured property source: " + ps.getName());
-                        contextBuilder.addPropertySources(ps);
+                        configBuilder.addPropertySources(ps);
                         continue;
                     }
                 }
@@ -101,7 +98,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
                     ComponentConfigurator.configure(prov, node);
                     prov = decoratePropertySourceProvider(prov, node, params);
                     LOG.finer("Adding configured property source provider: " + prov.getClass().getName());
-                    contextBuilder.addPropertySources(prov.getPropertySources());
+                    configBuilder.addPropertySources(prov.getPropertySources());
                 }
             } catch (Exception e) {
                 LOG.log(Level.SEVERE, "Failed to configure PropertySourceProvider: " + type, e);
