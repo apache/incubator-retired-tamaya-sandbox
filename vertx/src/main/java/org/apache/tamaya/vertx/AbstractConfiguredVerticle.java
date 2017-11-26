@@ -23,6 +23,8 @@ import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.inject.ConfigurationInjection;
 
+import java.util.Optional;
+
 /**
  * Base verticle class that adds some convenience methods for accessing configuration.
  * The class also performs configuration injection using {@link ConfigurationInjection}.
@@ -35,14 +37,14 @@ public abstract class AbstractConfiguredVerticle extends AbstractVerticle{
         configure();
     }
 
-    public Configuration getConfiguration(){
+    protected Configuration getConfiguration(){
         if(configuration==null){
             return ConfigurationProvider.getConfiguration();
         }
         return configuration;
     }
 
-    public void setConfiguration(Configuration configuration){
+    protected void setConfiguration(Configuration configuration){
         this.configuration = configuration;
     }
 
@@ -50,27 +52,19 @@ public abstract class AbstractConfiguredVerticle extends AbstractVerticle{
         ConfigurationInjection.getConfigurationInjector().configure(this, getConfiguration());
     }
 
-    protected final String getConfigProperty(String key){
+    protected final String getConfigValue(String key){
         return getConfiguration().get(key);
     }
 
-    protected final String getConfigPropertyOrDefault(String key, String defaultValue){
-        String val = getConfiguration().get(key);
-        if(val==null){
-            return defaultValue;
-        }
-        return val;
+    protected final Optional<String> getOptionalConfigValue(String key){
+        return Optional.ofNullable(getConfiguration().getOrDefault(key, null));
     }
 
-    protected final <T> T getConfigProperty(String key, Class<T> type){
+    protected final <T> T getConfigValue(String key, Class<T> type){
         return getConfiguration().get(key, type);
     }
 
-    protected final <T> T getConfigPropertyOrDefault(String key, Class<T> type, T defaultValue){
-        T val = getConfiguration().get(key, type);
-        if(val==null){
-            return defaultValue;
-        }
-        return val;
+    protected final <T> Optional<T> getOptionalConfigValue(String key, Class<T> type){
+        return Optional.ofNullable(getConfiguration().getOrDefault(key, type, null));
     }
 }

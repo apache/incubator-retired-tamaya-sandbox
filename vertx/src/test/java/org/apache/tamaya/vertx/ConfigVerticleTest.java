@@ -48,18 +48,17 @@ public class ConfigVerticleTest {
     @Rule
     public RunTestOnContext vertxContext = new RunTestOnContext();
 
-    private TestVerticle testVerticle = new TestVerticle();
+    private TamayaConfigurationProducer producerVerticle = new TamayaConfigurationProducer();
 
     @Before
     public void prepare(){
-        vertxContext.vertx().deployVerticle(testVerticle);
-        vertxContext.vertx().deployVerticle(new ConfigVerticle());
+        vertxContext.vertx().deployVerticle(producerVerticle);
     }
 
     @Test
     public void testSingle(final TestContext testContext){
         final Async async = testContext.async();
-        vertxContext.vertx().eventBus().send("CONFIG-VAL",
+        vertxContext.vertx().eventBus().send(TamayaConfigurationProducer.DEFAULT_CONFIG_GET_SINGLE_ADDRESS,
                 "user.home", new Handler<AsyncResult<Message<String>>>() {
                     @Override
                     public void handle(AsyncResult<Message<String>> reply) {
@@ -74,56 +73,38 @@ public class ConfigVerticleTest {
     @Test
     public void testMap(final TestContext testContext){
         final Async async = testContext.async();
-        String selector = "user.";
-        vertxContext.vertx().eventBus().send("CONFIG-MAP",
-                selector, new Handler<AsyncResult<Message<String>>>() {
-                    @Override
-                    public void handle(AsyncResult<Message<String>> reply) {
-                        testContext.assertNotNull(reply.result());
-                        testContext.assertNotNull(reply.result().body());
-                        Map<String,String> config = Json.decodeValue(reply.result().body(),
-                                Map.class);
-                        Map<String,String> compareTo = ConfigurationProvider.getConfiguration()
-                        .with(ConfigurationFunctions.filter((k,v) -> {
-                            return k.matches("user.");
-                        })).getProperties();
-                        testContext.assertEquals(config.size(), compareTo.size());
-                        for(Map.Entry<String,String> en:compareTo.entrySet()){
-                            testContext.assertEquals(
-                                    config.get(en.getKey()), en.getValue());
-                        }
-                        async.complete();
+        String selector = "[]{\"user.*\"}";
+        vertxContext.vertx().eventBus().send(TamayaConfigurationProducer.DEFAULT_CONFIG_GET_MULTI_ADDRESS,
+                selector, reply -> {
+                    testContext.assertNotNull(reply.result());
+                    testContext.assertNotNull(reply.result().body());
+                    Map<String,String> config = Json.decodeValue((String)reply.result().body(),
+                            Map.class);
+                    Map<String,String> compareTo = ConfigurationProvider.getConfiguration()
+                    .with(ConfigurationFunctions.filter((k,v) -> {
+                        return k.matches("user.");
+                    })).getProperties();
+                    testContext.assertEquals(config.size(), compareTo.size());
+                    for(Map.Entry<String,String> en:compareTo.entrySet()){
+                        testContext.assertEquals(
+                                config.get(en.getKey()), en.getValue());
                     }
+                    async.complete();
                 });
     }
 
     @Test
     public void testConfigCalls(TestContext testContext){
-        testContext.assertNotNull(testVerticle.getConfiguration());
+        testContext.assertNotNull(producerVerticle.getConfiguration());
         testContext.assertEquals(
-                testVerticle.getConfigProperty("user.home"),
+                producerVerticle.getConfigValue("user.home"),
                 System.getProperty("user.home"));
         testContext.assertEquals(
-                testVerticle.getConfigPropertyOrDefault("foo.bar", "blabla"),
+                producerVerticle.getOptionalConfigValue("foo.bar").orElse("blabla"),
                 "blabla");
         testContext.assertEquals(
-                testVerticle.getConfigPropertyOrDefault("foo.bar", BigDecimal.class, new BigDecimal("1.12345")),
+                producerVerticle.getOptionalConfigValue("foo.bar", BigDecimal.class).orElse(new BigDecimal("1.12345")),
                 new BigDecimal("1.12345"));
     }
 
-    @Test
-    public void testInjection(TestContext testContext){
-        testContext.assertNotNull(testVerticle.userHome);
-        testContext.assertNotNull(testVerticle.userName);
-        testContext.assertNotNull(testVerticle.anyNumber);
-        testContext.assertEquals(
-                testVerticle.userHome,
-                System.getProperty("user.home"));
-        testContext.assertEquals(
-                testVerticle.userName,
-                System.getProperty("user.name"));
-        testContext.assertEquals(
-                testVerticle.anyNumber,
-                new BigDecimal("1.123456789"));
-    }
 }

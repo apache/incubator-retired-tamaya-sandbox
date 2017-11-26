@@ -1,0 +1,158 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.tamaya.vertx;
+
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.functions.ConfigurationFunctions;
+import org.apache.tamaya.functions.PropertyMatcher;
+import org.apache.tamaya.inject.ConfigurationInjection;
+import org.apache.tamaya.inject.api.Config;
+
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * This is a simple verticle registering Tamaya event bus messaging for accessing configuration:
+ * <ul>
+ *     <li>Don't pass anything, get a {@link JsonObject} with the full Tamaya configuration.</li>
+ *     <li>Pass a {@code String} key, get a String return value, if present or a failure.</li>
+ *     <li>Pass a {@link JsonArray} of keys, get a {@link JsonObject} return value, with the key/values found.</li>
+ * </ul>
+ */
+public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
+
+    public static final String DEFAULT_CONFIGRE_ADDRESS = "CONFIG.CONFIGURE";
+    public static final String DEFAULT_CONFIG_GET_MULTI_ADDRESS = "CONFIG.GET.MAP";
+    public static final String DEFAULT_CONFIG_GET_SINGLE_ADDRESS = "CONFIG.GET.SINGLE";
+
+    @Config(value = "tamaya.vertx.busaddress.inject", defaultValue = DEFAULT_CONFIGRE_ADDRESS)
+    private String injectionBusTarget;
+
+    @Config(value = "tamaya.vertx.busaddress.multi", defaultValue = DEFAULT_CONFIG_GET_MULTI_ADDRESS)
+    private String mapBusTarget;
+
+    @Config(value = "tamaya.vertx.busaddress.single", defaultValue = DEFAULT_CONFIG_GET_SINGLE_ADDRESS)
+    private String singleBusTarget;
+
+
+    /**
+     * Registers a handler for accessing single configuration keys (input: String, reply type: String). If no
+     * config value is present the consumer will reply with a NOT_FOUND failure.
+     * @param address the event bus address to register.
+     * @param eventBus the event bus.
+     * @return the consumer registered.
+     */
+    public static MessageConsumer<String> registerSingleConfigEntryProvider(String address, EventBus eventBus){
+        MessageConsumer<String> consumer = eventBus.consumer(address);
+        consumer.handler(h -> {
+            String key = (String) h.body();
+            if (key == null) {
+                h.fail(HttpResponseStatus.BAD_REQUEST.code(), "Missing config key.");
+            } else {
+                String value = ConfigurationProvider.getConfiguration().getOrDefault(key, null);
+                if (value != null) {
+                    h.reply(value);
+                } else {
+                    h.fail(HttpResponseStatus.NOT_FOUND.code(), "Config key not found: " + key);
+                }
+            }
+        });
+        return consumer;
+    }
+
+    /**
+     * Registers a handler for accessing multiple configuration keys (input: String[] (Json),
+     * reply type: Map<String,String></String,String> (Json).
+     * @param address the event bus address to register.
+     * @param eventBus the event bus.
+     * @return the consumer registered.
+     */
+    public static MessageConsumer<String> registerMultiConfigEntryProvider(String address, EventBus eventBus){
+        MessageConsumer<String> consumer = eventBus.consumer(address);
+        consumer.handler(h -> {
+            String val = h.body();
+            Configuration config = ConfigurationProvider.getConfiguration();
+            Map<String,String> entries = new TreeMap<>();
+            if(val!=null){
+                String[] sections = Json.decodeValue(val, String[].class);
+                for (String section : sections) {
+                    if(section!=null) {
+                        entries.putAll(config.with(ConfigurationFunctions.section(section)).getProperties());
+                    }
+                }
+            }else{
+                entries.putAll(config.getProperties());
+            }
+            h.reply(Json.encode(entries));
+        });
+        return consumer;
+    }
+
+    /**
+     * Registers a handler for configuring any objects sent via the message bus using Tamaya's injection API.
+     * @param address the event bus address to register.
+     * @param eventBus the event bus.
+     * @return the consumer registered.
+     */
+    public static MessageConsumer<Object> registerConfigurationInjector(String address, EventBus eventBus){
+        MessageConsumer<Object> consumer = eventBus.consumer(address);
+        consumer.handler(h -> {
+            Object o = h.body();
+            if(o==null){
+                h.fail(HttpResponseStatus.BAD_REQUEST.code(), "Required object to configure is missing.");
+            }else {
+                ConfigurationInjection.getConfigurationInjector().configure(o);
+                h.reply("OK");
+            }
+        });
+        return consumer;
+    }
+
+
+
+    @Override
+    public void start(Future<Void> startFuture) throws Exception {
+        super.start(startFuture);
+        registerMultiConfigEntryProvider(mapBusTarget, vertx.eventBus());
+        registerSingleConfigEntryProvider(singleBusTarget, vertx.eventBus());
+        registerConfigurationInjector(injectionBusTarget, vertx.eventBus());
+        startFuture.complete();
+    }
+
+    public String getInjectionBusTarget() {
+        return injectionBusTarget;
+    }
+
+    public String getMapBusTarget() {
+        return mapBusTarget;
+    }
+
+    public String getSingleBusTarget() {
+        return singleBusTarget;
+    }
+}
