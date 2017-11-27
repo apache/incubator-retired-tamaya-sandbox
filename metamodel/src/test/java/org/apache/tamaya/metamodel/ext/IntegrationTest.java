@@ -33,7 +33,7 @@ import java.net.URL;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
-
+import static org.assertj.core.api.Assertions.*;
 /**
  * Created by atsticks on 06.12.16.
  */
@@ -41,7 +41,7 @@ public class IntegrationTest {
 
     @Test
     public void checkSystemLoads(){
-        assertNotNull(ConfigurationProvider.getConfiguration());
+        assertThat(ConfigurationProvider.getConfiguration()).isNotNull();
         System.out.println(ConfigurationProvider.getConfiguration());
     }
 
@@ -200,7 +200,7 @@ public class IntegrationTest {
         assertFalse(config.getContext().getPropertyConverters().isEmpty());
         assertTrue(config.getContext().getPropertyFilters().isEmpty());
         assertEquals(1, config.getContext().getPropertyConverters().size());
-        PropertyConverter converter = config.getContext().getPropertyConverters().values().iterator()
+        PropertyConverter<?> converter = config.getContext().getPropertyConverters().values().iterator()
                 .next().get(0);
         assertNotNull(converter);
         assertTrue(converter instanceof MyConverter);
