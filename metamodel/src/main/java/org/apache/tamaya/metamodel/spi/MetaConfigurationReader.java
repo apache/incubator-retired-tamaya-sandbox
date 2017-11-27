@@ -30,7 +30,7 @@ public interface MetaConfigurationReader {
 
     /**
      * Reads meta-configuration from the given document and configures the current
-     * context builder. The priority of readers is determined by the priorization policy
+     * configuration builder. The priority of readers is determined by the priorization policy
      * implemented by the {@link org.apache.tamaya.spi.ServiceContext},
      * @param document the meta-configuration document
      * @param configBuilder the context builder to use.
