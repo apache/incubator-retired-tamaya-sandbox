@@ -34,6 +34,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.*;
 import static org.assertj.core.api.Assertions.*;
+
 /**
  * Created by atsticks on 06.12.16.
  */
@@ -48,11 +49,11 @@ public class IntegrationTest {
     @Test
     public void testEmptyConfig(){
         Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/empty-config.xml"));
-        assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertTrue(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
+        assertThat(config).isNotNull();
+        assertThat(config.getProperties()).isEmpty();
+        assertThat(config.getContext().getPropertySources()).isEmpty();
+        assertThat(config.getContext().getPropertyConverters()).isEmpty();
+        assertThat(config.getContext().getPropertyFilters()).isEmpty();
     }
 
     @Test
@@ -83,7 +84,6 @@ public class IntegrationTest {
                 ConfigurationProvider.getConfigurationBuilder()
                         .addDefaultPropertyConverters()
                         .build());
-
     }
 
     @Test
@@ -98,7 +98,6 @@ public class IntegrationTest {
                 ConfigurationProvider.getConfigurationBuilder()
                         .addDefaultPropertySources()
                         .build());
-
     }
 
     @Test
