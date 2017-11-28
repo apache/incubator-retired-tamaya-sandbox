@@ -109,8 +109,8 @@ public class CachedFilter implements PropertyFilter{
     }
 
     private static final class CachedEntry{
-        long ttl;
-        PropertyValue value;
+        private long ttl;
+        private PropertyValue value;
 
         public CachedEntry (PropertyValue value, long ttl){
             this.ttl = ttl;

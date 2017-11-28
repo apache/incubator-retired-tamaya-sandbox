@@ -18,18 +18,15 @@
  */
 package org.apache.tamaya.metamodel;
 
-import org.apache.tamaya.metamodel.internal.resolver.JavaResolver;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spisupport.PropertySourceComparator;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
+
+import org.apache.tamaya.metamodel.internal.resolver.JavaResolver;
+import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spisupport.PropertySourceComparator;
 
 
 /**
@@ -113,7 +110,7 @@ public final class EnabledPropertySource
 
     @Override
     public String toString() {
-        return "DynamicPropertySource{" +
+        return "EnabledPropertySource{" +
                 "\n enabled=" + enabledExpression +
                 "\n wrapped=" + wrapped +
                 '}';

@@ -18,13 +18,12 @@
  */
 package org.apache.tamaya.metamodel;
 
+import java.util.Map;
+
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spi.PropertyValueBuilder;
-
-import java.util.Map;
 
 /**
  * Simple filter that never changes a key/value pair returned, regardless if a value
