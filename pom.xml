@@ -658,7 +658,6 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${enforcer.version}</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -687,7 +686,6 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${javadoc.version}</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -727,7 +725,6 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
                 <configuration>
                     <pushChanges>false</pushChanges>
                     <localCheckout>true</localCheckout>
@@ -748,7 +745,6 @@ under the License.
             <plugin>
                 <groupId>biz.aQute.bnd</groupId>
                 <artifactId>bnd-maven-plugin</artifactId>
-                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -760,7 +756,6 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -788,6 +783,8 @@ under the License.
         <module>metamodel</module>
         <module>uom</module>
         <module>vertx</module>
+        <!-- Once the API is officially available ... -->
+        <!--   module>configjsr</module-->
     </modules>
 
     <profiles>
