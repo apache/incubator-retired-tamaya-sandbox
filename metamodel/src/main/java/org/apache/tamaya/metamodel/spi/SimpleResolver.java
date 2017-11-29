@@ -25,7 +25,7 @@ package org.apache.tamaya.metamodel.spi;
 public interface SimpleResolver {
 
     /**
-     * Get the expression id, which is the first part of an placeholder expression
+     * Get the expression id, which is the first part of a placeholder expression
      * ({@code ${expressionId:expression}}).
      * @return the expression id, never null.
      */

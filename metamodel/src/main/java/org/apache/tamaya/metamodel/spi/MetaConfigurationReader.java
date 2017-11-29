@@ -19,7 +19,6 @@
 package org.apache.tamaya.metamodel.spi;
 
 import org.apache.tamaya.spi.ConfigurationBuilder;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.w3c.dom.Document;
 
 /**

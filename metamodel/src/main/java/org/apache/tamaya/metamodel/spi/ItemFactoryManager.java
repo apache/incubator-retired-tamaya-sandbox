@@ -18,23 +18,27 @@
  */
 package org.apache.tamaya.metamodel.spi;
 
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.ServiceContextManager;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.tamaya.spi.ServiceContextManager;
 
 /**
  * Created by atsticks on 04.12.16.
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public final class ItemFactoryManager {
 
     private static final Logger LOG = Logger.getLogger(ItemFactoryManager.class.getName());
 
-    private Map<Class, List<ItemFactory<?>>> factoryRegistry = new ConcurrentHashMap<>();
+	private Map<Class, List<ItemFactory<?>>> factoryRegistry = new ConcurrentHashMap<>();
 
     private static ItemFactoryManager INSTANCE = new ItemFactoryManager();
 
@@ -45,7 +49,7 @@ public final class ItemFactoryManager {
         return INSTANCE;
     }
 
-    public <T> List<ItemFactory<T>> getFactories(Class<T> type){
+	public <T> List<ItemFactory<T>> getFactories(Class<T> type){
         List<ItemFactory<?>> factories = factoryRegistry.get(type);
         if(factories==null){
             Collection<ItemFactory> allFactories =
@@ -71,7 +75,7 @@ public final class ItemFactoryManager {
         // try creating a new factory with the given id as fully qualified class name...
         try{
             Class<? extends ItemFactory> instanceType = (Class<? extends ItemFactory>) Class.forName(id);
-            ItemFactory<T> factory = new SimpleItemFactory(type, instanceType);
+            ItemFactory<T> factory = new SimpleItemFactory<T>(type, instanceType);
             registerItemFactory(factory);
             return factory;
         }catch(Exception e){

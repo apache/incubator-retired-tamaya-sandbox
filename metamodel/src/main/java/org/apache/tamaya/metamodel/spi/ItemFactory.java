@@ -28,21 +28,21 @@ import java.util.Map;
 public interface ItemFactory<T> {
 
     /**
-     * Get the factory name.
+     * Gets the factory name.
      * @return the factory name, not null.
      */
     String getName();
 
     /**
-     * Create a new instance.
-     * @param parameters the parameters for configuring the instance.
+     * Creates a new instance.
+     * @param parameters the parameters to configure the instance.
      * @return the new instance, not null.
      */
     T create(Map<String,String> parameters);
 
     /**
      * Get the target type created by this factory. This can be used to
-     * assign the factory to an acording item base type, e.g. a PropertySource,
+     * assign the factory to an according item base type, e.g. a PropertySource,
      * PropertySourceProvider, PropertyFilter etc.
      * @return the target type, not null.
      */
