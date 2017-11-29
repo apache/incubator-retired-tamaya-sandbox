@@ -75,7 +75,7 @@ public final class ItemFactoryManager {
         // try creating a new factory with the given id as fully qualified class name...
         try{
             Class<? extends ItemFactory> instanceType = (Class<? extends ItemFactory>) Class.forName(id);
-            ItemFactory<T> factory = new SimpleItemFactory<T>(type, instanceType);
+            ItemFactory<T> factory = new SimpleItemFactory(type, instanceType);
             registerItemFactory(factory);
             return factory;
         }catch(Exception e){
