@@ -91,7 +91,7 @@ public final class RefreshablePropertySource
     }
 
     /**
-     * Set the refresh period. This will be immedately applied from now. No explicit
+     * Set the refresh period. This will be immediately applied from now. No explicit
      * refresh will be triggered now.
      * @param units
      * @param timeUnit

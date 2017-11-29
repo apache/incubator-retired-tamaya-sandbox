@@ -18,11 +18,6 @@
  */
 package org.apache.tamaya.metamodel.ext;
 
-import org.apache.tamaya.spi.*;
-import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
-import org.apache.tamaya.spisupport.DefaultConfigurationContextBuilder;
-import org.apache.tamaya.spisupport.PropertySourceComparator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.tamaya.spi.ConfigurationContext;
+import org.apache.tamaya.spi.FilterContext;
+import org.apache.tamaya.spi.PropertyFilter;
+import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spisupport.DefaultConfigurationBuilder;
+import org.apache.tamaya.spisupport.PropertySourceComparator;
+import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 
 /**
  * Property source that allows filtering on property source level. This class is thread-safe, accesses using or
@@ -39,8 +43,7 @@ public final class FilteredPropertySource extends BasePropertySource {
 
     private PropertySource wrapped;
     private List<PropertyFilter> filters = new ArrayList<>();
-    private ConfigurationContext dummyContext = new DefaultConfigurationContextBuilder()
-            .addPropertySources(this).build();
+    private ConfigurationContext dummyContext = new DefaultConfigurationBuilder().addPropertySources(this).build().getContext();
 
     /**
      * Constructor used privately. Use {@link #of(PropertySource)} for making a {@link PropertySource} filterable.

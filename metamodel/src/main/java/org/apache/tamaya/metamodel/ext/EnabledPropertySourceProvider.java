@@ -18,18 +18,19 @@
  */
 package org.apache.tamaya.metamodel.ext;
 
-import org.apache.tamaya.metamodel.Enabled;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertySourceProvider;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+import org.apache.tamaya.metamodel.Enabled;
+import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spi.PropertySourceProvider;
 
 /**
  * Wrapped property source provider that allows enabling a property source using an
