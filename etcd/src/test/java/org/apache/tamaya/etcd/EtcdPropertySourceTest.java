@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.etcd;
 
-import org.apache.tamaya.spi.PropertyValue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class EtcdPropertySourceTest {
 
-    private final EtcdPropertySource propertySource = new EtcdPropertySource();
+    private final EtcdConfigSource propertySource = new EtcdConfigSource();
 
     @BeforeClass
     public static void setup(){
@@ -56,20 +55,16 @@ public class EtcdPropertySourceTest {
 
     @Test
     public void testGet() throws Exception {
-        Map<String,PropertyValue> props = propertySource.getProperties();
-        for(Map.Entry<String,PropertyValue> en:props.entrySet()){
-            assertNotNull("Key not found: " + en.getKey(), propertySource.get(en.getKey()));
+        Map<String,String> props = propertySource.getProperties();
+        for(Map.Entry<String,String> en:props.entrySet()){
+            assertNotNull("Key not found: " + en.getKey(), propertySource.getValue(en.getKey()));
         }
     }
 
     @Test
     public void testGetProperties() throws Exception {
-        Map<String,PropertyValue> props = propertySource.getProperties();
+        Map<String,String> props = propertySource.getProperties();
         assertNotNull(props);
     }
 
-    @Test
-    public void testIsScannable() throws Exception {
-        assertTrue(propertySource.isScannable());
-    }
 }

@@ -21,8 +21,8 @@ package org.apache.tamaya.propertysources;
 
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormats;
-import org.apache.tamaya.format.MappedConfigurationDataPropertySource;
-import org.apache.tamaya.resource.AbstractPathPropertySourceProvider;
+import org.apache.tamaya.format.MappedConfigurationDataConfigSource;
+import org.apache.tamaya.resource.AbstractPathConfigSourceProvider;
 import org.apache.tamaya.spi.PropertySource;
 
 import java.net.URL;
@@ -34,20 +34,39 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Property source provider that reads all resources from {@code META-INF/config/**}
- * into configuration sources..
+ * A property provider implementation that tries to read all files in a directory as
+ * configuration.
  */
-public class MetainfConfigPropertySourceProvider extends AbstractPathPropertySourceProvider {
+public class ConfigDirConfigSourceProvider extends AbstractPathConfigSourceProvider {
 
-    public MetainfConfigPropertySourceProvider() {
-        super("classpath:META-INF/config/**/*.*");
+    public ConfigDirConfigSourceProvider() {
+        super(getConfigLocation());
+    }
+
+    private static String getConfigLocation() {
+        String location = System.getProperty("configdir");
+        if (location == null) {
+            location = "./config";
+        }
+        if (!location.endsWith("/")) {
+            location += "/";
+        }
+        if (!location.startsWith("file:")) {
+            location = "file:" + location;
+        }
+        return location + "**/*.*";
     }
 
     @Override
     protected Collection<PropertySource> getPropertySources(URL url) {
         try {
             ConfigurationData config = ConfigurationFormats.readConfigurationData(url);
-            return asCollection(new MappedConfigurationDataPropertySource(config));
+            if (config == null) {
+                Logger.getLogger(getClass().getName()).log(Level.INFO,
+                        "Failed to read configuration from " + url);
+                return Collections.emptySet();
+            }
+            return asCollection(new MappedConfigurationDataConfigSource(config));
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,
                     "Failed to read configuration from " + url, e);

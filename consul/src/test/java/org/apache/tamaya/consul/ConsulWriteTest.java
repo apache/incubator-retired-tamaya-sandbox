@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
-import org.apache.tamaya.spi.PropertyValue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -42,12 +41,12 @@ public class ConsulWriteTest {
 	 * Needs to be enabled manually in case you want to do integration tests.
 	 */
     static boolean execute = false;
-    private static ConsulPropertySource propertySource;
+    private static ConsulConfigSource propertySource;
 
     @BeforeClass
     public static void setup() throws MalformedURLException, URISyntaxException {
         System.setProperty("consul.urls", "http://127.0.0.1:8300");
-        propertySource = new ConsulPropertySource();
+        propertySource = new ConsulConfigSource();
         
         System.out.println("At the moment no write-tests can be executed to verify the Consul integration. You can manually edit this test class.");
     }
@@ -69,18 +68,18 @@ public class ConsulWriteTest {
         ConfigChangeRequest request = new ConfigChangeRequest("testDelete");
         request.put(taID, "testDelete");
         propertySource.applyChange(request);
-        assertEquals(taID.toString(), propertySource.get("testDelete").getValue());
-        assertNotNull(propertySource.get("_testDelete.createdIndex"));
+        assertEquals(taID.toString(), propertySource.getValue("testDelete"));
+        assertNotNull(propertySource.getValue("_testDelete.createdIndex"));
         request = new ConfigChangeRequest("testDelete2");
         request.remove("testDelete");
         propertySource.applyChange(request);
-        assertNull(propertySource.get("testDelete"));
+        assertNull(propertySource.getValue("testDelete"));
     }
 
     @Test
     public void testGetProperties() throws Exception {
         if(!execute)return;
-        Map<String,PropertyValue> result = propertySource.getProperties();
+        Map<String,String> result = propertySource.getProperties();
         assertTrue(result.isEmpty());
     }
 }

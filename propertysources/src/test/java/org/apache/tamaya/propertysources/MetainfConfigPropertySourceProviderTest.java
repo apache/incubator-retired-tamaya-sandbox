@@ -29,7 +29,7 @@ public class MetainfConfigPropertySourceProviderTest {
 
     @Test
     public void getPropertySources_Default() throws Exception {
-        MetainfConfigPropertySourceProvider provider = new MetainfConfigPropertySourceProvider();
+        MetainfConfigConfigSourceProvider provider = new MetainfConfigConfigSourceProvider();
         assertNotNull(provider.getPropertySources());
         // TODO add test for containing property sources.
     }

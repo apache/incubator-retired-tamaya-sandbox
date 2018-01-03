@@ -21,7 +21,7 @@ package org.apache.tamaya.metamodel.internal.factories;
 
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormats;
-import org.apache.tamaya.format.MappedConfigurationDataPropertySource;
+import org.apache.tamaya.format.MappedConfigurationDataConfigSource;
 import org.apache.tamaya.functions.Supplier;
 import org.apache.tamaya.metamodel.internal.ComponentConfigurator;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
@@ -127,7 +127,7 @@ public class URLPropertySourceFactory implements ItemFactory<PropertySource>{
         }
     }
 
-    private static final class RefreshablePropertySource extends MappedConfigurationDataPropertySource
+    private static final class RefreshablePropertySource extends MappedConfigurationDataConfigSource
     implements Refreshable{
 
         public RefreshablePropertySource(String name, Supplier<ConfigurationData> dataSupplier) {

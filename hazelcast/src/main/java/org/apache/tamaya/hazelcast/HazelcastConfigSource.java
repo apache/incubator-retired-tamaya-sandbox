@@ -23,11 +23,13 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IList;
 import com.hazelcast.core.IMap;
+import org.apache.tamaya.base.configsource.BaseConfigSource;
 import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
-import org.apache.tamaya.mutableconfig.spi.MutablePropertySource;
+import org.apache.tamaya.mutableconfig.spi.MutableConfigSource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -53,10 +55,10 @@ import java.util.logging.Logger;
  * By default a new hazelcast instance is created, but it is also possible to reuse an existing
  * instance of pass a Hazelcast configuration instance.
  */
-public class HazelcastPropertySource extends BasePropertySource
-implements MutablePropertySource{
+public class HazelcastConfigSource extends BaseConfigSource
+implements MutableConfigSource {
     /** The logger. */
-    private static final Logger LOG = Logger.getLogger(HazelcastPropertySource.class.getName());
+    private static final Logger LOG = Logger.getLogger(HazelcastConfigSource.class.getName());
     /** The Hazelcast config map used. */
     private Map<String, String> configMap = new HashMap<>();
     /** The hazelcast API instance. */
@@ -70,7 +72,7 @@ implements MutablePropertySource{
      * Creates a new instance, hereby using {@code "Hazelcast"} as property source name and
      * a default hazelcast backend created by calling {@link Hazelcast#newHazelcastInstance()}.
      */
-    public HazelcastPropertySource(){
+    public HazelcastConfigSource(){
         super("Hazelcast");
         this.hazelcastInstance = Hazelcast.newHazelcastInstance();
     }
@@ -80,7 +82,7 @@ implements MutablePropertySource{
      * given hazelcast instance.
      * @param hazelcastInstance the hazelcast instance, not null.
      */
-    public HazelcastPropertySource(HazelcastInstance hazelcastInstance){
+    public HazelcastConfigSource(HazelcastInstance hazelcastInstance){
         this("Hazelcast", hazelcastInstance);
     }
 
@@ -89,7 +91,7 @@ implements MutablePropertySource{
      * a default hazelcast backend created by calling {@link Hazelcast#newHazelcastInstance()}.
      * @param name the property source name, not null.
      */
-    public HazelcastPropertySource(String name){
+    public HazelcastConfigSource(String name){
         super(name);
         this.hazelcastInstance = Hazelcast.newHazelcastInstance();
     }
@@ -100,7 +102,7 @@ implements MutablePropertySource{
      * @param config the hazelcast config, not null.
      * @param name the property source name, not null.
      */
-    public HazelcastPropertySource(String name, Config config){
+    public HazelcastConfigSource(String name, Config config){
         super(name);
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
     }
@@ -111,7 +113,7 @@ implements MutablePropertySource{
      * @param name
      * @param hazelcastInstance
      */
-    public HazelcastPropertySource(String name, HazelcastInstance hazelcastInstance){
+    public HazelcastConfigSource(String name, HazelcastInstance hazelcastInstance){
         super(name);
         this.hazelcastInstance = Objects.requireNonNull(hazelcastInstance);
     }
@@ -158,31 +160,24 @@ implements MutablePropertySource{
     }
 
     @Override
-    public PropertyValue get(String key) {
+    public String getValue(String key) {
         Config hcConfig = hazelcastInstance.getConfig();
         String value = hcConfig.getProperty(key);
         if(value==null){
             return null;
         }
-        return PropertyValue.builder(key, value, getName())
-                .addMetaEntry("backend", "Hazelcast")
-                .addMetaEntry("instance", hcConfig.getInstanceName())
-                .addMetaEntry("mapReference", mapReference)
-                .build();
+        return value;
     }
 
     @Override
-    public Map<String, PropertyValue> getProperties() {
+    public Map<String, String> getProperties() {
         Map<String,String> meta = new HashMap<>();
-        meta.put("backend", "Hazelcast");
-        meta.put("instance", hazelcastInstance.getConfig().getInstanceName());
-        meta.put("mapReference", mapReference);
-        return PropertyValue.map(this.configMap, getName(), meta);
-    }
-
-    @Override
-    public boolean isScannable() {
-        return true;
+        String prefix = "[meta]datasource."+getName()+".";
+        meta.put(prefix+"backend", "Hazelcast");
+        meta.put(prefix+"instance", hazelcastInstance.getConfig().getInstanceName());
+        meta.put(prefix+"_mapReference", mapReference);
+        this.configMap.putAll(meta);
+        return Collections.unmodifiableMap(this.configMap);
     }
 
     /**

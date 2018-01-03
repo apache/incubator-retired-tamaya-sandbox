@@ -21,7 +21,7 @@ package org.apache.tamaya.metamodel.internal.factories;
 
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormats;
-import org.apache.tamaya.format.MappedConfigurationDataPropertySource;
+import org.apache.tamaya.format.MappedConfigurationDataConfigSource;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.resource.ConfigResources;
 import org.apache.tamaya.spi.PropertySource;
@@ -66,7 +66,7 @@ public class ResourcePropertySourceProviderFactory implements ItemFactory<Proper
                         data = ConfigurationFormats.readConfigurationData(resource,
                                 ConfigurationFormats.getFormats(formats));
                     }
-                    propertySources.add(new MappedConfigurationDataPropertySource(data));
+                    propertySources.add(new MappedConfigurationDataConfigSource(data));
                 } catch (Exception e) {
                     LOG.log(Level.SEVERE, "Failed to read property source from resource: " + location, e);
                 }

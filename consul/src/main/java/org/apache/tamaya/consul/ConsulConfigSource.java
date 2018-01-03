@@ -23,10 +23,9 @@ import com.google.common.net.HostAndPort;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.model.kv.Value;
+import org.apache.tamaya.base.configsource.BaseConfigSource;
 import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
-import org.apache.tamaya.mutableconfig.spi.MutablePropertySource;
-import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
+import org.apache.tamaya.mutableconfig.spi.MutableConfigSource;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -37,16 +36,16 @@ import java.util.logging.Logger;
  * {@code consul.prefix} as system property maps the consul based configuration
  * to this prefix namespace. Consul servers are configured as {@code consul.urls} system or environment property.
  */
-public class ConsulPropertySource extends BasePropertySource
-implements MutablePropertySource{
-    private static final Logger LOG = Logger.getLogger(ConsulPropertySource.class.getName());
+public class ConsulConfigSource extends BaseConfigSource
+implements MutableConfigSource {
+    private static final Logger LOG = Logger.getLogger(ConsulConfigSource.class.getName());
 
     private String prefix = "";
 
     private List<HostAndPort> consulBackends;
 
 
-    public ConsulPropertySource(String prefix, Collection<String> backends){
+    public ConsulConfigSource(String prefix, Collection<String> backends){
         this.prefix = prefix==null?"":prefix;
         consulBackends = new ArrayList<>();
         for(String s:backends){
@@ -54,18 +53,18 @@ implements MutablePropertySource{
         }
     }
 
-    public ConsulPropertySource(Collection<String> backends){
+    public ConsulConfigSource(Collection<String> backends){
         consulBackends = new ArrayList<>();
         for(String s:backends){
             consulBackends.add(HostAndPort.fromString(s));
         }
     }
 
-    public ConsulPropertySource(){
+    public ConsulConfigSource(){
         prefix = System.getProperty("tamaya.consul.prefix", "");
     }
 
-    public ConsulPropertySource(String... backends){
+    public ConsulConfigSource(String... backends){
         consulBackends = new ArrayList<>();
         for (String s : backends) {
             consulBackends.add(HostAndPort.fromString(s));
@@ -76,16 +75,16 @@ implements MutablePropertySource{
         return prefix;
     }
 
-    public ConsulPropertySource setPrefix(String prefix) {
+    public ConsulConfigSource setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
 
     public int getOrdinal() {
-        PropertyValue configuredOrdinal = get(TAMAYA_ORDINAL);
+        String configuredOrdinal = getValue(CONFIG_ORDINAL);
         if(configuredOrdinal!=null){
             try{
-                return Integer.parseInt(configuredOrdinal.getValue());
+                return Integer.parseInt(configuredOrdinal);
             } catch(Exception e){
                 Logger.getLogger(getClass().getName()).log(Level.WARNING,
                         "Configured Ordinal is not an int number: " + configuredOrdinal, e);
@@ -108,7 +107,7 @@ implements MutablePropertySource{
     }
 
     @Override
-    public PropertyValue get(String key) {
+    public String getValue(String key) {
         // check prefix, if key does not start with it, it is not part of our name space
         // if so, the prefix part must be removedProperties, so etcd can resolve without it
         if(!key.startsWith(prefix)){
@@ -146,7 +145,7 @@ implements MutablePropertySource{
                     props.put(reqKey+".modifyIndex", String.valueOf(value.getModifyIndex()));
                     props.put(reqKey+".lockIndex", String.valueOf(value.getLockIndex()));
                     props.put(reqKey+".flags", String.valueOf(value.getFlags()));
-                    return PropertyValue.builder(key, value.getValue().get(), getName()).setMetaEntries(props).build();
+                    return value.getValue().get();
                 }
             } catch(Exception e){
                 LOG.log(Level.FINE, "etcd access failed on " + hostAndPort + ", trying next...", e);
@@ -156,7 +155,7 @@ implements MutablePropertySource{
     }
 
     @Override
-    public Map<String, PropertyValue> getProperties() {
+    public Map<String, String> getProperties() {
 //        for(HostAndPort hostAndPort: getConsulBackends()){
 //            try{
 //                Consul consul = Consul.builder().withHostAndPort(hostAndPort).build();
@@ -192,11 +191,6 @@ implements MutablePropertySource{
             }
         }
         return map;
-    }
-
-    @Override
-    public boolean isScannable() {
-        return false;
     }
 
     @Override
