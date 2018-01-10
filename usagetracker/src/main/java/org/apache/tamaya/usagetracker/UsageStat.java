@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.usagetracker;
 
-import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spi.ConfigValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 /**
  * Metrics container containing access statistics for a given configuration key.
@@ -169,19 +168,21 @@ public final class UsageStat {
      * Evaluates the current access point from the current stacktrace and adds an according
      * usage reference object (or updates any existing one) for the given key. The
      * stacktrace is shortened to a maximal size of 20 items.
+     * @param key the key accessed, not null.
      * @param value the value returned, not null.
      */
-    public void trackUsage(PropertyValue value){
-        trackUsage(value, maxTrace);
+    public void trackUsage(String key, String value){
+        trackUsage(key, value, maxTrace);
     }
 
     /**
      * Evaluates the current access point from the current stacktrace and adds an according
      * usage reference object (or updates any existing one) for the given key.
+     * @param key the key accessed, not null.
      * @param value the value returned, not null.
      * @param maxTraceLength the maximal length of the stored stacktrace.
      */
-    public void trackUsage(PropertyValue value, int maxTraceLength){
+    public void trackUsage(String key, String value, int maxTraceLength){
         String accessPoint = null;
         if(maxTraceLength>0) {
             Exception e = new Exception();
@@ -207,11 +208,11 @@ public final class UsageStat {
                 accessPoint = "<unknown/filtered/internal>";
             }
             AccessStats details = getAccessDetails(accessPoint, trace.toArray(new String[trace.size()]));
-            details.trackAccess(value);
+            details.trackAccess(ConfigValue.of(key, value, null));
         }else{
             accessPoint = "<disabled>";
             AccessStats details = getAccessDetails(accessPoint, EMPTY_TRACE);
-            details.trackAccess(value);
+            details.trackAccess(ConfigValue.of(key, value, null));
         }
     }
 
@@ -234,7 +235,7 @@ public final class UsageStat {
         private long firstAccessTS;
         private String[] stackTrace;
         private String accessPoint;
-        private Map<Long, PropertyValue> trackedValues;
+        private Map<Long, ConfigValue> trackedValues;
 
         public AccessStats(String key, String accessPoint, String[] stackTrace){
             this.key = Objects.requireNonNull(key);
@@ -248,7 +249,7 @@ public final class UsageStat {
             accessCount.set(0);
         }
 
-        public long trackAccess(PropertyValue value){
+        public long trackAccess(ConfigValue value){
             long count = accessCount.incrementAndGet();
             lastAccessTS = System.currentTimeMillis();
             if(firstAccessTS==0){
@@ -289,7 +290,7 @@ public final class UsageStat {
             return stackTrace.clone();
         }
 
-        public Map<Long, PropertyValue> getTrackedValues(){
+        public Map<Long, ConfigValue> getTrackedValues(){
             synchronized (this) {
                 if (trackedValues == null) {
                     return Collections.emptyMap();

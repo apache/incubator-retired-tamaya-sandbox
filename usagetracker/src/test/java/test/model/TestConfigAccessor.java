@@ -18,10 +18,9 @@
  */
 package test.model;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 
-import java.util.Map;
+import javax.config.Config;
+import javax.config.ConfigProvider;
 
 /**
  * Created by atsticks on 30.04.16.
@@ -30,16 +29,16 @@ public final class TestConfigAccessor {
 
     private TestConfigAccessor(){}
 
-    public static Map<String,String> readAllProperties(){
-        return ConfigurationProvider.getConfiguration()
-                .getProperties();
+    public static Iterable<String> readAllPropertyNames(){
+        return ConfigProvider.getConfig()
+                .getPropertyNames();
     }
 
-    public static Configuration readConfiguration(){
-        return ConfigurationProvider.getConfiguration();
+    public static Config readConfiguration(){
+        return ConfigProvider.getConfig();
     }
 
-    public static String readProperty(Configuration config, String key){
-        return config.get(key);
+    public static String readProperty(Config config, String key){
+        return config.getValue(key, String.class);
     }
 }

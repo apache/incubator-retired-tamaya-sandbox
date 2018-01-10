@@ -18,11 +18,12 @@
  */
 package org.apache.tamaya.model;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.usagetracker.ConfigUsage;
 import org.junit.Test;
 import test.model.TestConfigAccessor;
+
+import javax.config.Config;
+import javax.config.ConfigProvider;
 
 import static org.junit.Assert.*;
 
@@ -35,16 +36,16 @@ public class ConfigUsageStatsTest {
     public void testUsageWhenEnabled(){
         ConfigUsage.enableUsageTracking(true);
         TestConfigAccessor.readConfiguration();
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Config config = ConfigProvider.getConfig();
         String info = ConfigUsage.getInfo();
         assertFalse(info.contains("java.version"));
         assertNotNull(info);
         config = TestConfigAccessor.readConfiguration();
-        config.getProperties();
+        config.getPropertyNames();
         TestConfigAccessor.readProperty(config, "java.locale");
         TestConfigAccessor.readProperty(config, "java.version");
         TestConfigAccessor.readProperty(config, "java.version");
-        config.get("java.version");
+        config.getValue("java.version", String.class);
         info = ConfigUsage.getInfo();
         System.out.println(info);
         assertTrue(info.contains("java.version"));
@@ -57,16 +58,16 @@ public class ConfigUsageStatsTest {
         ConfigUsage.enableUsageTracking(false);
         ConfigUsage.clearStats();
         TestConfigAccessor.readConfiguration();
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Config config = ConfigProvider.getConfig();
         String info = ConfigUsage.getInfo();
         assertNotNull(info);
         assertFalse(info.contains("java.version"));
         config = TestConfigAccessor.readConfiguration();
-        config.getProperties();
+        config.getPropertyNames();
         TestConfigAccessor.readProperty(config, "java.locale");
         TestConfigAccessor.readProperty(config, "java.version");
         TestConfigAccessor.readProperty(config, "java.version");
-        config.get("java.version");
+        config.getValue("java.version", String.class);
         info = ConfigUsage.getInfo();
         assertFalse(info.contains("java.version"));
         assertNotNull(info);

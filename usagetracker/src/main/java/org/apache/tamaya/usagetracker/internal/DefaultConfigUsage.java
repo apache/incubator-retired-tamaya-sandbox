@@ -18,11 +18,10 @@
  */
 package org.apache.tamaya.usagetracker.internal;
 
-import org.apache.tamaya.spi.ConfigurationContext;
-import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.usagetracker.UsageStat;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
 
+import javax.config.Config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -98,7 +97,7 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
     }
 
     @Override
-    public UsageStat getAllPropertiesStats() {
+    public UsageStat getPropertyNamesStats() {
         return this.stats.get("<<all>>");
     }
 
@@ -112,22 +111,22 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
     }
 
     @Override
-    public void recordAllPropertiesAccess(ConfigurationContext context){
-        recordSingleKeyAccess(PropertyValue.of("<<all>>","<not stored>","-"), context);
+    public void recordAllPropertiesAccess(Config config){
+        recordSingleKeyAccess("Config.getPropertyNames()",config.getPropertyNames().toString(),config);
     }
 
     @Override
-    public void recordSingleKeyAccess(PropertyValue value, ConfigurationContext context){
+    public void recordSingleKeyAccess(String key, String value, Config config){
         // Ignore meta-entries
         if(!isTrackingEnabled()){
             return;
         }
-        UsageStat usage = this.stats.get(value.getKey());
+        UsageStat usage = this.stats.get(key);
         if(usage==null){
-            usage = new UsageStat(value.getKey());
-            this.stats.put(value.getKey(), usage);
+            usage = new UsageStat(key);
+            this.stats.put(key, usage);
         }
-        usage.trackUsage(value);
+        usage.trackUsage(key, value);
     }
 
 

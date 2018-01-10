@@ -18,10 +18,9 @@
  */
 package org.apache.tamaya.usagetracker.spi;
 
-import org.apache.tamaya.spi.ConfigurationContext;
-import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.usagetracker.UsageStat;
 
+import javax.config.Config;
 import java.util.Collection;
 import java.util.Set;
 
@@ -64,11 +63,11 @@ public interface ConfigUsageSpi {
     UsageStat getSinglePropertyStats(String key);
 
     /**
-     * Access the usage statistics for accessing {@link org.apache.tamaya.Configuration#getProperties()}.
+     * Access the usage statistics for accessing {@link Config#getPropertyNames()}.
      * If usage stats collection is not activated (default), this method returns null.
      * @return the stats collected, or null.
      */
-    UsageStat getAllPropertiesStats();
+    UsageStat getPropertyNamesStats();
 
     /**
      * Get the recorded usage references of configuration.
@@ -77,19 +76,20 @@ public interface ConfigUsageSpi {
     Collection<UsageStat> getUsageStats();
 
     /**
-     * Track the access of {@code Configuration#getProperties()} for
+     * Track the access of {@code Config#getPropertyNames()} for
      * usage statistics.
-     * @param context the corresponding context.
+     * @param config the corresponding config.
      */
-    void recordAllPropertiesAccess(ConfigurationContext context);
+    void recordAllPropertiesAccess(Config config);
 
     /**
      * Track the access of {@code Configuration#get(String)} for
      * usage statistics.
-     * @param context the corresponding context.
+     * @param config the corresponding config.
+     * @param key key to track for
      * @param value value to track for
      */
-    void recordSingleKeyAccess(PropertyValue value, ConfigurationContext context);
+    void recordSingleKeyAccess(String key, String value, Config config);
 
     /**
      * Access the usage statistics for the recorded uses of configuration.

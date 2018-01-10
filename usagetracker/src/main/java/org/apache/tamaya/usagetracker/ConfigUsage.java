@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.usagetracker;
 
-import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
 
@@ -41,7 +40,7 @@ public final class ConfigUsage {
         ConfigUsageSpi spi = ServiceContextManager
                 .getServiceContext().getService(ConfigUsageSpi.class);
         if(spi==null){
-            throw new ConfigException(NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE);
+            throw new IllegalStateException(NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE);
         }
         return spi;
     }
@@ -102,12 +101,12 @@ public final class ConfigUsage {
     }
 
     /**
-     * Access the usage statistics for accessing {@link org.apache.tamaya.Configuration#getProperties()}.
+     * Access the usage statistics for accessing {@link javax.config.Config#getPropertyNames()}.
      * If usage stats collection is not activated (default), this method returns null.
      * @return the stats collected, or null.
      */
-    public static UsageStat getAllPropertiesStats(){
-        return spi().getAllPropertiesStats();
+    public static UsageStat getPropertyNamesStats(){
+        return spi().getPropertyNamesStats();
     }
 
     /**
