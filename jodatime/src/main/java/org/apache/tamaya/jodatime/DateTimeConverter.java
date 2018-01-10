@@ -18,14 +18,14 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.DateTimeParser;
 
+import javax.config.spi.Converter;
 import java.util.Objects;
 
 /**
@@ -46,7 +46,7 @@ import java.util.Objects;
  *     <li>{@code yyyy-MM-dd'T'HHz}</li>
  * </ul>
  */
-public class DateTimeConverter implements PropertyConverter<DateTime> {
+public class DateTimeConverter implements Converter<DateTime> {
     static final String PARSER_FORMATS[] = {
         "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
         "yyyy-MM-dd'T'HH:mm:ss.SSSz",
@@ -90,8 +90,11 @@ public class DateTimeConverter implements PropertyConverter<DateTime> {
     }
 
     @Override
-    public DateTime convert(String value, ConversionContext context) {
-        context.addSupportedFormats(DateTimeConverter.class, PARSER_FORMATS);
+    public DateTime convert(String value) {
+        ConversionContext context = ConversionContext.getContext();
+        if(context!=null) {
+            context.addSupportedFormats(DateTimeConverter.class, PARSER_FORMATS);
+        }
 
         String trimmed = Objects.requireNonNull(value).trim();
         DateTime result = null;

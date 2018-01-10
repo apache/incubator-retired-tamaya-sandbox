@@ -19,11 +19,10 @@
 package org.apache.tamaya.jodatime;
 
 
-import org.apache.tamaya.spi.PropertyConverter;
-import org.apache.tamaya.spi.ServiceContext;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.junit.Test;
 
+import javax.config.spi.Converter;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,13 +32,13 @@ import static org.hamcrest.Matchers.notNullValue;
 public class DateTimeConverterIT {
     @Test
     public void dateTimeConverterCanBeFoundAsServiceProvider() {
-        List<PropertyConverter> formats = ServiceContextManager.getServiceContext()
-                                                               .getServices(PropertyConverter.class);
+        List<Converter> formats = ServiceContextManager.getServiceContext()
+                                                               .getServices(Converter.class);
 
 
-        PropertyConverter<?> converter = null;
+        Converter<?> converter = null;
 
-        for (PropertyConverter format : formats) {
+        for (Converter format : formats) {
             if (format instanceof DateTimeConverter) {
                 converter = format;
                 break;

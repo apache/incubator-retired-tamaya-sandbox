@@ -18,19 +18,19 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.MutablePeriod;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.PeriodParser;
 
+import javax.config.spi.Converter;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * <p>A {@link PropertyConverter} for converting a string representation of a
+ * <p>A {@link Converter} for converting a string representation of a
  * given period into a {@link org.joda.time.Period} instance.</p>
  *
  * <p>This converter supports the following string representations of a
@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  *     <li>ISO format ({@code PyYmMwWdDThHmMsS})</li>
  *   </ol>
  */
-public class PeriodConverter implements PropertyConverter<org.joda.time.Period> {
+public class PeriodConverter implements Converter<Period> {
 
     private final static PeriodParser ISO_FORMAT = ISOPeriodFormat.standard()
                                                                   .getParser();
@@ -57,10 +57,13 @@ public class PeriodConverter implements PropertyConverter<org.joda.time.Period> 
     private final static Pattern ALTERNATIVE_PATTERN = Pattern.compile(ALTERNATIVE_REGEX);
 
     @Override
-    public Period convert(String value, ConversionContext context) {
+    public Period convert(String value) {
         String trimmed = Objects.requireNonNull(value).trim();
 
-        addSupportedFormats(context);
+        ConversionContext context = ConversionContext.getContext();
+        if(context!=null) {
+            addSupportedFormats(context);
+        }
 
         MutablePeriod result = null;
         PeriodParser format = null;

@@ -18,12 +18,12 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.format.*;
 
+import javax.config.spi.Converter;
 import java.util.Objects;
 
 /**
@@ -44,7 +44,7 @@ import java.util.Objects;
  *     <li>{@code yyyy-MM-dd'T'HHz}</li>
  * </ul>
  */
-public class InstantConverter implements PropertyConverter<Instant> {
+public class InstantConverter implements Converter<Instant> {
     static final String PARSER_FORMATS[] = {
         "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
         "yyyy-MM-dd'T'HH:mm:ss.SSSz",
@@ -88,8 +88,11 @@ public class InstantConverter implements PropertyConverter<Instant> {
     }
 
     @Override
-    public Instant convert(String value, ConversionContext context) {
-        context.addSupportedFormats(InstantConverter.class, PARSER_FORMATS);
+    public Instant convert(String value) {
+        ConversionContext context = ConversionContext.getContext();
+        if(context!=null) {
+            context.addSupportedFormats(InstantConverter.class, PARSER_FORMATS);
+        }
 
         String trimmed = Objects.requireNonNull(value).trim();
         try {

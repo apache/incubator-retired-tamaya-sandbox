@@ -18,11 +18,11 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.LocalTime;
 import org.joda.time.format.*;
 
+import javax.config.spi.Converter;
 import java.util.Objects;
 
 /**
@@ -40,7 +40,7 @@ import java.util.Objects;
  *     <li>{@code fraction       = ('.' | ',') digit+ }</li>
  * </ul>
  */
-public class LocalTimeConverter implements PropertyConverter<LocalTime> {
+public class LocalTimeConverter implements Converter<LocalTime> {
     static final String PARSER_FORMATS[] = {
             "['T']` time-element\n" +
                     "time-element = HH [minute-element] | [fraction]\n" +
@@ -50,8 +50,11 @@ public class LocalTimeConverter implements PropertyConverter<LocalTime> {
     };
 
     @Override
-    public LocalTime convert(String value, ConversionContext context) {
-        context.addSupportedFormats(LocalTimeConverter.class, PARSER_FORMATS);
+    public LocalTime convert(String value) {
+        ConversionContext context = ConversionContext.getContext();
+        if(context!=null) {
+            context.addSupportedFormats(LocalTimeConverter.class, PARSER_FORMATS);
+        }
 
         String trimmed = Objects.requireNonNull(value).trim();
         try {

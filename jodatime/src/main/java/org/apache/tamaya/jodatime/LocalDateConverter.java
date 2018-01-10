@@ -18,14 +18,14 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.DateTimeParser;
 
+import javax.config.spi.Converter;
 import java.util.Objects;
 
 /**
@@ -41,7 +41,7 @@ import java.util.Objects;
  *     <li>{@code xxxx '-W' ww ['-' e]}</li>
  * </ul>
  */
-public class LocalDateConverter implements PropertyConverter<LocalDate> {
+public class LocalDateConverter implements Converter<LocalDate> {
     static final String PARSER_FORMATS[] = {
             "yyyy ['-' MM ['-' dd]]",
             "yyyy ['-' DDD]",
@@ -66,9 +66,11 @@ public class LocalDateConverter implements PropertyConverter<LocalDate> {
     }
 
     @Override
-    public LocalDate convert(String value, ConversionContext context) {
-        context.addSupportedFormats(LocalDateConverter.class, PARSER_FORMATS);
-
+    public LocalDate convert(String value) {
+        ConversionContext context = ConversionContext.getContext();
+        if(context!=null) {
+            context.addSupportedFormats(LocalDateConverter.class, PARSER_FORMATS);
+        }
         String trimmed = Objects.requireNonNull(value).trim();
         LocalDate result = null;
 

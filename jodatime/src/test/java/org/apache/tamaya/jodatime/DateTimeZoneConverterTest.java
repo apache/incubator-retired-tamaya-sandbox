@@ -18,9 +18,7 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.TypeLiteral;
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.ConversionContext.Builder;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.DateTimeZone;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -57,10 +55,8 @@ public class DateTimeZoneConverterTest {
              {"+04:00", DateTimeZone.forID("+04:00")},
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (Object[] pair : inputResultPairs) {
-            DateTimeZone zone = converter.convert((String) pair[0], context);
+            DateTimeZone zone = converter.convert((String) pair[0]);
 
             assertThat("Converter failed to convert input value " + pair[0], zone, notNullValue());
             assertThat(zone, equalTo((DateTimeZone)pair[1]));
@@ -77,10 +73,8 @@ public class DateTimeZoneConverterTest {
              "2007-08-01+00:00"
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (String input : inputValues) {
-            DateTimeZone date = converter.convert(input, context);
+            DateTimeZone date = converter.convert(input);
 
             assertThat(date, nullValue());
         }
@@ -91,9 +85,11 @@ public class DateTimeZoneConverterTest {
         String firstFormat = "Time zone in the form [+-]hh:mm via the regex (\\+|-)?\\d+ (DateTimeZoneConverter)";
         String secondFormat = "All time zone ids supported by Joda Time (DateTimeZoneConverter)";
 
-        ConversionContext context = new Builder(TypeLiteral.of(DateTimeZone.class)).build();
+        ConversionContext context = new ConversionContext.Builder(null, DateTimeZone.class).build();
+        ConversionContext.setContext(context);
 
-        DateTimeZone result = converter.convert("+01:00", context);
+        DateTimeZone result = converter.convert("+01:00");
+        ConversionContext.reset();
 
         assertThat(result, notNullValue());
         assertThat(context.getSupportedFormats(), hasSize(2));

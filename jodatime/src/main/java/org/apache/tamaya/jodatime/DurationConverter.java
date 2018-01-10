@@ -18,15 +18,15 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.Duration;
 import org.joda.time.Period;
 
+import javax.config.spi.Converter;
 import java.util.Objects;
 
 /**
- * <p>A {@link PropertyConverter} for converting a string representation of a
+ * <p>A {@link Converter} for converting a string representation of a
  * given duration into a {@link Duration} instance.</p>
  *
  * <p>This converter supports the following string representations of a
@@ -38,23 +38,26 @@ import java.util.Objects;
  *     <li>All the period formats as defined in {@link PeriodConverter}.</li>
  *   </ol>
  */
-public class DurationConverter implements PropertyConverter<Duration> {
+public class DurationConverter implements Converter<Duration> {
 
     private PeriodConverter periodConverter = new PeriodConverter();
 
     @Override
-    public Duration convert(String value, ConversionContext context) {
+    public Duration convert(String value) {
         String trimmed = Objects.requireNonNull(value).trim();
-        addSupportedFormats(context);
+        ConversionContext context = ConversionContext.getContext();
+        if(context!=null) {
+            addSupportedFormats(context);
+        }
         try {
             return Duration.parse(value);
         }catch(Exception e){
             Period period = null;
             if(value.startsWith("P")){
-                period = periodConverter.convert("P0Y0M0W"+value.substring(1), null);
+                period = periodConverter.convert("P0Y0M0W"+value.substring(1));
             }
             if(period == null){
-                period = periodConverter.convert("P0000-00-"+value, null);
+                period = periodConverter.convert("P0000-00-"+value);
             }
             if(period != null){
                 return period.toStandardDuration();

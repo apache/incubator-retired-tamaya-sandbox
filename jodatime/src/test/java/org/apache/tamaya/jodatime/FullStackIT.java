@@ -18,16 +18,15 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.TypeLiteral;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.MutablePeriod;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import javax.config.Config;
+import javax.config.ConfigProvider;
 
 import java.util.Locale;
 
@@ -41,10 +40,10 @@ public class FullStackIT {
     @Test
     public void retrieveJodaTimeValuesFromConfiguration() {
 
-        Configuration configuration = ConfigurationProvider.getConfiguration();
+        Config configuration = ConfigProvider.getConfig();
 
-        String dateTimeString = configuration.get("dateTimeValue");
-        DateTime dateTimeValue = configuration.get("dateTimeValue", DateTime.class);
+        String dateTimeString = configuration.getValue("dateTimeValue", String.class);
+        DateTime dateTimeValue = configuration.getValue("dateTimeValue", DateTime.class);
 
         assertThat(dateTimeString, notNullValue());
         assertThat(dateTimeString, equalTo("2010-08-08T14:00:15.5+10:00"));
@@ -54,16 +53,16 @@ public class FullStackIT {
 
     @Test
     public void retrieveDateTimeZoneValueFromConfiguration() {
-        Configuration configuration = ConfigurationProvider.getConfiguration();
+        Config configuration = ConfigProvider.getConfig();
 
-        String zoneAAsString = configuration.get("dateTimeZoneValueA");
-        DateTimeZone zoneA = configuration.get("dateTimeZoneValueA", DateTimeZone.class);
+        String zoneAAsString = configuration.getValue("dateTimeZoneValueA", String.class);
+        DateTimeZone zoneA = configuration.getValue("dateTimeZoneValueA", DateTimeZone.class);
 
         assertThat(zoneAAsString, equalTo("UTC"));
         assertThat(zoneA, equalTo(DateTimeZone.forID("UTC")));
 
-        String zoneBAsString = configuration.get("dateTimeZoneValueB");
-        DateTimeZone zoneB = configuration.get("dateTimeZoneValueB", DateTimeZone.class);
+        String zoneBAsString = configuration.getValue("dateTimeZoneValueB", String.class);
+        DateTimeZone zoneB = configuration.getValue("dateTimeZoneValueB", DateTimeZone.class);
 
         assertThat(zoneBAsString, equalTo("+01:00"));
         assertThat(zoneB, equalTo(DateTimeZone.forOffsetHours(1)));
@@ -71,15 +70,15 @@ public class FullStackIT {
 
     @Test
     public void retrievePeriodValueFromConfiguration() {
-        Configuration configuration = ConfigurationProvider.getConfiguration();
+        Config configuration = ConfigProvider.getConfig();
 
         MutablePeriod referenceValue = new MutablePeriod();
 
         ISOPeriodFormat.standard().getParser().parseInto(referenceValue, "P1Y1M1W1DT1H1M1S", 0,
                                                          Locale.ENGLISH);
 
-        String periodAsString = configuration.get("periodValueA");
-        Period period = configuration.get("periodValueA", Period.class);
+        String periodAsString = configuration.getValue("periodValueA", String.class);
+        Period period = configuration.getValue("periodValueA", Period.class);
 
         assertThat(periodAsString, equalTo("P1Y1M1W1DT1H1M1S"));
         assertThat(period, equalTo(referenceValue.toPeriod()));

@@ -18,9 +18,7 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.TypeLiteral;
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -74,10 +72,8 @@ public class DateTimeConverterTest {
              {"2007-08-31T16:47:01+00:00 ", FORMATTER.parseDateTime("2007-08-31T16:47:01.0+00:00")},
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (Object[] pair : inputResultPairs) {
-            DateTime date = converter.convert((String)pair[0], context);
+            DateTime date = converter.convert((String)pair[0]);
 
             assertThat("Converter failed to convert input value " + pair[0], date, notNullValue());
             assertThat(date.isEqual((DateTime)pair[1]), is(true));
@@ -90,10 +86,8 @@ public class DateTimeConverterTest {
              "00:00", "a", "-", "+ :00", "+00:"
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (String input : inputValues) {
-            DateTime date = converter.convert(input, context);
+            DateTime date = converter.convert(input);
 
             assertThat(date, nullValue());
         }
@@ -101,10 +95,11 @@ public class DateTimeConverterTest {
 
     @Test
     public void allSupportedFormatsAreAddedToTheConversionContext() {
-        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTime.class)).build();
+        ConversionContext context = new ConversionContext.Builder(null, DateTime.class).build();
+        ConversionContext.setContext(context);
 
-        converter.convert("2007-08-31T16+00:00", context);
-
+        converter.convert("2007-08-31T16+00:00");
+        ConversionContext.reset();
         assertThat(context.getSupportedFormats(), hasSize(DateTimeConverter.PARSER_FORMATS.length));
 
         for (String format : DateTimeConverter.PARSER_FORMATS) {

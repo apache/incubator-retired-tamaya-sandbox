@@ -18,10 +18,10 @@
  */
 package org.apache.tamaya.jodatime;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 import org.joda.time.DateTimeZone;
 
+import javax.config.spi.Converter;
 import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
@@ -37,14 +37,17 @@ import static java.util.Objects.requireNonNull;
  * @see DateTimeZone
  * @see DateTimeZone#getAvailableIDs()
  */
-public class DateTimeZoneConverter implements PropertyConverter<DateTimeZone> {
+public class DateTimeZoneConverter implements Converter<DateTimeZone> {
     private static final String PATTERN_REGEX = "(\\+|-)?\\d+";
     private static final Pattern IS_INTEGER_VALUE = Pattern.compile(PATTERN_REGEX);
 
     @Override
-    public DateTimeZone convert(String value, ConversionContext context) {
+    public DateTimeZone convert(String value) {
         String trimmed = requireNonNull(value).trim();
-        addSupportedFormats(context);
+        ConversionContext context = ConversionContext.getContext();
+        if(context!=null) {
+            addSupportedFormats(context);
+        }
 
         DateTimeZone result = null;
 
