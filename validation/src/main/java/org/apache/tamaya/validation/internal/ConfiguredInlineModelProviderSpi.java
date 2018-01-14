@@ -18,52 +18,48 @@
  */
 package org.apache.tamaya.validation.internal;
 
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.validation.ConfigModel;
-import org.apache.tamaya.validation.spi.ConfigModelReader;
-import org.apache.tamaya.validation.spi.ModelProviderSpi;
+import org.apache.tamaya.functions.ConfigurationFunctions;
+import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.spi.ConfigValidationReader;
+import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import javax.config.Config;
+import javax.config.ConfigProvider;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * ConfigModel provider that reads model metadata from the current {@link org.apache.tamaya.Configuration}.
+ * ConfigModel provider that reads model metadata from the current {@link Config}.
  */
-public class ConfiguredInlineModelProviderSpi implements ModelProviderSpi {
+public class ConfiguredInlineModelProviderSpi implements ValidationModelProviderSpi {
 
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(ConfiguredInlineModelProviderSpi.class.getName());
     /** parameter to disable this provider. By default the provider is active. */
-    private static final String MODEL_EANABLED_PARAM = "org.apache.tamaya.model.integrated.enabled";
+    private static final String MODEL_EANABLED_PARAM = "org.apache.tamaya.validation.integrated.enabled";
 
     /** The configModels read. */
-    private List<ConfigModel> configModels = new ArrayList<>();
+    private List<ValidationModel> configModels = new ArrayList<>();
 
 
     /**
      * Constructor, typically called by the {@link java.util.ServiceLoader}.
      */
     public ConfiguredInlineModelProviderSpi() {
-        String enabledVal = ConfigurationProvider.getConfiguration().get(MODEL_EANABLED_PARAM);
-        boolean enabled = enabledVal == null || "true".equalsIgnoreCase(enabledVal);
+        Config config = ConfigProvider.getConfig();
+        Optional<String> enabledVal = config.getOptionalValue(MODEL_EANABLED_PARAM, String.class);
+        boolean enabled = Boolean.parseBoolean(enabledVal.orElse("true"));
         if (enabled) {
             LOG.info("Reading model configuration from config...");
-            Map<String,String> config = ConfigurationProvider.getConfiguration().getProperties();
-            String owner = config.get("_model.provider");
-            if(owner==null){
-                owner = config.toString();
-            }
-            configModels.addAll(ConfigModelReader.loadValidations(owner, config));
+            Optional<String> owner = config.getOptionalValue("_model.provider", String.class);
+            configModels.addAll(ConfigValidationReader.loadValidations(owner.orElse(config.toString()),
+                    ConfigurationFunctions.toMap(config)));
         }
         configModels = Collections.unmodifiableList(configModels);
     }
 
 
-    public Collection<ConfigModel> getConfigModels() {
+    public Collection<ValidationModel> getConfigModels() {
         return configModels;
     }
 }

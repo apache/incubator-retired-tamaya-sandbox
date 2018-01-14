@@ -18,9 +18,9 @@
  */
 package org.apache.tamaya.validation;
 
-import org.apache.tamaya.Configuration;
 import org.apache.tamaya.validation.spi.AbstractConfigModel;
 
+import javax.config.Config;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -32,11 +32,11 @@ public final class Validation {
     /**
      * the config section.
      */
-    private final ConfigModel configModel;
+    private final ValidationModel configModel;
     /**
      * The configModel result.
      */
-    private final ValidationResult result;
+    private final ValidationType result;
     /**
      * The configModel message.
      */
@@ -48,8 +48,8 @@ public final class Validation {
      * @param configModel the configModel item, not null.
      * @return a new validation result containing valid parts of the given model.
      */
-    public static Validation ofValid(ConfigModel configModel) {
-        return new Validation(configModel, ValidationResult.VALID, null);
+    public static Validation checkValid(ValidationModel configModel) {
+        return new Validation(configModel, ValidationType.VALID, null);
     }
 
     /**
@@ -58,8 +58,8 @@ public final class Validation {
      * @param configModel the configModel item, not null.
      * @return a new validation result containing missing parts of the given model.
      */
-    public static Validation ofMissing(ConfigModel configModel) {
-        return new Validation(configModel, ValidationResult.MISSING, null);
+    public static Validation checkMissing(ValidationModel configModel) {
+        return new Validation(configModel, ValidationType.MISSING, null);
     }
 
     /**
@@ -69,8 +69,8 @@ public final class Validation {
      * @param message Additional message to be shown (optional).
      * @return a new validation result containing missing parts of the given model with a message.
      */
-    public static Validation ofMissing(ConfigModel configModel, String message) {
-        return new Validation(configModel, ValidationResult.MISSING, message);
+    public static Validation checkMissing(ValidationModel configModel, String message) {
+        return new Validation(configModel, ValidationType.MISSING, message);
     }
 
     /**
@@ -80,8 +80,8 @@ public final class Validation {
      * @param error error message to add.
      * @return a new validation result containing erroneous parts of the given model with the given error message.
      */
-    public static Validation ofError(ConfigModel configModel, String error) {
-        return new Validation(configModel, ValidationResult.ERROR, error);
+    public static Validation checkError(ValidationModel configModel, String error) {
+        return new Validation(configModel, ValidationType.ERROR, error);
     }
 
     /**
@@ -91,8 +91,8 @@ public final class Validation {
      * @param warning warning message to add.
      * @return a new validation result containing warning parts of the given model with the given warning message.
      */
-    public static Validation ofWarning(ConfigModel configModel, String warning) {
-        return new Validation(configModel, ValidationResult.WARNING, warning);
+    public static Validation checkWarning(ValidationModel configModel, String warning) {
+        return new Validation(configModel, ValidationType.WARNING, warning);
     }
 
     /**
@@ -102,8 +102,8 @@ public final class Validation {
      * @param alternativeUsage allows setting a message to indicate non-deprecated replacement, maybe null.
      * @return a new validation result containing deprecated parts of the given model with an optional message.
      */
-    public static Validation ofDeprecated(ConfigModel configModel, String alternativeUsage) {
-        return new Validation(configModel, ValidationResult.DEPRECATED, alternativeUsage != null ? "Use instead: " + alternativeUsage : null);
+    public static Validation checkDeprecation(ValidationModel configModel, String alternativeUsage) {
+        return new Validation(configModel, ValidationType.DEPRECATED, alternativeUsage != null ? "Use instead: " + alternativeUsage : null);
     }
 
     /**
@@ -112,8 +112,8 @@ public final class Validation {
      * @param configModel the configModel item, not null.
      * @return a new validation result containing deprecated parts of the given model.
      */
-    public static Validation ofDeprecated(ConfigModel configModel) {
-        return new Validation(configModel, ValidationResult.DEPRECATED, null);
+    public static Validation checkDeprecation(ValidationModel configModel) {
+        return new Validation(configModel, ValidationType.DEPRECATED, null);
     }
 
     /**
@@ -124,19 +124,19 @@ public final class Validation {
      * @param type model type 
      * @return a corresponding configModel item
      */
-    public static Validation ofUndefined(final String owner, final String key, final ModelTarget type) {
+    public static Validation checkUndefined(final String owner, final String key, final ValidationTarget type) {
         return new Validation(new AbstractConfigModel(owner, key, false, "Undefined key: " + key) {
 
             @Override
-            public ModelTarget getType() {
+            public ValidationTarget getType() {
                 return type;
             }
 
             @Override
-            public Collection<Validation> validate(Configuration config) {
+            public Collection<Validation> validate(Config config) {
                 return Collections.emptyList();
             }
-        }, ValidationResult.UNDEFINED, null);
+        }, ValidationType.UNDEFINED, null);
     }
 
 
@@ -148,7 +148,7 @@ public final class Validation {
      * @param message    the detail message.
      * @return new validation result.
      */
-    public static Validation of(ConfigModel configModel, ValidationResult result, String message) {
+    public static Validation of(ValidationModel configModel, ValidationType result, String message) {
         return new Validation(configModel, result, message);
     }
 
@@ -160,7 +160,7 @@ public final class Validation {
      * @param result     the configModel result, not null.
      * @param message    the detail message.
      */
-    private Validation(ConfigModel configModel, ValidationResult result, String message) {
+    private Validation(ValidationModel configModel, ValidationType result, String message) {
         this.message = message;
         this.configModel = Objects.requireNonNull(configModel);
         this.result = Objects.requireNonNull(result);
@@ -171,7 +171,7 @@ public final class Validation {
      *
      * @return the section, never null.
      */
-    public ConfigModel getConfigModel() {
+    public ValidationModel getConfigModel() {
         return configModel;
     }
 
@@ -180,7 +180,7 @@ public final class Validation {
      *
      * @return the result, never null.
      */
-    public ValidationResult getResult() {
+    public ValidationType getResult() {
         return result;
     }
 

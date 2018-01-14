@@ -20,6 +20,8 @@ package org.apache.tamaya.validation;
 
 import org.junit.Test;
 
+import javax.config.ConfigProvider;
+
 /**
  * Created by Anatole on 10.08.2015.
  */
@@ -27,26 +29,27 @@ public class ValidationTests {
 
     @Test
     public void testDefaults(){
-        System.err.println(ConfigModelManager.validate());
+        System.err.println(ValidationManager.getInstance().validate(ConfigProvider.getConfig()));
     }
 
     @Test
     public void testAllValidations(){
-        System.err.println(ConfigModelManager.getModels());
+        System.err.println(ValidationManager.getInstance().getModels());
     }
 
     @Test
     public void testConfigInfo(){
-        System.err.println(ConfigModelManager.getConfigInfoText());
+        System.err.println(ValidationManager.getInstance().getConfigInfoText());
     }
 
     @Test
     public void testAllValidationsInclUndefined(){
-        System.err.println("Including UNDEFINED: \n" + ConfigModelManager.validate(true));
+        System.err.println("Including UNDEFINED: \n" + ValidationManager.getInstance().validate(
+                ConfigProvider.getConfig(), true));
     }
 
     @Test
     public void testModels(){
-        System.err.println("MODELS: " +ConfigModelManager.getModels());
+        System.err.println("MODELS: " + ValidationManager.getInstance().getModels());
     }
 }

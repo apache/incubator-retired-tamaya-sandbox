@@ -18,14 +18,14 @@
  */
 package org.apache.tamaya.validation;
 
-import org.apache.tamaya.Configuration;
 
+import javax.config.Config;
 import java.util.Collection;
 
 /**
  * Base structure describing a validated item, by default a parameter or a section.
  */
-public interface ConfigModel {
+public interface ValidationModel {
 
     /**
      * Access the owner.
@@ -37,7 +37,7 @@ public interface ConfigModel {
      * Get the type of item that is modelled.
      * @return the modelled type, never null.
      */
-    ModelTarget getType();
+    ValidationTarget getType();
 
     /**
      * Get the item's name, it should minimally describe the validation. Examples are:
@@ -73,6 +73,6 @@ public interface ConfigModel {
      * @param config the configuration to be validated against, not null.
      * @return the validation result, or null, if not applicable.
      */
-    Collection<Validation> validate(Configuration config);
+    Collection<Validation> validate(Config config);
 
 }

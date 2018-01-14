@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.validation.internal;
 
-import org.apache.tamaya.validation.ModelTarget;
+import org.apache.tamaya.validation.ValidationTarget;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ConfigDocumentationBeanTest {
 
-    private final ConfigDocumentationBean mbean = new ConfigDocumentationBean();
+    private final ConfigValidationBean mbean = new ConfigValidationBean();
 
     @Test
     public void testValidate_NoUnknowns() throws Exception {
@@ -73,7 +73,7 @@ public class ConfigDocumentationBeanTest {
 
     @Test
     public void testGetConfigurationModel_WithSection() throws Exception {
-        String results = mbean.getConfigurationModel(ModelTarget.Parameter);
+        String results = mbean.getConfigurationModel(ValidationTarget.Parameter);
         assertNotNull(results);
         assertFalse(results.trim().isEmpty());
         assertTrue(results.contains("\"target\":\"Parameter\""));
@@ -92,7 +92,7 @@ public class ConfigDocumentationBeanTest {
 
     @Test
     public void testFindValidationModels() throws Exception {
-        String results = mbean.findValidationModels("a", ModelTarget.Section);
+        String results = mbean.findValidationModels("a", ValidationTarget.Section);
         assertNotNull(results);
         assertFalse(results.trim().isEmpty());
         assertFalse(results.contains("\"target\":\"Parameter\""));

@@ -18,11 +18,11 @@
  */
 package org.apache.tamaya.validation.spi;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.validation.ConfigModel;
-import org.apache.tamaya.validation.ModelTarget;
+import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.ValidationTarget;
 import org.apache.tamaya.validation.Validation;
 
+import javax.config.Config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,23 +33,23 @@ import java.util.Objects;
 /**
  * Default configuration Model for a configuration area.
  */
-public class GroupModel implements ConfigModel {
+public class ValidateGroup implements ValidationModel {
 
     private final String owner;
     private final String name;
     private boolean required;
-    private List<ConfigModel> childModels = new ArrayList<>();
+    private List<ValidationModel> childModels = new ArrayList<>();
 
-    public GroupModel(String owner, String name, ConfigModel... configModels){
+    public ValidateGroup(String owner, String name, ValidationModel... configModels){
         this(owner, name, Arrays.asList(configModels));
     }
 
-    public GroupModel(String owner, String name, Collection<ConfigModel> configModels){
+    public ValidateGroup(String owner, String name, Collection<ValidationModel> configModels){
         this.owner = Objects.requireNonNull(owner);
         this.name = Objects.requireNonNull(name);
         this.childModels.addAll(configModels);
         this.childModels = Collections.unmodifiableList(childModels);
-        for(ConfigModel val: configModels) {
+        for(ValidationModel val: configModels) {
             if(val.isRequired()){
                 this.required = true;
                 break;
@@ -73,8 +73,8 @@ public class GroupModel implements ConfigModel {
     }
 
     @Override
-    public ModelTarget getType() {
-        return ModelTarget.Group;
+    public ValidationTarget getType() {
+        return ValidationTarget.Group;
     }
 
     @Override
@@ -83,20 +83,20 @@ public class GroupModel implements ConfigModel {
             return null;
         }
         StringBuilder b = new StringBuilder();
-        for(ConfigModel val: childModels){
+        for(ValidationModel val: childModels){
             b.append("  >> ").append(val);
         }
         return b.toString();
     }
 
-    public Collection<ConfigModel> getValidations(){
+    public Collection<ValidationModel> getValidations(){
         return childModels;
     }
 
     @Override
-    public Collection<Validation> validate(Configuration config) {
+    public Collection<Validation> validate(Config config) {
         List<Validation> result = new ArrayList<>(1);
-        for(ConfigModel child: childModels){
+        for(ValidationModel child: childModels){
             result.addAll(child.validate(config));
         }
         return result;

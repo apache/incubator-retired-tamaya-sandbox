@@ -18,12 +18,11 @@
  */
 package org.apache.tamaya.validation;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.validation.spi.ConfigDocumentationMBean;
-import org.apache.tamaya.validation.spi.ModelProviderSpi;
+import org.apache.tamaya.validation.spi.ConfigValidationMBean;
+import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
 import org.apache.tamaya.spi.ServiceContextManager;
 
+import javax.config.Config;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -32,11 +31,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,33 +41,47 @@ import java.util.logging.Logger;
 /**
  * Validator accessor to validate the current configuration.
  */
-public final class ConfigModelManager {
+public final class ValidationManager {
 
     /** The logger used. */
-    private static final Logger LOG = Logger.getLogger(ConfigModelManager.class.getName());
+    private static final Logger LOG = Logger.getLogger(ValidationManager.class.getName());
+
+    private static final ValidationManager INSTANCE = new ValidationManager();
+
+    private List<ValidationModel> models = new ArrayList<>();
+
+    /**
+     * Get the singleton instance.
+     * @return the instance, never null.
+     */
+    public static ValidationManager getInstance(){
+        return INSTANCE;
+    }
 
     /**
      * Singleton constructor.
      */
-    private ConfigModelManager() {
+    private ValidationManager() {
+        for (ValidationModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ValidationModelProviderSpi.class)) {
+            models.addAll(model.getConfigModels());
+        }
+        Collections.sort(models, new Comparator<ValidationModel>() {
+            @Override
+            public int compare(ValidationModel k1, ValidationModel k2) {
+                return k2.getName().compareTo(k2.getName());
+            }
+        });
     }
 
     /**
      * Access the usage statistics for the recorded uses of configuration.
      * @return usage statistics
      */
-    public static String getConfigInfoText(){
+    public String getConfigInfoText(){
         StringBuilder b = new StringBuilder();
-        List<ConfigModel> models = new ArrayList<>(getModels());
-        Collections.sort(models, new Comparator<ConfigModel>() {
-            @Override
-            public int compare(ConfigModel k1, ConfigModel k2) {
-                return k2.getName().compareTo(k2.getName());
-            }
-        });
         b.append("TYPE    OWNER      NAME                                              MANDATORY   DESCRIPTION\n");
         b.append("-----------------------------------------------------------------------------------------------------\n");
-        for(ConfigModel model:models){
+        for(ValidationModel model:models){
             switch(model.getType()){
                 case Parameter:
                     b.append("PARAM   ");
@@ -99,7 +110,7 @@ public final class ConfigModelManager {
         return b.toString();
     }
 
-    private static String formatWithFixedLength(String name, int targetLength) {
+    private String formatWithFixedLength(String name, int targetLength) {
         targetLength = targetLength-1;
         StringBuilder b = new StringBuilder();
         if(name.length() > targetLength){
@@ -118,12 +129,8 @@ public final class ConfigModelManager {
      *
      * @return the sections defined, never null.
      */
-    public static Collection<ConfigModel> getModels() {
-        List<ConfigModel> result = new ArrayList<>();
-        for (ModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ModelProviderSpi.class)) {
-            result.addAll(model.getConfigModels());
-        }
-        return result;
+    public Collection<ValidationModel> getModels() {
+        return Collections.unmodifiableCollection(models);
     }
 
 
@@ -135,9 +142,9 @@ public final class ConfigModelManager {
      * @param <T> type of the model to filter for.
      * @return the sections defined, never null.
      */
-    public static <T extends ConfigModel> T getModel(String name, Class<T> modelType) {
-        for (ModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ModelProviderSpi.class)) {
-            for(ConfigModel configModel : model.getConfigModels()) {
+    public <T extends ValidationModel> T getModel(String name, Class<T> modelType) {
+        for (ValidationModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ValidationModelProviderSpi.class)) {
+            for(ValidationModel configModel : model.getConfigModels()) {
                 if(configModel.getName().equals(name) && configModel.getClass().equals(modelType)) {
                     return modelType.cast(configModel);
                 }
@@ -152,13 +159,13 @@ public final class ConfigModelManager {
      * @param targets the target types only to be returned (optional).
      * @return the sections defined, never null.
      */
-    public static Collection<ConfigModel> findModels(String namePattern, ModelTarget... targets) {
-        List<ConfigModel> result = new ArrayList<>();
-        for (ModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ModelProviderSpi.class)) {
-            for(ConfigModel configModel : model.getConfigModels()) {
+    public Collection<ValidationModel> findModels(String namePattern, ValidationTarget... targets) {
+        List<ValidationModel> result = new ArrayList<>();
+        for (ValidationModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ValidationModelProviderSpi.class)) {
+            for(ValidationModel configModel : model.getConfigModels()) {
                 if(configModel.getName().matches(namePattern)) {
                     if(targets.length>0){
-                        for(ModelTarget tgt:targets){
+                        for(ValidationTarget tgt:targets){
                             if(configModel.getType().equals(tgt)){
                                 result.add(configModel);
                                 break;
@@ -174,30 +181,12 @@ public final class ConfigModelManager {
     }
 
     /**
-     * Validates the current configuration.
-     *
-     * @return the validation results, never null.
-     */
-    public static Collection<Validation> validate() {
-        return validate(false);
-    }
-
-    /**
-     * Validates the current configuration.
-     * @param showUndefined show any unknown parameters.
-     * @return the validation results, never null.
-     */
-    public static Collection<Validation> validate(boolean showUndefined) {
-        return validate(ConfigurationProvider.getConfiguration(), showUndefined);
-    }
-
-    /**
      * Validates the given configuration.
      *
      * @param config the configuration to be validated against, not null.
      * @return the validation results, never null.
      */
-    public static Collection<Validation> validate(Configuration config) {
+    public Collection<Validation> validate(Config config) {
         return validate(config, false);
     }
 
@@ -208,16 +197,18 @@ public final class ConfigModelManager {
      * @param showUndefined allows filtering for undefined configuration elements.
      * @return the validation results, never null.
      */
-    public static Collection<Validation> validate(Configuration config, boolean showUndefined) {
+    public Collection<Validation> validate(Config config, boolean showUndefined) {
         List<Validation> result = new ArrayList<>();
-        for (ConfigModel defConf : getModels()) {
+        for (ValidationModel defConf : getModels()) {
             result.addAll(defConf.validate(config));
         }
         if(showUndefined){
-            Map<String,String> map = new HashMap<>(config.getProperties());
-            Set<String> areas = extractTransitiveAreas(map.keySet());
-            for (ConfigModel defConf : getModels()) {
-                if(ModelTarget.Section.equals(defConf.getType())){
+            Iterable<String> map = config.getPropertyNames();
+            Set<String> keys = new HashSet<>();
+            map.forEach(keys::add);
+            Set<String> areas = extractTransitiveAreas(keys);
+            for (ValidationModel defConf : getModels()) {
+                if(ValidationTarget.Section.equals(defConf.getType())){
                     for (Iterator<String> iter = areas.iterator();iter.hasNext();){
                         String area = iter.next();
                         if(area.matches(defConf.getName())){
@@ -225,29 +216,29 @@ public final class ConfigModelManager {
                         }
                     }
                 }
-                if(ModelTarget.Parameter.equals(defConf.getType())){
-                    map.remove(defConf.getName());
+                if(ValidationTarget.Parameter.equals(defConf.getType())){
+                    keys.remove(defConf.getName());
                 }
             }
-            outer:for(Map.Entry<String,String> entry:map.entrySet()){
-                for (ConfigModel defConf : getModels()) {
-                    if(ModelTarget.Section.equals(defConf.getType())){
-                        if(defConf.getName().endsWith(".*") && entry.getKey().matches(defConf.getName())){
+            outer:for(String key:keys){
+                for (ValidationModel defConf : getModels()) {
+                    if(ValidationTarget.Section.equals(defConf.getType())){
+                        if(defConf.getName().endsWith(".*") && key.matches(defConf.getName())){
                             // Ignore parameters that are part of transitive section.
                             continue outer;
                         }
                     }
                 }
-                result.add(Validation.ofUndefined("<auto>", entry.getKey(), ModelTarget.Parameter));
+                result.add(Validation.checkUndefined("<auto>", key, ValidationTarget.Parameter));
             }
             for(String area:areas){
-                result.add(Validation.ofUndefined("<auto>", area, ModelTarget.Section));
+                result.add(Validation.checkUndefined("<auto>", area, ValidationTarget.Section));
             }
         }
         return result;
     }
 
-    private static java.util.Set<java.lang.String> extractTransitiveAreas(Set<String> keys) {
+    private java.util.Set<java.lang.String> extractTransitiveAreas(Set<String> keys) {
         Set<String> transitiveClosure = new HashSet<>();
         for(String key:keys){
             int index = key.lastIndexOf('.');
@@ -262,23 +253,23 @@ public final class ConfigModelManager {
 
 
     /**
-     * Registers the {@link ConfigDocumentationMBean} mbean for accessing config documentation into the local platform
+     * Registers the {@link ConfigValidationMBean} mbean for accessing config documentation into the local platform
      * mbean server.
      */
-    public static void registerMBean() {
+    public void registerMBean() {
         registerMBean(null);
     }
 
     /**
-     * Registers the {@link ConfigDocumentationMBean} mbean for accessing config documentation into the local platform
+     * Registers the {@link ConfigValidationMBean} mbean for accessing config documentation into the local platform
      * mbean server.
      * 
      * @param context allows to specify an additional MBean context, maybe {@code null}. 
      */
-    public static void registerMBean(String context) {
+    public void registerMBean(String context) {
         try{
-            ConfigDocumentationMBean configMbean = ServiceContextManager.getServiceContext()
-                    .getService(ConfigDocumentationMBean.class);
+            ConfigValidationMBean configMbean = ServiceContextManager.getServiceContext()
+                    .getService(ConfigValidationMBean.class);
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
             ObjectName on = context==null?new ObjectName("org.apache.tamaya.model:type=ConfigDocumentationMBean"):
                     new ObjectName("org.apache.tamaya.model:type=ConfigDocumentationMBean,context="+context);
@@ -293,6 +284,11 @@ public final class ConfigModelManager {
             LOG.log(Level.WARNING,
                     "Failed to register ConfigDocumentationMBean.", e);
         }
+    }
+
+    @Override
+    public String toString(){
+        return "ValidationManager\n  "+getConfigInfoText();
     }
 
 }

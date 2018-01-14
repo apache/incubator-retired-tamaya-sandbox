@@ -21,7 +21,7 @@ package org.apache.tamaya.validation;
 /**
  * Enum type describing the different validation results supported.
  */
-public enum ValidationResult {
+public enum ValidationType {
     /**
      * The validated item is valid
      */

@@ -25,13 +25,14 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormats;
-import org.apache.tamaya.validation.ConfigModel;
-import org.apache.tamaya.validation.spi.ConfigModelReader;
-import org.apache.tamaya.validation.spi.ModelProviderSpi;
+import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.spi.ConfigValidationReader;
+import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
 import org.apache.tamaya.resource.ConfigResources;
+
+import javax.config.ConfigProvider;
 
 /**
  * ConfigModel provider that reads model metadata from property files from
@@ -43,7 +44,7 @@ import org.apache.tamaya.resource.ConfigResources;
  *  key value pairs within a map are separated by a colon.
  * </pre>
  */
-public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
+public class ConfiguredResourcesModelProviderSpi implements ValidationModelProviderSpi {
 
     /**
      * The logger.
@@ -52,7 +53,7 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
     /**
      * The parameter that can be used to configure the location of the configuration model resources.
      */
-    private static final String MODEL_RESOURCE_PARAM = "org.apache.tamaya.model.resources";
+    private static final String MODEL_RESOURCE_PARAM = "org.apache.tamaya.validation.resources";
     /**
      * The resource class to checked for testing the availability of the resources extension module.
      */
@@ -73,7 +74,7 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
     /**
      * The configModels read.
      */
-    private List<ConfigModel> configModels = new ArrayList<>();
+    private List<ValidationModel> configModels = new ArrayList<>();
 
     /**
      * Initializes the flag showing if the formats module is present (required).
@@ -106,7 +107,7 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
         if (!AVAILABLE) {
             LOG.info("tamaya-format extension is required to read model configuration, No extended model support AVAILABLE.");
         } else {
-            final String resources = ConfigurationProvider.getConfiguration().get(MODEL_RESOURCE_PARAM);
+            final String resources = ConfigProvider.getConfig().getValue(MODEL_RESOURCE_PARAM, String.class);
             if (resources == null || resources.trim().isEmpty()) {
                 LOG.info("Mo model resources location configured in " + MODEL_RESOURCE_PARAM + ".");
                 return;
@@ -142,7 +143,7 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
                     if(owner==null){
                         owner = config.toString();
                     }
-                    configModels.addAll(ConfigModelReader.loadValidations(owner, props));
+                    configModels.addAll(ConfigValidationReader.loadValidations(owner, props));
                 } catch (final Exception e) {
                     Logger.getLogger(getClass().getName()).log(Level.SEVERE,
                             "Error loading config model data from " + config, e);
@@ -154,7 +155,7 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
 
 
     @Override
-    public Collection<ConfigModel> getConfigModels() {
+    public Collection<ValidationModel> getConfigModels() {
         return configModels;
     }
 }

@@ -18,14 +18,14 @@
  */
 package org.apache.tamaya.validation.internal;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.validation.ConfigModel;
-import org.apache.tamaya.validation.ConfigModelManager;
-import org.apache.tamaya.validation.ModelTarget;
+import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.ValidationManager;
+import org.apache.tamaya.validation.ValidationTarget;
 import org.apache.tamaya.validation.Validation;
-import org.apache.tamaya.validation.spi.ConfigDocumentationMBean;
+import org.apache.tamaya.validation.spi.ConfigValidationMBean;
 
+import javax.config.Config;
+import javax.config.ConfigProvider;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -43,9 +43,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * MBean implementation of {@link ConfigDocumentationMBean}.
+ * MBean implementation of {@link ConfigValidationMBean}.
  */
-public class ConfigDocumentationBean implements ConfigDocumentationMBean{
+public class ConfigValidationBean implements ConfigValidationMBean {
 
     private final JsonWriterFactory writerFactory;
 
@@ -62,9 +62,9 @@ public class ConfigDocumentationBean implements ConfigDocumentationMBean{
             return compare;
         }
     };
-    private static final Comparator<ConfigModel> VAL_COMPARATOR = new Comparator<ConfigModel>() {
+    private static final Comparator<ValidationModel> VAL_COMPARATOR = new Comparator<ValidationModel>() {
         @Override
-        public int compare(ConfigModel v1, ConfigModel v2) {
+        public int compare(ValidationModel v1, ValidationModel v2) {
             int compare = v1.getType().compareTo(v2.getType());
             if(compare==0){
                 compare = v1.getName().compareTo(v2.getName());
@@ -73,12 +73,12 @@ public class ConfigDocumentationBean implements ConfigDocumentationMBean{
         }
     };
 
-    private Configuration config;
+    private Config config;
 
     /**
      * Default constructor, using the current configuration being available.
      */
-    public ConfigDocumentationBean(){
+    public ConfigValidationBean(){
         this(null);
     }
 
@@ -88,7 +88,7 @@ public class ConfigDocumentationBean implements ConfigDocumentationMBean{
      * context should be used, e.g. one mbean per ear, app deployment.
      * @param config the configuration to be used.
      */
-    public ConfigDocumentationBean(Configuration config){
+    public ConfigValidationBean(Config config){
         this.config = config;
         Map<String, Object> writerProperties = new HashMap<>(1);
         writerProperties.put(JsonGenerator.PRETTY_PRINTING, true);
@@ -99,13 +99,13 @@ public class ConfigDocumentationBean implements ConfigDocumentationMBean{
      * Access the configuration.
      * @return either the configuration bound to this bean, or the current configuration.
      */
-    private Configuration getConfig(){
-        return config!=null?config: ConfigurationProvider.getConfiguration();
+    private Config getConfig(){
+        return config!=null?config: ConfigProvider.getConfig();
     }
 
     @Override
     public String validate(boolean showUndefined) {
-        List<Validation> validations = new ArrayList<>(ConfigModelManager.validate(getConfig(), showUndefined));
+        List<Validation> validations = new ArrayList<>(ValidationManager.getInstance().validate(getConfig(), showUndefined));
         Collections.sort(validations, COMPARATOR);
         JsonArrayBuilder builder = Json.createArrayBuilder();
         for(Validation val:validations){
@@ -118,37 +118,37 @@ public class ConfigDocumentationBean implements ConfigDocumentationMBean{
 
     @Override
     public String getConfigurationModel() {
-        List<ConfigModel> configModels = new ArrayList<>(ConfigModelManager.getModels());
+        List<ValidationModel> configModels = new ArrayList<>(ValidationManager.getInstance().getModels());
         Collections.sort(configModels, VAL_COMPARATOR);
         JsonArrayBuilder result = Json.createArrayBuilder();
-        for(ConfigModel val: configModels){
+        for(ValidationModel val: configModels){
             result.add(toJsonObject(val));
         }
         return formatJson(result.build());
     }
 
     @Override
-    public String getConfigurationModel(ModelTarget type) {
+    public String getConfigurationModel(ValidationTarget type) {
         return findValidationModels(".*", type);
     }
 
     @Override
     public String findConfigurationModels(String namePattern) {
-        List<ConfigModel> configModels = new ArrayList<>(ConfigModelManager.findModels(namePattern));
+        List<ValidationModel> configModels = new ArrayList<>(ValidationManager.getInstance().findModels(namePattern));
         Collections.sort(configModels, VAL_COMPARATOR);
         JsonArrayBuilder result = Json.createArrayBuilder();
-        for(ConfigModel val: configModels){
+        for(ValidationModel val: configModels){
             result.add(toJsonObject(val));
         }
         return formatJson(result.build());
     }
 
     @Override
-    public String findValidationModels(String namePattern, ModelTarget... type) {
-        List<ConfigModel> configModels = new ArrayList<>(ConfigModelManager.findModels(namePattern, type));
+    public String findValidationModels(String namePattern, ValidationTarget... type) {
+        List<ValidationModel> configModels = new ArrayList<>(ValidationManager.getInstance().findModels(namePattern, type));
         Collections.sort(configModels, VAL_COMPARATOR);
         JsonArrayBuilder result = Json.createArrayBuilder();
-        for(ConfigModel val: configModels){
+        for(ValidationModel val: configModels){
             result.add(toJsonObject(val));
         }
         return formatJson(result.build());
@@ -160,7 +160,7 @@ public class ConfigDocumentationBean implements ConfigDocumentationMBean{
     }
 
 
-    private JsonObject toJsonObject(ConfigModel val) {
+    private JsonObject toJsonObject(ValidationModel val) {
         JsonObjectBuilder valJson = Json.createObjectBuilder().add("target", val.getType().toString())
                 .add("name", val.getName());
         if(val.getDescription()!=null) {

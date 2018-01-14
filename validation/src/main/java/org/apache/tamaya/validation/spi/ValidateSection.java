@@ -18,22 +18,21 @@
  */
 package org.apache.tamaya.validation.spi;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.validation.ConfigModel;
-import org.apache.tamaya.validation.ModelTarget;
+import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.ValidationTarget;
 import org.apache.tamaya.validation.Validation;
 
+import javax.config.Config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
  * Default configuration Model for a configuration section.
  */
-public class SectionModel extends GroupModel {
+public class ValidateSection extends ValidateGroup {
 
     /**
      * Creates a new builder.
@@ -52,7 +51,7 @@ public class SectionModel extends GroupModel {
      * @param required flag, if the section is required to be present.
      * @return the ConfigModel instance
      */
-    public static ConfigModel of(String owner, String name, boolean required){
+    public static ValidationModel of(String owner, String name, boolean required){
         return new Builder(owner, name).setRequired(required).build();
     }
 
@@ -64,7 +63,7 @@ public class SectionModel extends GroupModel {
      * @param configModels additional configModels
      * @return a new builder, never null.
      */
-    public static ConfigModel of(String owner, String name, boolean required, ConfigModel... configModels){
+    public static ValidationModel of(String owner, String name, boolean required, ValidationModel... configModels){
         return new Builder(owner, name).setRequired(required).addValidations(configModels).build();
     }
 
@@ -72,21 +71,21 @@ public class SectionModel extends GroupModel {
      * Internal constructor.
      * @param builder the builder, not null.
      */
-    protected SectionModel(Builder builder) {
+    protected ValidateSection(Builder builder) {
         super(builder.owner, builder.name, builder.childConfigModels);
     }
 
     @Override
-    public ModelTarget getType(){
-        return ModelTarget.Section;
+    public ValidationTarget getType(){
+        return ValidationTarget.Section;
     }
 
     @Override
-    public Collection<Validation> validate(Configuration config) {
-        Map<String,String> map = config.getProperties();
+    public Collection<Validation> validate(Config config) {
+        Iterable<String> propertyNames = config.getPropertyNames();
         String lookupKey = getName() + '.';
         boolean present = false;
-        for(String key:map.keySet()){
+        for(String key:propertyNames){
             if(key.startsWith("_")){
                 continue;
             }
@@ -97,7 +96,7 @@ public class SectionModel extends GroupModel {
         }
         List<Validation> result = new ArrayList<>(1);
         if(isRequired() && !present) {
-            result.add(Validation.ofMissing(this));
+            result.add(Validation.checkMissing(this));
         }
         result.addAll(super.validate(config));
         return result;
@@ -110,7 +109,7 @@ public class SectionModel extends GroupModel {
         if(isRequired()) {
             b.append(", required: " ).append(isRequired());
         }
-        for(ConfigModel val:getValidations()){
+        for(ValidationModel val:getValidations()){
              b.append(", ").append(val.toString());
         }
         return b.toString();
@@ -129,7 +128,7 @@ public class SectionModel extends GroupModel {
         /** The required flag. */
         private boolean required;
         /** The (optional) custom validations.*/
-        private final List<ConfigModel> childConfigModels = new ArrayList<>();
+        private final List<ValidationModel> childConfigModels = new ArrayList<>();
 
         /**
          * Creates a new Builder.
@@ -146,7 +145,7 @@ public class SectionModel extends GroupModel {
          * @param configModels the configModels, not null.
          * @return the Builder for chaining.
          */
-        public Builder addValidations(ConfigModel... configModels){
+        public Builder addValidations(ValidationModel... configModels){
             this.childConfigModels.addAll(Arrays.asList(configModels));
             return this;
         }
@@ -156,7 +155,7 @@ public class SectionModel extends GroupModel {
          * @param configModels the configModels, not null.
          * @return the Builder for chaining.
          */
-        public Builder addValidations(Collection<ConfigModel> configModels){
+        public Builder addValidations(Collection<ValidationModel> configModels){
             this.childConfigModels.addAll(configModels);
             return this;
         }
@@ -195,8 +194,8 @@ public class SectionModel extends GroupModel {
          * Build a new ConfigModel instance.
          * @return the new ConfigModel instance, not null.
          */
-        public ConfigModel build(){
-            return new SectionModel(this);
+        public ValidationModel build(){
+            return new ValidateSection(this);
         }
     }
 }

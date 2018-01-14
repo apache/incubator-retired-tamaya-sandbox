@@ -18,12 +18,12 @@
  */
 package org.apache.tamaya.validation.internal;
 
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.validation.ConfigModel;
-import org.apache.tamaya.validation.spi.ConfigModelReader;
-import org.apache.tamaya.validation.spi.ModelProviderSpi;
-import org.apache.tamaya.spisupport.propertysource.MapPropertySource;
+import org.apache.tamaya.base.configsource.MapConfigSource;
+import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.spi.ConfigValidationReader;
+import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
 
+import javax.config.ConfigProvider;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 
 /**
  * ConfigModel provider that reads model metadata from property files from
- * {@code classpath*:META-INF/configmodel.properties} in the following format:
+ * {@code classpath*:META-INF/configvalidation.properties} in the following format:
  * <pre>
  * ###################################################################################
  * # Example of a configuration metamodel expressed via properties.
@@ -104,36 +104,36 @@ import java.util.logging.Logger;
  * {model}a.b.c.aValidatedSection.configModels=org.apache.tamaya.model.TestValidator
  * </pre>
  */
-public class ConfiguredPropertiesModelProviderSpi implements ModelProviderSpi {
+public class ConfiguredPropertiesModelProviderSpi implements ValidationModelProviderSpi {
 
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(ConfiguredPropertiesModelProviderSpi.class.getName());
     /** parameter to disable this provider. By default the provider is active. */
-    private static final String MODEL_EANABLED_PARAM = "org.apache.tamaya.model.default.enabled";
+    private static final String MODEL_EANABLED_PARAM = "org.apache.tamaya.validation.default.enabled";
     /** The configModels read. */
-    private List<ConfigModel> configModels = new ArrayList<>();
+    private List<ValidationModel> configModels = new ArrayList<>();
 
     public ConfiguredPropertiesModelProviderSpi() {
-        String enabledVal = ConfigurationProvider.getConfiguration().get(MODEL_EANABLED_PARAM);
-        boolean enabled = enabledVal == null || "true".equalsIgnoreCase(enabledVal);
+        Optional<String> enabledVal = ConfigProvider.getConfig().getOptionalValue(MODEL_EANABLED_PARAM, String.class);
+        boolean enabled = Boolean.parseBoolean(enabledVal.orElse("true"));
         if(!enabled){
-            LOG.info("Reading model data from META-INF/configmodel.properties has been disabled.");
+            LOG.info("Reading model data from META-INF/configvalidation.properties has been disabled.");
             return;
         }
         try {
-            LOG.info("Reading model data from META-INF/configmodel.properties...");
-            Enumeration<URL> configs = getClass().getClassLoader().getResources("META-INF/configmodel.properties");
+            LOG.info("Reading model data from META-INF/configvalidation.properties...");
+            Enumeration<URL> configs = getClass().getClassLoader().getResources("META-INF/configvalidation.properties");
             while (configs.hasMoreElements()) {
                 URL config = configs.nextElement();
                 try (InputStream is = config.openStream()) {
                     Properties props = new Properties();
                     props.load(is);
-                    Map<String,String> data = MapPropertySource.getMap(props);
-                    String owner = data.get("_model.owner");
+                    Map<String,String> data = MapConfigSource.getMap(props);
+                    String owner = data.get("_model.provider");
                     if(owner==null){
                         owner = config.toString();
                     }
-                    configModels.addAll(ConfigModelReader.loadValidations(owner,
+                    configModels.addAll(ConfigValidationReader.loadValidations(owner,
                             data));
                 } catch (Exception e) {
                     Logger.getLogger(getClass().getName()).log(Level.SEVERE,
@@ -142,13 +142,13 @@ public class ConfiguredPropertiesModelProviderSpi implements ModelProviderSpi {
             }
         } catch (Exception e) {
             LOG.log(Level.SEVERE,
-                    "Error loading config metadata from META-INF/configmodel.properties", e);
+                    "Error loading config metadata from META-INF/configvalidation.properties", e);
         }
         configModels = Collections.unmodifiableList(configModels);
     }
 
 
-    public Collection<ConfigModel> getConfigModels() {
+    public Collection<ValidationModel> getConfigModels() {
         return configModels;
     }
 }

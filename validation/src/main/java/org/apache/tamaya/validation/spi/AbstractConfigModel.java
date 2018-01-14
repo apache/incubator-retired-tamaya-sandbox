@@ -18,14 +18,14 @@
  */
 package org.apache.tamaya.validation.spi;
 
-import org.apache.tamaya.validation.ConfigModel;
+import org.apache.tamaya.validation.ValidationModel;
 
 import java.util.Objects;
 
 /**
  * Default configuration Model for a configuration area.
  */
-public abstract class AbstractConfigModel implements ConfigModel, Comparable<ConfigModel> {
+public abstract class AbstractConfigModel implements ValidationModel, Comparable<ValidationModel> {
     private final String owner;
     private final String name;
     private final String description;
@@ -60,7 +60,7 @@ public abstract class AbstractConfigModel implements ConfigModel, Comparable<Con
     }
 
     @Override
-    public int compareTo(ConfigModel configModel) {
+    public int compareTo(ValidationModel configModel) {
         int compare = getType().compareTo(configModel.getType());
         if (compare != 0) {
             return compare;
