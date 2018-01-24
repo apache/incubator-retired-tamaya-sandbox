@@ -63,9 +63,9 @@ under the License.
         <arquillian.daemon.version>1.0.0.Alpha1</arquillian.daemon.version>
 
         <!-- Keep the JRuby version in sync with the one used by Asciidoctor -->
-        <asciidoctor.version>1.5.2</asciidoctor.version>
+        <asciidoctor.version>1.5.6</asciidoctor.version>
         <asciidoctor-diagramm.version>1.2.1</asciidoctor-diagramm.version>
-        <asciidoctorj.version>1.5.2</asciidoctorj.version>
+        <asciidoctorj.version>1.5.6</asciidoctorj.version>
         <checkstyle.version>2.15</checkstyle.version>
         <enforcer.version>1.4.1</enforcer.version>
         <gem.plugin>1.0.7</gem.plugin>
@@ -73,7 +73,7 @@ under the License.
         <hamcrest.version>2.0.0.0</hamcrest.version>
         <javadoc.version>2.10.4</javadoc.version>
         <!-- Must/should match the JRuby version used by AsciidoctorJ -->
-        <jruby.version>1.7.20</jruby.version>
+        <jruby.version>1.7.26</jruby.version>
         <findbugs.version>3.0.4</findbugs.version>
         <mockito.version>1.10.19</mockito.version>
         <rat.version>0.12</rat.version>
@@ -504,8 +504,7 @@ under the License.
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <!-- 20160816: 3.5.1 generates a broken site, maybe due to old asciidoc version?! -->
-                    <version>3.4</version>
+                    <version>3.7</version>
                     <inherited>true</inherited>
                     <dependencies>
                         <!-- 3.5.1: Fixes class not found
