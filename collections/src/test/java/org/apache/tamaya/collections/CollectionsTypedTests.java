@@ -18,9 +18,11 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.TypeLiteral;
+import javax.config.Config;
+import javax.config.ConfigProvider;
+
+import org.apache.tamaya.base.convert.ConversionContext;
+import org.apache.tamaya.spi.TypeLiteral;
 import org.junit.Test;
 
 import java.util.*;
@@ -40,13 +42,17 @@ public class CollectionsTypedTests {
 
     @Test
     public void testArrayListList_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<String> items = config.get("typed2.arraylist", new TypeLiteral<List<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.arraylist", new TypeLiteral<List<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        List<String> items = config.getValue("typed2.arraylist", List.class);
+        ConversionContext.reset();
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
         assertTrue(items instanceof ArrayList);
-        items = (List<String>) config.get("typed2.arraylist", List.class);
+        items = (List<String>) config.getValue("typed2.arraylist", List.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -55,13 +61,17 @@ public class CollectionsTypedTests {
 
     @Test
     public void testLinkedListList_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<String> items = config.get("typed2.linkedlist", new TypeLiteral<List<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.linkedlist", new TypeLiteral<List<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        List<String> items = config.getValue("typed2.linkedlist", List.class);
+        ConversionContext.reset();
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
         assertTrue(items instanceof LinkedList);
-        items = (List<String>) config.get("typed2.linkedlist", List.class);
+        items = (List<String>) config.getValue("typed2.linkedlist", List.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -71,13 +81,17 @@ public class CollectionsTypedTests {
 
     @Test
     public void testHashSet_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Set<String> items = config.get("typed2.hashset", new TypeLiteral<Set<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.hashset", new TypeLiteral<Set<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Set<String> items = config.getValue("typed2.hashset", Set.class);
+        ConversionContext.reset();
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
         assertTrue(items instanceof HashSet);
-        items = (Set<String>) config.get("typed2.hashset", Set.class);
+        items = (Set<String>) config.getValue("typed2.hashset", Set.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -86,13 +100,17 @@ public class CollectionsTypedTests {
 
     @Test
     public void testTreeSet_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Set<String> items = config.get("typed2.treeset", new TypeLiteral<Set<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.treeset", new TypeLiteral<Set<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Set<String> items = config.getValue("typed2.treeset", Set.class);
+        ConversionContext.reset();
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
         assertTrue(items instanceof TreeSet);
-        items = (Set<String>) config.get("typed2.treeset", Set.class);
+        items = (Set<String>) config.getValue("typed2.treeset", Set.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -101,9 +119,13 @@ public class CollectionsTypedTests {
 
     @Test
     public void testHashMap_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Map<String,String> items = config.get("typed2.hashmap", new TypeLiteral<Map<String,String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.treeset", new TypeLiteral<Map<String,String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Map<String, String> items = config.getValue("typed2.hashmap", Map.class);
         assertNotNull(items);
+        ConversionContext.reset();
         assertFalse(items.isEmpty());
         assertEquals(4, items.size());
         assertEquals("a", items.get("1"));
@@ -111,7 +133,7 @@ public class CollectionsTypedTests {
         assertEquals("c", items.get("3"));
         assertEquals(" ", items.get("4"));
         assertTrue(items instanceof HashMap);
-        items = (Map<String,String>) config.get("typed2.hashmap", Map.class);
+        items = (Map<String,String>) config.getValue("typed2.hashmap", Map.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(4, items.size());
@@ -124,9 +146,13 @@ public class CollectionsTypedTests {
 
     @Test
     public void testTreeMap_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Map<String,String> items = config.get("typed2.treemap", new TypeLiteral<Map<String,String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.treeset", new TypeLiteral<Map<String,String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Map<String, String> items = config.getValue("typed2.treemap", Map.class);
         assertNotNull(items);
+        ConversionContext.reset();
         assertFalse(items.isEmpty());
         assertEquals(4, items.size());
         assertEquals("a", items.get("1"));
@@ -134,7 +160,7 @@ public class CollectionsTypedTests {
         assertEquals("c", items.get("3"));
         assertEquals(" ", items.get("4"));
         assertTrue(items instanceof TreeMap);
-        items = (Map<String,String>) config.get("typed2.treemap", Map.class);
+        items = (Map<String,String>) config.getValue("typed2.treemap", Map.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(4, items.size());
@@ -147,13 +173,17 @@ public class CollectionsTypedTests {
 
     @Test
     public void testCollection_HashSet(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Collection<String> items = config.get("typed2.hashset", new TypeLiteral<Collection<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.treeset", new TypeLiteral<Collection<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Collection<String> items = config.getValue("typed2.hashset", Collection.class);
+        ConversionContext.reset();
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
         assertTrue(items instanceof HashSet);
-        items = (Collection<String>) config.get("typed2.hashset", Collection.class);
+        items = (Collection<String>) config.getValue("typed2.hashset", Collection.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -162,13 +192,17 @@ public class CollectionsTypedTests {
 
     @Test
     public void testCollection_TreeSet(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Collection<String> items = config.get("typed2.treeset", new TypeLiteral<Collection<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.treeset", new TypeLiteral<Collection<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Collection<String> items = config.getValue("typed2.treeset", Collection.class);
+        ConversionContext.reset();
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
         assertTrue(items instanceof TreeSet);
-        items = (Collection<String>) config.get("typed2.treeset", Collection.class);
+        items = (Collection<String>) config.getValue("typed2.treeset", Collection.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -177,13 +211,17 @@ public class CollectionsTypedTests {
 
     @Test
     public void testCollection_ArrayList(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Collection<String> items = config.get("typed2.arraylist", new TypeLiteral<Collection<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.arraylist", new TypeLiteral<Collection<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Collection<String> items = config.getValue("typed2.arraylist", Collection.class);
+        ConversionContext.reset();
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
         assertTrue(items instanceof ArrayList);
-        items = (Collection<String>) config.get("typed2.arraylist", Collection.class);
+        items = (Collection<String>) config.getValue("typed2.arraylist", Collection.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -192,13 +230,17 @@ public class CollectionsTypedTests {
 
     @Test
     public void testCollection_LinkedList(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Collection<String> items = config.get("typed2.linkedlist", new TypeLiteral<Collection<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed2.linkedlist", new TypeLiteral<Collection<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Collection<String> items = config.getValue("typed2.linkedlist", Collection.class);
+        ConversionContext.reset();
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
         assertTrue(items instanceof LinkedList);
-        items = (Collection<String>) config.get("typed2.linkedlist", Collection.class);
+        items = (Collection<String>) config.getValue("typed2.linkedlist", Collection.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());

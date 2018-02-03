@@ -18,13 +18,13 @@
 // -->
 <configuration>
 
-    <property-filters>
+    <filters>
         <org.apache.tamaya.metamodel.ext.MyFilter attrValue="attrValue1" overrideValue="overrideValue1">
             <name>my-filter-name</name>
             <elemValue>elemValue1</elemValue>
             <overrideValue>overrideValue2</overrideValue>
         </org.apache.tamaya.metamodel.ext.MyFilter>
-    </property-filters>
+    </filters>
 
 </configuration>
 

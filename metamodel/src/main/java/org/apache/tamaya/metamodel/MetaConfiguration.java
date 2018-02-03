@@ -18,16 +18,14 @@
  */
 package org.apache.tamaya.metamodel;
 
-import org.apache.tamaya.ConfigException;
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
-import org.apache.tamaya.spi.ConfigurationContext;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.config.Config;
+import javax.config.spi.ConfigBuilder;
+import javax.config.spi.ConfigProviderResolver;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -53,28 +51,28 @@ public final class MetaConfiguration {
     private MetaConfiguration(){}
 
     /**
-     * Creates a new {@link Configuration} using {@link #createConfiguration(URL)}
-     * and applies it as default configuration using {@link ConfigurationProvider#setConfiguration(Configuration)}.
+     * Creates a new {@link Config} using {@link #createConfiguration(URL)}
+     * and applies it as default configuration using {@link ConfigProviderResolver#registerConfig(Config, ClassLoader)} .
      */
-    public static void configure(){
+    public static void configure(ClassLoader classLoader){
         LOG.info("TAMAYA: Checking for meta-configuration...");
         URL configFile = getDefaultMetaConfig();
         if(configFile==null){
             LOG.warning("TAMAYA: No " + CONFIG_RESOURCE + " found, using defaults.");
         }
-        configure(configFile);
+        configure(configFile, classLoader);
     }
 
     /**
-     * Creates a new {@link Configuration} using {@link #createConfiguration(URL)}
-     * and applies it as default configuration using {@link ConfigurationProvider#setConfiguration(Configuration)}.
+     * Creates a new {@link Config} using {@link #createConfiguration(URL)}
+     * and applies it as default configuration using {@link ConfigProviderResolver#registerConfig(Config, ClassLoader)} .
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
      */
-    public static void configure(URL metaConfig){
+    public static void configure(URL metaConfig, ClassLoader classloader){
         try {
             // Let readers do their work
-            Configuration config = createConfiguration(metaConfig);
-            ConfigurationProvider.setConfiguration(config);
+            Config config = createConfiguration(metaConfig);
+            ConfigProviderResolver.instance().registerConfig(config, classloader);
         }catch(Exception e){
             LOG.log(Level.SEVERE, "TAMAYA: Error loading configuration.", e);
         }
@@ -105,16 +103,16 @@ public final class MetaConfiguration {
      * instance.
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
      * @return a new configuration context builder, never null.
-     * @throws ConfigException If the URL cannot be read.
+     * @throws IllegalStateException If the URL cannot be read.
      */
-    public static ConfigurationContextBuilder createContextBuilder(URL metaConfig){
+    public static ConfigBuilder createConfigBuilder(URL metaConfig){
         URL configFile = Objects.requireNonNull(metaConfig);
         LOG.info("TAMAYA: Loading tamaya-config.xml...");
         Document document = null;
         try {
             document = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder().parse(configFile.openStream());
-            ConfigurationContextBuilder builder = ConfigurationProvider.getConfigurationContextBuilder();
+            ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
             for(MetaConfigurationReader reader: ServiceContextManager.getServiceContext().getServices(
                     MetaConfigurationReader.class
             )){
@@ -123,7 +121,7 @@ public final class MetaConfiguration {
             }
             return builder;
         } catch (SAXException | IOException | ParserConfigurationException e) {
-            throw new ConfigException("Cannot read meta-config deom " + metaConfig, e);
+            throw new IllegalStateException("Cannot read meta-config from " + metaConfig, e);
         }
     }
 
@@ -134,9 +132,8 @@ public final class MetaConfiguration {
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
      * @return the new configuration instance.
      */
-    public static Configuration createConfiguration(URL metaConfig){
-        ConfigurationContext context = createContextBuilder(metaConfig).build();
-        return ConfigurationProvider.createConfiguration(context);
+    public static Config createConfiguration(URL metaConfig){
+        return createConfigBuilder(metaConfig).build();
     }
 
 }

@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * Factory for configuring file based property sources.
  */
 @Component
-public final class FilePropertySourceFactory extends ResourcePropertySourceFactory{
+public final class FilePropertySourceFactory extends ResourceConfigSourceFactory {
 
     private static final Logger LOG = Logger.getLogger(FilePropertySourceFactory.class.getName());
 

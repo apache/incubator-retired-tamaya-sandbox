@@ -18,13 +18,12 @@
  */
 package org.apache.tamaya.metamodel.ext;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import javax.config.spi.Converter;
 
 /**
  * Created by atsticks on 17.04.17.
  */
-public class MyConverter implements PropertyConverter<String> {
+public class MyConverter implements Converter<String> {
 
     private String name;
     private String attrValue;
@@ -32,7 +31,7 @@ public class MyConverter implements PropertyConverter<String> {
     private String overrideValue;
 
     @Override
-    public String convert(String value, ConversionContext context) {
+    public String convert(String value) {
         return value;
     }
 

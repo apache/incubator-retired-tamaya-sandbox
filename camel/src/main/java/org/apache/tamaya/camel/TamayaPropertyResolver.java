@@ -19,9 +19,9 @@
 package org.apache.tamaya.camel;
 
 import org.apache.camel.component.properties.PropertiesFunction;
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 
+import javax.config.Config;
+import javax.config.ConfigProvider;
 import java.util.Objects;
 
 
@@ -47,7 +47,7 @@ public class TamayaPropertyResolver implements PropertiesFunction{
 
     @Override
     public String apply(String remainder) {
-        Configuration config = ConfigurationProvider.getConfiguration();
-        return config.get(remainder);
+        Config config = ConfigProvider.getConfig();
+        return config.getOptionalValue(remainder, String.class).orElse(null);
     }
 }

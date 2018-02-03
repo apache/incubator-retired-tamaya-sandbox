@@ -18,16 +18,13 @@
  */
 package org.apache.tamaya.metamodel.internal.resolver;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
-import org.apache.tamaya.spi.ConfigurationContext;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.config.ConfigProvider;
+import javax.config.spi.ConfigBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -44,13 +41,12 @@ public class LoggingReader implements MetaConfigurationReader{
     private static final JavaResolver resolver = new JavaResolver();
 
     @Override
-    public void read(final Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(final Document document, ConfigBuilder configBuilder) {
         new Timer(true).schedule(new TimerTask() {
             @Override
             public void run() {
                 Map<String, Object> meta = new HashMap<>();
-                meta.put("context", ConfigurationProvider.getConfiguration().getContext());
-                meta.put("config", ConfigurationProvider.getConfiguration());
+                meta.put("config", ConfigProvider.getConfig());
                 NodeList nodeList = document.getDocumentElement().getElementsByTagName("context");
                 for(int i=0;i<nodeList.getLength();i++){
                     Node node = nodeList.item(i);

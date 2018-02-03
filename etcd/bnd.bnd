@@ -22,9 +22,11 @@ Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.etcd
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi,\
-    org.apache.tamaya.mutableconfig\
+	javax.config,\
+	javax.config.spi,\
+	org.osgi.framework,\
+	javax.annotation,\
+    org.apache.tamaya.mutableconfig,\
     org.apache.tamaya.mutableconfig.spi
 Export-Service: \
     org.apache.tamaya.spi.PropertySource

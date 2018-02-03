@@ -18,12 +18,12 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spi.PropertyValueCombinationPolicy;
+import org.apache.tamaya.meta.MetaProperties;
+import org.apache.tamaya.spi.ConfigValueCombinationPolicy;
 
 import javax.annotation.Priority;
+import javax.config.ConfigProvider;
+import javax.config.spi.ConfigSource;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * {@code _key.combination-policy=collect|override|fqPolicyClassName}.
  */
 @Priority(100)
-public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy {
+public class AdaptiveCombinationPolicy implements ConfigValueCombinationPolicy {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(AdaptiveCombinationPolicy.class.getName());
 
@@ -43,22 +43,18 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
      * Collecting combination policy using (optional) {@code item-separator} parameter for determining the separator
      * to combine multiple config entries found.
      */
-    private static final PropertyValueCombinationPolicy COLLECTING_POLICY = new PropertyValueCombinationPolicy(){
+    private static final ConfigValueCombinationPolicy COLLECTING_POLICY = new ConfigValueCombinationPolicy(){
         @Override
-        public PropertyValue collect(PropertyValue currentValue, String key, PropertySource propertySource) {
+        public String collect(String currentValue, String key, ConfigSource propertySource) {
             // check for default collection combination policies for lists, sets, maps etc.
-            final String separator = ConfigurationProvider.getConfiguration().getOrDefault('_' + key+".item-separator", ",");
-            PropertyValue newValue = propertySource.get(key);
+            String newValue = propertySource.getValue(key);
             if(newValue!=null){
                 if(currentValue==null){
                     return newValue;
                 }
-                String oldVal = currentValue.getValue();
-                newValue = newValue.toBuilder()
-                        .setValue(oldVal + ',' + newValue.getValue())
-                        .addMetaEntry("sources", currentValue.getSource() + "\n" + newValue.getSource())
-                        .build();
-                return newValue;
+                final String separator = MetaProperties.getOptionalMetaEntry(ConfigProvider.getConfig(),
+                        key, "item-separator").orElse(",");
+                return currentValue + separator + newValue;
             }else{
                 if(currentValue!=null){
                     return currentValue;
@@ -69,20 +65,21 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
     };
 
     /** Cache for loaded custom combination policies. */
-    private Map<Class, PropertyValueCombinationPolicy> configuredPolicies = new ConcurrentHashMap<>();
+    private Map<Class, ConfigValueCombinationPolicy> configuredPolicies = new ConcurrentHashMap<>();
 
     @Override
-    public PropertyValue collect(PropertyValue currentValue, String key, PropertySource propertySource){
-        if(key.startsWith("_")){
-            PropertyValue newValue = propertySource.get(key);
+    public String collect(String currentValue, String key, ConfigSource propertySource){
+        if(MetaProperties.isMetaEntry(key)){
+            String newValue = propertySource.getValue(key);
             if(newValue!=null){
                 return newValue;
             }
             return currentValue;
         }
-        String adaptiveCombinationPolicyClass  = ConfigurationProvider.getConfiguration().getOrDefault(
-                '_' + key+".combination-policy", "override");
-        PropertyValueCombinationPolicy combinationPolicy = null;
+        String adaptiveCombinationPolicyClass  = MetaProperties.getOptionalMetaEntry(
+                ConfigProvider.getConfig(),
+                key, "combination-policy").orElse("override");
+        ConfigValueCombinationPolicy combinationPolicy = null;
         switch(adaptiveCombinationPolicyClass){
             case "collect":
             case "COLLECT":
@@ -96,11 +93,11 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
                 if(LOG.isLoggable(Level.FINEST)){
                     LOG.finest("Using default (overriding) combination policy for key: " + key + "");
                 }
-                combinationPolicy = PropertyValueCombinationPolicy.DEFAULT_OVERRIDING_POLICY;
+                combinationPolicy = ConfigValueCombinationPolicy.DEFAULT_OVERRIDING_POLICY;
                 break;
             default:
                 try{
-                    Class<PropertyValueCombinationPolicy> clazz = (Class<PropertyValueCombinationPolicy>)
+                    Class<ConfigValueCombinationPolicy> clazz = (Class<ConfigValueCombinationPolicy>)
                             Class.forName(adaptiveCombinationPolicyClass);
                     combinationPolicy = configuredPolicies.get(clazz);
                     if(combinationPolicy==null){
@@ -114,7 +111,7 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
                 } catch(Exception e){
                     LOG.log(Level.SEVERE, "Error loading configured PropertyValueCombinationPolicy for " +
                             "key: " + key + ", using default (overriding) policy.", e);
-                    combinationPolicy = PropertyValueCombinationPolicy.DEFAULT_OVERRIDING_POLICY;
+                    combinationPolicy = ConfigValueCombinationPolicy.DEFAULT_OVERRIDING_POLICY;
                 }
         }
         return combinationPolicy.collect(currentValue, key, propertySource);

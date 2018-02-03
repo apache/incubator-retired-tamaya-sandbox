@@ -22,9 +22,9 @@
 
     <!-- Configuration definition. -->
 
-    <property-converters>
+    <converters>
         <org.apache.tamaya.metamodel.ext.MyConverter targetType="java.lang.String"/>
-    </property-converters>
+    </converters>
 
 </configuration>
 

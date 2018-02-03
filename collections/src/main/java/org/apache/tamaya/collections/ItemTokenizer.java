@@ -18,11 +18,16 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.TypeLiteral;
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
+import org.apache.tamaya.base.convert.ConverterManager;
+import org.apache.tamaya.meta.MetaProperties;
+import org.apache.tamaya.spi.ConfigContextSupplier;
+import org.apache.tamaya.spi.TypeLiteral;
 
+import javax.config.Config;
+import javax.config.ConfigProvider;
+import javax.config.spi.Converter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -45,13 +50,13 @@ final class ItemTokenizer {
      * {@code indexOf} calls, one by one. The last unresolvable item (without any next separator token)
      * is added at the end of the list.
      * @param value the value, not null.
-     * @param context the conversion context.
      * @return the tokenized value as list, in order of occurrence.
      */
-    public static List<String> split(String value, ConversionContext context){
-        return split(value, ConfigurationProvider.getConfiguration().getOrDefault(
-                '_' + context.getKey()+ "" +
-                        "item-separator", ","));
+    public static List<String> split(String value){
+        return split(value,
+                MetaProperties.getOptionalMetaEntry(
+                    config(),
+                key(),"item-separator").orElse( ","));
     }
 
     /**
@@ -87,12 +92,12 @@ final class ItemTokenizer {
      * If the value cannot be split then {@code key = value = mapEntry} is used for further processing. key or value
      * parts are normally trimmed, unless they are enmcosed with brackets {@code []}.
      * @param mapEntry the entry, not null.
-     * @param context the conversion context.
      * @return an array of length 2, with the trimmed and parsed key/value pair.
      */
-    public static String[] splitMapEntry(String mapEntry, ConversionContext context){
-        return splitMapEntry(mapEntry, ConfigurationProvider.getConfiguration().getOrDefault(
-                '_' + context.getKey()+".map-entry-separator", "::"));
+    public static String[] splitMapEntry(String mapEntry){
+        return splitMapEntry(mapEntry, MetaProperties.getOptionalMetaEntry(
+                config(),
+                key(),".map-entry-separator").orElse( "::"));
     }
 
     /**
@@ -129,33 +134,40 @@ final class ItemTokenizer {
     /**
      * Parses the given value into the required collection target type, defined by the context.
      * @param value the raw String value.
-     * @param context the context
      * @return the parsed value, or null.
      */
-    public static Object convertValue(String value, ConversionContext context) {
-        String converterClass = context.getConfiguration().get('_' + context.getKey() + ".item-converters");
-        List<PropertyConverter<Object>> valueConverters = new ArrayList<>(1);
+    public static Object convertValue(String value) {
+        String converterClass = MetaProperties.getOptionalMetaEntry(
+                config(),
+                key(),"item-converters").orElse(null);
+        List<Converter> valueConverters = new ArrayList<>(1);
         if (converterClass != null) {
             try {
-                valueConverters.add((PropertyConverter<Object>) Class.forName(converterClass).newInstance());
+                valueConverters.add((Converter<Object>) Class.forName(converterClass).newInstance());
             } catch (Exception e) {
                 LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
             }
         }
-        if (TypeLiteral.getTypeParameters(context.getTargetType().getType()).length>0) {
-            valueConverters.addAll(context.getConfigurationContext().getPropertyConverters(
-                    TypeLiteral.of(TypeLiteral.getTypeParameters(context.getTargetType().getType())[0])));
+        if (TypeLiteral.getTypeParameters(targetType()).length>0) {
+            if (config() instanceof ConfigContextSupplier) {
+                valueConverters.addAll(
+                        ((ConfigContextSupplier) config()).getConfigContext().getConverters(
+                                TypeLiteral.getTypeParameters(targetType())[0]
+                        ));
+            } else {
+                valueConverters.addAll(ConverterManager.defaultInstance().getConverters(
+                        TypeLiteral.getTypeParameters(targetType())[0]));
+            }
         }
-        ConversionContext ctx = new ConversionContext.Builder(context.getConfiguration(),
-                context.getConfigurationContext(), context.getKey(),
-                TypeLiteral.of(context.getTargetType().getType())).build();
+        ConversionContext ctx = new ConversionContext.Builder(config(), key(), targetType()).build();
+        ConversionContext.setContext(ctx);
         Object result = null;
         if (valueConverters.isEmpty()) {
             return value;
         } else {
-            for (PropertyConverter<Object> conv : valueConverters) {
+            for (Converter<Object> conv : valueConverters) {
                 try {
-                    result = conv.convert(value, ctx);
+                    result = conv.convert(value);
                     if (result != null) {
                         return result;
                     }
@@ -165,6 +177,30 @@ final class ItemTokenizer {
             }
         }
         LOG.log(Level.SEVERE, "Failed to convert collection value type for '" + value + "'.");
+        return null;
+    }
+
+    static final Type targetType() {
+        ConversionContext ctx = ConversionContext.getContext();
+        if(ctx!=null){
+            return ctx.getTargetType();
+        }
+        return null;
+    }
+
+    static final Config config() {
+        ConversionContext ctx = ConversionContext.getContext();
+        if(ctx!=null){
+            return ctx.getConfiguration();
+        }
+        return ConfigProvider.getConfig();
+    }
+
+    static final String key() {
+        ConversionContext ctx = ConversionContext.getContext();
+        if(ctx!=null){
+            return ctx.getKey();
+        }
         return null;
     }
 

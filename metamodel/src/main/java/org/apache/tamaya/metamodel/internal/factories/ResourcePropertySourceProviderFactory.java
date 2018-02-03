@@ -24,10 +24,10 @@ import org.apache.tamaya.format.ConfigurationFormats;
 import org.apache.tamaya.format.MappedConfigurationDataConfigSource;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.resource.ConfigResources;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertySourceProvider;
 import org.osgi.service.component.annotations.Component;
 
+import javax.config.spi.ConfigSource;
+import javax.config.spi.ConfigSourceProvider;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * Factory for configuring resource based property sources.
  */
 @Component
-public class ResourcePropertySourceProviderFactory implements ItemFactory<PropertySourceProvider>{
+public class ResourcePropertySourceProviderFactory implements ItemFactory<ConfigSourceProvider>{
 
     private static final Logger LOG = Logger.getLogger(ResourcePropertySourceProviderFactory.class.getName());
 
@@ -47,14 +47,14 @@ public class ResourcePropertySourceProviderFactory implements ItemFactory<Proper
     }
 
     @Override
-    public PropertySourceProvider create(Map<String,String> parameters) {
+    public ConfigSourceProvider create(Map<String,String> parameters) {
         String location = parameters.get("location");
         if(location==null){
             LOG.warning("Cannot read 'location' from " + parameters + ", example: " + example());
             return null;
         }
         Collection<URL> resources = createResources(location);
-        List<PropertySource> propertySources = new ArrayList<>();
+        List<ConfigSource> propertySources = new ArrayList<>();
         if(resources!=null) {
             String[] formats = getFormats(parameters);
             for(URL resource:resources) {
@@ -72,18 +72,13 @@ public class ResourcePropertySourceProviderFactory implements ItemFactory<Proper
                 }
             }
         }
-        final List<PropertySource> finalPropertySources = Collections.unmodifiableList(propertySources);
-        return new PropertySourceProvider() {
-            @Override
-            public Collection<PropertySource> getPropertySources() {
-                return finalPropertySources;
-            }
-        };
+        final List<ConfigSource> finalPropertySources = Collections.unmodifiableList(propertySources);
+        return (url)-> finalPropertySources;
     }
 
     @Override
-    public Class<? extends PropertySourceProvider> getType() {
-        return PropertySourceProvider.class;
+    public Class<? extends ConfigSourceProvider> getType() {
+        return ConfigSourceProvider.class;
     }
 
     protected String[] getFormats(Map<String, String> parameters) {

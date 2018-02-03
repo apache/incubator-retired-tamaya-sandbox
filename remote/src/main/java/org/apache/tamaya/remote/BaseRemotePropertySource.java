@@ -18,11 +18,10 @@
  */
 package org.apache.tamaya.remote;
 
+import org.apache.tamaya.base.configsource.BaseConfigSource;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormat;
 import org.apache.tamaya.json.JSONFormat;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertyValue;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -37,24 +36,21 @@ import java.util.logging.Logger;
  * Abstract base class for implementing a PropertySource that reads configuration data from a remote resource. It uses
  * by default the JSON format as defined by the JSON module.
  */
-public abstract class BaseRemotePropertySource implements PropertySource{
+public abstract class BaseRemotePropertySource extends BaseConfigSource{
 
     private static final ConfigurationFormat DEFAULT_FORMAT = new JSONFormat();
 
     private Map<String,String> properties = new HashMap<>();
 
     protected BaseRemotePropertySource(){
+        super();
+        setName(getClass().getSimpleName());
         reload();
     }
 
     @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
-
-    @Override
-    public Map<String, PropertyValue> getProperties() {
-        return PropertyValue.map(properties, getName());
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(properties);
     }
 
     /**
@@ -112,37 +108,6 @@ public abstract class BaseRemotePropertySource implements PropertySource{
             }
         }
         return Collections.emptyMap();
-    }
-
-    @Override
-    public boolean isScannable(){
-        return true;
-    }
-
-    @Override
-    public PropertyValue get(String key) {
-        return getProperties().get(key);
-    }
-
-    public int getOrdinal(){
-        PropertyValue configuredOrdinal = get(TAMAYA_ORDINAL);
-        if(configuredOrdinal!=null){
-            try{
-                return Integer.parseInt(configuredOrdinal.getValue());
-            } catch(Exception e){
-                Logger.getLogger(getClass().getName()).log(Level.WARNING,
-                        "Configured Ordinal is not an int number: " + configuredOrdinal, e);
-            }
-        }
-        return getDefaultOrdinal();
-    }
-
-    /**
-     * Returns the  default ordinal used, when no ordinal is set, or the ordinal was not parseable to an int value.
-     * @return the  default ordinal used, by default 0.
-     */
-    public int getDefaultOrdinal(){
-        return 0;
     }
 
 }

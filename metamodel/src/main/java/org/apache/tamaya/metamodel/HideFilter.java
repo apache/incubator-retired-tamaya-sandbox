@@ -19,10 +19,7 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.FilterContext;
-import org.apache.tamaya.spi.PropertyFilter;
-import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spi.PropertyValueBuilder;
+import org.apache.tamaya.spi.*;
 
 import java.util.Map;
 
@@ -31,27 +28,27 @@ import java.util.Map;
  * is changing underneath, hereby different values for single and multi-property access
  * are considered.
  */
-public class HideFilter implements PropertyFilter{
+public class HideFilter implements Filter{
 
     private String matches;
 
     /**
      * Factory for configuring immutable property filter.
      */
-    public static final class HideFilterFactory implements ItemFactory<PropertyFilter> {
+    public static final class HideFilterFactory implements ItemFactory<Filter> {
         @Override
         public String getName() {
             return "Hide";
         }
 
         @Override
-        public PropertyFilter create(Map<String,String> parameters) {
+        public Filter create(Map<String,String> parameters) {
             return new HideFilter();
         }
 
         @Override
-        public Class<? extends PropertyFilter> getType() {
-            return PropertyFilter.class;
+        public Class<? extends Filter> getType() {
+            return Filter.class;
         }
     }
 
@@ -65,9 +62,9 @@ public class HideFilter implements PropertyFilter{
     }
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
+    public String filterProperty(String key, String value) {
         if(matches !=null){
-            if(value.getKey().matches(matches)){
+            if(key.matches(matches)){
                 return null;
             }
         }

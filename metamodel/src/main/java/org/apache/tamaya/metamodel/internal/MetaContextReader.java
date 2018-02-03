@@ -21,7 +21,6 @@ package org.apache.tamaya.metamodel.internal;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
@@ -29,6 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.annotation.Priority;
+import javax.config.spi.ConfigBuilder;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -73,7 +73,7 @@ public class MetaContextReader implements MetaConfigurationReader {
     }
 
     @Override
-    public void read(Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(Document document, ConfigBuilder configBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("context");
         LOG.finer("Reading " + nodeList.getLength() + " meta context entries...");
         for(int i=0;i<nodeList.getLength();i++){

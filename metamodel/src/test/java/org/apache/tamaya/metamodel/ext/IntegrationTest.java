@@ -18,17 +18,16 @@
  */
 package org.apache.tamaya.metamodel.ext;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.metamodel.CachedFilter;
 import org.apache.tamaya.metamodel.MetaConfiguration;
 import org.apache.tamaya.metamodel.MetaContext;
-import org.apache.tamaya.spi.PropertyConverter;
-import org.apache.tamaya.spi.PropertyFilter;
-import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spi.*;
 import org.junit.Test;
 
+import javax.config.Config;
+import javax.config.ConfigProvider;
+import javax.config.spi.ConfigSource;
+import javax.config.spi.Converter;
 import java.net.URL;
 import java.util.List;
 
@@ -41,27 +40,32 @@ public class IntegrationTest {
 
     @Test
     public void checkSystemLoads(){
-        assertNotNull(ConfigurationProvider.getConfiguration());
-        System.out.println(ConfigurationProvider.getConfiguration());
+        assertNotNull(ConfigProvider.getConfig());
+        System.out.println(ConfigProvider.getConfig());
     }
 
     @Test
     public void testEmptyConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/empty-config.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/empty-config.xml"));
         assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertTrue(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
+        assertTrue(!config.getPropertyNames().iterator().hasNext());
+        assertTrue(!config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertTrue(context.getConverters().isEmpty());
+            assertTrue(context.getFilters().isEmpty());
+        }
     }
 
     @Test
     public void testMetaContextConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/context-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/context-test.xml"));
         assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
+        assertFalse(config.getPropertyNames().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertTrue(context.getFilters().isEmpty());
+        }
         MetaContext ctx = MetaContext.getInstance();
         assertFalse(ctx.getProperties().isEmpty());
         assertEquals(ctx.getId(), ctx.getProperty("_id"));
@@ -73,118 +77,127 @@ public class IntegrationTest {
 
     @Test
     public void testDefaultConvertersConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyconverters-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyconverters-test.xml"));
         assertNotNull(config);
-        assertTrue(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getProperties().isEmpty());
-        assertFalse(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(config.getContext(),
-                ConfigurationProvider.getConfigurationContextBuilder()
-                        .addDefaultPropertyConverters()
-                        .build());
-
+        assertFalse(config.getConfigSources().iterator().hasNext());
+        assertFalse(config.getPropertyNames().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertFalse(context.getConverters().isEmpty());
+            assertTrue(context.getFilters().isEmpty());
+        }
     }
 
     @Test
     public void testDefaultPropertySourcesConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertysources-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertysources-test.xml"));
         assertNotNull(config);
-        assertFalse(config.getProperties().isEmpty());
-        assertFalse(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(config.getContext(),
-                ConfigurationProvider.getConfigurationContextBuilder()
-                        .addDefaultPropertySources()
-                        .build());
-
+        assertTrue(config.getPropertyNames().iterator().hasNext());
+        assertTrue(config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertTrue(context.getConverters().isEmpty());
+            assertTrue(context.getFilters().isEmpty());
+        }
     }
 
     @Test
     public void testDefaultPropertyFiltersConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyfilters-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyfilters-test.xml"));
         assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertTrue(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertFalse(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(config.getContext(),
-                ConfigurationProvider.getConfigurationContextBuilder()
-                        .addDefaultPropertyFilters()
-                        .build());
-
+        assertFalse(config.getPropertyNames().iterator().hasNext());
+        assertFalse(config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertTrue(context.getConverters().isEmpty());
+            assertFalse(context.getFilters().isEmpty());
+        }
     }
 
     @Test
     public void testPropertyFiltersConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilters-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilters-test.xml"));
         assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertTrue(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertFalse(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(1, config.getContext().getPropertyFilters().size());
-        assertTrue(config.getContext().getPropertyFilters().get(0) instanceof CachedFilter);
+        assertFalse(config.getPropertyNames().iterator().hasNext());
+        assertFalse(config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertTrue(context.getConverters().isEmpty());
+            assertFalse(context.getFilters().isEmpty());
+            assertEquals(1, context.getFilters().size());
+            assertTrue(context.getFilters().get(0) instanceof CachedFilter);
+        }
     }
 
     @Test
     public void testPropertyConvertersConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverters-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverters-test.xml"));
         assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertTrue(config.getContext().getPropertySources().isEmpty());
-        assertFalse(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(1, config.getContext().getPropertyConverters().size());
-        List<PropertyConverter<Object>> converters = config.getContext().getPropertyConverters(TypeLiteral.of(String.class));
-        assertTrue(converters.get(0).getClass().equals(MyConverter.class));
+        assertFalse(config.getPropertyNames().iterator().hasNext());
+        assertFalse(config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertFalse(context.getConverters().isEmpty());
+            assertTrue(context.getFilters().isEmpty());
+            assertEquals(1, context.getConverters().size());
+            List<Converter> converters = context.getConverters(String.class);
+            assertTrue(converters.get(0).getClass().equals(MyConverter.class));
+        }
     }
 
     @Test
     public void testPropertySourcesConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysources-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysources-test.xml"));
         assertNotNull(config);
-        assertFalse(config.getProperties().isEmpty());
-        assertFalse(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(2, config.getContext().getPropertySources().size());
-        assertTrue(config.getContext().getPropertySources().get(0) instanceof MyPropertySource);
+        assertTrue(config.getPropertyNames().iterator().hasNext());
+        assertTrue(config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertTrue(context.getConverters().isEmpty());
+            assertTrue(context.getFilters().isEmpty());
+            assertEquals(2, context.getSources().size());
+            assertTrue(context.getSources().get(0) instanceof MyConfigSource);
+        }
     }
 
     @Test
     public void testPropertyFilterConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilter-config-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilter-config-test.xml"));
         assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertTrue(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertFalse(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(1, config.getContext().getPropertyFilters().size());
-        PropertyFilter filter = config.getContext().getPropertyFilters().get(0);
-        assertNotNull(filter);
-        assertTrue(filter instanceof MyFilter);
-        MyFilter myFilter = (MyFilter)filter;
-        assertEquals("my-filter-name", myFilter.getName());
-        assertEquals("attrValue1", myFilter.getAttrValue());
-        assertEquals("elemValue1", myFilter.getElemValue());
-        assertEquals("overrideValue2", myFilter.getOverrideValue());
+        assertFalse(config.getPropertyNames().iterator().hasNext());
+        assertFalse(config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertTrue(context.getConverters().isEmpty());
+            assertFalse(context.getFilters().isEmpty());
+            assertEquals(1, context.getFilters().size());
+            Filter filter = context.getFilters().get(0);
+            assertNotNull(filter);
+            assertTrue(filter instanceof MyFilter);
+            MyFilter myFilter = (MyFilter)filter;
+            assertEquals("my-filter-name", myFilter.getName());
+            assertEquals("attrValue1", myFilter.getAttrValue());
+            assertEquals("elemValue1", myFilter.getElemValue());
+            assertEquals("overrideValue2", myFilter.getOverrideValue());
+        }
     }
 
     @Test
     public void testPropertySourceConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysource-config-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysource-config-test.xml"));
         assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertFalse(config.getContext().getPropertySources().isEmpty());
-        assertTrue(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(1, config.getContext().getPropertySources().size());
-        PropertySource ps = config.getContext().getPropertySources().get(0);
+        assertFalse(config.getPropertyNames().iterator().hasNext());
+        assertTrue(config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertTrue(context.getConverters().isEmpty());
+            assertTrue(context.getFilters().isEmpty());
+            assertEquals(1, context.getSources().size());
+        }
+        ConfigSource ps = config.getConfigSources().iterator().next();
         assertNotNull(ps);
-        assertTrue(ps instanceof MyPropertySource);
-        MyPropertySource mySource = (MyPropertySource)ps;
+        assertTrue(ps instanceof MyConfigSource);
+        MyConfigSource mySource = (MyConfigSource)ps;
         assertEquals("my-source-name", mySource.getName2());
         assertEquals("attrValue1", mySource.getAttrValue());
         assertEquals("elemValue1", mySource.getElemValue());
@@ -193,22 +206,25 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyConverterConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverter-config-test.xml"));
+        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverter-config-test.xml"));
         assertNotNull(config);
-        assertTrue(config.getProperties().isEmpty());
-        assertTrue(config.getContext().getPropertySources().isEmpty());
-        assertFalse(config.getContext().getPropertyConverters().isEmpty());
-        assertTrue(config.getContext().getPropertyFilters().isEmpty());
-        assertEquals(1, config.getContext().getPropertyConverters().size());
-        PropertyConverter converter = config.getContext().getPropertyConverters().values().iterator()
-                .next().get(0);
-        assertNotNull(converter);
-        assertTrue(converter instanceof MyConverter);
-        MyConverter myConverter = (MyConverter)converter;
-        assertEquals("my-converter-name", myConverter.getName());
-        assertEquals("attrValue1", myConverter.getAttrValue());
-        assertEquals("elemValue1", myConverter.getElemValue());
-        assertEquals("overrideValue2", myConverter.getOverrideValue());
+        assertFalse(config.getPropertyNames().iterator().hasNext());
+        assertFalse(config.getConfigSources().iterator().hasNext());
+        if(config instanceof ConfigContextSupplier) {
+            ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
+            assertFalse(context.getConverters().isEmpty());
+            assertTrue(context.getFilters().isEmpty());
+            assertEquals(1, context.getConverters().size());
+            Converter converter = context.getConverters().values().iterator()
+                    .next().get(0);
+            assertNotNull(converter);
+            assertTrue(converter instanceof MyConverter);
+            MyConverter myConverter = (MyConverter)converter;
+            assertEquals("my-converter-name", myConverter.getName());
+            assertEquals("attrValue1", myConverter.getAttrValue());
+            assertEquals("elemValue1", myConverter.getElemValue());
+            assertEquals("overrideValue2", myConverter.getOverrideValue());
+        }
     }
 
     private URL getConfig(String resource) {

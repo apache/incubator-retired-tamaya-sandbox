@@ -18,9 +18,9 @@
 // -->
 <configuration>
 
-    <property-filters>
+    <filters>
         <defaults/>
-    </property-filters>
+    </filters>
 
 </configuration>
 

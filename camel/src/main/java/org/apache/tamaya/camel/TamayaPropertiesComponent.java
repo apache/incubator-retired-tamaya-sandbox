@@ -21,7 +21,9 @@ package org.apache.tamaya.camel;
 import java.util.Properties;
 
 import org.apache.camel.component.properties.PropertiesComponent;
-import org.apache.tamaya.ConfigurationProvider;
+
+import javax.config.Config;
+import javax.config.ConfigProvider;
 
 /**
  * Default Camel PropertiesComponent that additionally has cfg and tamaya prefixes configured for resolution of
@@ -69,7 +71,10 @@ public class TamayaPropertiesComponent extends PropertiesComponent{
     public void setTamayaOverrides(boolean enabled){
         if(enabled){
             final Properties props = new Properties();
-            props.putAll(ConfigurationProvider.getConfiguration().getProperties());
+            Config config = ConfigProvider.getConfig();
+            for(String key:config.getPropertyNames()) {
+                props.put(key, config.getValue(key, String.class));
+            }
             setOverrideProperties(props);
         } else{
             setOverrideProperties(null);

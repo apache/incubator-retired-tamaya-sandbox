@@ -18,9 +18,7 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
-
+import javax.config.spi.Converter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,7 +27,7 @@ import java.util.logging.Logger;
 /**
  *  PropertyConverter for gnerating LinkedList representation of a values.
  */
-public class LinkedListConverter implements PropertyConverter<LinkedList> {
+public class LinkedListConverter implements Converter<LinkedList> {
     private static final Logger LOG = Logger.getLogger(LinkedListConverter.class.getName());
 
     /** The shared instance, used by other collection converters in this package.*/
@@ -44,12 +42,12 @@ public class LinkedListConverter implements PropertyConverter<LinkedList> {
     }
 
     @Override
-    public LinkedList convert(String value, ConversionContext context) {
-        List<String> rawList = ItemTokenizer.split(value, context);
+    public LinkedList convert(String value) {
+        List<String> rawList = ItemTokenizer.split(value);
         LinkedList<Object> result = new LinkedList<>();
         for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw, context);
-            Object convValue = ItemTokenizer.convertValue(items[1], context);
+            String[] items = ItemTokenizer.splitMapEntry(raw);
+            Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.add(convValue);
                 continue;

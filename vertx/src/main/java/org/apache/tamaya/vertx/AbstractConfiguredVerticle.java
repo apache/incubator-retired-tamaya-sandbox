@@ -19,9 +19,11 @@
 package org.apache.tamaya.vertx;
 
 import io.vertx.core.AbstractVerticle;
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.inject.ConfigurationInjection;
+
+import javax.config.Config;
+import javax.config.ConfigProvider;
+import java.util.Optional;
 
 /**
  * Base verticle class that adds some convenience methods for accessing configuration.
@@ -29,20 +31,20 @@ import org.apache.tamaya.inject.ConfigurationInjection;
  */
 public abstract class AbstractConfiguredVerticle extends AbstractVerticle{
 
-    private Configuration configuration;
+    private Config configuration;
 
     public AbstractConfiguredVerticle() {
         configure();
     }
 
-    public Configuration getConfiguration(){
+    public Config getConfiguration(){
         if(configuration==null){
-            return ConfigurationProvider.getConfiguration();
+            return ConfigProvider.getConfig();
         }
         return configuration;
     }
 
-    public void setConfiguration(Configuration configuration){
+    public void setConfiguration(Config configuration){
         this.configuration = configuration;
     }
 
@@ -50,27 +52,19 @@ public abstract class AbstractConfiguredVerticle extends AbstractVerticle{
         ConfigurationInjection.getConfigurationInjector().configure(this, getConfiguration());
     }
 
-    protected final String getConfigProperty(String key){
-        return getConfiguration().get(key);
+    protected final String getConfigValue(String key){
+        return getConfiguration().getValue(key, String.class);
     }
 
-    protected final String getConfigPropertyOrDefault(String key, String defaultValue){
-        String val = getConfiguration().get(key);
-        if(val==null){
-            return defaultValue;
-        }
-        return val;
+    protected final Optional<String> getOptionalConfigValue(String key){
+        return getConfiguration().getOptionalValue(key, String.class);
     }
 
-    protected final <T> T getConfigProperty(String key, Class<T> type){
-        return getConfiguration().get(key, type);
+    protected final <T> T getConfigValue(String key, Class<T> type){
+        return getConfiguration().getValue(key, type);
     }
 
-    protected final <T> T getConfigPropertyOrDefault(String key, Class<T> type, T defaultValue){
-        T val = getConfiguration().get(key, type);
-        if(val==null){
-            return defaultValue;
-        }
-        return val;
+    protected final <T> Optional<T> getOptionalConfigValue(String key, Class<T> type){
+        return getConfiguration().getOptionalValue(key, type);
     }
 }

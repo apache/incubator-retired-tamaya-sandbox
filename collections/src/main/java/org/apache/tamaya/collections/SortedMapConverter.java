@@ -18,19 +18,17 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
-
+import javax.config.spi.Converter;
 import java.util.Collections;
 import java.util.SortedMap;
 
 /**
  *  PropertyConverter for gnerating a LIST representation of values.
  */
-public class SortedMapConverter implements PropertyConverter<SortedMap> {
+public class SortedMapConverter implements Converter<SortedMap> {
 
     @Override
-    public SortedMap convert(String value, ConversionContext context) {
-        return Collections.unmodifiableSortedMap(TreeMapConverter.getInstance().convert(value, context));
+    public SortedMap convert(String value) {
+        return Collections.unmodifiableSortedMap(TreeMapConverter.getInstance().convert(value));
     }
 }

@@ -18,36 +18,41 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.meta.MetaProperties;
 
+import javax.config.spi.Converter;
 import java.util.Collections;
 import java.util.List;
 
 /**
  *  PropertyConverter for gnerating a LIST representation of values.
  */
-public class ListConverter implements PropertyConverter<List> {
+public class ListConverter implements Converter<List> {
 
     @Override
-    public List convert(String value, ConversionContext context) {
-        String collectionType = context.getConfiguration().getOrDefault('_' + context.getKey()+".collection-type", "List");
+    public List convert(String value) {
+        String collectionType = MetaProperties.getOptionalMetaEntry(
+                ItemTokenizer.config(),
+                ItemTokenizer.key(),
+                "collection-type").orElse("List");
         if(collectionType.startsWith("java.util.")){
             collectionType = collectionType.substring("java.util.".length());
         }
         List result = null;
         switch(collectionType){
             case "LinkedList":
-                result = LinkedListConverter.getInstance().convert(value, context);
+                result = LinkedListConverter.getInstance().convert(value);
                 break;
             case "List":
             case "ArrayList":
             default:
-                result = ArrayListConverter.getInstance().convert(value, context);
+                result = ArrayListConverter.getInstance().convert(value);
                 break;
         }
-        if(context.getConfiguration().getOrDefault('_' + context.getKey()+".read-only",
-                Boolean.class, Boolean.TRUE)){
+        if(MetaProperties.getOptionalMetaEntry(
+                ItemTokenizer.config(),
+                ItemTokenizer.key(),
+                "read-only", boolean.class).orElse(true)){
             return Collections.unmodifiableList(result);
         }
         return result;

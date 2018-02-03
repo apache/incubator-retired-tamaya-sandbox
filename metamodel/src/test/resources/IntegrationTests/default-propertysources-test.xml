@@ -21,9 +21,9 @@
 
     <!-- Configuration definition. -->
 
-    <property-sources>
+    <sources>
        <defaults />
-    </property-sources>
+    </sources>
 
 </configuration>
 

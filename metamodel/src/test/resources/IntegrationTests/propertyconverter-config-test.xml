@@ -18,7 +18,7 @@
 // -->
 <configuration>
 
-    <property-converters>
+    <converters>
         <org.apache.tamaya.metamodel.ext.MyConverter targetType="java.lang.String"
                                                      attrValue="attrValue1"
                                                      overrideValue="overrideValue1">
@@ -26,7 +26,7 @@
             <elemValue>elemValue1</elemValue>
             <overrideValue>overrideValue2</overrideValue>
         </org.apache.tamaya.metamodel.ext.MyConverter>
-    </property-converters>
+    </converters>
 
 </configuration>
 

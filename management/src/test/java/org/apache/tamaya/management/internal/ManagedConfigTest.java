@@ -66,6 +66,7 @@ public class ManagedConfigTest {
     @org.junit.Test
     public void testGetConfigurationArea() throws Exception {
         Map<String,String> cfg = bean.getSection("java", false);
+        System.out.println(cfg.keySet());
         for(Map.Entry<String,String> en:cfg.entrySet()){
             assertEquals(System.getProperty(en.getKey()), en.getValue());
         }

@@ -22,13 +22,14 @@ import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
-import org.apache.tamaya.spi.PropertyValueCombinationPolicy;
+import org.apache.tamaya.spi.ConfigValueCombinationPolicy;
+import org.apache.tamaya.spi.TamayaConfigBuilder;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.config.spi.ConfigBuilder;
 import java.util.logging.Logger;
 
 
@@ -41,7 +42,7 @@ public class CombinationPolicyReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(CombinationPolicyReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationContextBuilder contextBuilder) {
+    public void read(Document document, ConfigBuilder configBuilder) {
         NodeList nodeList = document.getDocumentElement().getElementsByTagName("combination-policy");
         if(nodeList.getLength()==0){
             LOG.finest("No explicit combination policy configured, using default.");
@@ -53,10 +54,10 @@ public class CombinationPolicyReader implements MetaConfigurationReader{
         Node node = nodeList.item(0);
         String type = node.getAttributes().getNamedItem("class").getNodeValue();
         LOG.finest("Loading combination policy configured: " + type);
-        ItemFactory<PropertyValueCombinationPolicy> policyFactory = ItemFactoryManager.getInstance().getFactory(PropertyValueCombinationPolicy.class, type);
-        PropertyValueCombinationPolicy policy = policyFactory.create(ComponentConfigurator.extractParameters(node));
+        ItemFactory<ConfigValueCombinationPolicy> policyFactory = ItemFactoryManager.getInstance().getFactory(ConfigValueCombinationPolicy.class, type);
+        ConfigValueCombinationPolicy policy = policyFactory.create(ComponentConfigurator.extractParameters(node));
         ComponentConfigurator.configure(policy, node);
-        contextBuilder.setPropertyValueCombinationPolicy(policy);
+        TamayaConfigBuilder.from(configBuilder).withPropertyValueCombinationPolicy(policy);
     }
 
 

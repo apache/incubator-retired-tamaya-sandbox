@@ -19,9 +19,7 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.FilterContext;
-import org.apache.tamaya.spi.PropertyFilter;
-import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spi.Filter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,37 +29,36 @@ import java.util.concurrent.ConcurrentHashMap;
  * is changing underneath, hereby different values for single and multi-property access
  * are considered.
  */
-public class ImmutableFilter implements PropertyFilter{
+public class ImmutableFilter implements Filter{
 
     /**
      * Factory for configuring immutable property filter.
      */
-    public static final class ImmutableFilterFactory implements ItemFactory<PropertyFilter> {
+    public static final class ImmutableFilterFactory implements ItemFactory<Filter> {
         @Override
         public String getName() {
             return "Immutable";
         }
 
         @Override
-        public PropertyFilter create(Map<String,String> parameters) {
+        public Filter create(Map<String,String> parameters) {
             return new ImmutableFilter();
         }
 
         @Override
-        public Class<? extends PropertyFilter> getType() {
-            return PropertyFilter.class;
+        public Class<? extends Filter> getType() {
+            return Filter.class;
         }
     }
 
-    private Map<String,PropertyValue> map = new ConcurrentHashMap<>();
+    private Map<String,String> map = new ConcurrentHashMap<>();
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
-        String key = value.getKey();
-        if(!context.isSinglePropertyScoped()) {
-            key = value.getKey() + "_all";
-        }
-        PropertyValue val = map.get(key);
+    public String filterProperty(String key, String value) {
+//        if(!context.isSinglePropertyScoped()) {
+//            key = key + "_all";
+//        }
+        String val = map.get(key);
         if(val==null){
             map.put(key, value);
             val = value;

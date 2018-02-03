@@ -18,9 +18,7 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
-
+import javax.config.spi.Converter;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -29,7 +27,7 @@ import java.util.logging.Logger;
 /**
  *  PropertyConverter for gnerating ConcurrentHashMap representation of a values.
  */
-public class ConcurrentHashMapConverter implements PropertyConverter<ConcurrentHashMap> {
+public class ConcurrentHashMapConverter implements Converter<ConcurrentHashMap> {
     private static final Logger LOG = Logger.getLogger(ConcurrentHashMapConverter.class.getName());
 
     /** The shared instance, used by other collection converters in this package.*/
@@ -44,12 +42,12 @@ public class ConcurrentHashMapConverter implements PropertyConverter<ConcurrentH
     }
 
     @Override
-    public ConcurrentHashMap convert(String value, ConversionContext context) {
-        List<String> rawList = ItemTokenizer.split(value, context);
+    public ConcurrentHashMap convert(String value) {
+        List<String> rawList = ItemTokenizer.split(value);
         ConcurrentHashMap result = new ConcurrentHashMap(rawList.size());
         for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw, context);
-            Object convValue = ItemTokenizer.convertValue(items[1], context);
+            String[] items = ItemTokenizer.splitMapEntry(raw);
+            Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.put(items[0], convValue);
             }else{

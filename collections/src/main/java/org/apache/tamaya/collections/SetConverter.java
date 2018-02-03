@@ -18,36 +18,39 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.meta.MetaProperties;
 
+import javax.config.spi.Converter;
 import java.util.Collections;
 import java.util.Set;
 
 /**
  *  PropertyConverter for gnerating a LIST representation of values.
  */
-public class SetConverter implements PropertyConverter<Set> {
+public class SetConverter implements Converter<Set> {
 
     @Override
-    public Set convert(String value, ConversionContext context) {
-        String collectionType = context.getConfiguration().getOrDefault('_' + context.getKey()+".collection-type", "Set");
+    public Set convert(String value) {
+        String collectionType = MetaProperties.getOptionalMetaEntry(ItemTokenizer.config(),
+                ItemTokenizer.key(),"collection-type").orElse("Set");
         if(collectionType.startsWith("java.util.")){
             collectionType = collectionType.substring("java.util.".length());
         }
         Set result = null;
         switch(collectionType){
             case "TreeSet":
-                result = TreeSetConverter.getInstance().convert(value, context);
+                result = TreeSetConverter.getInstance().convert(value);
                 break;
             case "Set":
             case "HashSet":
             default:
-                result = HashSetConverter.getInstance().convert(value, context);
+                result = HashSetConverter.getInstance().convert(value);
                 break;
         }
-        if(context.getConfiguration().getOrDefault('_' + context.getKey()+".read-only",
-                Boolean.class, Boolean.TRUE)){
+        if(MetaProperties.getOptionalMetaEntry(
+                ItemTokenizer.config(),
+                ItemTokenizer.key(),
+                "read-only", boolean.class).orElse(true)){
             return Collections.unmodifiableSet(result);
         }
         return result;

@@ -18,9 +18,11 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.TypeLiteral;
+import javax.config.Config;
+import javax.config.ConfigProvider;
+
+import org.apache.tamaya.base.convert.ConversionContext;
+import org.apache.tamaya.spi.TypeLiteral;
 import org.junit.Test;
 
 import java.util.Currency;
@@ -46,8 +48,8 @@ public class CollectionAdvancedTests {
      */
     @Test
     public void testCustomSeparator(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<String> items = config.get("sep-list", new TypeLiteral<List<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        List<String> items = config.getValue("sep-list", List.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(3, items.size());
@@ -65,8 +67,11 @@ public class CollectionAdvancedTests {
      */
     @Test
     public void testTypedContent(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<Currency> items = config.get("currency-list", new TypeLiteral<List<Currency>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "currency-list", new TypeLiteral<List<Currency>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        List<Currency> items = config.getValue("currency-list", List.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(3, items.size());
@@ -85,8 +90,8 @@ public class CollectionAdvancedTests {
      */
     @Test
     public void testCustomParser(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<String> items = config.get("parser-list", new TypeLiteral<List<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        List<String> items = config.getValue("parser-list", List.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(3, items.size());
@@ -105,8 +110,8 @@ public class CollectionAdvancedTests {
      */
     @Test
     public void testCustomMapParser(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Map<String,String> items = config.get("redefined-map", Map.class);
+        Config config = ConfigProvider.getConfig();
+        Map<String,String> items = config.getValue("redefined-map", Map.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(3, items.size());

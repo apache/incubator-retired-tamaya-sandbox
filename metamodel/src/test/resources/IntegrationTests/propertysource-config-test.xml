@@ -18,14 +18,14 @@
 // -->
 <configuration>
 
-    <property-sources>
-        <org.apache.tamaya.metamodel.ext.MyPropertySource
+    <sources>
+        <org.apache.tamaya.metamodel.ext.MyConfigSource
                 attrValue="attrValue1" overrideValue="overrideValue1">
             <name2>my-source-name</name2>
             <elemValue>elemValue1</elemValue>
             <overrideValue>overrideValue2</overrideValue>
-        </org.apache.tamaya.metamodel.ext.MyPropertySource>
-    </property-sources>
+        </org.apache.tamaya.metamodel.ext.MyConfigSource>
+    </sources>
 
 </configuration>
 

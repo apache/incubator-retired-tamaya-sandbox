@@ -21,6 +21,7 @@ package org.apache.tamaya.metamodel.internal.factories;
 import org.apache.tamaya.spi.PropertySource;
 import org.junit.Test;
 
+import javax.config.spi.ConfigSource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ import static org.junit.Assert.*;
  */
 public class URLPropertySourceFactoryTest {
 
-    private static URLPropertySourceFactory f = new URLPropertySourceFactory();
+    private static URLConfigSourceFactory f = new URLConfigSourceFactory();
 
     @Test
     public void getName() throws Exception {
@@ -44,20 +45,20 @@ public class URLPropertySourceFactoryTest {
     public void create() throws Exception {
         Map<String,String> params = new HashMap<>();
         params.put("location", "http://apache.org");
-        PropertySource ps = f.create(params);
+        ConfigSource ps = f.create(params);
         assertNotNull(ps);
     }
 
     @Test
     public void create_Error() throws Exception {
         Map<String,String> params = new HashMap<>();
-        PropertySource ps = f.create(Collections.<String, String>emptyMap());
+        ConfigSource ps = f.create(Collections.<String, String>emptyMap());
         assertNull("Should return null for missing location.", ps);
     }
 
     @Test
     public void getType() throws Exception {
-        assertEquals(PropertySource.class, f.getType());
+        assertEquals(ConfigSource.class, f.getType());
     }
 
 }

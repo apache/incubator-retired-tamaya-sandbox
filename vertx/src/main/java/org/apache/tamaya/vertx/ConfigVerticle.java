@@ -22,23 +22,22 @@ import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.Json;
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
 import org.apache.tamaya.functions.PropertyMatcher;
-import org.apache.tamaya.inject.api.Config;
 
-import java.util.Map;
+import javax.config.Config;
+import javax.config.ConfigProvider;
+import javax.config.inject.ConfigProperty;
 
 /**
  * Small configured verticle for testing Tamaya's vertx support.
  */
 public class ConfigVerticle extends AbstractConfiguredVerticle{
 
-    @Config(value = "tamaya.vertx.config.map", defaultValue = "CONFIG-MAP")
+    @ConfigProperty(name = "tamaya.vertx.config.map", defaultValue = "CONFIG-MAP")
     private String mapBusTarget;
 
-    @Config(value = "tamaya.vertx.config.value", defaultValue = "CONFIG-VAL")
+    @ConfigProperty(name = "tamaya.vertx.config.value", defaultValue = "CONFIG-VAL")
     private String valBusTarget;
 
     private MessageConsumer<String> mapBusListener;
@@ -50,24 +49,24 @@ public class ConfigVerticle extends AbstractConfiguredVerticle{
         mapBusListener.handler(new Handler<Message<String>>(){
             @Override
             public void handle(final Message<String> message) {
-                Configuration config = ConfigurationProvider.getConfiguration();
-                Map<String,String> cfg = config.with(ConfigurationFunctions.filter(
+                Config config = ConfigProvider.getConfig();
+                Config cfg = ConfigurationFunctions.filter(
                         new PropertyMatcher() {
                             @Override
                             public boolean test(String key, String value) {
                                 return key.matches(message.body());
                             }
                         }
-                )).getProperties();
-                message.reply(Json.encodePrettily(cfg));
+                ).apply(config);
+                message.reply(Json.encodePrettily(ConfigurationFunctions.toMap(cfg)));
             }
         });
         valBusListener = vertx.eventBus().consumer(valBusTarget);
         valBusListener.handler(new Handler<Message<String>>(){
             @Override
             public void handle(final Message<String> message) {
-                Configuration config = ConfigurationProvider.getConfiguration();
-                message.reply(config.get(message.body()));
+                Config config = ConfigProvider.getConfig();
+                message.reply(config.getValue(message.body(), String.class));
             }
         });
     }

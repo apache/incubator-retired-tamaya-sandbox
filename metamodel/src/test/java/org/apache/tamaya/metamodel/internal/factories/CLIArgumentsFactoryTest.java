@@ -18,10 +18,12 @@
  */
 package org.apache.tamaya.metamodel.internal.factories;
 
+import org.apache.tamaya.base.configsource.CLIConfigSource;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spisupport.propertysource.CLIPropertySource;
 import org.junit.Test;
 
+import javax.config.spi.ConfigSource;
 import java.util.Collections;
 
 import static org.junit.Assert.*;
@@ -41,14 +43,14 @@ public class CLIArgumentsFactoryTest {
 
     @Test
     public void create() throws Exception {
-        PropertySource ps = f.create(Collections.EMPTY_MAP);
+        ConfigSource ps = f.create(Collections.EMPTY_MAP);
         assertNotNull(ps);
-        assertTrue(ps instanceof CLIPropertySource);
+        assertTrue(ps instanceof CLIConfigSource);
     }
 
     @Test
     public void getType() throws Exception {
-        assertEquals(PropertySource.class, f.getType());
+        assertEquals(ConfigSource.class, f.getType());
     }
 
 }

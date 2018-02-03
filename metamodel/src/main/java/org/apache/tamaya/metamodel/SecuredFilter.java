@@ -20,6 +20,7 @@ package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
+import org.apache.tamaya.spi.Filter;
 import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
  * is changing underneath, hereby different values for single and multi-property access
  * are considered.
  */
-public class SecuredFilter implements PropertyFilter{
+public class SecuredFilter implements Filter{
 
     private static final Logger LOG = Logger.getLogger(SecuredFilter.class.getName());
 
@@ -46,20 +47,20 @@ public class SecuredFilter implements PropertyFilter{
     /**
      * Factory for configuring immutable property filter.
      */
-    public static final class SecuredFilterFactory implements ItemFactory<PropertyFilter> {
+    public static final class SecuredFilterFactory implements ItemFactory<Filter> {
         @Override
         public String getName() {
             return "Secured";
         }
 
         @Override
-        public PropertyFilter create(Map<String,String> parameters) {
+        public Filter create(Map<String,String> parameters) {
             return new SecuredFilter();
         }
 
         @Override
-        public Class<? extends PropertyFilter> getType() {
-            return PropertyFilter.class;
+        public Class<? extends Filter> getType() {
+            return Filter.class;
         }
     }
 
@@ -92,9 +93,9 @@ public class SecuredFilter implements PropertyFilter{
     }
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
+    public String filterProperty(String key, String value) {
         if(matches !=null){
-            if(!value.getKey().matches(matches)) {
+            if(!key.matches(matches)) {
                 return value;
             }
         }
@@ -108,9 +109,9 @@ public class SecuredFilter implements PropertyFilter{
         }
         switch(policy){
             case THROW_EXCPETION:
-                throw new ConfigException("Unauthorized access to '"+value.getKey()+"', not in " + roles);
+                throw new IllegalStateException("Unauthorized access to '"+key+"', not in " + roles);
             case WARN_ONLY:
-                LOG.warning("Unauthorized access to '"+value.getKey()+"', not in " + roles);
+                LOG.warning("Unauthorized access to '"+key+"', not in " + roles);
                 return value;
             case HIDE:
             default:

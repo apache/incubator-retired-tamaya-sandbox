@@ -18,9 +18,11 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.TypeLiteral;
+import javax.config.Config;
+import javax.config.ConfigProvider;
+
+import org.apache.tamaya.base.convert.ConversionContext;
+import org.apache.tamaya.spi.TypeLiteral;
 import org.junit.Test;
 
 import java.util.*;
@@ -38,8 +40,12 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testArrayListList_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<String> items = config.get("typed.arraylist", new TypeLiteral<List<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.arraylist", new TypeLiteral<List<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        List<String> items = config.getValue("typed.arraylist", List.class);
+        assertTrue(items instanceof ArrayList);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -48,8 +54,11 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testArrayListList_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<String> items = (List<String>) config.get("typed.arraylist", List.class);
+        Config config = ConfigProvider.getConfig();ConversionContext ctx = new ConversionContext.Builder(
+                "typed.arraylist", new TypeLiteral<ArrayList<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        List<String> items = config.getValue("typed.arraylist", List.class);
+        assertTrue(items instanceof ArrayList);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -58,8 +67,12 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testLinkedListList_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<String> items = config.get("typed.linkedlist", new TypeLiteral<List<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.linkedlist", new TypeLiteral<LinkedList<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        List<String> items = config.getValue("typed.linkedlist", List.class);
+        assertTrue(items instanceof LinkedList);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -68,8 +81,12 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testLinkedListList_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        List<String> items = (List<String>) config.get("typed.linkedlist", List.class);
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.linkedlist", new TypeLiteral<LinkedList<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        List<String> items = config.getValue("typed.linkedlist", LinkedList.class);
+        assertTrue(items instanceof LinkedList);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -79,8 +96,12 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testHashSet_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Set<String> items = config.get("typed.hashset", new TypeLiteral<Set<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.hashset", new TypeLiteral<Set<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Set<String> items = config.getValue("typed.hashset", Set.class);
+        assertTrue(items instanceof HashSet);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -88,8 +109,12 @@ public class CollectionsTypedReadOnlyTests {
     }
     @Test(expected=UnsupportedOperationException.class)
     public void testHashSet_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Set<String> items = (Set<String>) config.get("typed.hashset", Set.class);
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.hashset", new TypeLiteral<HashSet<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Set<String> items = config.getValue("typed.hashset", Set.class);
+        assertTrue(items instanceof HashSet);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -98,8 +123,12 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testTreeSet_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Set<String> items = config.get("typed.treeset", new TypeLiteral<Set<String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.treeset", new TypeLiteral<TreeSet<String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Set<String> items = config.getValue("typed.treeset", Set.class);
+        assertTrue(items instanceof TreeSet);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -107,8 +136,9 @@ public class CollectionsTypedReadOnlyTests {
     }
     @Test(expected=UnsupportedOperationException.class)
     public void testTreeSet_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Set<String> items = items = (Set<String>) config.get("typed.treeset", Set.class);
+        Config config = ConfigProvider.getConfig();
+        Set<String> items = items = config.getValue("typed.treeset", TreeSet.class);
+        assertTrue(items instanceof TreeSet);
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertEquals(10, items.size());
@@ -117,9 +147,13 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testHashMap_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Map<String,String> items = config.get("typed.hashmap", new TypeLiteral<Map<String,String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.hashmap", new TypeLiteral<Map<String,String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Map<String,String> items = config.getValue("typed.hashmap", Map.class);
         assertNotNull(items);
+        assertTrue(items instanceof HashMap);
         assertFalse(items.isEmpty());
         assertEquals(4, items.size());
         assertEquals("a", items.get("1"));
@@ -130,9 +164,13 @@ public class CollectionsTypedReadOnlyTests {
     }
     @Test(expected=UnsupportedOperationException.class)
     public void testHashMap_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Map<String,String> items = (Map<String,String>) config.get("typed.hashmap", Map.class);
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.hashmap", new TypeLiteral<HashMap<String,String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Map<String,String> items = config.getValue("typed.hashmap", Map.class);
         assertNotNull(items);
+        assertTrue(items instanceof HashMap);
         assertFalse(items.isEmpty());
         assertEquals(4, items.size());
         assertEquals("a", items.get("1"));
@@ -145,9 +183,13 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testTreeMap_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Map<String,String> items = config.get("typed.treemap", new TypeLiteral<Map<String,String>>(){});
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.treemap", new TypeLiteral<HashMap<String,String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Map<String,String> items = config.getValue("typed.treemap", Map.class);
         assertNotNull(items);
+        assertTrue(items instanceof TreeMap);
         assertFalse(items.isEmpty());
         assertEquals(4, items.size());
         assertEquals("a", items.get("1"));
@@ -158,9 +200,13 @@ public class CollectionsTypedReadOnlyTests {
     }
     @Test(expected=UnsupportedOperationException.class)
     public void testTreeMap_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
-        Map<String,String> items = (Map<String,String>) config.get("typed.treemap", Map.class);
+        Config config = ConfigProvider.getConfig();
+        ConversionContext ctx = new ConversionContext.Builder(
+                "typed.treemap", new TypeLiteral<HashMap<String,String>>(){}.getType()).build();
+        ConversionContext.setContext(ctx);
+        Map<String,String> items = config.getValue("typed.treemap", TreeMap.class);
         assertNotNull(items);
+        assertTrue(items instanceof TreeMap);
         assertFalse(items.isEmpty());
         assertEquals(4, items.size());
         assertEquals("a", items.get("1"));

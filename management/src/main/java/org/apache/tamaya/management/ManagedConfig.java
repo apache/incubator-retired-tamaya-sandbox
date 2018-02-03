@@ -19,12 +19,13 @@
 package org.apache.tamaya.management;
 
 
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
 
+import javax.config.Config;
+import javax.config.ConfigProvider;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Default implementation of the {@link ManagedConfigMBean} interface. Each bean binds to the
@@ -50,38 +51,52 @@ public class ManagedConfig implements ManagedConfigMBean {
 
     @Override
     public String getJsonConfigurationInfo() {
-        return getConfigurationInternal().query(ConfigurationFunctions.jsonInfo());
+        return ConfigurationFunctions.jsonInfo().apply(getConfigurationInternal());
     }
 
     @Override
     public String getXmlConfigurationInfo() {
-        return getConfigurationInternal().query(ConfigurationFunctions.xmlInfo());
+        return ConfigurationFunctions.xmlInfo().apply(getConfigurationInternal());
     }
 
     @Override
     public Map<String, String> getConfiguration() {
-        return getConfigurationInternal().getProperties();
+        Map<String,String> map = new TreeMap<>();
+        for(String key:getConfigurationInternal().getPropertyNames()){
+            map.put(key, getConfigurationInternal().getValue(key, String.class));
+        }
+        return map;
     }
 
     @Override
     public Map<String, String> getSection(String area, boolean recursive) {
-        return getConfigurationInternal().with(ConfigurationFunctions.section(area, recursive)).getProperties();
+        Map<String,String> map = new TreeMap<>();
+
+        Config config = null;
+        if(recursive){
+            config = ConfigurationFunctions.sectionsRecursive(area).apply(getConfigurationInternal());
+        }else{
+            config = ConfigurationFunctions.section(area).apply(getConfigurationInternal());
+        }
+        for(String key:config.getPropertyNames()) {
+            map.put(key, config.getValue(key, String.class));
+        }
+        return map;
     }
 
     @Override
     public Set<String> getSections() {
-        return getConfigurationInternal().query(ConfigurationFunctions.sections());
+        return ConfigurationFunctions.sections().apply(getConfigurationInternal());
     }
 
     @Override
     public Set<String> getTransitiveSections() {
-        return getConfigurationInternal().query(ConfigurationFunctions.transitiveSections());
+        return ConfigurationFunctions.transitiveSections().apply(getConfigurationInternal());
     }
 
     @Override
     public boolean isAreaExisting(String area) {
-        return !getConfigurationInternal().with(
-                ConfigurationFunctions.section(area)).getProperties().isEmpty();
+        return ConfigurationFunctions.section(area).apply(getConfigurationInternal()).getPropertyNames().iterator().hasNext();
     }
 
     @Override
@@ -92,15 +107,15 @@ public class ManagedConfig implements ManagedConfigMBean {
 
     /**
      * Evaluate the current configuration. By default this class is temporarely setting the
-     * TCCL to the instance active on bean creation and then calls {@link ConfigurationProvider#getConfiguration()}.
+     * TCCL to the instance active on bean creation and then calls {@link ConfigProvider#getConfig()}.
      *
      * @return the configuration instance to be used.
      */
-    protected Configuration getConfigurationInternal() {
+    protected Config getConfigurationInternal() {
         ClassLoader currentCL = Thread.currentThread().getContextClassLoader();
         try{
             Thread.currentThread().setContextClassLoader(this.classLoader);
-            return ConfigurationProvider.getConfiguration();
+            return ConfigProvider.getConfig();
         } finally{
             Thread.currentThread().setContextClassLoader(currentCL);
         }

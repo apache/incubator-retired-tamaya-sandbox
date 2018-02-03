@@ -17,9 +17,9 @@
 // under the License.
 // -->
 <configuration>
-    <property-sources>
-        <org.apache.tamaya.metamodel.ext.MyPropertySource/>
+    <sources>
+        <org.apache.tamaya.metamodel.ext.MyConfigSource/>
         <sys-properties />
-    </property-sources>
+    </sources>
 </configuration>
 

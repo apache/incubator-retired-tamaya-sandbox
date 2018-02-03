@@ -35,7 +35,7 @@
 
     <!-- Configuration definition. -->
 
-    <property-sources>
+    <sources>
        <env-properties enabled="${context('stage')=='TEST' || context('stage')=='PTA' || context('stage')=='PROD'}">
            <filters>
                <Map target="ENV."/>
@@ -62,15 +62,15 @@
                <Cached ttl="30 SECOND"/>
            </filters>
        </url>
-    </property-sources>
-    <property-filters>
+    </sources>
+    <filters>
         <Secured roles="admin,power-user" matches="*.secret" policy="HIDE"/>
         <Cached timeout="30000" maxSize="300" matches="cached.*"/>
-    </property-filters>
-    <property-converters>
+    </filters>
+    <converters>
     <!--<converter type="AllInOneConverter"/>-->
-        <default-converters/>
-    </property-converters>
+        <defaults/>
+    </converters>
 
     <log>
         "METACONTEXT: " + MetaContext.getInstance().getProperties()

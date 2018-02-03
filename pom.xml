@@ -796,12 +796,13 @@ under the License.
         <module>etcd</module>
         <module>consul</module>
         <module>camel</module>
-        <module>propertysources</module>
+        <module>configsources</module>
         <!--<module>ui</module>-->
         <module>management</module>
         <module>metamodel</module>
         <module>uom</module>
         <module>vertx</module>
+        <module>meta</module>
     </modules>
 
     <profiles>

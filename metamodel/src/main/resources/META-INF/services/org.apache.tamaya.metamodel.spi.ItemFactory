@@ -19,9 +19,9 @@
 org.apache.tamaya.metamodel.internal.factories.CLIArgumentsFactory
 org.apache.tamaya.metamodel.internal.factories.EnvPropertiesFactory
 org.apache.tamaya.metamodel.internal.factories.FilePropertySourceFactory
-org.apache.tamaya.metamodel.internal.factories.ResourcePropertySourceFactory
+org.apache.tamaya.metamodel.internal.factories.ResourceConfigSourceFactory
 org.apache.tamaya.metamodel.internal.factories.SysPropertiesFactory
-org.apache.tamaya.metamodel.internal.factories.URLPropertySourceFactory
+org.apache.tamaya.metamodel.internal.factories.URLConfigSourceFactory
 
 org.apache.tamaya.metamodel.internal.factories.ResourcePropertySourceProviderFactory
 

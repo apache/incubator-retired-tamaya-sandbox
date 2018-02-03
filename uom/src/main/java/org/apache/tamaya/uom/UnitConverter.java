@@ -18,8 +18,9 @@
  */
 package org.apache.tamaya.uom;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
+
+import javax.config.spi.Converter;
 import javax.measure.Unit;
 import javax.measure.format.UnitFormat;
 import javax.measure.spi.ServiceProvider;
@@ -35,14 +36,17 @@ import static java.util.Objects.requireNonNull;
  * @author wkeil
  */
 // TODO not sure, if this could clash with JSR 363's own UnitConverter, but unless that's used here, it might be OK
-public class UnitConverter implements PropertyConverter<Unit> {
+public class UnitConverter implements Converter<Unit> {
 	private static final String PATTERN_REGEX = "(\\+|-)?\\d+";
 	private static final Pattern IS_INTEGER_VALUE = Pattern.compile(PATTERN_REGEX);
 
 	@Override
-	public Unit convert(String value, ConversionContext context) {
+	public Unit convert(String value) {
 		String trimmed = requireNonNull(value).trim();
-		addSupportedFormats(context);
+		ConversionContext context = ConversionContext.getContext();
+		if(context!=null) {
+			context.addSupportedFormats(UnitConverter.class, "All Units supported by JSR 363");
+		}
 		UnitFormat format = ServiceProvider.current().getUnitFormatService().getUnitFormat();
 
 		Unit result = null;
@@ -58,7 +62,4 @@ public class UnitConverter implements PropertyConverter<Unit> {
 		return result;
 	}
 
-	private void addSupportedFormats(ConversionContext context) {
-		context.addSupportedFormats(UnitConverter.class, "All Units supported by JSR 363");
-	}
 }

@@ -18,9 +18,11 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.base.convert.ConversionContext;
 
+import javax.config.Config;
+import javax.config.ConfigProvider;
+import javax.config.spi.Converter;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -29,7 +31,7 @@ import java.util.logging.Logger;
 /**
  *  PropertyConverter for gnerating HashSet representation of a values.
  */
-public class TreeSetConverter implements PropertyConverter<TreeSet> {
+public class TreeSetConverter implements Converter<TreeSet> {
 
     private static final Logger LOG = Logger.getLogger(TreeSetConverter.class.getName());
 
@@ -45,12 +47,12 @@ public class TreeSetConverter implements PropertyConverter<TreeSet> {
     }
 
     @Override
-    public TreeSet convert(String value, ConversionContext context) {
-        List<String> rawList = ItemTokenizer.split(value, context);
+    public TreeSet convert(String value) {
+        List<String> rawList = ItemTokenizer.split(value);
         TreeSet<Object> result = new TreeSet<>();
         for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw, context);
-            Object convValue = ItemTokenizer.convertValue(items[1], context);
+            String[] items = ItemTokenizer.splitMapEntry(raw);
+            Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.add(convValue);
                 continue;
@@ -60,4 +62,6 @@ public class TreeSetConverter implements PropertyConverter<TreeSet> {
         }
         return result;
     }
+
+
 }

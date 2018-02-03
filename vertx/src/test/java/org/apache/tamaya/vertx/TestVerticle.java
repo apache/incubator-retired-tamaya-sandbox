@@ -18,8 +18,7 @@
  */
 package org.apache.tamaya.vertx;
 
-import org.apache.tamaya.inject.api.Config;
-
+import javax.config.inject.ConfigProperty;
 import java.math.BigDecimal;
 
 /**
@@ -27,13 +26,13 @@ import java.math.BigDecimal;
  */
 public class TestVerticle extends AbstractConfiguredVerticle{
 
-    @Config("user.name")
+    @ConfigProperty(name="user.name")
     String userName;
 
-    @Config("user.home")
+    @ConfigProperty(name="user.home")
     String userHome;
 
-    @Config(value = "any.number.BD", defaultValue = "1.123456789")
+    @ConfigProperty(name="any.number.BD", defaultValue="1.123456789")
     BigDecimal anyNumber;
 
     public TestVerticle(){

@@ -18,16 +18,15 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import javax.config.spi.Converter;
 
 /**
  * Example converter that is used for testing the custom parsing functionality. It sorrounds values with () and
  * converts them to uppercase.
  */
-public class MyUpperCaseConverter implements PropertyConverter<String>{
+public class MyUpperCaseConverter implements Converter<String> {
     @Override
-    public String convert(String value, ConversionContext context) {
+    public String convert(String value) {
         return "("+value.toUpperCase()+")";
     }
 }

@@ -1,0 +1,30 @@
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - JMX
+Bundle-SymbolicName: org.apache.tamaya.management
+Bundle-Description: Apacha Tamaya Config - Meta Config Properties
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev-tamaya@incubator.apache.org
+Bundle-DocURL: http://tamaya.apache.org
+Export-Package: \
+	org.apache.tamaya.meta
+Import-Package: \
+    javax.config,\
+    javax.config.spi,\
+    org.osgi.framework,\
+    javax.annotation
+Export-Service: \
+    org.apache.tamaya.meta.spi.MetaPropertyMapping

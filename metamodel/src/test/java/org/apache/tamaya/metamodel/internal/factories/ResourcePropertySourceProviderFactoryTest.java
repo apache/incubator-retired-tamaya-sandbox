@@ -18,10 +18,10 @@
  */
 package org.apache.tamaya.metamodel.internal.factories;
 
-import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertySourceProvider;
 import org.junit.Test;
 
+import javax.config.spi.ConfigSourceProvider;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,20 +45,20 @@ public class ResourcePropertySourceProviderFactoryTest {
     public void create() throws Exception {
         Map<String,String> params = new HashMap<>();
         params.put("location", "GLOBAL.properties");
-        PropertySourceProvider prov = f.create(params);
+        ConfigSourceProvider prov = f.create(params);
         assertNotNull(prov);
     }
 
     @Test
     public void create_Error() throws Exception {
         Map<String,String> params = new HashMap<>();
-        PropertySourceProvider prov = f.create(Collections.<String, String>emptyMap());
+        ConfigSourceProvider prov = f.create(Collections.<String, String>emptyMap());
         assertNull("Should return null for missing location.", prov);
     }
 
     @Test
     public void getType() throws Exception {
-        assertEquals(PropertySourceProvider.class, f.getType());
+        assertEquals(ConfigSourceProvider.class, f.getType());
     }
 
 }

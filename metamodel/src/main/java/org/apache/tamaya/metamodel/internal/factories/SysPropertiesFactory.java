@@ -19,30 +19,30 @@
 
 package org.apache.tamaya.metamodel.internal.factories;
 
+import org.apache.tamaya.base.configsource.SystemConfigSource;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.propertysource.SystemPropertySource;
 import org.osgi.service.component.annotations.Component;
 
+import javax.config.spi.ConfigSource;
 import java.util.Map;
 
 /**
  * Factory for configuring system properties based property sources.
  */
 @Component
-public final class SysPropertiesFactory implements ItemFactory<PropertySource>{
+public final class SysPropertiesFactory implements ItemFactory<ConfigSource>{
     @Override
     public String getName() {
         return "sys-properties";
     }
 
     @Override
-    public PropertySource create(Map<String,String> parameters) {
-        return new SystemPropertySource();
+    public ConfigSource create(Map<String,String> parameters) {
+        return new SystemConfigSource();
     }
 
     @Override
-    public Class<? extends PropertySource> getType() {
-        return PropertySource.class;
+    public Class<? extends ConfigSource> getType() {
+        return ConfigSource.class;
     }
 }

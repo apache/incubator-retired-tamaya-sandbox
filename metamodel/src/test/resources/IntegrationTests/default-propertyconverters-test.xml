@@ -22,10 +22,10 @@
 
     <!-- Configuration definition. -->
 
-    <property-converters>
+    <converters>
     <!--<converter type="AllInOneConverter"/>-->
         <defaults/>
-    </property-converters>
+    </converters>
 
 </configuration>
 

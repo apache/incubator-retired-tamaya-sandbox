@@ -18,39 +18,44 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.meta.MetaProperties;
 
+import javax.config.spi.Converter;
 import java.util.Collections;
 import java.util.Map;
 
 /**
  *  PropertyConverter for gnerating HashMap representation of a values.
  */
-public class MapConverter implements PropertyConverter<Map> {
+public class MapConverter implements Converter<Map> {
 
     @Override
-    public Map convert(String value, ConversionContext context) {
-        String collectionType = context.getConfiguration().getOrDefault('_' + context.getKey()+".collection-type", "Map");
+    public Map convert(String value) {
+        String collectionType = MetaProperties.getOptionalMetaEntry(
+                ItemTokenizer.config(),
+                ItemTokenizer.key(),
+                "collection-type").orElse("Map");
         if(collectionType.startsWith("java.util.")){
             collectionType = collectionType.substring("java.util.".length());
         }
         Map result = null;
         switch(collectionType){
             case "TreeMap":
-                result = TreeMapConverter.getInstance().convert(value, context);
+                result = TreeMapConverter.getInstance().convert(value);
                 break;
             case "ConcurrentHashMap":
-                result = ConcurrentHashMapConverter.getInstance().convert(value, context);
+                result = ConcurrentHashMapConverter.getInstance().convert(value);
                 break;
             case "Map":
             case "HashMap":
             default:
-                result = HashMapConverter.getInstance().convert(value, context);
+                result = HashMapConverter.getInstance().convert(value);
                 break;
         }
-        if(context.getConfiguration().getOrDefault('_' + context.getKey()+".read-only",
-                Boolean.class, Boolean.TRUE)){
+        if(MetaProperties.getOptionalMetaEntry(
+                ItemTokenizer.config(),
+                ItemTokenizer.key(),
+                "read-only", boolean.class).orElse(true)){
             return Collections.unmodifiableMap(result);
         }
         return result;

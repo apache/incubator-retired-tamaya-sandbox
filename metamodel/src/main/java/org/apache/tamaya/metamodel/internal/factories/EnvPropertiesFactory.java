@@ -19,30 +19,30 @@
 
 package org.apache.tamaya.metamodel.internal.factories;
 
+import org.apache.tamaya.base.configsource.EnvironmentConfigSource;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.propertysource.EnvironmentPropertySource;
 import org.osgi.service.component.annotations.Component;
 
+import javax.config.spi.ConfigSource;
 import java.util.Map;
 
 /**
  * Factory for configuring environment properties based property sources.
  */
 @Component
-public final class EnvPropertiesFactory implements ItemFactory<PropertySource>{
+public final class EnvPropertiesFactory implements ItemFactory<ConfigSource>{
     @Override
     public String getName() {
         return "env-properties";
     }
 
     @Override
-    public PropertySource create(Map<String,String> parameters) {
-        return new EnvironmentPropertySource();
+    public ConfigSource create(Map<String,String> parameters) {
+        return new EnvironmentConfigSource();
     }
 
     @Override
-    public Class<? extends PropertySource> getType() {
-        return PropertySource.class;
+    public Class<? extends ConfigSource> getType() {
+        return ConfigSource.class;
     }
 }

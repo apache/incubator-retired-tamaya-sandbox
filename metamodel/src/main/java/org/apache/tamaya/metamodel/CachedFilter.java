@@ -19,9 +19,7 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.FilterContext;
-import org.apache.tamaya.spi.PropertyFilter;
-import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spi.Filter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * is changing underneath, hereby different values for single and multi-property access
  * are considered.
  */
-public class CachedFilter implements PropertyFilter{
+public class CachedFilter implements Filter{
 
     private String matches;
     private Map<String, CachedEntry> cachedEntries = new ConcurrentHashMap<>();
@@ -42,20 +40,20 @@ public class CachedFilter implements PropertyFilter{
     /**
      * Factory for configuring immutable property filter.
      */
-    public static final class CachedFilterFactory implements ItemFactory<PropertyFilter> {
+    public static final class CachedFilterFactory implements ItemFactory<Filter> {
         @Override
         public String getName() {
             return "Cached";
         }
 
         @Override
-        public PropertyFilter create(Map<String,String> parameters) {
+        public Filter create(Map<String,String> parameters) {
             return new CachedFilter();
         }
 
         @Override
-        public Class<? extends PropertyFilter> getType() {
-            return PropertyFilter.class;
+        public Class<? extends Filter> getType() {
+            return Filter.class;
         }
     }
 
@@ -69,11 +67,9 @@ public class CachedFilter implements PropertyFilter{
     }
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
+    public String filterProperty(String key, String value) {
         if(matches !=null){
-            if(value.getKey().matches(matches)){
-                return resolveCachedEntry(value);
-            }
+            return resolveCachedEntry(key, value);
         }
         return value;
     }
@@ -84,15 +80,15 @@ public class CachedFilter implements PropertyFilter{
      * @param value
      * @return
      */
-    private PropertyValue resolveCachedEntry(PropertyValue value) {
+    private String resolveCachedEntry(String key, String value) {
         if(maxSize>0 && maxSize<=this.cachedEntries.size()){
             return value;
         }
-        CachedEntry ce = cachedEntries.get(value.getKey());
+        CachedEntry ce = cachedEntries.get(key);
         if(ce==null || !ce.isValid()){
             if(value!=null) {
-                ce = new CachedEntry(value, System.currentTimeMillis() + timeout);
-                this.cachedEntries.put(value.getKey(), ce);
+                ce = new CachedEntry(key, value, System.currentTimeMillis() + timeout);
+                this.cachedEntries.put(key, ce);
             }
         }
         return value;
@@ -110,11 +106,13 @@ public class CachedFilter implements PropertyFilter{
 
     private static final class CachedEntry{
         long ttl;
-        PropertyValue value;
+        String key;
+        String value;
 
-        public CachedEntry (PropertyValue value, long ttl){
+        public CachedEntry (String key, String value, long ttl){
             this.ttl = ttl;
             this.value = value;
+            this.key = key;
         }
 
         public boolean isValid(){
