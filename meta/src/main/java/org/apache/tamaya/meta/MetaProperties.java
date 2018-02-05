@@ -84,9 +84,9 @@ public final class MetaProperties {
         Predicate<String> filter = mapping.getMetaEntryFilter(null);
         for(ConfigSource cs:config.getConfigSources()){
             if(cs.getName().equals(configSource)){
-                cs.getProperties().entrySet().forEach(k -> {
-                    if(filter.test(k.getKey())){
-                        result.put(k.getKey(), k.getValue());
+                cs.getProperties().forEach((key, value) -> {
+                    if (filter.test(key)) {
+                        result.put(key, value);
                     }
                 });
             }

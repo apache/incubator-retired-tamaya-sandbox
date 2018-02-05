@@ -180,7 +180,7 @@ final class ItemTokenizer {
         return null;
     }
 
-    static final Type targetType() {
+    static Type targetType() {
         ConversionContext ctx = ConversionContext.getContext();
         if(ctx!=null){
             return ctx.getTargetType();
@@ -188,7 +188,7 @@ final class ItemTokenizer {
         return null;
     }
 
-    static final Config config() {
+    static Config config() {
         ConversionContext ctx = ConversionContext.getContext();
         if(ctx!=null){
             return ctx.getConfiguration();
@@ -196,7 +196,7 @@ final class ItemTokenizer {
         return ConfigProvider.getConfig();
     }
 
-    static final String key() {
+    static String key() {
         ConversionContext ctx = ConversionContext.getContext();
         if(ctx!=null){
             return ctx.getKey();

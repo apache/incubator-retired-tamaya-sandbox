@@ -43,24 +43,21 @@ public class AdaptiveCombinationPolicy implements ConfigValueCombinationPolicy {
      * Collecting combination policy using (optional) {@code item-separator} parameter for determining the separator
      * to combine multiple config entries found.
      */
-    private static final ConfigValueCombinationPolicy COLLECTING_POLICY = new ConfigValueCombinationPolicy(){
-        @Override
-        public String collect(String currentValue, String key, ConfigSource propertySource) {
-            // check for default collection combination policies for lists, sets, maps etc.
-            String newValue = propertySource.getValue(key);
-            if(newValue!=null){
-                if(currentValue==null){
-                    return newValue;
-                }
-                final String separator = MetaProperties.getOptionalMetaEntry(ConfigProvider.getConfig(),
-                        key, "item-separator").orElse(",");
-                return currentValue + separator + newValue;
-            }else{
-                if(currentValue!=null){
-                    return currentValue;
-                }
-                return null;
+    private static final ConfigValueCombinationPolicy COLLECTING_POLICY = (currentValue, key, propertySource) -> {
+        // check for default collection combination policies for lists, sets, maps etc.
+        String newValue = propertySource.getValue(key);
+        if(newValue!=null){
+            if(currentValue==null){
+                return newValue;
             }
+            final String separator = MetaProperties.getOptionalMetaEntry(ConfigProvider.getConfig(),
+                    key, "item-separator").orElse(",");
+            return currentValue + separator + newValue;
+        }else{
+            if(currentValue!=null){
+                return currentValue;
+            }
+            return null;
         }
     };
 

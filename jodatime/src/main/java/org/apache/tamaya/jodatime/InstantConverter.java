@@ -19,7 +19,6 @@
 package org.apache.tamaya.jodatime;
 
 import org.apache.tamaya.base.convert.ConversionContext;
-import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.format.*;
 

@@ -158,7 +158,7 @@ public final class ComponentConfigurator<T> {
                     if (value.isEmpty()) {
                         return null;
                     }
-                    return Character.valueOf(value.charAt(0));
+                    return value.charAt(0);
                 case "short":
                 case "Short":
                     return Short.valueOf(value);

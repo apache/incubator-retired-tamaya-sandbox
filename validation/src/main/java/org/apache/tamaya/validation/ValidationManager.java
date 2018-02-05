@@ -65,12 +65,7 @@ public final class ValidationManager {
         for (ValidationModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ValidationModelProviderSpi.class)) {
             models.addAll(model.getConfigModels());
         }
-        Collections.sort(models, new Comparator<ValidationModel>() {
-            @Override
-            public int compare(ValidationModel k1, ValidationModel k2) {
-                return k2.getName().compareTo(k2.getName());
-            }
-        });
+        models.sort((k1, k2) -> k2.getName().compareTo(k2.getName()));
     }
 
     /**
@@ -209,12 +204,7 @@ public final class ValidationManager {
             Set<String> areas = extractTransitiveAreas(keys);
             for (ValidationModel defConf : getModels()) {
                 if(ValidationTarget.Section.equals(defConf.getType())){
-                    for (Iterator<String> iter = areas.iterator();iter.hasNext();){
-                        String area = iter.next();
-                        if(area.matches(defConf.getName())){
-                            iter.remove();
-                        }
-                    }
+                    areas.removeIf(area -> area.matches(defConf.getName()));
                 }
                 if(ValidationTarget.Parameter.equals(defConf.getType())){
                     keys.remove(defConf.getName());

@@ -22,8 +22,6 @@ import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
 import org.osgi.service.component.annotations.Component;
 
-import java.net.URI;
-
 /**
  * Simple resolver for {@link org.apache.tamaya.metamodel.MetaContext} entries that
  * reads data from system and environment properties.

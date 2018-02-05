@@ -48,9 +48,9 @@ public final class ConfigValidationReader {
         List<ValidationModel> result = new ArrayList<>();
         Set<String> itemKeys = new HashSet<>();
         for (String key : props.keySet()) {
-            if (key.toString().startsWith("_") &&
-                    key.toString().endsWith(DEFAULT_META_INFO_SELECTOR + ".target")) {
-                itemKeys.add(key.toString().substring(0, key.toString().length() - ".model.target".length()));
+            if (key.startsWith("_") &&
+                    key.endsWith(DEFAULT_META_INFO_SELECTOR + ".target")) {
+                itemKeys.add(key.substring(0, key.length() - ".model.target".length()));
             }
         }
         for (String baseKey : itemKeys) {

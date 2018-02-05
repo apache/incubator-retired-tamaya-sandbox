@@ -72,8 +72,7 @@ public class DateTimeZoneConverter implements Converter<DateTimeZone> {
     }
 
     private boolean isSingleIntegerValue(String value) {
-        boolean match = IS_INTEGER_VALUE.matcher(value).matches();
 
-        return match;
+        return IS_INTEGER_VALUE.matcher(value).matches();
     }
 }

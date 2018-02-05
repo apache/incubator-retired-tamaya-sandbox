@@ -46,28 +46,17 @@ public class ConfigVerticle extends AbstractConfiguredVerticle{
     @Override
     public void start()throws Exception{
         mapBusListener = vertx.eventBus().consumer(mapBusTarget);
-        mapBusListener.handler(new Handler<Message<String>>(){
-            @Override
-            public void handle(final Message<String> message) {
-                Config config = ConfigProvider.getConfig();
-                Config cfg = ConfigurationFunctions.filter(
-                        new PropertyMatcher() {
-                            @Override
-                            public boolean test(String key, String value) {
-                                return key.matches(message.body());
-                            }
-                        }
-                ).apply(config);
-                message.reply(Json.encodePrettily(ConfigurationFunctions.toMap(cfg)));
-            }
+        mapBusListener.handler(message -> {
+            Config config = ConfigProvider.getConfig();
+            Config cfg = ConfigurationFunctions.filter(
+                    (key, value) -> key.matches(message.body())
+            ).apply(config);
+            message.reply(Json.encodePrettily(ConfigurationFunctions.toMap(cfg)));
         });
         valBusListener = vertx.eventBus().consumer(valBusTarget);
-        valBusListener.handler(new Handler<Message<String>>(){
-            @Override
-            public void handle(final Message<String> message) {
-                Config config = ConfigProvider.getConfig();
-                message.reply(config.getValue(message.body(), String.class));
-            }
+        valBusListener.handler(message -> {
+            Config config = ConfigProvider.getConfig();
+            message.reply(config.getValue(message.body(), String.class));
         });
     }
 

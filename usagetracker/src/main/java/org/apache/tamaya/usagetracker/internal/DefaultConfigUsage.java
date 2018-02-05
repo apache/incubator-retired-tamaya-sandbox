@@ -52,10 +52,7 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
      */
     private boolean initEnabled() {
         String val = System.getProperty("tamaya.usage-report");
-        if(Boolean.parseBoolean(val)){
-            return true;
-        }
-        return false;
+        return Boolean.parseBoolean(val);
     }
 
     public DefaultConfigUsage(){
@@ -121,11 +118,7 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
         if(!isTrackingEnabled()){
             return;
         }
-        UsageStat usage = this.stats.get(key);
-        if(usage==null){
-            usage = new UsageStat(key);
-            this.stats.put(key, usage);
-        }
+        UsageStat usage = this.stats.computeIfAbsent(key, UsageStat::new);
         usage.trackUsage(key, value);
     }
 
@@ -140,12 +133,7 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
         b.append("=========================================\n");
         b.append("DATE: ").append(new Date()).append("\n\n");
         List<UsageStat> usages = new ArrayList<>(getUsageStats());
-        Collections.sort(usages, new Comparator<UsageStat>() {
-            @Override
-            public int compare(UsageStat k1, UsageStat k2) {
-                return k2.getUsageCount() - k1.getUsageCount();
-            }
-        });
+        usages.sort((k1, k2) -> k2.getUsageCount() - k1.getUsageCount());
         for(UsageStat usage:usages){
             String usageCount = String.valueOf(usage.getUsageCount());
             b.append(usageCount);

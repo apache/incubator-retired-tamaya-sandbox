@@ -217,11 +217,7 @@ public final class UsageStat {
     }
 
     private AccessStats getAccessDetails(String accessPoint, String[] trace) {
-        AccessStats details = accessDetails.get(accessPoint);
-        if(details==null){
-            details = new AccessStats(key, accessPoint, trace);
-            accessDetails.put(accessPoint, details);
-        }
+        AccessStats details = accessDetails.computeIfAbsent(accessPoint, p -> new AccessStats(key, p, trace));
         return details;
     }
 

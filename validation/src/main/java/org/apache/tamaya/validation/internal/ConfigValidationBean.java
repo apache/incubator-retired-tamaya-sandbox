@@ -62,15 +62,12 @@ public class ConfigValidationBean implements ConfigValidationMBean {
             return compare;
         }
     };
-    private static final Comparator<ValidationModel> VAL_COMPARATOR = new Comparator<ValidationModel>() {
-        @Override
-        public int compare(ValidationModel v1, ValidationModel v2) {
-            int compare = v1.getType().compareTo(v2.getType());
-            if(compare==0){
-                compare = v1.getName().compareTo(v2.getName());
-            }
-            return compare;
+    private static final Comparator<ValidationModel> VAL_COMPARATOR = (v1, v2) -> {
+        int compare = v1.getType().compareTo(v2.getType());
+        if(compare==0){
+            compare = v1.getName().compareTo(v2.getName());
         }
+        return compare;
     };
 
     private Config config;
@@ -106,7 +103,7 @@ public class ConfigValidationBean implements ConfigValidationMBean {
     @Override
     public String validate(boolean showUndefined) {
         List<Validation> validations = new ArrayList<>(ValidationManager.getInstance().validate(getConfig(), showUndefined));
-        Collections.sort(validations, COMPARATOR);
+        validations.sort(COMPARATOR);
         JsonArrayBuilder builder = Json.createArrayBuilder();
         for(Validation val:validations){
             builder.add(toJsonObject(val));
@@ -119,7 +116,7 @@ public class ConfigValidationBean implements ConfigValidationMBean {
     @Override
     public String getConfigurationModel() {
         List<ValidationModel> configModels = new ArrayList<>(ValidationManager.getInstance().getModels());
-        Collections.sort(configModels, VAL_COMPARATOR);
+        configModels.sort(VAL_COMPARATOR);
         JsonArrayBuilder result = Json.createArrayBuilder();
         for(ValidationModel val: configModels){
             result.add(toJsonObject(val));
@@ -135,7 +132,7 @@ public class ConfigValidationBean implements ConfigValidationMBean {
     @Override
     public String findConfigurationModels(String namePattern) {
         List<ValidationModel> configModels = new ArrayList<>(ValidationManager.getInstance().findModels(namePattern));
-        Collections.sort(configModels, VAL_COMPARATOR);
+        configModels.sort(VAL_COMPARATOR);
         JsonArrayBuilder result = Json.createArrayBuilder();
         for(ValidationModel val: configModels){
             result.add(toJsonObject(val));
@@ -146,7 +143,7 @@ public class ConfigValidationBean implements ConfigValidationMBean {
     @Override
     public String findValidationModels(String namePattern, ValidationTarget... type) {
         List<ValidationModel> configModels = new ArrayList<>(ValidationManager.getInstance().findModels(namePattern, type));
-        Collections.sort(configModels, VAL_COMPARATOR);
+        configModels.sort(VAL_COMPARATOR);
         JsonArrayBuilder result = Json.createArrayBuilder();
         for(ValidationModel val: configModels){
             result.add(toJsonObject(val));

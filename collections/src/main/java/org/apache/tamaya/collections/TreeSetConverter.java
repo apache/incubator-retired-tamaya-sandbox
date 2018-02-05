@@ -18,10 +18,6 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.base.convert.ConversionContext;
-
-import javax.config.Config;
-import javax.config.ConfigProvider;
 import javax.config.spi.Converter;
 import java.util.List;
 import java.util.TreeSet;
@@ -55,7 +51,6 @@ public class TreeSetConverter implements Converter<TreeSet> {
             Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.add(convValue);
-                continue;
             }else{
                 LOG.log(Level.SEVERE, "Failed to convert collection value type for '"+raw+"'.");
             }

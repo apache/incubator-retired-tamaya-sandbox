@@ -50,7 +50,6 @@ public class LinkedListConverter implements Converter<LinkedList> {
             Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.add(convValue);
-                continue;
             }else{
                 LOG.log(Level.SEVERE, "Failed to convert collection value type for '"+raw+"'.");
             }

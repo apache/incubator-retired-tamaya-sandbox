@@ -80,11 +80,7 @@ public final class ItemFactoryManager {
     }
 
     public <T> void registerItemFactory(ItemFactory<T> factory) {
-        List<ItemFactory<?>> factories = factoryRegistry.get(factory.getType());
-        if(factories==null){
-            factories = new ArrayList<>();
-            factoryRegistry.put(factory.getType(), factories);
-        }
+        List<ItemFactory<?>> factories = factoryRegistry.computeIfAbsent(factory.getType(), k -> new ArrayList<>());
         factories.add(factory);
     }
 

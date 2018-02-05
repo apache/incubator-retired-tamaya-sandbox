@@ -232,14 +232,14 @@ public class EtcdConfigSource extends BaseConfigSource
     }
 
     private String getBackendConfigString() {
-        String backendProp = "";
+        StringBuilder backendProp = new StringBuilder();
         for(EtcdAccessor acc:getEtcdBackends()){
-            if(backendProp.isEmpty()){
-                backendProp += acc.getUrl();
+            if(backendProp.length() == 0){
+                backendProp.append(acc.getUrl());
             }else{
-                backendProp += ", " + acc.getUrl();
+                backendProp.append(", ").append(acc.getUrl());
             }
         }
-        return backendProp;
+        return backendProp.toString();
     }
 }

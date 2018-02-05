@@ -58,13 +58,10 @@ public final class ConsulBackendConfig {
 
     private static boolean isConsulDisabled() {
         String value = System.getProperty(TAMAYA_CONSUL_DISABLE);
-        if(value==null){
+        if (value == null) {
             value = System.getenv(TAMAYA_CONSUL_DISABLE);
         }
-        if(value==null){
-            return false;
-        }
-        return value.isEmpty() || Boolean.parseBoolean(value);
+        return value != null && (value.isEmpty() || Boolean.parseBoolean(value));
     }
 
     public static List<HostAndPort> getConsulBackends(){

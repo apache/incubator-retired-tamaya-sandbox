@@ -26,8 +26,6 @@ import com.hazelcast.core.IMap;
 import org.apache.tamaya.base.configsource.BaseConfigSource;
 import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
 import org.apache.tamaya.mutableconfig.spi.MutableConfigSource;
-import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -185,8 +183,7 @@ implements MutableConfigSource {
      */
     public void refresh() {
         IMap<String,String> config = hazelcastInstance.getMap(mapReference);
-        Map<String, String> configMap = new HashMap<>(config);
-        this.configMap = configMap;
+        this.configMap = new HashMap<>(config);
     }
 
     @Override

@@ -65,13 +65,10 @@ public final class EtcdBackendConfig {
 
     private static boolean isEtcdDisabled() {
         String value = System.getProperty(TAMAYA_ETCD_DISABLE);
-        if(value==null){
+        if (value == null) {
             value = System.getenv(TAMAYA_ETCD_DISABLE);
         }
-        if(value==null){
-            return false;
-        }
-        return value.isEmpty() || Boolean.parseBoolean(value);
+        return value != null && (value.isEmpty() || Boolean.parseBoolean(value));
     }
 
     public static List<EtcdAccessor> getEtcdBackends(){

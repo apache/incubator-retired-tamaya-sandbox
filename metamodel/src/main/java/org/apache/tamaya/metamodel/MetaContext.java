@@ -37,12 +37,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class MetaContext {
 
-    private static final ThreadLocal<MetaContext> THREAD_CONTEXT = new ThreadLocal<MetaContext>(){
-        @Override
-        protected MetaContext initialValue() {
-            return new MetaContext();
-        }
-    };
+    private static final ThreadLocal<MetaContext> THREAD_CONTEXT = ThreadLocal.withInitial(() -> new MetaContext());
 
     private final Map<String,Value> properties = new ConcurrentHashMap<>();
 
@@ -180,10 +175,7 @@ public final class MetaContext {
      * @param unit the target time unit.
      */
     public void setPropertyIfAbsent(String key, String value, long ttl, TimeUnit unit){
-        Value prev = this.properties.get(key);
-        if(prev==null){
-            this.properties.put(key, new Value(key, value, unit.toMillis(ttl)));
-        }
+        this.properties.computeIfAbsent(key, k -> new Value(k, value, unit.toMillis(ttl)));
     }
 
     /**
@@ -203,8 +195,8 @@ public final class MetaContext {
     public void setProperties(Map<String,String> properties, long ttl, TimeUnit unit){
         for(Map.Entry<String, String> en:properties.entrySet()) {
             this.properties.put(
-                    en.getKey().toString(),
-                    new Value(en.getKey().toString(), en.getValue().toString(), unit.toMillis(ttl)));
+                    en.getKey(),
+                    new Value(en.getKey(), en.getValue(), unit.toMillis(ttl)));
         }
     }
 

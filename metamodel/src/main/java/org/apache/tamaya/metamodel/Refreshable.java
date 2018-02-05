@@ -18,8 +18,6 @@
  */
 package org.apache.tamaya.metamodel;
 
-import org.apache.tamaya.spi.ConfigurationContext;
-
 /**
  * Common interface for refreshable items.
  */
