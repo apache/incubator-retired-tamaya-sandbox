@@ -18,9 +18,9 @@
  */
 package org.apache.tamaya.validation.spi;
 
-import org.apache.tamaya.validation.ValidationModel;
-import org.apache.tamaya.validation.ValidationTarget;
-import org.apache.tamaya.validation.Validation;
+import org.apache.tamaya.validation.ConfigValidation;
+import org.apache.tamaya.validation.ConfigArea;
+import org.apache.tamaya.validation.ConfigValidationResult;
 
 import javax.config.Config;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.Objects;
 /**
  * Default configuration Model for a configuration section.
  */
-public class ValidateSection extends ValidateGroup {
+public class ValidatedSection extends ValidatedGroup {
 
     /**
      * Creates a new builder.
@@ -51,7 +51,7 @@ public class ValidateSection extends ValidateGroup {
      * @param required flag, if the section is required to be present.
      * @return the ConfigModel instance
      */
-    public static ValidationModel of(String owner, String name, boolean required){
+    public static ConfigValidation of(String owner, String name, boolean required){
         return new Builder(owner, name).setRequired(required).build();
     }
 
@@ -63,7 +63,7 @@ public class ValidateSection extends ValidateGroup {
      * @param configModels additional configModels
      * @return a new builder, never null.
      */
-    public static ValidationModel of(String owner, String name, boolean required, ValidationModel... configModels){
+    public static ConfigValidation of(String owner, String name, boolean required, ConfigValidation... configModels){
         return new Builder(owner, name).setRequired(required).addValidations(configModels).build();
     }
 
@@ -71,17 +71,17 @@ public class ValidateSection extends ValidateGroup {
      * Internal constructor.
      * @param builder the builder, not null.
      */
-    protected ValidateSection(Builder builder) {
+    protected ValidatedSection(Builder builder) {
         super(builder.owner, builder.name, builder.childConfigModels);
     }
 
     @Override
-    public ValidationTarget getType(){
-        return ValidationTarget.Section;
+    public ConfigArea getArea(){
+        return ConfigArea.Section;
     }
 
     @Override
-    public Collection<Validation> validate(Config config) {
+    public Collection<ConfigValidationResult> validate(Config config) {
         Iterable<String> propertyNames = config.getPropertyNames();
         String lookupKey = getName() + '.';
         boolean present = false;
@@ -94,9 +94,9 @@ public class ValidateSection extends ValidateGroup {
                 break;
             }
         }
-        List<Validation> result = new ArrayList<>(1);
+        List<ConfigValidationResult> result = new ArrayList<>(1);
         if(isRequired() && !present) {
-            result.add(Validation.checkMissing(this));
+            result.add(ConfigValidationResult.checkMissing(this));
         }
         result.addAll(super.validate(config));
         return result;
@@ -105,11 +105,11 @@ public class ValidateSection extends ValidateGroup {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(getType()).append(": ").append(getName());
+        b.append(getArea()).append(": ").append(getName());
         if(isRequired()) {
             b.append(", required: " ).append(isRequired());
         }
-        for(ValidationModel val:getValidations()){
+        for(ConfigValidation val:getValidations()){
              b.append(", ").append(val.toString());
         }
         return b.toString();
@@ -128,7 +128,7 @@ public class ValidateSection extends ValidateGroup {
         /** The required flag. */
         private boolean required;
         /** The (optional) custom validations.*/
-        private final List<ValidationModel> childConfigModels = new ArrayList<>();
+        private final List<ConfigValidation> childConfigModels = new ArrayList<>();
 
         /**
          * Creates a new Builder.
@@ -145,7 +145,7 @@ public class ValidateSection extends ValidateGroup {
          * @param configModels the configModels, not null.
          * @return the Builder for chaining.
          */
-        public Builder addValidations(ValidationModel... configModels){
+        public Builder addValidations(ConfigValidation... configModels){
             this.childConfigModels.addAll(Arrays.asList(configModels));
             return this;
         }
@@ -155,7 +155,7 @@ public class ValidateSection extends ValidateGroup {
          * @param configModels the configModels, not null.
          * @return the Builder for chaining.
          */
-        public Builder addValidations(Collection<ValidationModel> configModels){
+        public Builder addValidations(Collection<ConfigValidation> configModels){
             this.childConfigModels.addAll(configModels);
             return this;
         }
@@ -194,8 +194,8 @@ public class ValidateSection extends ValidateGroup {
          * Build a new ConfigModel instance.
          * @return the new ConfigModel instance, not null.
          */
-        public ValidationModel build(){
-            return new ValidateSection(this);
+        public ConfigValidation build(){
+            return new ValidatedSection(this);
         }
     }
 }

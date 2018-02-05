@@ -19,9 +19,9 @@
 package org.apache.tamaya.validation.internal;
 
 import org.apache.tamaya.functions.ConfigurationFunctions;
-import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.ConfigValidation;
 import org.apache.tamaya.validation.spi.ConfigValidationReader;
-import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
+import org.apache.tamaya.validation.spi.ConfigValidationProviderSpi;
 
 import javax.config.Config;
 import javax.config.ConfigProvider;
@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 /**
  * ConfigModel provider that reads model metadata from the current {@link Config}.
  */
-public class ConfiguredInlineModelProviderSpi implements ValidationModelProviderSpi {
+public class ConfiguredInlineModelProviderSpi implements ConfigValidationProviderSpi {
 
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(ConfiguredInlineModelProviderSpi.class.getName());
@@ -39,7 +39,7 @@ public class ConfiguredInlineModelProviderSpi implements ValidationModelProvider
     private static final String MODEL_EANABLED_PARAM = "org.apache.tamaya.validation.integrated.enabled";
 
     /** The configModels read. */
-    private List<ValidationModel> configModels = new ArrayList<>();
+    private List<ConfigValidation> configModels = new ArrayList<>();
 
 
     /**
@@ -59,7 +59,7 @@ public class ConfiguredInlineModelProviderSpi implements ValidationModelProvider
     }
 
 
-    public Collection<ValidationModel> getConfigModels() {
+    public Collection<ConfigValidation> getConfigValidations() {
         return configModels;
     }
 }

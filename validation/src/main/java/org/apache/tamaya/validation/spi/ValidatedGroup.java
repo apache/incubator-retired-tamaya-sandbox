@@ -18,9 +18,9 @@
  */
 package org.apache.tamaya.validation.spi;
 
-import org.apache.tamaya.validation.ValidationModel;
-import org.apache.tamaya.validation.ValidationTarget;
-import org.apache.tamaya.validation.Validation;
+import org.apache.tamaya.validation.ConfigValidation;
+import org.apache.tamaya.validation.ConfigArea;
+import org.apache.tamaya.validation.ConfigValidationResult;
 
 import javax.config.Config;
 import java.util.ArrayList;
@@ -33,23 +33,23 @@ import java.util.Objects;
 /**
  * Default configuration Model for a configuration area.
  */
-public class ValidateGroup implements ValidationModel {
+public class ValidatedGroup implements ConfigValidation {
 
     private final String owner;
     private final String name;
     private boolean required;
-    private List<ValidationModel> childModels = new ArrayList<>();
+    private List<ConfigValidation> childModels = new ArrayList<>();
 
-    public ValidateGroup(String owner, String name, ValidationModel... configModels){
+    public ValidatedGroup(String owner, String name, ConfigValidation... configModels){
         this(owner, name, Arrays.asList(configModels));
     }
 
-    public ValidateGroup(String owner, String name, Collection<ValidationModel> configModels){
+    public ValidatedGroup(String owner, String name, Collection<ConfigValidation> configModels){
         this.owner = Objects.requireNonNull(owner);
         this.name = Objects.requireNonNull(name);
         this.childModels.addAll(configModels);
         this.childModels = Collections.unmodifiableList(childModels);
-        for(ValidationModel val: configModels) {
+        for(ConfigValidation val: configModels) {
             if(val.isRequired()){
                 this.required = true;
                 break;
@@ -73,8 +73,8 @@ public class ValidateGroup implements ValidationModel {
     }
 
     @Override
-    public ValidationTarget getType() {
-        return ValidationTarget.Group;
+    public ConfigArea getArea() {
+        return ConfigArea.Group;
     }
 
     @Override
@@ -83,20 +83,20 @@ public class ValidateGroup implements ValidationModel {
             return null;
         }
         StringBuilder b = new StringBuilder();
-        for(ValidationModel val: childModels){
+        for(ConfigValidation val: childModels){
             b.append("  >> ").append(val);
         }
         return b.toString();
     }
 
-    public Collection<ValidationModel> getValidations(){
+    public Collection<ConfigValidation> getValidations(){
         return childModels;
     }
 
     @Override
-    public Collection<Validation> validate(Config config) {
-        List<Validation> result = new ArrayList<>(1);
-        for(ValidationModel child: childModels){
+    public Collection<ConfigValidationResult> validate(Config config) {
+        List<ConfigValidationResult> result = new ArrayList<>(1);
+        for(ConfigValidation child: childModels){
             result.addAll(child.validate(config));
         }
         return result;
@@ -104,7 +104,7 @@ public class ValidateGroup implements ValidationModel {
 
     @Override
     public String toString(){
-        return String.valueOf(getType()) + ", size: " + childModels.size() + ": " + getDescription();
+        return String.valueOf(getArea()) + ", size: " + childModels.size() + ": " + getDescription();
     }
 
 }

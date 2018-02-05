@@ -24,14 +24,14 @@ import org.apache.tamaya.inject.spi.ConfiguredField;
 import org.apache.tamaya.inject.spi.ConfiguredMethod;
 import org.apache.tamaya.inject.spi.ConfiguredType;
 import org.apache.tamaya.validation.ValidationManager;
-import org.apache.tamaya.validation.ValidationModel;
-import org.apache.tamaya.validation.spi.ValidateParameter;
+import org.apache.tamaya.validation.ConfigValidation;
+import org.apache.tamaya.validation.spi.ValidatedParameter;
 
 import java.util.Collection;
 import java.util.logging.Logger;
 
 /**
- * Internal facade that registers all kind of injected fields as {@link ValidationModel} entries,
+ * Internal facade that registers all kind of injected fields as {@link ConfigValidation} entries,
  * so all configured injection points are visible as documented configuration hooks.
  */
 public final class ConfiguredTypeEventsModelPopulator implements ConfigEventListener {
@@ -57,10 +57,10 @@ public final class ConfiguredTypeEventsModelPopulator implements ConfigEventList
             for (ConfiguredField field : confType.getConfiguredFields()) {
                 Collection<String> keys = field.getConfiguredKeys();
                 for (String key : keys) {
-                    ValidateParameter val = ValidationManager.getInstance().getModel(key, ValidateParameter.class);
+                    ValidatedParameter val = ValidationManager.getInstance().getModel(key, ValidatedParameter.class);
                     if (val == null) {
                         ConfiguredTypeEventsModelProvider.addConfigModel(
-                                new ValidateParameter.Builder(confType.getName(), key)
+                                new ValidatedParameter.Builder(confType.getName(), key)
                                 .setType(field.getType().getName())
                                 .setDescription("Injected field: " +
                                         field.getAnnotatedField().getDeclaringClass().getName() + '.' + field.toString() +
@@ -72,10 +72,10 @@ public final class ConfiguredTypeEventsModelPopulator implements ConfigEventList
             for (ConfiguredMethod method : confType.getConfiguredMethods()) {
                 Collection<String> keys = method.getConfiguredKeys();
                 for (String key : keys) {
-                    ValidateParameter val = ValidationManager.getInstance().getModel(key, ValidateParameter.class);
+                    ValidatedParameter val = ValidationManager.getInstance().getModel(key, ValidatedParameter.class);
                     if (val == null) {
                         ConfiguredTypeEventsModelProvider.addConfigModel(
-                                new ValidateParameter.Builder(confType.getName(), key)
+                                new ValidatedParameter.Builder(confType.getName(), key)
                                 .setType(method.getParameterTypes()[0].getName())
                                 .setDescription("Injected field: " +
                                         method.getAnnotatedMethod().getDeclaringClass().getName() + '.' + method.toString() +

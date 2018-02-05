@@ -20,7 +20,7 @@ package org.apache.tamaya.validation.spi;
 
 import java.util.*;
 
-import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.ConfigValidation;
 
 /**
  * Utility class to read metamodel information from properties. Hereby these properties can be part of a
@@ -44,8 +44,8 @@ public final class ConfigValidationReader {
      * @param props the properties to be read
      * @return a collection of config validations.
      */
-    public static Collection<ValidationModel> loadValidations(String owner, Map<String,String> props) {
-        List<ValidationModel> result = new ArrayList<>();
+    public static Collection<ConfigValidation> loadValidations(String owner, Map<String,String> props) {
+        List<ConfigValidation> result = new ArrayList<>();
         Set<String> itemKeys = new HashSet<>();
         for (String key : props.keySet()) {
             if (key.startsWith("_") &&
@@ -96,10 +96,10 @@ public final class ConfigValidationReader {
      * @param validations the optional custom validations to be performed.
      * @return the new validation for this parameter.
      */
-    private static ValidationModel validateParameter(String owner, String paramName, String description, String type, String reqVal,
-                                                     String regEx, String validations) {
+    private static ConfigValidation validateParameter(String owner, String paramName, String description, String type, String reqVal,
+                                                      String regEx, String validations) {
         boolean required = "true".equalsIgnoreCase(reqVal);
-        ValidateParameter.Builder builder = ValidateParameter.builder(owner, paramName).setRequired(required)
+        ValidatedParameter.Builder builder = ValidatedParameter.builder(owner, paramName).setRequired(required)
                 .setDescription(description).setExpression(regEx);
         if(type!=null) {
             builder.setType(type);
@@ -118,10 +118,10 @@ public final class ConfigValidationReader {
      * @param validations the optional custom validations to be performed.
      * @return the new validation for this section.
      */
-    private static ValidationModel validateSection(String owner, String sectionName, String description, String reqVal,
-                                                   String validations) {
+    private static ConfigValidation validateSection(String owner, String sectionName, String description, String reqVal,
+                                                    String validations) {
         boolean required = "true".equalsIgnoreCase(reqVal);
-        ValidateSection.Builder builder = ValidateSection.builder(owner, sectionName).setRequired(required)
+        ValidatedSection.Builder builder = ValidatedSection.builder(owner, sectionName).setRequired(required)
                 .setDescription(description);
         //        if(validations!=null) {
 //            builder.setValidations(validations);

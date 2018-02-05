@@ -18,21 +18,21 @@
  */
 package org.apache.tamaya.validation.spi;
 
-import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.ConfigValidation;
 
 import java.util.Objects;
 
 /**
  * Default configuration Model for a configuration area.
  */
-public abstract class AbstractConfigModel implements ValidationModel, Comparable<ValidationModel> {
+public abstract class AbstractConfigValidation implements ConfigValidation, Comparable<ConfigValidation> {
     private final String owner;
     private final String name;
     private final String description;
     private boolean required = false;
 
 
-    protected AbstractConfigModel(String owner, String name, boolean required, String description) {
+    protected AbstractConfigValidation(String owner, String name, boolean required, String description) {
         this.name = Objects.requireNonNull(name);
         this.owner = Objects.requireNonNull(owner);
         this.description = description;
@@ -60,8 +60,8 @@ public abstract class AbstractConfigModel implements ValidationModel, Comparable
     }
 
     @Override
-    public int compareTo(ValidationModel configModel) {
-        int compare = getType().compareTo(configModel.getType());
+    public int compareTo(ConfigValidation configModel) {
+        int compare = getArea().compareTo(configModel.getArea());
         if (compare != 0) {
             return compare;
         }
@@ -76,13 +76,13 @@ public abstract class AbstractConfigModel implements ValidationModel, Comparable
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AbstractConfigModel that = (AbstractConfigModel) o;
-        return getType().equals(that.getType()) && name.equals(that.name);
+        AbstractConfigValidation that = (AbstractConfigValidation) o;
+        return getArea().equals(that.getArea()) && name.equals(that.name);
 
     }
 
     @Override
     public int hashCode() {
-        return getType().hashCode() + name.hashCode();
+        return getArea().hashCode() + name.hashCode();
     }
 }

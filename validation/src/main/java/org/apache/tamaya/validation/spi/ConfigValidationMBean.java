@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.validation.spi;
 
-import org.apache.tamaya.validation.ValidationTarget;
+import org.apache.tamaya.validation.ConfigArea;
 
 /**
  * JMX Management bean for accessing current configuration information
@@ -34,7 +34,7 @@ public interface ConfigValidationMBean {
 
     String getConfigurationModel();
 
-    String getConfigurationModel(ValidationTarget type);
+    String getConfigurationModel(ConfigArea type);
 
     /**
      * Find the validations by checking the validation's name using the given regular expression.
@@ -49,5 +49,5 @@ public interface ConfigValidationMBean {
      * @param namePattern the regular expression to use, not null.
      * @return the sections defined, never null.
      */
-    String findValidationModels(String namePattern, ValidationTarget... type);
+    String findValidationModels(String namePattern, ConfigArea... type);
 }

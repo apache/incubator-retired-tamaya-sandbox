@@ -18,9 +18,9 @@
  */
 package org.apache.tamaya.validation.spi;
 
-import org.apache.tamaya.validation.ValidationModel;
-import org.apache.tamaya.validation.ValidationTarget;
-import org.apache.tamaya.validation.Validation;
+import org.apache.tamaya.validation.ConfigValidation;
+import org.apache.tamaya.validation.ConfigArea;
+import org.apache.tamaya.validation.ConfigValidationResult;
 
 import javax.config.Config;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 /**
  * Default configuration Model for a configuration parameter.
  */
-public class ValidateParameter extends AbstractConfigModel {
+public class ValidatedParameter extends AbstractConfigValidation {
     /** Optional regular expression for validating the value. */
     private final String regEx;
     /** The target type into which the value must be convertible. */
@@ -43,15 +43,15 @@ public class ValidateParameter extends AbstractConfigModel {
      * Internal constructor.
      * @param builder the builder, not null.
      */
-    protected ValidateParameter(Builder builder) {
+    protected ValidatedParameter(Builder builder) {
         super(builder.owner, builder.name, builder.required, builder.description);
         this.regEx = builder.regEx;
         this.type = builder.type;
     }
 
     @Override
-    public ValidationTarget getType() {
-        return ValidationTarget.Parameter;
+    public ConfigArea getArea() {
+        return ConfigArea.Parameter;
     }
 
     /**
@@ -64,15 +64,15 @@ public class ValidateParameter extends AbstractConfigModel {
     }
 
     @Override
-    public Collection<Validation> validate(Config config) {
-        List<Validation> result = new ArrayList<>(1);
+    public Collection<ConfigValidationResult> validate(Config config) {
+        List<ConfigValidationResult> result = new ArrayList<>(1);
         String configValue = config.getValue(getName(), String.class);
         if (configValue == null && isRequired()) {
-            result.add(Validation.checkMissing(this));
+            result.add(ConfigValidationResult.checkMissing(this));
         }
         if (configValue != null && regEx != null) {
             if (!configValue.matches(regEx)) {
-                result.add(Validation.checkError(this, "Config value not matching expression: " + regEx + ", was " +
+                result.add(ConfigValidationResult.checkError(this, "Config value not matching expression: " + regEx + ", was " +
                         configValue));
             }
         }
@@ -82,7 +82,7 @@ public class ValidateParameter extends AbstractConfigModel {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(getType()).append(": ").append(getName());
+        b.append(getArea()).append(": ").append(getName());
         if (isRequired()) {
             b.append(", required: ").append(isRequired());
         }
@@ -110,7 +110,7 @@ public class ValidateParameter extends AbstractConfigModel {
      * @param expression an optional regular expression to validate a value.
      * @return the new ConfigModel instance.
      */
-    public static ValidationModel of(String owner, String name, boolean required, String expression) {
+    public static ConfigValidation of(String owner, String name, boolean required, String expression) {
         return new Builder(owner, name).setRequired(required).setExpression(expression).build();
     }
 
@@ -121,7 +121,7 @@ public class ValidateParameter extends AbstractConfigModel {
      * @param required the required flag.
      * @return the new ConfigModel instance.
      */
-    public static ValidationModel of(String owner, String name, boolean required) {
+    public static ConfigValidation of(String owner, String name, boolean required) {
         return new Builder(owner, name).setRequired(required).build();
     }
 
@@ -131,7 +131,7 @@ public class ValidateParameter extends AbstractConfigModel {
      * @param name the fully qualified parameter name.
      * @return the new ConfigModel instance.
      */
-    public static ValidationModel of(String owner, String name) {
+    public static ConfigValidation of(String owner, String name) {
         return new Builder(owner, name).setRequired(false).build();
     }
 
@@ -235,8 +235,8 @@ public class ValidateParameter extends AbstractConfigModel {
          * Creates a new ConfigModel with the given parameters.
          * @return a new ConfigModel , never null.
          */
-        public ValidationModel build() {
-            return new ValidateParameter(this);
+        public ConfigValidation build() {
+            return new ValidatedParameter(this);
         }
     }
 }

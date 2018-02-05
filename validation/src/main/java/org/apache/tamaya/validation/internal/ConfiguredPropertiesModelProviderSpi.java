@@ -19,9 +19,9 @@
 package org.apache.tamaya.validation.internal;
 
 import org.apache.tamaya.base.configsource.MapConfigSource;
-import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.ConfigValidation;
 import org.apache.tamaya.validation.spi.ConfigValidationReader;
-import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
+import org.apache.tamaya.validation.spi.ConfigValidationProviderSpi;
 
 import javax.config.ConfigProvider;
 import java.io.InputStream;
@@ -104,14 +104,14 @@ import java.util.logging.Logger;
  * {model}a.b.c.aValidatedSection.configModels=org.apache.tamaya.model.TestValidator
  * </pre>
  */
-public class ConfiguredPropertiesModelProviderSpi implements ValidationModelProviderSpi {
+public class ConfiguredPropertiesModelProviderSpi implements ConfigValidationProviderSpi {
 
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(ConfiguredPropertiesModelProviderSpi.class.getName());
     /** parameter to disable this provider. By default the provider is active. */
     private static final String MODEL_EANABLED_PARAM = "org.apache.tamaya.validation.default.enabled";
     /** The configModels read. */
-    private List<ValidationModel> configModels = new ArrayList<>();
+    private List<ConfigValidation> configModels = new ArrayList<>();
 
     public ConfiguredPropertiesModelProviderSpi() {
         Optional<String> enabledVal = ConfigProvider.getConfig().getOptionalValue(MODEL_EANABLED_PARAM, String.class);
@@ -148,7 +148,7 @@ public class ConfiguredPropertiesModelProviderSpi implements ValidationModelProv
     }
 
 
-    public Collection<ValidationModel> getConfigModels() {
+    public Collection<ConfigValidation> getConfigValidations() {
         return configModels;
     }
 }

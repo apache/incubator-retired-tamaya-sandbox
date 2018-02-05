@@ -19,7 +19,7 @@
 package org.apache.tamaya.validation;
 
 import org.apache.tamaya.validation.spi.ConfigValidationMBean;
-import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
+import org.apache.tamaya.validation.spi.ConfigValidationProviderSpi;
 import org.apache.tamaya.base.ServiceContextManager;
 
 import javax.config.Config;
@@ -30,9 +30,7 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -48,7 +46,7 @@ public final class ValidationManager {
 
     private static final ValidationManager INSTANCE = new ValidationManager();
 
-    private List<ValidationModel> models = new ArrayList<>();
+    private List<ConfigValidation> models = new ArrayList<>();
 
     /**
      * Get the singleton instance.
@@ -62,8 +60,8 @@ public final class ValidationManager {
      * Singleton constructor.
      */
     private ValidationManager() {
-        for (ValidationModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ValidationModelProviderSpi.class)) {
-            models.addAll(model.getConfigModels());
+        for (ConfigValidationProviderSpi model : ServiceContextManager.getServiceContext().getServices(ConfigValidationProviderSpi.class)) {
+            models.addAll(model.getConfigValidations());
         }
         models.sort((k1, k2) -> k2.getName().compareTo(k2.getName()));
     }
@@ -76,8 +74,8 @@ public final class ValidationManager {
         StringBuilder b = new StringBuilder();
         b.append("TYPE    OWNER      NAME                                              MANDATORY   DESCRIPTION\n");
         b.append("-----------------------------------------------------------------------------------------------------\n");
-        for(ValidationModel model:models){
-            switch(model.getType()){
+        for(ConfigValidation model:models){
+            switch(model.getArea()){
                 case Parameter:
                     b.append("PARAM   ");
                     break;
@@ -124,7 +122,7 @@ public final class ValidationManager {
      *
      * @return the sections defined, never null.
      */
-    public Collection<ValidationModel> getModels() {
+    public Collection<ConfigValidation> getModels() {
         return Collections.unmodifiableCollection(models);
     }
 
@@ -137,9 +135,9 @@ public final class ValidationManager {
      * @param <T> type of the model to filter for.
      * @return the sections defined, never null.
      */
-    public <T extends ValidationModel> T getModel(String name, Class<T> modelType) {
-        for (ValidationModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ValidationModelProviderSpi.class)) {
-            for(ValidationModel configModel : model.getConfigModels()) {
+    public <T extends ConfigValidation> T getModel(String name, Class<T> modelType) {
+        for (ConfigValidationProviderSpi model : ServiceContextManager.getServiceContext().getServices(ConfigValidationProviderSpi.class)) {
+            for(ConfigValidation configModel : model.getConfigValidations()) {
                 if(configModel.getName().equals(name) && configModel.getClass().equals(modelType)) {
                     return modelType.cast(configModel);
                 }
@@ -154,14 +152,14 @@ public final class ValidationManager {
      * @param targets the target types only to be returned (optional).
      * @return the sections defined, never null.
      */
-    public Collection<ValidationModel> findModels(String namePattern, ValidationTarget... targets) {
-        List<ValidationModel> result = new ArrayList<>();
-        for (ValidationModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ValidationModelProviderSpi.class)) {
-            for(ValidationModel configModel : model.getConfigModels()) {
+    public Collection<ConfigValidation> findModels(String namePattern, ConfigArea... targets) {
+        List<ConfigValidation> result = new ArrayList<>();
+        for (ConfigValidationProviderSpi model : ServiceContextManager.getServiceContext().getServices(ConfigValidationProviderSpi.class)) {
+            for(ConfigValidation configModel : model.getConfigValidations()) {
                 if(configModel.getName().matches(namePattern)) {
                     if(targets.length>0){
-                        for(ValidationTarget tgt:targets){
-                            if(configModel.getType().equals(tgt)){
+                        for(ConfigArea tgt:targets){
+                            if(configModel.getArea().equals(tgt)){
                                 result.add(configModel);
                                 break;
                             }
@@ -181,7 +179,7 @@ public final class ValidationManager {
      * @param config the configuration to be validated against, not null.
      * @return the validation results, never null.
      */
-    public Collection<Validation> validate(Config config) {
+    public Collection<ConfigValidationResult> validate(Config config) {
         return validate(config, false);
     }
 
@@ -192,9 +190,9 @@ public final class ValidationManager {
      * @param showUndefined allows filtering for undefined configuration elements.
      * @return the validation results, never null.
      */
-    public Collection<Validation> validate(Config config, boolean showUndefined) {
-        List<Validation> result = new ArrayList<>();
-        for (ValidationModel defConf : getModels()) {
+    public Collection<ConfigValidationResult> validate(Config config, boolean showUndefined) {
+        List<ConfigValidationResult> result = new ArrayList<>();
+        for (ConfigValidation defConf : getModels()) {
             result.addAll(defConf.validate(config));
         }
         if(showUndefined){
@@ -202,27 +200,27 @@ public final class ValidationManager {
             Set<String> keys = new HashSet<>();
             map.forEach(keys::add);
             Set<String> areas = extractTransitiveAreas(keys);
-            for (ValidationModel defConf : getModels()) {
-                if(ValidationTarget.Section.equals(defConf.getType())){
+            for (ConfigValidation defConf : getModels()) {
+                if(ConfigArea.Section.equals(defConf.getArea())){
                     areas.removeIf(area -> area.matches(defConf.getName()));
                 }
-                if(ValidationTarget.Parameter.equals(defConf.getType())){
+                if(ConfigArea.Parameter.equals(defConf.getArea())){
                     keys.remove(defConf.getName());
                 }
             }
             outer:for(String key:keys){
-                for (ValidationModel defConf : getModels()) {
-                    if(ValidationTarget.Section.equals(defConf.getType())){
+                for (ConfigValidation defConf : getModels()) {
+                    if(ConfigArea.Section.equals(defConf.getArea())){
                         if(defConf.getName().endsWith(".*") && key.matches(defConf.getName())){
                             // Ignore parameters that are part of transitive section.
                             continue outer;
                         }
                     }
                 }
-                result.add(Validation.checkUndefined("<auto>", key, ValidationTarget.Parameter));
+                result.add(ConfigValidationResult.checkUndefined("<auto>", key, ConfigArea.Parameter));
             }
             for(String area:areas){
-                result.add(Validation.checkUndefined("<auto>", area, ValidationTarget.Section));
+                result.add(ConfigValidationResult.checkUndefined("<auto>", area, ConfigArea.Section));
             }
         }
         return result;

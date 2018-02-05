@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.validation.internal;
 
-import org.apache.tamaya.validation.ValidationTarget;
+import org.apache.tamaya.validation.ConfigArea;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -73,7 +73,7 @@ public class ConfigDocumentationBeanTest {
 
     @Test
     public void testGetConfigurationModel_WithSection() throws Exception {
-        String results = mbean.getConfigurationModel(ValidationTarget.Parameter);
+        String results = mbean.getConfigurationModel(ConfigArea.Parameter);
         assertNotNull(results);
         assertFalse(results.trim().isEmpty());
         assertTrue(results.contains("\"target\":\"Parameter\""));
@@ -92,7 +92,7 @@ public class ConfigDocumentationBeanTest {
 
     @Test
     public void testFindValidationModels() throws Exception {
-        String results = mbean.findValidationModels("a", ValidationTarget.Section);
+        String results = mbean.findValidationModels("a", ConfigArea.Section);
         assertNotNull(results);
         assertFalse(results.trim().isEmpty());
         assertFalse(results.contains("\"target\":\"Parameter\""));

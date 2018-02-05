@@ -18,8 +18,8 @@
  */
 package org.apache.tamaya.validation.internal;
 
-import org.apache.tamaya.validation.ValidationModel;
-import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
+import org.apache.tamaya.validation.ConfigValidation;
+import org.apache.tamaya.validation.spi.ConfigValidationProviderSpi;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,22 +30,22 @@ import java.util.List;
  * Model provider that adds model definitions for the items published as
  * {@link org.apache.tamaya.inject.spi.ConfiguredType} events.
  */
-public class ConfiguredTypeEventsModelProvider implements ValidationModelProviderSpi {
+public class ConfiguredTypeEventsModelProvider implements ConfigValidationProviderSpi {
     /** The collected models. */
-    private static Collection<ValidationModel> configModels = new ArrayList<>();
+    private static Collection<ConfigValidation> configModels = new ArrayList<>();
 
     /**
      * Adds a model, called from the registered listener class.
      * @param configModel adds the config model.
      */
-    static void addConfigModel(ValidationModel configModel){
-        List<ValidationModel> newList = new ArrayList<>(configModels);
+    static void addConfigModel(ConfigValidation configModel){
+        List<ConfigValidation> newList = new ArrayList<>(configModels);
         newList.add(configModel);
         ConfiguredTypeEventsModelProvider.configModels = newList;
     }
 
     @Override
-    public Collection<ValidationModel> getConfigModels() {
+    public Collection<ConfigValidation> getConfigValidations() {
         return Collections.unmodifiableCollection(configModels);
     }
 }

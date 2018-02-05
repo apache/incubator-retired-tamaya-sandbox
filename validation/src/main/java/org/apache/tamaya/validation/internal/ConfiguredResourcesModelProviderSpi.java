@@ -27,9 +27,9 @@ import java.util.logging.Logger;
 
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormats;
-import org.apache.tamaya.validation.ValidationModel;
+import org.apache.tamaya.validation.ConfigValidation;
 import org.apache.tamaya.validation.spi.ConfigValidationReader;
-import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
+import org.apache.tamaya.validation.spi.ConfigValidationProviderSpi;
 import org.apache.tamaya.resource.ConfigResources;
 
 import javax.config.ConfigProvider;
@@ -44,7 +44,7 @@ import javax.config.ConfigProvider;
  *  key value pairs within a map are separated by a colon.
  * </pre>
  */
-public class ConfiguredResourcesModelProviderSpi implements ValidationModelProviderSpi {
+public class ConfiguredResourcesModelProviderSpi implements ConfigValidationProviderSpi {
 
     /**
      * The logger.
@@ -74,7 +74,7 @@ public class ConfiguredResourcesModelProviderSpi implements ValidationModelProvi
     /**
      * The configModels read.
      */
-    private List<ValidationModel> configModels = new ArrayList<>();
+    private List<ConfigValidation> configModels = new ArrayList<>();
 
     /**
      * Initializes the flag showing if the formats module is present (required).
@@ -155,7 +155,7 @@ public class ConfiguredResourcesModelProviderSpi implements ValidationModelProvi
 
 
     @Override
-    public Collection<ValidationModel> getConfigModels() {
+    public Collection<ConfigValidation> getConfigValidations() {
         return configModels;
     }
 }

@@ -25,7 +25,7 @@ import java.util.Collection;
 /**
  * Base structure describing a validated item, by default a parameter or a section.
  */
-public interface ValidationModel {
+public interface ConfigValidation {
 
     /**
      * Access the owner.
@@ -37,7 +37,7 @@ public interface ValidationModel {
      * Get the type of item that is modelled.
      * @return the modelled type, never null.
      */
-    ValidationTarget getType();
+    ConfigArea getArea();
 
     /**
      * Get the item's name, it should minimally describe the validation. Examples are:
@@ -73,6 +73,6 @@ public interface ValidationModel {
      * @param config the configuration to be validated against, not null.
      * @return the validation result, or null, if not applicable.
      */
-    Collection<Validation> validate(Config config);
+    Collection<ConfigValidationResult> validate(Config config);
 
 }
