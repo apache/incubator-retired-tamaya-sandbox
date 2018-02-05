@@ -18,8 +18,9 @@
  */
 package org.apache.tamaya.metamodel;
 
+import org.apache.tamaya.base.ServiceContext;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -99,7 +100,7 @@ public final class MetaConfiguration {
     /**
      * Performs initialization of a new configuration
      * context to the {@link MetaConfigurationReader} instances found in the current
-     * {@link org.apache.tamaya.spi.ServiceContext} and returns the corresponding builder
+     * {@link ServiceContext} and returns the corresponding builder
      * instance.
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
      * @return a new configuration context builder, never null.
@@ -128,7 +129,7 @@ public final class MetaConfiguration {
     /**
      * Reads the meta-configuration and delegates initialization of the current configuration
      * context to the {@link MetaConfigurationReader} instances found in the current
-     * {@link org.apache.tamaya.spi.ServiceContext}.
+     * {@link ServiceContext}.
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
      * @return the new configuration instance.
      */

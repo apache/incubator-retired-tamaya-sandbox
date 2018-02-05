@@ -19,7 +19,7 @@
 package org.apache.tamaya.jodatime;
 
 
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 import org.junit.Test;
 
 import javax.config.spi.Converter;

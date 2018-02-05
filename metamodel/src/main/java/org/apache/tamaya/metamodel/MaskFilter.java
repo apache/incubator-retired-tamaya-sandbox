@@ -19,10 +19,7 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.Filter;
-import org.apache.tamaya.spi.FilterContext;
-import org.apache.tamaya.spi.PropertyFilter;
-import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.base.filter.Filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

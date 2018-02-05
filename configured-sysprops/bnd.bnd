@@ -22,5 +22,4 @@ Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.sysprops
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    javax.config

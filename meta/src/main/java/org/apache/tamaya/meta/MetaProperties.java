@@ -20,7 +20,7 @@ package org.apache.tamaya.meta;
 
 
 import org.apache.tamaya.meta.spi.MetaPropertyMapping;
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 
 import javax.config.Config;
 import javax.config.spi.ConfigSource;

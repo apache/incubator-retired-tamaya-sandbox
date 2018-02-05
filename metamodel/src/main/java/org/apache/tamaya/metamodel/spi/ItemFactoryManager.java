@@ -18,12 +18,10 @@
  */
 package org.apache.tamaya.metamodel.spi;
 
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

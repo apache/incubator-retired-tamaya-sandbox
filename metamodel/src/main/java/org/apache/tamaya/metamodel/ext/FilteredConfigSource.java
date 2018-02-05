@@ -21,6 +21,7 @@ package org.apache.tamaya.metamodel.ext;
 import org.apache.tamaya.base.DefaultConfigBuilder;
 import org.apache.tamaya.base.configsource.BaseConfigSource;
 import org.apache.tamaya.base.configsource.ConfigSourceComparator;
+import org.apache.tamaya.base.filter.Filter;
 import org.apache.tamaya.spi.*;
 import javax.config.Config;
 

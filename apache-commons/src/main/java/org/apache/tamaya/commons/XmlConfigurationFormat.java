@@ -19,7 +19,6 @@
 package org.apache.tamaya.commons;
 
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationDataBuilder;
 import org.apache.tamaya.format.ConfigurationFormat;
@@ -63,7 +62,7 @@ public class XmlConfigurationFormat implements ConfigurationFormat {
                 builder.addDefaultProperty(key, commonXmlConfiguration.getString(key));
             }
         } catch (Exception e) {
-            throw new ConfigException("Failed to parse xml-file format from " + name, e);
+            throw new IllegalArgumentException("Failed to parse xml-file format from " + name, e);
         }
         return builder.build();
     }

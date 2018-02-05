@@ -22,7 +22,9 @@ Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.hazelcast
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    javax.config,\
+    javax.config.spi,\
+    org.apache.tamaya.base,\
+    org.apache.tamaya.base.configsource
 Export-Service: \
-    org.apache.tamaya.spi.PropertySource
+    javax.config.spi.ConfigSource

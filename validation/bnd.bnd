@@ -23,8 +23,8 @@ Export-Package: \
 	org.apache.tamaya.validation,\
     org.apache.tamaya.validation.spi
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi,\
+    javax.config,\
+    javax.config.spi,\
     org.apache.tamaya.events
 Export-Service: \
     org.apache.tamaya.events.ConfigEventListener,\

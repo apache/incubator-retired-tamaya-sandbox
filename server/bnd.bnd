@@ -21,7 +21,7 @@ Bundle-ContactAddress: dev-tamaya@incubator.apache.org
 Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.server,\
-    	org.apache.tamaya.server.spi
+    org.apache.tamaya.server.spi
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    javax.config,\
+    javax.config.spi

@@ -19,7 +19,7 @@
 package org.apache.tamaya.collections;
 
 import org.apache.tamaya.meta.MetaProperties;
-import org.apache.tamaya.spi.ConfigValueCombinationPolicy;
+import org.apache.tamaya.base.ConfigValueCombinationPolicy;
 
 import javax.annotation.Priority;
 import javax.config.ConfigProvider;

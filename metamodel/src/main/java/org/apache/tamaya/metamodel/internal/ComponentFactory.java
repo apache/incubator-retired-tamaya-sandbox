@@ -19,7 +19,7 @@
 
 package org.apache.tamaya.metamodel.internal;
 
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

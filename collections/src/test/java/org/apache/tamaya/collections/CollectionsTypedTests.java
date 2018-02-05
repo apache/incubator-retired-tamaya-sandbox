@@ -22,7 +22,6 @@ import javax.config.Config;
 import javax.config.ConfigProvider;
 
 import org.apache.tamaya.base.convert.ConversionContext;
-import org.apache.tamaya.spi.TypeLiteral;
 import org.junit.Test;
 
 import java.util.*;

@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.usagetracker;
 
-import org.apache.tamaya.spi.ConfigValue;
+import org.apache.tamaya.base.ConfigValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;

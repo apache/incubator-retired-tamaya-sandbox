@@ -21,7 +21,7 @@ package org.apache.tamaya.metamodel.internal;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

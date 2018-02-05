@@ -22,7 +22,7 @@ Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.commons
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    org.apache.tamaya.format,\
+    javax.config.spi
 Export-Service: \
     org.apache.tamaya.format.ConfigurationFormat

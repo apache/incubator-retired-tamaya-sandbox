@@ -19,8 +19,8 @@
 package org.apache.tamaya.usagetracker.internal;
 
 import org.apache.tamaya.base.filter.FilterContext;
-import org.apache.tamaya.spi.Filter;
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.filter.Filter;
+import org.apache.tamaya.base.ServiceContextManager;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
 
 import javax.annotation.Priority;

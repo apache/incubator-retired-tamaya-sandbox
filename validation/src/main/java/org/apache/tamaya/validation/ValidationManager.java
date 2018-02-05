@@ -20,7 +20,7 @@ package org.apache.tamaya.validation;
 
 import org.apache.tamaya.validation.spi.ConfigValidationMBean;
 import org.apache.tamaya.validation.spi.ValidationModelProviderSpi;
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 
 import javax.config.Config;
 import javax.management.InstanceNotFoundException;

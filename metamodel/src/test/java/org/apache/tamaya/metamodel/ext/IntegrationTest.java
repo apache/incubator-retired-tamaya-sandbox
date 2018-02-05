@@ -18,10 +18,12 @@
  */
 package org.apache.tamaya.metamodel.ext;
 
+import org.apache.tamaya.base.ConfigContext;
+import org.apache.tamaya.base.ConfigContextSupplier;
+import org.apache.tamaya.base.filter.Filter;
 import org.apache.tamaya.metamodel.CachedFilter;
 import org.apache.tamaya.metamodel.MetaConfiguration;
 import org.apache.tamaya.metamodel.MetaContext;
-import org.apache.tamaya.spi.*;
 import org.junit.Test;
 
 import javax.config.Config;

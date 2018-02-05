@@ -18,8 +18,8 @@
  */
 package org.apache.tamaya.metamodel;
 
+import org.apache.tamaya.base.filter.Filter;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.*;
 
 import java.util.Map;
 
@@ -28,7 +28,7 @@ import java.util.Map;
  * is changing underneath, hereby different values for single and multi-property access
  * are considered.
  */
-public class HideFilter implements Filter{
+public class HideFilter implements Filter {
 
     private String matches;
 

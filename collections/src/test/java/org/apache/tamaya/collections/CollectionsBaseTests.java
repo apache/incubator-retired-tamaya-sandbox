@@ -19,7 +19,6 @@
 package org.apache.tamaya.collections;
 
 import org.apache.tamaya.base.convert.ConversionContext;
-import org.apache.tamaya.spi.TypeLiteral;
 import org.junit.Test;
 
 import javax.config.Config;

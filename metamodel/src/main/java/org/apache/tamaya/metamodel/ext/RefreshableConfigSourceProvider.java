@@ -20,7 +20,7 @@ package org.apache.tamaya.metamodel.ext;
 
 import org.apache.tamaya.metamodel.Refreshable;
 import org.apache.tamaya.metamodel.internal.ComponentConfigurator;
-import org.apache.tamaya.spi.ServiceContext;
+import org.apache.tamaya.base.ServiceContext;
 
 import javax.config.spi.ConfigSource;
 import javax.config.spi.ConfigSourceProvider;

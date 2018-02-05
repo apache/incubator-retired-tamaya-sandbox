@@ -27,8 +27,8 @@ Export-Package: \
 Private-Package: \
     org.apache.tamaya.ui.internal
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    javax.config,\
+    javax.config.spi
 Export-Service: \
     org.apache.tamaya.ui.spi.MessageProvider,\
     org.apache.tamaya.ui.spi.SystemInfoProvider,\

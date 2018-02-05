@@ -22,6 +22,8 @@ Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.vertx
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    javax.config,\
+    javax.config.spi,\
+    org.apache.tamaya.functions,\
+    io.vertx.core
 

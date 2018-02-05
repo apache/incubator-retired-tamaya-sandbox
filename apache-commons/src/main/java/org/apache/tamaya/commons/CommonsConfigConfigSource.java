@@ -19,31 +19,30 @@
 package org.apache.tamaya.commons;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spi.PropertyValue;
 
+import javax.config.spi.ConfigSource;
 import java.util.*;
 
 /**
  * PropertySource that wraps {@link org.apache.commons.configuration.Configuration}.
  */
-public class CommonsConfigPropertySource implements PropertySource {
+public class CommonsConfigConfigSource implements ConfigSource {
 
     private Configuration commonsConfig;
     private int ordinal;
     private String name;
 
-    public CommonsConfigPropertySource(int ordinal, String name, Configuration commonsConfig) {
+    public CommonsConfigConfigSource(int ordinal, String name, Configuration commonsConfig) {
         this.commonsConfig = Objects.requireNonNull(commonsConfig);
         this.ordinal = ordinal;
         this.name = Objects.requireNonNull(name);
     }
 
-    public CommonsConfigPropertySource(String name, Configuration commonsConfig) {
+    public CommonsConfigConfigSource(String name, Configuration commonsConfig) {
         commonsConfig = Objects.requireNonNull(commonsConfig);
         this.name = Objects.requireNonNull(name);
         try {
-            this.ordinal = commonsConfig.getInt(PropertySource.TAMAYA_ORDINAL);
+            this.ordinal = commonsConfig.getInt(ConfigSource.CONFIG_ORDINAL);
         } catch (Exception e) {
             this.ordinal = 0;
         }
@@ -60,24 +59,19 @@ public class CommonsConfigPropertySource implements PropertySource {
     }
 
     @Override
-    public PropertyValue get(String key) {
-        return PropertyValue.of(key, commonsConfig.getString(key),
-                getName());
+    public String getValue(String key) {
+        return commonsConfig.getString(key);
     }
 
     @Override
-    public Map<String, PropertyValue> getProperties() {
-        Map<String,PropertyValue> config = new HashMap<>();
+    public Map<String, String> getProperties() {
+        Map<String,String> config = new HashMap<>();
         Iterator<String> keyIter = commonsConfig.getKeys();
         while (keyIter.hasNext()) {
             String key = keyIter.next();
-            config.put(key, PropertyValue.of(key, commonsConfig.getString(key), getName()));
+            config.put(key, commonsConfig.getString(key));
         }
         return config;
     }
 
-    @Override
-    public boolean isScannable() {
-        return true;
-    }
 }

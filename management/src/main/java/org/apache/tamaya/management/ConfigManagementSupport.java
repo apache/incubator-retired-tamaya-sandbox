@@ -19,7 +19,7 @@
 package org.apache.tamaya.management;
 
 
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;

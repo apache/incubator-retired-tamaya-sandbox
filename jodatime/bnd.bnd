@@ -22,7 +22,9 @@ Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.jodatime
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    javax.config,\
+    javax.config.spi,\
+    org.joda.time,\
+    org.joda.time.format
 Export-Service: \
-    org.apache.tamaya.spi.PropertyConverter
+    javax.config.spi.Converter

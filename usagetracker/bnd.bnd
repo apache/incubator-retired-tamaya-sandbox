@@ -23,11 +23,11 @@ Export-Package: \
 	org.apache.tamaya.usagetracker,\
     org.apache.tamaya.usagetracker.spi
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi,\
+    javax.config,\
+    javax.config.spi,\
     org.apache.tamaya.events
 Export-Service: \
     org.apache.tamaya.events.ConfigEventListener,\
     org.apache.tamaya.model.spi.ModelProviderSpi,\
-    org.apache.tamaya.spi.PropertyFilter,\
+    org.apache.tamaya.base.filter.Filter,\
     org.apache.tamaya.usagetracker.spi.ConfigUsageSpi

@@ -22,6 +22,7 @@ Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.propertysources
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi,\
-    org.apache.tamaya.spisupport
+    javax.config,\
+    javax.config.spi,\
+    org.apache.tamaya.format,\
+    org.apache.tamaya.base.configsource

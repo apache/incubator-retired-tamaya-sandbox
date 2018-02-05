@@ -22,7 +22,7 @@ Bundle-DocURL: http://tamaya.apache.org
 Export-Package: \
 	org.apache.tamaya.management
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    javax.config,\
+    javax.config.spi
 Export-Service: \
     org.apache.tamaya.management.ManagedConfigMBean

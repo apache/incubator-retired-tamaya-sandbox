@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.usagetracker;
 
-import org.apache.tamaya.spi.ServiceContextManager;
+import org.apache.tamaya.base.ServiceContextManager;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
 
 import java.util.Collection;

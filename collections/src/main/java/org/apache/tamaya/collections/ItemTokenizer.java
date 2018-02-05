@@ -18,11 +18,11 @@
  */
 package org.apache.tamaya.collections;
 
+import org.apache.tamaya.base.TypeUtils;
 import org.apache.tamaya.base.convert.ConversionContext;
 import org.apache.tamaya.base.convert.ConverterManager;
 import org.apache.tamaya.meta.MetaProperties;
-import org.apache.tamaya.spi.ConfigContextSupplier;
-import org.apache.tamaya.spi.TypeLiteral;
+import org.apache.tamaya.base.ConfigContextSupplier;
 
 import javax.config.Config;
 import javax.config.ConfigProvider;
@@ -148,15 +148,15 @@ final class ItemTokenizer {
                 LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
             }
         }
-        if (TypeLiteral.getTypeParameters(targetType()).length>0) {
+        if (TypeUtils.getTypeParameters(targetType()).length>0) {
             if (config() instanceof ConfigContextSupplier) {
                 valueConverters.addAll(
                         ((ConfigContextSupplier) config()).getConfigContext().getConverters(
-                                TypeLiteral.getTypeParameters(targetType())[0]
+                                TypeUtils.getTypeParameters(targetType())[0]
                         ));
             } else {
                 valueConverters.addAll(ConverterManager.defaultInstance().getConverters(
-                        TypeLiteral.getTypeParameters(targetType())[0]));
+                        TypeUtils.getTypeParameters(targetType())[0]));
             }
         }
         ConversionContext ctx = new ConversionContext.Builder(config(), key(), targetType()).build();

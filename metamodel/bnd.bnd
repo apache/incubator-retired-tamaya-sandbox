@@ -24,11 +24,14 @@ Export-Package: \
     org.apache.tamaya.metamodel.dsl,\
     org.apache.tamaya.metamodel.spi
 Import-Package: \
-    org.apache.tamaya,\
-    org.apache.tamaya.spi
+    javax.config,\
+    javax.config.spi,\
+    org.apache.tamaya.base,\
+    org.apache.tamaya.base.configsource,\
+    org.apache.tamaya.base.filter
 Export-Service: \
     org.apache.tamaya.metamodel.spi.ItemFactory,\
     org.apache.tamaya.metamodel.spi.MetaConfigurationReader,\
     org.apache.tamaya.metamodel.spi.SimpleResolver,\
-    org.apache.tamaya.spi.ConfigurationProviderSpi
+    org.apache.tamaya.core.TamayaConfigProviderResolver$ConfigFactory
 

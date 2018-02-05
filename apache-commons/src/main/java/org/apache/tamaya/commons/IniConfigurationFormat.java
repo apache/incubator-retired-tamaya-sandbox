@@ -20,7 +20,6 @@ package org.apache.tamaya.commons;
 
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
-import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationDataBuilder;
 import org.apache.tamaya.format.ConfigurationFormat;
@@ -71,7 +70,7 @@ public class IniConfigurationFormat implements ConfigurationFormat {
                 builder.addSectionProperties(section, properties);
             }
         } catch (Exception e) {
-            throw new ConfigException("Failed to parse ini-file format from " + name, e);
+            throw new IllegalArgumentException("Failed to parse ini-file format from " + name, e);
         }
         return builder.build();
     }

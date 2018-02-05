@@ -19,7 +19,7 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.Filter;
+import org.apache.tamaya.base.filter.Filter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
