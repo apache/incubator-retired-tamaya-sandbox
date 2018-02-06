@@ -41,7 +41,7 @@ import java.util.function.Predicate;
  * _foo.bar.Property.propertySource=MyPropertySource
  * </pre>
  */
-public final class EtcdMetaPropertyMapping implements MetaPropertyMapping{
+public final class EtcdMetaPropertyMapping implements MetaPropertyMapping {
 
     @Override
     public String getKey(String entryKey, String metaKey) {

@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.meta.MetaProperties;
+import org.apache.tamaya.meta.MetaPropertyMapper;
 import org.apache.tamaya.base.ConfigValueCombinationPolicy;
 
 import javax.annotation.Priority;
@@ -50,7 +50,7 @@ public class AdaptiveCombinationPolicy implements ConfigValueCombinationPolicy {
             if(currentValue==null){
                 return newValue;
             }
-            final String separator = MetaProperties.getOptionalMetaEntry(ConfigProvider.getConfig(),
+            final String separator = MetaPropertyMapper.getOptionalMetaEntry(ConfigProvider.getConfig(),
                     key, "item-separator").orElse(",");
             return currentValue + separator + newValue;
         }else{
@@ -66,14 +66,14 @@ public class AdaptiveCombinationPolicy implements ConfigValueCombinationPolicy {
 
     @Override
     public String collect(String currentValue, String key, ConfigSource propertySource){
-        if(MetaProperties.isMetaEntry(key)){
+        if(MetaPropertyMapper.isMetaEntry(key)){
             String newValue = propertySource.getValue(key);
             if(newValue!=null){
                 return newValue;
             }
             return currentValue;
         }
-        String adaptiveCombinationPolicyClass  = MetaProperties.getOptionalMetaEntry(
+        String adaptiveCombinationPolicyClass  = MetaPropertyMapper.getOptionalMetaEntry(
                 ConfigProvider.getConfig(),
                 key, "combination-policy").orElse("override");
         ConfigValueCombinationPolicy combinationPolicy = null;

@@ -46,7 +46,7 @@ import java.util.function.Predicate;
  * </pre>
  */
 @Priority(1)
-public final class DefaultMetaPropertyMapping implements MetaPropertyMapping{
+public final class DefaultMetaPropertyMapping implements MetaPropertyMapping {
 
     @Override
     public String getKey(String entryKey, String metaKey) {

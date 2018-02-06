@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.meta.MetaProperties;
+import org.apache.tamaya.meta.MetaPropertyMapper;
 
 import javax.config.spi.Converter;
 import java.util.Collections;
@@ -31,7 +31,7 @@ public class SetConverter implements Converter<Set> {
 
     @Override
     public Set convert(String value) {
-        String collectionType = MetaProperties.getOptionalMetaEntry(ItemTokenizer.config(),
+        String collectionType = MetaPropertyMapper.getOptionalMetaEntry(ItemTokenizer.config(),
                 ItemTokenizer.key(),"collection-type").orElse("Set");
         if(collectionType.startsWith("java.util.")){
             collectionType = collectionType.substring("java.util.".length());
@@ -47,7 +47,7 @@ public class SetConverter implements Converter<Set> {
                 result = HashSetConverter.getInstance().convert(value);
                 break;
         }
-        if(MetaProperties.getOptionalMetaEntry(
+        if(MetaPropertyMapper.getOptionalMetaEntry(
                 ItemTokenizer.config(),
                 ItemTokenizer.key(),
                 "read-only", boolean.class).orElse(true)){

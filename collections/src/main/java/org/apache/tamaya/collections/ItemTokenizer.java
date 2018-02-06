@@ -21,7 +21,7 @@ package org.apache.tamaya.collections;
 import org.apache.tamaya.base.TypeUtils;
 import org.apache.tamaya.base.convert.ConversionContext;
 import org.apache.tamaya.base.convert.ConverterManager;
-import org.apache.tamaya.meta.MetaProperties;
+import org.apache.tamaya.meta.MetaPropertyMapper;
 import org.apache.tamaya.base.ConfigContextSupplier;
 
 import javax.config.Config;
@@ -54,7 +54,7 @@ final class ItemTokenizer {
      */
     public static List<String> split(String value){
         return split(value,
-                MetaProperties.getOptionalMetaEntry(
+                MetaPropertyMapper.getOptionalMetaEntry(
                     config(),
                 key(),"item-separator").orElse( ","));
     }
@@ -95,7 +95,7 @@ final class ItemTokenizer {
      * @return an array of length 2, with the trimmed and parsed key/value pair.
      */
     public static String[] splitMapEntry(String mapEntry){
-        return splitMapEntry(mapEntry, MetaProperties.getOptionalMetaEntry(
+        return splitMapEntry(mapEntry, MetaPropertyMapper.getOptionalMetaEntry(
                 config(),
                 key(),".map-entry-separator").orElse( "::"));
     }
@@ -137,7 +137,7 @@ final class ItemTokenizer {
      * @return the parsed value, or null.
      */
     public static Object convertValue(String value) {
-        String converterClass = MetaProperties.getOptionalMetaEntry(
+        String converterClass = MetaPropertyMapper.getOptionalMetaEntry(
                 config(),
                 key(),"item-converters").orElse(null);
         List<Converter> valueConverters = new ArrayList<>(1);

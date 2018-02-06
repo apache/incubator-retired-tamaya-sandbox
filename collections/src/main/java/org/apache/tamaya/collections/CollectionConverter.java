@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.meta.MetaProperties;
+import org.apache.tamaya.meta.MetaPropertyMapper;
 
 import javax.config.spi.Converter;
 import java.util.Collection;
@@ -31,7 +31,7 @@ public class CollectionConverter implements Converter<Collection> {
 
     @Override
     public Collection convert(String value) {
-        String collectionType = MetaProperties.getOptionalMetaEntry(
+        String collectionType = MetaPropertyMapper.getOptionalMetaEntry(
                 ItemTokenizer.config(),
                 ItemTokenizer.key(),
                 "collection-type").orElse("List");
@@ -57,7 +57,7 @@ public class CollectionConverter implements Converter<Collection> {
                 result = ArrayListConverter.getInstance().convert(value);
                 break;
         }
-        if(MetaProperties.getOptionalMetaEntry(
+        if(MetaPropertyMapper.getOptionalMetaEntry(
                 ItemTokenizer.config(),
                 ItemTokenizer.key(),
                 "read-only", boolean.class).orElse(true)){

@@ -34,16 +34,16 @@ import java.util.logging.Logger;
 /**
  * Accessor singleton for Meta-entries.
  */
-public final class MetaProperties {
+public final class MetaPropertyMapper {
 
     /** The logger used. */
-    private final static Logger LOG = Logger.getLogger(MetaProperties.class.getName());
+    private final static Logger LOG = Logger.getLogger(MetaPropertyMapper.class.getName());
 
 
     /**
      * Private singleton constructor.
      */
-    private MetaProperties(){}
+    private MetaPropertyMapper(){}
 
     /**
      * Checks if the given key is a meta-entry.
