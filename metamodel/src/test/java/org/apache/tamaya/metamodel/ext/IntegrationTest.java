@@ -31,6 +31,7 @@ import javax.config.ConfigProvider;
 import javax.config.spi.ConfigSource;
 import javax.config.spi.Converter;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -157,8 +158,7 @@ public class IntegrationTest {
             ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
             assertTrue(context.getConverters().isEmpty());
             assertTrue(context.getFilters().isEmpty());
-            assertEquals(2, context.getSources().size());
-            assertTrue(context.getSources().get(0) instanceof MyConfigSource);
+            assertTrue(context.getConfigSources().iterator().next() instanceof MyConfigSource);
         }
     }
 
@@ -194,7 +194,10 @@ public class IntegrationTest {
             ConfigContext context = ((ConfigContextSupplier) config).getConfigContext();
             assertTrue(context.getConverters().isEmpty());
             assertTrue(context.getFilters().isEmpty());
-            assertEquals(1, context.getSources().size());
+            assertTrue(context.getConfigSources().iterator().hasNext());
+            Iterator it = context.getConfigSources().iterator();
+            it.next();
+            assertFalse(it.hasNext());
         }
         ConfigSource ps = config.getConfigSources().iterator().next();
         assertNotNull(ps);
