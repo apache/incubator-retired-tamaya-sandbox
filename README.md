@@ -27,3 +27,10 @@ Then you can build Tamaya Sandbox via:
 $ export MAVEN_OPTS="-Xmx512m -XX:PermGenSpace=200m"
 $ mvn
 ```
+
+### Travis / CI
+
+Apart from integration into ASF CI there's a travis build:
+
+[![Build Status](https://travis-ci.org/apache/incubator-tamaya-sandbox.svg?branch=master)](https://travis-ci.org/apache/incubator-tamaya-sandbox/branches)
+
