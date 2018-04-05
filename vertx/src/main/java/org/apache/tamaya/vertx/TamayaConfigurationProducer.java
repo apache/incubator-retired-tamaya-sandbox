@@ -87,7 +87,7 @@ public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
 
     /**
      * Registers a handler for accessing multiple configuration keys (input: String[] (Json),
-     * reply type: Map<String,String></String,String> (Json).
+     * reply type: {@code Map<String,String>} (Json).
      * @param address the event bus address to register.
      * @param eventBus the event bus.
      * @return the consumer registered.

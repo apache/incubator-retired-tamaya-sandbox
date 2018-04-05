@@ -84,6 +84,18 @@ under the License.
             <version>${camel.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+          <version>${jaxb.version}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>javax.activation</groupId>
+          <artifactId>javax.activation-api</artifactId>
+          <version>${javax.activation.version}</version>
+          <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

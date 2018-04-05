@@ -50,8 +50,7 @@ final class ItemTokenizer {
      */
     public static List<String> split(String value, ConversionContext context){
         return split(value, ConfigurationProvider.getConfiguration().getOrDefault(
-                '_' + context.getKey()+ "" +
-                        "item-separator", ","));
+                '_' + context.getKey() + ".item-separator", ","));
     }
 
     /**

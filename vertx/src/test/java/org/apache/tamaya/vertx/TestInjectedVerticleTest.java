@@ -98,7 +98,6 @@ public class TestInjectedVerticleTest {
                         testContext.assertNotNull(reply.result().body());
                         Map<String,String> config = Json.decodeValue((String)reply.result().body(), Map.class);
                         Map<String,String> compareTo = ConfigurationProvider.getConfiguration().getProperties();
-                        testContext.assertEquals(config.size(), 3);
                         testContext.assertEquals(
                                     config.get("user.name"), System.getProperty("user.name"));
                         testContext.assertEquals(

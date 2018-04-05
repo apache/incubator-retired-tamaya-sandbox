@@ -57,6 +57,11 @@ under the License.
         <johnzon.version>0.9-incubating</johnzon.version>
         <junit.version>4.12</junit.version>
         <assertj.version>3.8.0</assertj.version>
+        <surefire.version>2.21.0</surefire.version>
+
+        <!-- Java EE modules for compiling on JDK9+ -->
+        <jaxb.version>2.3.0</jaxb.version>
+        <javax.activation.version>1.2.0</javax.activation.version>
 
         <!-- Dependency and plugin relate version properties go here -->
         <arquillian.version>1.1.7.Final</arquillian.version>
@@ -67,11 +72,11 @@ under the License.
         <asciidoctor-diagramm.version>1.2.1</asciidoctor-diagramm.version>
         <asciidoctorj.version>1.5.6</asciidoctorj.version>
         <checkstyle.version>2.15</checkstyle.version>
-        <enforcer.version>1.4.1</enforcer.version>
+        <enforcer.version>3.0.0-M1</enforcer.version>
         <gem.plugin>1.0.7</gem.plugin>
         <sources.plugin>3.0.1</sources.plugin>
         <hamcrest.version>2.0.0.0</hamcrest.version>
-        <javadoc.version>2.10.4</javadoc.version>
+        <javadoc.version>3.0.0</javadoc.version>
         <!-- Must/should match the JRuby version used by AsciidoctorJ -->
         <jruby.version>1.7.26</jruby.version>
         <findbugs.version>3.0.4</findbugs.version>
@@ -450,6 +455,7 @@ under the License.
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire.version}</version>
                     <inherited>true</inherited>
                 </plugin>
 
@@ -630,6 +636,19 @@ under the License.
                         </configuration>
                     </execution>
                 </executions>
+                <!-- compiling on JDK 9+ requires these Java EE modules -->
+                <dependencies>
+                  <dependency>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                    <version>${jaxb.version}</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>javax.activation-api</artifactId>
+                    <version>${javax.activation.version}</version>
+                  </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -657,6 +676,7 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${enforcer.version}</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -685,6 +705,7 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.version}</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -701,6 +722,15 @@ under the License.
                     <source>${maven.compile.sourceLevel}</source>
                     <verbose>false</verbose>
                 </configuration>
+                <!-- compiling on JDK 10 requires a newer version of commons-lang3
+                     it should be possible to remove this once a newer javadoc plugin becomes available -->
+                <dependencies>
+                  <dependency>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                    <version>3.7</version>
+                  </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
