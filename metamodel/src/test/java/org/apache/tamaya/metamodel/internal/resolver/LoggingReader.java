@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.metamodel.internal.resolver;
 
-import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.metamodel.spi.MetaConfigReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -36,7 +36,7 @@ import java.util.TimerTask;
 /**
  * Created by atsticks on 01.05.17.
  */
-public class LoggingReader implements MetaConfigurationReader{
+public class LoggingReader implements MetaConfigReader {
 
     private static final JavaResolver resolver = new JavaResolver();
 

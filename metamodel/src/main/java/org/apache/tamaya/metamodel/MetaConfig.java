@@ -19,7 +19,7 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.base.ServiceContext;
-import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.metamodel.spi.MetaConfigReader;
 import org.apache.tamaya.base.ServiceContextManager;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -40,19 +40,19 @@ import java.util.logging.Logger;
 /**
  * Accessor singleton for accessing/loading meta-configuration.
  */
-public final class MetaConfiguration {
+public final class MetaConfig {
 
     private static final String CONFIG_RESOURCE = "tamaya-config.xml";
 
-    private static final Logger LOG = Logger.getLogger(MetaConfiguration.class.getName());
+    private static final Logger LOG = Logger.getLogger(MetaConfig.class.getName());
 
     /**
      * Singleton constructor.
      */
-    private MetaConfiguration(){}
+    private MetaConfig(){}
 
     /**
-     * Creates a new {@link Config} using {@link #createConfiguration(URL)}
+     * Creates a new {@link Config} using {@link #createConfig(URL)}
      * and applies it as default configuration using {@link ConfigProviderResolver#registerConfig(Config, ClassLoader)} .
      */
     public static void configure(ClassLoader classLoader){
@@ -65,14 +65,14 @@ public final class MetaConfiguration {
     }
 
     /**
-     * Creates a new {@link Config} using {@link #createConfiguration(URL)}
+     * Creates a new {@link Config} using {@link #createConfig(URL)}
      * and applies it as default configuration using {@link ConfigProviderResolver#registerConfig(Config, ClassLoader)} .
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
      */
     public static void configure(URL metaConfig, ClassLoader classloader){
         try {
             // Let readers do their work
-            Config config = createConfiguration(metaConfig);
+            Config config = createConfig(metaConfig);
             ConfigProviderResolver.instance().registerConfig(config, classloader);
         }catch(Exception e){
             LOG.log(Level.SEVERE, "TAMAYA: Error loading configuration.", e);
@@ -94,12 +94,12 @@ public final class MetaConfiguration {
                 }
             }
         }
-        return MetaConfiguration.class.getClassLoader().getResource(CONFIG_RESOURCE);
+        return MetaConfig.class.getClassLoader().getResource(CONFIG_RESOURCE);
     }
 
     /**
      * Performs initialization of a new configuration
-     * context to the {@link MetaConfigurationReader} instances found in the current
+     * context to the {@link MetaConfigReader} instances found in the current
      * {@link ServiceContext} and returns the corresponding builder
      * instance.
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
@@ -114,8 +114,8 @@ public final class MetaConfiguration {
             document = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder().parse(configFile.openStream());
             ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-            for(MetaConfigurationReader reader: ServiceContextManager.getServiceContext().getServices(
-                    MetaConfigurationReader.class
+            for(MetaConfigReader reader: ServiceContextManager.getServiceContext().getServices(
+                    MetaConfigReader.class
             )){
                 LOG.fine("TAMAYA: Executing MetaConfig-Reader: " + reader.getClass().getName() + "...");
                 reader.read(document, builder);
@@ -128,12 +128,12 @@ public final class MetaConfiguration {
 
     /**
      * Reads the meta-configuration and delegates initialization of the current configuration
-     * context to the {@link MetaConfigurationReader} instances found in the current
+     * context to the {@link MetaConfigReader} instances found in the current
      * {@link ServiceContext}.
      * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
      * @return the new configuration instance.
      */
-    public static Config createConfiguration(URL metaConfig){
+    public static Config createConfig(URL metaConfig){
         return createConfigBuilder(metaConfig).build();
     }
 

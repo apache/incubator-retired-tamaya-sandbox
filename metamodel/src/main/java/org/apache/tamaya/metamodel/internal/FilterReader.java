@@ -21,7 +21,7 @@ package org.apache.tamaya.metamodel.internal;
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
-import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.metamodel.spi.MetaConfigReader;
 import org.apache.tamaya.base.filter.Filter;
 import org.apache.tamaya.base.TamayaConfigBuilder;
 import org.osgi.service.component.annotations.Component;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * Metaconfiguration reader that reads the configuration filters to be used.
  */
 @Component
-public class FilterReader implements MetaConfigurationReader{
+public class FilterReader implements MetaConfigReader {
 
     private static final Logger LOG = Logger.getLogger(FilterReader.class.getName());
 

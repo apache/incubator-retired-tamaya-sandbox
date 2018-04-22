@@ -26,7 +26,7 @@ import org.apache.tamaya.metamodel.ext.RefreshableConfigSource;
 import org.apache.tamaya.metamodel.ext.RefreshableConfigSourceProvider;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
-import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.metamodel.spi.MetaConfigReader;
 import org.apache.tamaya.base.filter.Filter;
 import org.apache.tamaya.base.ServiceContext;
 import org.osgi.service.component.annotations.Component;
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  * Metaconfiguration reader to read property sources and property source providers.
  */
 @Component
-public class ConfigSourceReader implements MetaConfigurationReader{
+public class ConfigSourceReader implements MetaConfigReader {
 
     private static final Logger LOG = Logger.getLogger(ConfigSourceReader.class.getName());
 

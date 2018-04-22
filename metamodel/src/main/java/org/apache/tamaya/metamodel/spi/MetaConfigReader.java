@@ -27,7 +27,7 @@ import javax.config.spi.ConfigBuilder;
  * Reader that reads meta configuration from the meta configuration XML source.
  * This SPI allows to allow different aspects to be configured by different modules.
  */
-public interface MetaConfigurationReader {
+public interface MetaConfigReader {
 
     /**
      * Reads meta-configuration from the given document and configures the current

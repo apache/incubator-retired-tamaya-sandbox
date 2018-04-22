@@ -20,7 +20,7 @@ package org.apache.tamaya.metamodel.internal;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
-import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.metamodel.spi.MetaConfigReader;
 import org.apache.tamaya.base.TamayaConfigBuilder;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  */
 @Component
 @Priority(Integer.MAX_VALUE)
-public class FilterOrderingReader implements MetaConfigurationReader{
+public class FilterOrderingReader implements MetaConfigReader {
 
     private static final Logger LOG = Logger.getLogger(FilterOrderingReader.class.getName());
 

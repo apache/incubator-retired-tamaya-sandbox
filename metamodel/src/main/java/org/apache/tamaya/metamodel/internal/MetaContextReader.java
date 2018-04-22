@@ -19,7 +19,7 @@
 package org.apache.tamaya.metamodel.internal;
 
 import org.apache.tamaya.metamodel.MetaContext;
-import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
+import org.apache.tamaya.metamodel.spi.MetaConfigReader;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
 import org.apache.tamaya.base.ServiceContextManager;
 import org.osgi.service.component.annotations.Component;
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  */
 @Priority(-1)
 @Component
-public class MetaContextReader implements MetaConfigurationReader {
+public class MetaContextReader implements MetaConfigReader {
 
     private static final Logger LOG = Logger.getLogger(MetaContextReader.class.getName());
 

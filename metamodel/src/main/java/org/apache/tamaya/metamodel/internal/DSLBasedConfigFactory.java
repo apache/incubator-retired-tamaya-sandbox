@@ -22,7 +22,7 @@ import org.apache.tamaya.base.DefaultConfigBuilder;
 import org.apache.tamaya.base.configsource.ConfigSourceComparator;
 import org.apache.tamaya.base.filter.FilterComparator;
 import org.apache.tamaya.core.TamayaConfigProviderResolver;
-import org.apache.tamaya.metamodel.MetaConfiguration;
+import org.apache.tamaya.metamodel.MetaConfig;
 import org.osgi.service.component.annotations.Component;
 
 import javax.annotation.Priority;
@@ -30,9 +30,9 @@ import javax.config.Config;
 
 
 /**
- * ConfigFactory that uses {@link MetaConfiguration} to create new Config instances for
+ * ConfigFactory that uses {@link MetaConfig} to create new Config instances for
  * the Tamaya Configuration System. This class is not usable when an alternate
- * Configuration implementation is active. Instead use the methods in {@link MetaConfiguration}
+ * Configuration implementation is active. Instead use the methods in {@link MetaConfig}
  * to configure/setup your configuration system.
  */
 @Priority(1)
@@ -41,7 +41,7 @@ public class DSLBasedConfigFactory implements TamayaConfigProviderResolver.Confi
 
     @Override
     public Config createConfig(ClassLoader classLoader) {
-        MetaConfiguration.configure(classLoader);
+        MetaConfig.configure(classLoader);
         return new DefaultConfigBuilder()
                         .addDiscoveredConverters()
                         .addDiscoveredFilters()

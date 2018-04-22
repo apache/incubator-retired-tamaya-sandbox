@@ -22,7 +22,7 @@ import org.apache.tamaya.base.ConfigContext;
 import org.apache.tamaya.base.ConfigContextSupplier;
 import org.apache.tamaya.base.filter.Filter;
 import org.apache.tamaya.metamodel.CachedFilter;
-import org.apache.tamaya.metamodel.MetaConfiguration;
+import org.apache.tamaya.metamodel.MetaConfig;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ public class IntegrationTest {
 
     @Test
     public void testEmptyConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/empty-config.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/empty-config.xml"));
         assertNotNull(config);
         assertTrue(!config.getPropertyNames().iterator().hasNext());
         assertTrue(!config.getConfigSources().iterator().hasNext());
@@ -62,7 +62,7 @@ public class IntegrationTest {
 
     @Test
     public void testMetaContextConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/context-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/context-test.xml"));
         assertNotNull(config);
         assertFalse(config.getPropertyNames().iterator().hasNext());
         if(config instanceof ConfigContextSupplier) {
@@ -80,7 +80,7 @@ public class IntegrationTest {
 
     @Test
     public void testDefaultConvertersConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyconverters-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/default-propertyconverters-test.xml"));
         assertNotNull(config);
         assertFalse(config.getConfigSources().iterator().hasNext());
         assertFalse(config.getPropertyNames().iterator().hasNext());
@@ -93,7 +93,7 @@ public class IntegrationTest {
 
     @Test
     public void testDefaultPropertySourcesConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertysources-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/default-propertysources-test.xml"));
         assertNotNull(config);
         assertTrue(config.getPropertyNames().iterator().hasNext());
         assertTrue(config.getConfigSources().iterator().hasNext());
@@ -106,7 +106,7 @@ public class IntegrationTest {
 
     @Test
     public void testDefaultPropertyFiltersConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyfilters-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/default-propertyfilters-test.xml"));
         assertNotNull(config);
         assertFalse(config.getPropertyNames().iterator().hasNext());
         assertFalse(config.getConfigSources().iterator().hasNext());
@@ -119,7 +119,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyFiltersConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilters-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/propertyfilters-test.xml"));
         assertNotNull(config);
         assertFalse(config.getPropertyNames().iterator().hasNext());
         assertFalse(config.getConfigSources().iterator().hasNext());
@@ -134,7 +134,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyConvertersConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverters-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/propertyconverters-test.xml"));
         assertNotNull(config);
         assertFalse(config.getPropertyNames().iterator().hasNext());
         assertFalse(config.getConfigSources().iterator().hasNext());
@@ -150,7 +150,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertySourcesConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysources-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/propertysources-test.xml"));
         assertNotNull(config);
         assertTrue(config.getPropertyNames().iterator().hasNext());
         assertTrue(config.getConfigSources().iterator().hasNext());
@@ -164,7 +164,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyFilterConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilter-config-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/propertyfilter-config-test.xml"));
         assertNotNull(config);
         assertFalse(config.getPropertyNames().iterator().hasNext());
         assertFalse(config.getConfigSources().iterator().hasNext());
@@ -186,7 +186,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertySourceConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysource-config-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/propertysource-config-test.xml"));
         assertNotNull(config);
         assertFalse(config.getPropertyNames().iterator().hasNext());
         assertTrue(config.getConfigSources().iterator().hasNext());
@@ -211,7 +211,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyConverterConfig(){
-        Config config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverter-config-test.xml"));
+        Config config = MetaConfig.createConfig(getConfig("IntegrationTests/propertyconverter-config-test.xml"));
         assertNotNull(config);
         assertFalse(config.getPropertyNames().iterator().hasNext());
         assertFalse(config.getConfigSources().iterator().hasNext());
