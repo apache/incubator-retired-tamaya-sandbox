@@ -62,6 +62,8 @@ public final class ComponentFactory<T> {
      * </ul>
      * @param identifier the configured type
      * @return the component found, or null.
+     * @throws IllegalAccessException if the given type lacks a publicly accessible constructor
+     * @throws InstantiationException if the given type lacks a nullary constructor
      */
     public T getComponent(String identifier)
             throws IllegalAccessException, InstantiationException {

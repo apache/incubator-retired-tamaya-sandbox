@@ -93,8 +93,8 @@ public final class RefreshablePropertySource
     /**
      * Set the refresh period. This will be immediately applied from now. No explicit
      * refresh will be triggered now.
-     * @param units
-     * @param timeUnit
+     * @param units the time duration in the given timeUnit
+     * @param timeUnit the unit of measurement for the units argument
      */
     public void setRefreshPeriod(long units, TimeUnit timeUnit){
         this.refreshPeriod.set(timeUnit.toMillis(units));
