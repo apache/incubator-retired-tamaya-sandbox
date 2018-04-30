@@ -55,7 +55,7 @@ public final class MetaContext {
 
     /**
      * Get the context's id.
-     * @return
+     * @return the context's id
      */
     public String getId() {
         return getProperty("_id", "N/A");
@@ -97,6 +97,7 @@ public final class MetaContext {
 
     /**
      * Combine this context with the other contexts given.
+     * @param baseContext the base context with which the other contexts will be merged
      * @param contexts the context to merge with this context.
      * @return the newly created Context.
      */

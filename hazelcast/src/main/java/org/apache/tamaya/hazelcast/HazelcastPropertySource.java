@@ -108,8 +108,8 @@ implements MutablePropertySource{
     /**
      * Creates a new instance, hereby using the given property source name and the
      * hazelcast instance.
-     * @param name
-     * @param hazelcastInstance
+     * @param name the property source name, not null.
+     * @param hazelcastInstance the hazelcast instance, not null.
      */
     public HazelcastPropertySource(String name, HazelcastInstance hazelcastInstance){
         super(name);
