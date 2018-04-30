@@ -9,6 +9,7 @@
 javac.source: 1.8
 javac.target: 1.8
 
+Automatic-Module-Name: org.apache.tamaya.consul
 Bundle-Version: ${version}.${tstamp}
 Bundle-Name: Apache Tamaya - Consul
 Bundle-SymbolicName: org.apache.tamaya.consul

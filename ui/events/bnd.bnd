@@ -9,6 +9,7 @@
 javac.source: 1.8
 javac.target: 1.8
 
+Automatic-Module-Name: org.apache.tamaya.ui.events
 Bundle-Version: ${version}.${tstamp}
 Bundle-Name: Apache Tamaya - UI (Events)
 Bundle-SymbolicName: org.apache.tamaya.ui.events
