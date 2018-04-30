@@ -9,6 +9,7 @@
 javac.source: 1.8
 javac.target: 1.8
 
+Automatic-Module-Name: org.apache.tamaya.jsr382
 Bundle-Version: ${version}.${tstamp}
 Bundle-Name: Apache Tamaya - JSR 382
 Bundle-SymbolicName: org.apache.tamaya.jsr382
