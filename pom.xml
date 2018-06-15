@@ -54,7 +54,6 @@ under the License.
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <json.spec.version>1.0</json.spec.version>
         <johnzon.version>1.1.4</johnzon.version>
-        <johnzon.version>0.9-incubating</johnzon.version>
         <junit.version>4.12</junit.version>
         <assertj.version>3.8.0</assertj.version>
         <surefire.version>2.21.0</surefire.version>
