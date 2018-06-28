@@ -91,7 +91,7 @@ final class ItemTokenizer {
      */
     public static String[] splitMapEntry(String mapEntry, ConversionContext context){
         return splitMapEntry(mapEntry, ConfigurationProvider.getConfiguration().getOrDefault(
-                '_' + context.getKey()+".map-entry-separator", "::"));
+                '_' + context.getKey()+".map-entry-separator", "="));
     }
 
     /**
