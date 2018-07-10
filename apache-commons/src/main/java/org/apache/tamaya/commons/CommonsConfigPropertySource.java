@@ -40,7 +40,7 @@ public class CommonsConfigPropertySource implements PropertySource {
     }
 
     public CommonsConfigPropertySource(String name, Configuration commonsConfig) {
-        commonsConfig = Objects.requireNonNull(commonsConfig);
+        this.commonsConfig = Objects.requireNonNull(commonsConfig);
         this.name = Objects.requireNonNull(name);
         try {
             this.ordinal = commonsConfig.getInt(PropertySource.TAMAYA_ORDINAL);
