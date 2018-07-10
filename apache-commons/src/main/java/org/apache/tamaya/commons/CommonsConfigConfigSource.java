@@ -39,7 +39,7 @@ public class CommonsConfigConfigSource implements ConfigSource {
     }
 
     public CommonsConfigConfigSource(String name, Configuration commonsConfig) {
-        commonsConfig = Objects.requireNonNull(commonsConfig);
+        this.commonsConfig = Objects.requireNonNull(commonsConfig);
         this.name = Objects.requireNonNull(name);
         try {
             this.ordinal = commonsConfig.getInt(ConfigSource.CONFIG_ORDINAL);
