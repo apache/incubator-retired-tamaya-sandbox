@@ -42,8 +42,14 @@ public class IntegrationTest {
 
     @Test
     public void checkSystemLoads(){
-        assertThat(ConfigurationProvider.getConfiguration()).isNotNull();
-        System.out.println(ConfigurationProvider.getConfiguration());
+        Configuration defaultConfig = ConfigurationProvider.getConfiguration();
+        assertThat(defaultConfig).isNotNull();
+        
+        MetaConfiguration.configure();
+        Configuration defaultMetaConfig = ConfigurationProvider.getConfiguration();
+        assertThat(defaultMetaConfig).isNotNull();
+        
+        assertThat(defaultConfig).isNotEqualTo(defaultMetaConfig);
     }
 
     @Test

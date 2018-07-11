@@ -90,9 +90,6 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
         if(config==null){
             synchronized (LOCK) {
                 if(config==null){
-                    MetaConfiguration.configure();
-                }
-                if(config==null){
                     // load defaults
                     this.config = new DefaultConfiguration(
                             new DefaultConfigurationContextBuilder()
