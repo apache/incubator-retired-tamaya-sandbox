@@ -22,7 +22,7 @@ under the License.
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>18</version>
+        <version>20</version>
     </parent>
     <groupId>org.apache.tamaya.ext</groupId>
     <artifactId>tamaya-sandbox</artifactId>
@@ -53,7 +53,7 @@ under the License.
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <json.spec.version>1.0</json.spec.version>
-        <johnzon.version>1.1.4</johnzon.version>
+        <johnzon.version>1.1.8</johnzon.version>
         <junit.version>4.12</junit.version>
         <assertj.version>3.8.0</assertj.version>
         <surefire.version>2.21.0</surefire.version>
