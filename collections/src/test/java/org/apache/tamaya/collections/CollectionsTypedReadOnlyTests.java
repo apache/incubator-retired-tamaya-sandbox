@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 /**
  * Basic tests for Tamaya collection support. Relevant configs for this tests:
  * <pre>base.items=1,2,3,4,5,6,7,8,9,0
- * base.map=1::a, 2::b, 3::c, [4:: ]
+ * base.map=1:a, 2:b, 3:c, [4: ]
  * </pre>
  */
 public class CollectionsTypedReadOnlyTests {
