@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -68,11 +68,11 @@ public class ParameterModel extends AbstractConfigModel {
         List<Validation> result = new ArrayList<>(1);
         String configValue = config.get(getName());
         if (configValue == null && isRequired()) {
-            result.add(Validation.ofMissing(this));
+            result.add(Validation.createMissing(this));
         }
         if (configValue != null && regEx != null) {
             if (!configValue.matches(regEx)) {
-                result.add(Validation.ofError(this, "Config value not matching expression: " + regEx + ", was " +
+                result.add(Validation.createError(this, "Config value not matching expression: " + regEx + ", was " +
                         configValue));
             }
         }

@@ -20,11 +20,9 @@ package org.apache.tamaya.jodatime;
 
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConversionContext;
-import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.PeriodFormatter;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -64,10 +62,8 @@ public class PeriodConverterTest {
              {"P0002-03-00T00:00:05", FORMATTER.parsePeriod("P2Y3M0W0DT0H0M5S")}
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (Object[] pair : inputResultPairs) {
-            Period period = converter.convert((String) pair[0], context);
+            Period period = converter.convert((String) pair[0]);
 
             assertThat("Converter failed to convert input value " + pair[0], period, notNullValue());
             assertThat(period, equalTo((Period)pair[1]));
@@ -82,10 +78,8 @@ public class PeriodConverterTest {
             "P0002T00:05"
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (String input : inputValues) {
-            Period period = converter.convert(input, context);
+            Period period = converter.convert(input);
 
             assertThat(period, nullValue());
         }
@@ -96,11 +90,15 @@ public class PeriodConverterTest {
         String name = PeriodConverter.class.getSimpleName();
 
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Period.class)).build();
+        try {
+            ConversionContext.set(context);
+            converter.convert("P7Y0M0W0DT0H0M0S");
 
-        converter.convert("P7Y0M0W0DT0H0M0S", context);
-
-        assertThat(context.getSupportedFormats(), hasSize(2));
-        assertThat(context.getSupportedFormats(), hasItem("PyYmMwWdDThHmMsS (" + name + ")"));
-        assertThat(context.getSupportedFormats(), hasItem("Pyyyy-mm-ddThh:mm:ss (" + name + ")"));
+            assertThat(context.getSupportedFormats(), hasSize(2));
+            assertThat(context.getSupportedFormats(), hasItem("PyYmMwWdDThHmMsS (" + name + ")"));
+            assertThat(context.getSupportedFormats(), hasItem("Pyyyy-mm-ddThh:mm:ss (" + name + ")"));
+        }finally{
+            ConversionContext.reset();
+        }
     }
 }

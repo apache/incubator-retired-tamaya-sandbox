@@ -20,7 +20,6 @@ package org.apache.tamaya.jodatime;
 
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
-import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.format.*;
 
@@ -88,8 +87,10 @@ public class InstantConverter implements PropertyConverter<Instant> {
     }
 
     @Override
-    public Instant convert(String value, ConversionContext context) {
-        context.addSupportedFormats(InstantConverter.class, PARSER_FORMATS);
+    public Instant convert(String value) {
+        ConversionContext.doOptional(context -> {
+            context.addSupportedFormats(InstantConverter.class, PARSER_FORMATS);
+        });
 
         String trimmed = Objects.requireNonNull(value).trim();
         try {

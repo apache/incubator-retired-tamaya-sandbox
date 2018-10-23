@@ -26,6 +26,7 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
 import org.junit.Before;
@@ -80,10 +81,8 @@ public class ConfigVerticleTest {
                     testContext.assertNotNull(reply.result().body());
                     Map<String,String> config = Json.decodeValue((String)reply.result().body(),
                             Map.class);
-                    Map<String,String> compareTo = ConfigurationProvider.getConfiguration()
-                    .with(ConfigurationFunctions.filter((k,v) -> {
-                        return k.matches("user.");
-                    })).getProperties();
+                    Map<String,String> compareTo = Configuration.current()
+                    .map(ConfigurationFunctions.filter((k,v) -> k.matches("user."))).getProperties();
                     testContext.assertEquals(config.size(), compareTo.size());
                     for(Map.Entry<String,String> en:compareTo.entrySet()){
                         testContext.assertEquals(

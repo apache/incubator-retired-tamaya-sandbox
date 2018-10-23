@@ -40,9 +40,9 @@ public class UnitConverter implements PropertyConverter<Unit> {
 	private static final Pattern IS_INTEGER_VALUE = Pattern.compile(PATTERN_REGEX);
 
 	@Override
-	public Unit convert(String value, ConversionContext context) {
+	public Unit convert(String value) {
 		String trimmed = requireNonNull(value).trim();
-		addSupportedFormats(context);
+		addSupportedFormats();
 		UnitFormat format = ServiceProvider.current().getUnitFormatService().getUnitFormat();
 
 		Unit result = null;
@@ -58,7 +58,9 @@ public class UnitConverter implements PropertyConverter<Unit> {
 		return result;
 	}
 
-	private void addSupportedFormats(ConversionContext context) {
-		context.addSupportedFormats(UnitConverter.class, "All Units supported by JSR 363");
+	private void addSupportedFormats() {
+		ConversionContext.doOptional(context -> {
+			context.addSupportedFormats(UnitConverter.class, "All Units supported by JSR 363");
+		});
 	}
 }

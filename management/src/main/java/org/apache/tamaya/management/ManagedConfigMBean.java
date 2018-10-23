@@ -47,7 +47,7 @@ public interface ManagedConfigMBean {
      * }
      * </pre>
      *
-     * @return a JSON formatted meta-information.
+     * @return a JSON formatted getMeta-information.
      */
     String getJsonConfigurationInfo();
 
@@ -67,7 +67,7 @@ public interface ManagedConfigMBean {
      *     }
      * </pre>
      *
-     * @return a JSON formatted meta-information.
+     * @return a JSON formatted getMeta-information.
      */
     String getXmlConfigurationInfo();
 
@@ -82,7 +82,7 @@ public interface ManagedConfigMBean {
     /**
      * Accesses a configuration values for current a given config section as Map.
      * @param area the target section key, not null.
-     * @param recursive if set to false only direct child keys of the given section are returned.
+     * @param recursive if setCurrent to false only direct child keys of the given section are returned.
      * @return the key/values found, including the recursive child values.
      * @throws org.apache.tamaya.ConfigException If the configuration is not yet loaded.
      */

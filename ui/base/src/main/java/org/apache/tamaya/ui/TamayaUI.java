@@ -106,7 +106,7 @@ public class TamayaUI extends UI {
      * @throws Exception if startup fails.
      */
     public static void main(String[] args) throws Exception {
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         String contextPath = config.getOrDefault("tamaya.server.contextPath", "/tamaya");
         String appBase = ".";
         Tomcat tomcat = new Tomcat();

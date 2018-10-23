@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.HashMap;
@@ -44,12 +43,12 @@ public class HashMapConverter implements PropertyConverter<HashMap> {
     }
 
     @Override
-    public HashMap convert(String value, ConversionContext context) {
-        List<String> rawList = ItemTokenizer.split(value, context);
+    public HashMap convert(String value) {
+        List<String> rawList = ItemTokenizer.split(value);
         HashMap result = new HashMap(rawList.size());
         for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw, context);
-            Object convValue = ItemTokenizer.convertValue(items[1], context);
+            String[] items = ItemTokenizer.splitMapEntry(raw);
+            Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.put(items[0], convValue);
             }else{

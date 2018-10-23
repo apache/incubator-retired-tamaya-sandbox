@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Class managing a configuration system's meta-context. This
+ * Class managing a configuration system's getMeta-context. This
  * context is used by the configuration system to evaluate the
  * right properties, e.g. by defining the current stage or labels
  * that apply to the current configuration. Hereby contexts are

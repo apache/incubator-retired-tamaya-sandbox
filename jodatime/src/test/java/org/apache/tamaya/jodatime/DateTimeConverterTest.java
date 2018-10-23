@@ -20,11 +20,9 @@ package org.apache.tamaya.jodatime;
 
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -36,9 +34,6 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Mockito.doCallRealMethod;
 
 public class DateTimeConverterTest {
     /*
@@ -74,10 +69,8 @@ public class DateTimeConverterTest {
              {"2007-08-31T16:47:01+00:00 ", FORMATTER.parseDateTime("2007-08-31T16:47:01.0+00:00")},
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (Object[] pair : inputResultPairs) {
-            DateTime date = converter.convert((String)pair[0], context);
+            DateTime date = converter.convert((String)pair[0]);
 
             assertThat("Converter failed to convert input value " + pair[0], date, notNullValue());
             assertThat(date.isEqual((DateTime)pair[1]), is(true));
@@ -90,10 +83,8 @@ public class DateTimeConverterTest {
              "00:00", "a", "-", "+ :00", "+00:"
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (String input : inputValues) {
-            DateTime date = converter.convert(input, context);
+            DateTime date = converter.convert(input);
 
             assertThat(date, nullValue());
         }
@@ -102,15 +93,18 @@ public class DateTimeConverterTest {
     @Test
     public void allSupportedFormatsAreAddedToTheConversionContext() {
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTime.class)).build();
+        try {
+            ConversionContext.set(context);
+            converter.convert("2007-08-31T16+00:00");
 
-        converter.convert("2007-08-31T16+00:00", context);
+            assertThat(context.getSupportedFormats(), hasSize(DateTimeConverter.PARSER_FORMATS.length));
 
-        assertThat(context.getSupportedFormats(), hasSize(DateTimeConverter.PARSER_FORMATS.length));
-
-        for (String format : DateTimeConverter.PARSER_FORMATS) {
-            String expected = format + " (" + DateTimeConverter.class.getSimpleName() + ")";
-            assertThat(context.getSupportedFormats(), hasItem(expected));
+            for (String format : DateTimeConverter.PARSER_FORMATS) {
+                String expected = format + " (" + DateTimeConverter.class.getSimpleName() + ")";
+                assertThat(context.getSupportedFormats(), hasItem(expected));
+            }
+        }finally {
+            ConversionContext.reset();
         }
-
     }
 }

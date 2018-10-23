@@ -19,10 +19,8 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spi.PropertyValueBuilder;
 
 import java.util.Map;
 
@@ -85,8 +83,8 @@ public class MapFilter implements PropertyFilter{
     }
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
-        PropertyValueBuilder b = value.toBuilder();
+    public PropertyValue filterProperty(PropertyValue value) {
+        value = value.mutable();
         String key = value.getKey();
         if(matches !=null){
             if(!value.getKey().matches(matches)){
@@ -96,14 +94,14 @@ public class MapFilter implements PropertyFilter{
         if(cutoff !=null){
             if(value.getKey().startsWith(cutoff)){
                 key = key.substring(cutoff.length());
-                b.setKey(key);
+                value.setKey(key);
             }
         }
         if(target!=null){
             key = target+key;
-            b.setKey(key);
+            value.setKey(key);
         }
-        return b.build();
+        return value;
     }
 
     @Override

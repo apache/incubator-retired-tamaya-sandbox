@@ -18,10 +18,13 @@
  */
 package org.apache.tamaya.camel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
+import org.apache.camel.CamelContext;
 import org.apache.camel.component.properties.PropertiesComponent;
-import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.Configuration;
 
 /**
  * Default Camel PropertiesComponent that additionally has cfg and tamaya prefixes configured for resolution of
@@ -29,35 +32,50 @@ import org.apache.tamaya.ConfigurationProvider;
  */
 public class TamayaPropertiesComponent extends PropertiesComponent{
 
+    private ClassLoader classLoader;
+    private List<TamayaPropertyResolver> resolvers = new ArrayList<>();
+
     /**
-     * Constructor similar to parent.
+     * Constructor similar to getParent.
      */
     public TamayaPropertiesComponent(){
         super();
-        addFunction(new TamayaPropertyResolver("tamaya"));
-        addFunction(new TamayaPropertyResolver("cfg"));
+        resolvers.add(new TamayaPropertyResolver("tamaya"));
+        resolvers.add(new TamayaPropertyResolver("cfg"));
+        for(TamayaPropertyResolver resolver:resolvers) {
+            resolver.init(getClassLoader());
+            addFunction(resolver);
+        }
         setTamayaOverrides(true);
     }
 
     /**
-     * Constructor similar to parent with additional locations.
+     * Constructor similar to getParent with additional locations.
      * @param locations additional locations for Camel.  
      */
     public TamayaPropertiesComponent(String ... locations){
         super(locations);
-        addFunction(new TamayaPropertyResolver("tamaya"));
-        addFunction(new TamayaPropertyResolver("cfg"));
+        resolvers.add(new TamayaPropertyResolver("tamaya"));
+        resolvers.add(new TamayaPropertyResolver("cfg"));
+        for(TamayaPropertyResolver resolver:resolvers) {
+            resolver.init(getClassLoader());
+            addFunction(resolver);
+        }
         setTamayaOverrides(true);
     }
 
     /**
-     * Constructor similar to parent with only one location.
+     * Constructor similar to getParent with only one location.
      * @param location addition location for Camel.
      */
     public TamayaPropertiesComponent(String location){
         super(location);
-        addFunction(new TamayaPropertyResolver("tamaya"));
-        addFunction(new TamayaPropertyResolver("cfg"));
+        resolvers.add(new TamayaPropertyResolver("tamaya"));
+        resolvers.add(new TamayaPropertyResolver("cfg"));
+        for(TamayaPropertyResolver resolver:resolvers) {
+            resolver.init(getClassLoader());
+            addFunction(resolver);
+        }
         setTamayaOverrides(true);
     }
 
@@ -69,10 +87,25 @@ public class TamayaPropertiesComponent extends PropertiesComponent{
     public void setTamayaOverrides(boolean enabled){
         if(enabled){
             final Properties props = new Properties();
-            props.putAll(ConfigurationProvider.getConfiguration().getProperties());
+            props.putAll(Configuration.current(getClassLoader()).getProperties());
             setOverrideProperties(props);
         } else{
             setOverrideProperties(null);
         }
+    }
+
+    private ClassLoader getClassLoader(){
+        CamelContext camelContext = getCamelContext();
+        ClassLoader cl = null;
+        if(camelContext!=null){
+            cl = camelContext.getApplicationContextClassLoader();
+        }
+        if(cl==null){
+            cl = Thread.currentThread().getContextClassLoader();
+        }
+        if(cl==null){
+            cl = getClass().getClassLoader();
+        }
+        return cl;
     }
 }

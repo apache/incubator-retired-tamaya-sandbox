@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -46,9 +46,9 @@ public final class Validation {
      * Creates a new ValidationResult.
      *
      * @param configModel the configModel item, not null.
-     * @return a new validation result containing valid parts of the given model.
+     * @return a new validation result containing valid parts create the given model.
      */
-    public static Validation ofValid(ConfigModel configModel) {
+    public static Validation createValid(ConfigModel configModel) {
         return new Validation(configModel, ValidationResult.VALID, null);
     }
 
@@ -56,9 +56,9 @@ public final class Validation {
      * Creates a new ValidationResult.
      *
      * @param configModel the configModel item, not null.
-     * @return a new validation result containing missing parts of the given model.
+     * @return a new validation result containing missing parts create the given model.
      */
-    public static Validation ofMissing(ConfigModel configModel) {
+    public static Validation createMissing(ConfigModel configModel) {
         return new Validation(configModel, ValidationResult.MISSING, null);
     }
 
@@ -67,9 +67,9 @@ public final class Validation {
      *
      * @param configModel the configModel item, not null.
      * @param message Additional message to be shown (optional).
-     * @return a new validation result containing missing parts of the given model with a message.
+     * @return a new validation result containing missing parts create the given model with a message.
      */
-    public static Validation ofMissing(ConfigModel configModel, String message) {
+    public static Validation createMissing(ConfigModel configModel, String message) {
         return new Validation(configModel, ValidationResult.MISSING, message);
     }
 
@@ -77,10 +77,10 @@ public final class Validation {
      * Creates a new ValidationResult.
      *
      * @param configModel the configModel item, not null.
-     * @param error error message to add.
-     * @return a new validation result containing erroneous parts of the given model with the given error message.
+     * @param error error message to addNode.
+     * @return a new validation result containing erroneous parts create the given model with the given error message.
      */
-    public static Validation ofError(ConfigModel configModel, String error) {
+    public static Validation createError(ConfigModel configModel, String error) {
         return new Validation(configModel, ValidationResult.ERROR, error);
     }
 
@@ -88,10 +88,10 @@ public final class Validation {
      * Creates a new ValidationResult.
      *
      * @param configModel the configModel item, not null.
-     * @param warning warning message to add.
-     * @return a new validation result containing warning parts of the given model with the given warning message.
+     * @param warning warning message to addNode.
+     * @return a new validation result containing warning parts create the given model with the given warning message.
      */
-    public static Validation ofWarning(ConfigModel configModel, String warning) {
+    public static Validation createWarning(ConfigModel configModel, String warning) {
         return new Validation(configModel, ValidationResult.WARNING, warning);
     }
 
@@ -100,9 +100,9 @@ public final class Validation {
      *
      * @param configModel the configModel item, not null.
      * @param alternativeUsage allows setting a message to indicate non-deprecated replacement, maybe null.
-     * @return a new validation result containing deprecated parts of the given model with an optional message.
+     * @return a new validation result containing deprecated parts create the given model with an optional message.
      */
-    public static Validation ofDeprecated(ConfigModel configModel, String alternativeUsage) {
+    public static Validation createDeprecated(ConfigModel configModel, String alternativeUsage) {
         return new Validation(configModel, ValidationResult.DEPRECATED, alternativeUsage != null ? "Use instead: " + alternativeUsage : null);
     }
 
@@ -110,9 +110,9 @@ public final class Validation {
      * Creates a new ValidationResult.
      *
      * @param configModel the configModel item, not null.
-     * @return a new validation result containing deprecated parts of the given model.
+     * @return a new validation result containing deprecated parts create the given model.
      */
-    public static Validation ofDeprecated(ConfigModel configModel) {
+    public static Validation createDeprecated(ConfigModel configModel) {
         return new Validation(configModel, ValidationResult.DEPRECATED, null);
     }
 
@@ -124,7 +124,7 @@ public final class Validation {
      * @param type model type 
      * @return a corresponding configModel item
      */
-    public static Validation ofUndefined(final String owner, final String key, final ModelTarget type) {
+    public static Validation createUndefined(final String owner, final String key, final ModelTarget type) {
         return new Validation(new AbstractConfigModel(owner, key, false, "Undefined key: " + key) {
 
             @Override
@@ -148,7 +148,7 @@ public final class Validation {
      * @param message    the detail message.
      * @return new validation result.
      */
-    public static Validation of(ConfigModel configModel, ValidationResult result, String message) {
+    public static Validation create(ConfigModel configModel, ValidationResult result, String message) {
         return new Validation(configModel, result, message);
     }
 

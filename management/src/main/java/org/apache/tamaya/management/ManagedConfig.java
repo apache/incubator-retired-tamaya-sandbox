@@ -50,12 +50,12 @@ public class ManagedConfig implements ManagedConfigMBean {
 
     @Override
     public String getJsonConfigurationInfo() {
-        return getConfigurationInternal().query(ConfigurationFunctions.jsonInfo());
+        return getConfigurationInternal().adapt(ConfigurationFunctions.jsonInfo());
     }
 
     @Override
     public String getXmlConfigurationInfo() {
-        return getConfigurationInternal().query(ConfigurationFunctions.xmlInfo());
+        return getConfigurationInternal().adapt(ConfigurationFunctions.xmlInfo());
     }
 
     @Override
@@ -65,22 +65,22 @@ public class ManagedConfig implements ManagedConfigMBean {
 
     @Override
     public Map<String, String> getSection(String area, boolean recursive) {
-        return getConfigurationInternal().with(ConfigurationFunctions.section(area, recursive)).getProperties();
+        return getConfigurationInternal().map(ConfigurationFunctions.section(area, recursive)).getProperties();
     }
 
     @Override
     public Set<String> getSections() {
-        return getConfigurationInternal().query(ConfigurationFunctions.sections());
+        return getConfigurationInternal().adapt(ConfigurationFunctions.sections());
     }
 
     @Override
     public Set<String> getTransitiveSections() {
-        return getConfigurationInternal().query(ConfigurationFunctions.transitiveSections());
+        return getConfigurationInternal().adapt(ConfigurationFunctions.transitiveSections());
     }
 
     @Override
     public boolean isAreaExisting(String area) {
-        return !getConfigurationInternal().with(
+        return !getConfigurationInternal().map(
                 ConfigurationFunctions.section(area)).getProperties().isEmpty();
     }
 
@@ -100,7 +100,7 @@ public class ManagedConfig implements ManagedConfigMBean {
         ClassLoader currentCL = Thread.currentThread().getContextClassLoader();
         try{
             Thread.currentThread().setContextClassLoader(this.classLoader);
-            return ConfigurationProvider.getConfiguration();
+            return Configuration.current();
         } finally{
             Thread.currentThread().setContextClassLoader(currentCL);
         }

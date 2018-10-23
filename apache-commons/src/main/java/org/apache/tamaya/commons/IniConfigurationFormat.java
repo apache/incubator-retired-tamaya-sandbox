@@ -22,8 +22,8 @@ import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.format.ConfigurationData;
-import org.apache.tamaya.format.ConfigurationDataBuilder;
 import org.apache.tamaya.format.ConfigurationFormat;
+import org.apache.tamaya.spi.PropertyValue;
 
 import java.io.File;
 import java.io.InputStream;
@@ -51,7 +51,8 @@ public class IniConfigurationFormat implements ConfigurationFormat {
 
     @Override
     public ConfigurationData readConfiguration(String name, InputStream inputStream) {
-        ConfigurationDataBuilder builder = ConfigurationDataBuilder.of(name, this);
+        PropertyValue data = PropertyValue.create();
+        data.setMeta("name", name);
         try {
             HierarchicalINIConfiguration commonIniConfiguration;
             File file = new File(name);
@@ -62,17 +63,17 @@ public class IniConfigurationFormat implements ConfigurationFormat {
             }
             for (String section : commonIniConfiguration.getSections()) {
                 SubnodeConfiguration sectionConfig = commonIniConfiguration.getSection(section);
+                PropertyValue sectionNode = data.getOrCreateChild(section);
                 Map<String, String> properties = new HashMap<>();
                 Iterator<String> keyIter = sectionConfig.getKeys();
                 while (keyIter.hasNext()) {
                     String key = keyIter.next();
-                    properties.put(key, sectionConfig.getString(key));
+                    sectionNode.addProperty(key, sectionConfig.getString(key));
                 }
-                builder.addSectionProperties(section, properties);
             }
         } catch (Exception e) {
             throw new ConfigException("Failed to parse ini-file format from " + name, e);
         }
-        return builder.build();
+        return new ConfigurationData(name, this, data);
     }
 }

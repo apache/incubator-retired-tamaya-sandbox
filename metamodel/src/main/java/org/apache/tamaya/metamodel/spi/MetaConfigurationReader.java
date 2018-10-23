@@ -22,16 +22,16 @@ import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.w3c.dom.Document;
 
 /**
- * Reader that reads meta configuration from the meta configuration XML source.
+ * Reader that reads getMeta configuration from the getMeta configuration XML source.
  * This SPI allows to allow different aspects to be configured by different modules.
  */
 public interface MetaConfigurationReader {
 
     /**
-     * Reads meta-configuration from the given document and configures the current
+     * Reads getMeta-configuration from the given document and configures the current
      * configuration builder. The priority of readers is determined by the priorization policy
      * implemented by the {@link org.apache.tamaya.spi.ServiceContext},
-     * @param document the meta-configuration document
+     * @param document the getMeta-configuration document
      * @param configBuilder the context builder to use.
      */
     void read(Document document, ConfigurationBuilder configBuilder);

@@ -69,7 +69,7 @@ public class Server {
 
 
     public static void main(String... args) throws Exception {
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         String contextPath = config.getOrDefault("tamaya.server.contextPath", "/");
         int port = config.getOrDefault("tamaya.server.port", Integer.class, 8085);
         start(contextPath, port);

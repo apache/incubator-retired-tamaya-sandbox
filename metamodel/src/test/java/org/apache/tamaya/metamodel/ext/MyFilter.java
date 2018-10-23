@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.metamodel.ext;
 
-import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
 
@@ -33,7 +32,7 @@ public class MyFilter implements PropertyFilter{
     private String overrideValue;
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
+    public PropertyValue filterProperty(PropertyValue value) {
         return value;
     }
 

@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.Collections;
@@ -30,7 +29,7 @@ import java.util.SortedMap;
 public class SortedMapConverter implements PropertyConverter<SortedMap> {
 
     @Override
-    public SortedMap convert(String value, ConversionContext context) {
-        return Collections.unmodifiableSortedMap(TreeMapConverter.getInstance().convert(value, context));
+    public SortedMap convert(String value) {
+        return Collections.unmodifiableSortedMap(TreeMapConverter.getInstance().convert(value));
     }
 }

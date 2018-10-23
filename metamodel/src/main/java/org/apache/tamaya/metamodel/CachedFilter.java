@@ -19,7 +19,6 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
-import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
 
@@ -69,7 +68,7 @@ public class CachedFilter implements PropertyFilter{
     }
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
+    public PropertyValue filterProperty(PropertyValue value) {
         if(matches !=null){
             if(value.getKey().matches(matches)){
                 return resolveCachedEntry(value);
@@ -102,8 +101,8 @@ public class CachedFilter implements PropertyFilter{
     public String toString() {
         return "CachedFilter{" +
                 "matches='" + matches + '\'' +
-                ", cache-size=" + cachedEntries.size() +
-                ", max-size=" + maxSize +
+                ", cache-getNumChilds=" + cachedEntries.size() +
+                ", max-getNumChilds=" + maxSize +
                 ", timeout=" + timeout +
                 '}';
     }

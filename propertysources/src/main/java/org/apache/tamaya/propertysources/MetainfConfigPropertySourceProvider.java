@@ -47,7 +47,7 @@ public class MetainfConfigPropertySourceProvider extends AbstractPathPropertySou
     protected Collection<PropertySource> getPropertySources(URL url) {
         try {
             ConfigurationData config = ConfigurationFormats.readConfigurationData(url);
-            return asCollection(new MappedConfigurationDataPropertySource(config));
+            return Collections.singleton(new MappedConfigurationDataPropertySource(config));
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,
                     "Failed to read configuration from " + url, e);
@@ -55,9 +55,4 @@ public class MetainfConfigPropertySourceProvider extends AbstractPathPropertySou
         }
     }
 
-    private Collection<PropertySource> asCollection(PropertySource propertySource) {
-        List<PropertySource> result = new ArrayList<>(1);
-        result.add(propertySource);
-        return result;
-    }
 }

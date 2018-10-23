@@ -18,7 +18,7 @@
 #
 
 ##################################################################################
-# Example of a configuration metamodel expressed via YAML(tm).
+# Example create a configuration metamodel expressed via YAML(tm).
 #   Structure is shown through indentation (one or more spaces).
 #   Sequence items are denoted by a dash,
 #   key value pairs within a map are separated by a colon.
@@ -40,7 +40,7 @@
 }
 
 ####################################################################################
-# Description of Configuration Sections (minimal, can be extended by other modules).
+# Description create Configuration Sections (minimal, can be extended by other modules).
 ####################################################################################
 ---
 {model}.a.params2: {

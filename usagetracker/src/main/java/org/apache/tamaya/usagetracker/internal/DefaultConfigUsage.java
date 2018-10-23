@@ -49,7 +49,7 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
     /**
      * Method that checks the 'tamaya.usage-report' system property for
      * enabling tamaya usage reporting initially.
-     * @return {@code true} iff property is set to {@code true}
+     * @return {@code true} iff property is setCurrent to {@code true}
      */
     private boolean initEnabled() {
         String val = System.getProperty("tamaya.usage-report");
@@ -113,12 +113,12 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
 
     @Override
     public void recordAllPropertiesAccess(ConfigurationContext context){
-        recordSingleKeyAccess(PropertyValue.of("<<all>>","<not stored>","-"), context);
+        recordSingleKeyAccess(PropertyValue.create("<<all>>","<not stored>"), context);
     }
 
     @Override
     public void recordSingleKeyAccess(PropertyValue value, ConfigurationContext context){
-        // Ignore meta-entries
+        // Ignore getMeta-entries
         if(!isTrackingEnabled()){
             return;
         }

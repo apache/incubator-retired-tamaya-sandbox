@@ -57,10 +57,10 @@ public class PeriodConverter implements PropertyConverter<org.joda.time.Period> 
     private final static Pattern ALTERNATIVE_PATTERN = Pattern.compile(ALTERNATIVE_REGEX);
 
     @Override
-    public Period convert(String value, ConversionContext context) {
+    public Period convert(String value) {
         String trimmed = Objects.requireNonNull(value).trim();
 
-        addSupportedFormats(context);
+        addSupportedFormats();
 
         MutablePeriod result = null;
         PeriodParser format = null;
@@ -83,13 +83,11 @@ public class PeriodConverter implements PropertyConverter<org.joda.time.Period> 
         return result != null ? result.toPeriod() : null;
     }
 
-    private void addSupportedFormats(ConversionContext context) {
-        if(context==null){
-            // use case when called internally from DurationConverter.
-            return;
-        }
-        context.addSupportedFormats(PeriodConverter.class, "PyYmMwWdDThHmMsS");
-        context.addSupportedFormats(PeriodConverter.class, "Pyyyy-mm-ddThh:mm:ss");
+    private void addSupportedFormats() {
+        ConversionContext.doOptional(context -> {
+            context.addSupportedFormats(PeriodConverter.class, "PyYmMwWdDThHmMsS");
+            context.addSupportedFormats(PeriodConverter.class, "Pyyyy-mm-ddThh:mm:ss");
+        });
     }
 
     private boolean isISOFormat(String value) {

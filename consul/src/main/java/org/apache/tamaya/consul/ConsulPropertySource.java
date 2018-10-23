@@ -95,7 +95,7 @@ implements MutablePropertySource{
     }
 
     /**
-     * Returns the  default ordinal used, when no ordinal is set, or the ordinal was not parseable to an int value.
+     * Returns the  default ordinal used, when no ordinal is setCurrent, or the ordinal was not parseable to an int value.
      * @return the  default ordinal used, by default 1000.
      */
     public int getDefaultOrdinal(){
@@ -146,7 +146,7 @@ implements MutablePropertySource{
                     props.put(reqKey+".modifyIndex", String.valueOf(value.getModifyIndex()));
                     props.put(reqKey+".lockIndex", String.valueOf(value.getLockIndex()));
                     props.put(reqKey+".flags", String.valueOf(value.getFlags()));
-                    return PropertyValue.builder(key, value.getValue().get(), getName()).setMetaEntries(props).build();
+                    return PropertyValue.of(key, value.getValue().get(), getName()).setMeta(props);
                 }
             } catch(Exception e){
                 LOG.log(Level.FINE, "etcd access failed on " + hostAndPort + ", trying next...", e);
@@ -167,7 +167,7 @@ implements MutablePropertySource{
 //                    if(!props.containsKey("_ERROR")) {
 //                        return mapPrefix(props);
 //                    } else{
-//                        LOG.log(Level.FINE, "consul error on " + hostAndPort + ": " + props.get("_ERROR"));
+//                        LOG.log(Level.FINE, "consul error on " + hostAndPort + ": " + props.current("_ERROR"));
 //                    }
 //                } catch(Exception e){
 //                    LOG.log(Level.FINE, "consul access failed on " + hostAndPort + ", trying next...", e);

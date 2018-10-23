@@ -19,7 +19,6 @@
 package org.apache.tamaya.collections;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
 import org.junit.Test;
 
@@ -39,7 +38,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testList_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = config.get("base.items", new TypeLiteral<List<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -52,7 +51,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testArrayList_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         ArrayList<String> items = config.get("base.items", new TypeLiteral<ArrayList<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -65,7 +64,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testLinkedList_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         LinkedList<String> items = config.get("base.items", new TypeLiteral<LinkedList<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -78,7 +77,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testSet_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = config.get("base.items", new TypeLiteral<Set<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -91,7 +90,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testSortedSet_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = config.get("base.items", new TypeLiteral<SortedSet<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -104,7 +103,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testHashSet_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = config.get("base.items", new TypeLiteral<HashSet<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -117,7 +116,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testTreeSet_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         TreeSet<String> items = config.get("base.items", new TypeLiteral<TreeSet<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -130,7 +129,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testMap_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = config.get("base.map", new TypeLiteral<Map<String,String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -151,7 +150,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testHashMap_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = config.get("base.map", new TypeLiteral<HashMap<String,String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -172,7 +171,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testSortedMap_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = config.get("base.map", new TypeLiteral<SortedMap<String,String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -193,7 +192,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testTreeMap_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         TreeMap<String,String> items = config.get("base.map", new TypeLiteral<TreeMap<String,String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -214,7 +213,7 @@ public class CollectionsBaseTests {
 
     @Test
     public void testCollection_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Collection<String> items = config.get("base.items", new TypeLiteral<Collection<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());

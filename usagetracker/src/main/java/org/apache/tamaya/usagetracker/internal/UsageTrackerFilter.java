@@ -25,6 +25,7 @@ import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
 
 import javax.annotation.Priority;
+import java.util.logging.Filter;
 
 /**
  * Configuration filter to be applied at the end of the filter chain. This filter
@@ -35,12 +36,13 @@ import javax.annotation.Priority;
 public class UsageTrackerFilter implements PropertyFilter{
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
-            ConfigUsageSpi tracker = ServiceContextManager.getServiceContext().getService(ConfigUsageSpi.class);
-        if (context.isSinglePropertyScoped()) {
-            tracker.recordSingleKeyAccess(value, context.getContext());
+    public PropertyValue filterProperty(PropertyValue value) {
+        ConfigUsageSpi tracker = ServiceContextManager.getServiceContext().getService(ConfigUsageSpi.class);
+        FilterContext context = FilterContext.get();
+        if (context == null || context.isSinglePropertyScoped()) {
+            tracker.recordSingleKeyAccess(value, context.current());
         } else {
-            tracker.recordAllPropertiesAccess(context.getContext());
+            tracker.recordAllPropertiesAccess(context.current());
         }
         return value;
     }

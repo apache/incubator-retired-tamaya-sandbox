@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -19,7 +19,6 @@
 package org.apache.tamaya.validation;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.validation.spi.ConfigDocumentationMBean;
 import org.apache.tamaya.validation.spi.ModelProviderSpi;
 import org.apache.tamaya.spi.ServiceContextManager;
@@ -31,7 +30,6 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -56,18 +54,16 @@ public final class ConfigModelManager {
     }
 
     /**
-     * Access the usage statistics for the recorded uses of configuration.
+     * Access the usage statistics for the recorded uses create configuration.
+     * @param inModels the target models, not null.
      * @return usage statistics
      */
-    public static String getConfigInfoText(){
+    public static String getConfigModelDescription(Collection<ConfigModel> inModels){
         StringBuilder b = new StringBuilder();
-        List<ConfigModel> models = new ArrayList<>(getModels());
-        Collections.sort(models, new Comparator<ConfigModel>() {
-            @Override
-            public int compare(ConfigModel k1, ConfigModel k2) {
+        List<ConfigModel> models = new ArrayList<>(inModels);
+        Collections.sort(models, (k1, k2) -> {
                 return k2.getName().compareTo(k2.getName());
-            }
-        });
+            });
         b.append("TYPE    OWNER      NAME                                              MANDATORY   DESCRIPTION\n");
         b.append("-----------------------------------------------------------------------------------------------------\n");
         for(ConfigModel model:models){
@@ -99,28 +95,25 @@ public final class ConfigModelManager {
         return b.toString();
     }
 
-    private static String formatWithFixedLength(String name, int targetLength) {
-        targetLength = targetLength-1;
-        StringBuilder b = new StringBuilder();
-        if(name.length() > targetLength){
-            name = name.substring(0, targetLength);
-        }
-        b.append(name);
-        for(int i=0;i<(targetLength-name.length());i++){
-            b.append(' ');
-        }
-        b.append(' ');
-        return b.toString();
+    /**
+     * Get the validations defined, using the default classloader.
+     *
+     * @return the sections defined, never null.
+     * @see ServiceContextManager#getDefaultClassLoader()
+     */
+    public static Collection<ConfigModel> getModels() {
+        return getModels(ServiceContextManager.getDefaultClassLoader());
     }
 
     /**
      * Get the validations defined.
      *
+     * @param classLoader the target classloader, not null.
      * @return the sections defined, never null.
      */
-    public static Collection<ConfigModel> getModels() {
+    public static Collection<ConfigModel> getModels(ClassLoader classLoader) {
         List<ConfigModel> result = new ArrayList<>();
-        for (ModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ModelProviderSpi.class)) {
+        for (ModelProviderSpi model : ServiceContextManager.getServiceContext(classLoader).getServices(ModelProviderSpi.class)) {
             result.addAll(model.getConfigModels());
         }
         return result;
@@ -128,33 +121,29 @@ public final class ConfigModelManager {
 
 
     /**
-     * Find the validations by matching the validation's name against the given model type.
-     * 
-     * @param name the name to use, not null.
-     * @param modelType classname of the target model type.  
-     * @param <T> type of the model to filter for.
+     * Find the validations by checking the validation's name using the given regular expression and
+     * the default classloader.
+     *
+     * @param namePattern the regular expression to use, not null.
+     * @param targets the target types only to be returned (optional).
      * @return the sections defined, never null.
+     * @see ServiceContextManager#getDefaultClassLoader()
      */
-    public static <T extends ConfigModel> T getModel(String name, Class<T> modelType) {
-        for (ModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ModelProviderSpi.class)) {
-            for(ConfigModel configModel : model.getConfigModels()) {
-                if(configModel.getName().equals(name) && configModel.getClass().equals(modelType)) {
-                    return modelType.cast(configModel);
-                }
-            }
-        }
-        return null;
+    public static Collection<ConfigModel> findModels(String namePattern, ModelTarget... targets) {
+        return findModels(namePattern, ServiceContextManager.getDefaultClassLoader(), targets);
     }
 
     /**
      * Find the validations by checking the validation's name using the given regular expression.
+     *
+     * @param classLoader the target classloader, not null.
      * @param namePattern the regular expression to use, not null.
      * @param targets the target types only to be returned (optional).
      * @return the sections defined, never null.
      */
-    public static Collection<ConfigModel> findModels(String namePattern, ModelTarget... targets) {
+    public static Collection<ConfigModel> findModels(String namePattern, ClassLoader classLoader, ModelTarget... targets) {
         List<ConfigModel> result = new ArrayList<>();
-        for (ModelProviderSpi model : ServiceContextManager.getServiceContext().getServices(ModelProviderSpi.class)) {
+        for (ModelProviderSpi model : ServiceContextManager.getServiceContext(classLoader).getServices(ModelProviderSpi.class)) {
             for(ConfigModel configModel : model.getConfigModels()) {
                 if(configModel.getName().matches(namePattern)) {
                     if(targets.length>0){
@@ -171,24 +160,6 @@ public final class ConfigModelManager {
             }
         }
         return result;
-    }
-
-    /**
-     * Validates the current configuration.
-     *
-     * @return the validation results, never null.
-     */
-    public static Collection<Validation> validate() {
-        return validate(false);
-    }
-
-    /**
-     * Validates the current configuration.
-     * @param showUndefined show any unknown parameters.
-     * @return the validation results, never null.
-     */
-    public static Collection<Validation> validate(boolean showUndefined) {
-        return validate(ConfigurationProvider.getConfiguration(), showUndefined);
     }
 
     /**
@@ -210,7 +181,7 @@ public final class ConfigModelManager {
      */
     public static Collection<Validation> validate(Configuration config, boolean showUndefined) {
         List<Validation> result = new ArrayList<>();
-        for (ConfigModel defConf : getModels()) {
+        for (ConfigModel defConf : getModels(config.getContext().getServiceContext().getClassLoader())) {
             result.addAll(defConf.validate(config));
         }
         if(showUndefined){
@@ -233,33 +204,19 @@ public final class ConfigModelManager {
                 for (ConfigModel defConf : getModels()) {
                     if(ModelTarget.Section.equals(defConf.getType())){
                         if(defConf.getName().endsWith(".*") && entry.getKey().matches(defConf.getName())){
-                            // Ignore parameters that are part of transitive section.
+                            // Ignore parameters that are part create transitive section.
                             continue outer;
                         }
                     }
                 }
-                result.add(Validation.ofUndefined("<auto>", entry.getKey(), ModelTarget.Parameter));
+                result.add(Validation.createUndefined("<auto>", entry.getKey(), ModelTarget.Parameter));
             }
             for(String area:areas){
-                result.add(Validation.ofUndefined("<auto>", area, ModelTarget.Section));
+                result.add(Validation.createUndefined("<auto>", area, ModelTarget.Section));
             }
         }
         return result;
     }
-
-    private static java.util.Set<java.lang.String> extractTransitiveAreas(Set<String> keys) {
-        Set<String> transitiveClosure = new HashSet<>();
-        for(String key:keys){
-            int index = key.lastIndexOf('.');
-            while(index>0){
-                String areaKey = key.substring(0,index);
-                transitiveClosure.add(areaKey);
-                index = areaKey.lastIndexOf('.');
-            }
-        }
-        return transitiveClosure;
-    }
-
 
     /**
      * Registers the {@link ConfigDocumentationMBean} mbean for accessing config documentation into the local platform
@@ -294,5 +251,35 @@ public final class ConfigModelManager {
                     "Failed to register ConfigDocumentationMBean.", e);
         }
     }
+
+    private static String formatWithFixedLength(String name, int targetLength) {
+        targetLength = targetLength-1;
+        StringBuilder b = new StringBuilder();
+        if(name.length() > targetLength){
+            name = name.substring(0, targetLength);
+        }
+        b.append(name);
+        for(int i=0;i<(targetLength-name.length());i++){
+            b.append(' ');
+        }
+        b.append(' ');
+        return b.toString();
+    }
+
+
+
+    private static java.util.Set<java.lang.String> extractTransitiveAreas(Set<String> keys) {
+        Set<String> transitiveClosure = new HashSet<>();
+        for(String key:keys){
+            int index = key.lastIndexOf('.');
+            while(index>0){
+                String areaKey = key.substring(0,index);
+                transitiveClosure.add(areaKey);
+                index = areaKey.lastIndexOf('.');
+            }
+        }
+        return transitiveClosure;
+    }
+
 
 }

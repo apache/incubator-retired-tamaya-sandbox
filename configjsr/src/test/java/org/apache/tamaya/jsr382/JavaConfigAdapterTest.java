@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 public class JavaConfigAdapterTest {
     @Test
     public void toConfig() throws Exception {
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Config mpConfig = JavaConfigAdapter.toConfig(config);
         assertNotNull(mpConfig);
         assertEquals(config.getProperties().keySet(), mpConfig.getPropertyNames());
@@ -60,7 +60,7 @@ public class JavaConfigAdapterTest {
 
     @Test
     public void toConfiguration() throws Exception {
-        Config mpConfig = ConfigProvider.getConfig();
+        Config mpConfig = Configuration.current();
         Configuration config = JavaConfigAdapter.toConfiguration(mpConfig);
         assertNotNull(config);
         assertEquals(mpConfig.getPropertyNames(), config.getProperties().keySet());

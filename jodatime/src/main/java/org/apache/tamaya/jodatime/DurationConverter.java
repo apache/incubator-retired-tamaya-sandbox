@@ -43,30 +43,40 @@ public class DurationConverter implements PropertyConverter<Duration> {
     private PeriodConverter periodConverter = new PeriodConverter();
 
     @Override
-    public Duration convert(String value, ConversionContext context) {
+    public Duration convert(String value) {
         String trimmed = Objects.requireNonNull(value).trim();
-        addSupportedFormats(context);
+        addSupportedFormats();
         try {
             return Duration.parse(value);
         }catch(Exception e){
             Period period = null;
-            if(value.startsWith("P")){
-                period = periodConverter.convert("P0Y0M0W"+value.substring(1), null);
-            }
-            if(period == null){
-                period = periodConverter.convert("P0000-00-"+value, null);
-            }
-            if(period != null){
-                return period.toStandardDuration();
+            ConversionContext ctx = ConversionContext.current();
+            try {
+                ConversionContext.reset();
+                if (value.startsWith("P")) {
+                    period = periodConverter.convert("P0Y0M0W" + value.substring(1));
+                }
+                if (period == null) {
+                    period = periodConverter.convert("P0000-00-" + value);
+                }
+                if (period != null) {
+                    return period.toStandardDuration();
+                }
+            }finally{
+                if(ctx!=null){
+                    ConversionContext.set(ctx);
+                }
             }
         }
         return null;
     }
 
-    private void addSupportedFormats(ConversionContext context) {
-        context.addSupportedFormats(getClass(), "PTa.bS");
-        context.addSupportedFormats(getClass(), "PdDThHmMsS");
-        context.addSupportedFormats(getClass(), "ddThh:mm:ss");
+    private void addSupportedFormats() {
+        ConversionContext.doOptional(context -> {
+            context.addSupportedFormats(getClass(), "PTa.bS");
+            context.addSupportedFormats(getClass(), "PdDThHmMsS");
+            context.addSupportedFormats(getClass(), "ddThh:mm:ss");
+        });
     }
 
 }

@@ -53,7 +53,7 @@ public final class ConfigUsage {
     }
 
     /**
-     * Returns a set of package names that are to be ignored when collecting usage data.
+     * Returns a setCurrent of package names that are to be ignored when collecting usage data.
      * @return the ignored package names, not null.
      */
     public static Set<String> getIgnoredPackages(){
@@ -70,7 +70,7 @@ public final class ConfigUsage {
 
     /**
      * Enables/disables usage tracking.
-     * @param enabled set to true to enable usage tracking.
+     * @param enabled setCurrent to true to enable usage tracking.
      */
     public static void enableUsageTracking(boolean enabled){
         spi().enableUsageTracking(enabled);

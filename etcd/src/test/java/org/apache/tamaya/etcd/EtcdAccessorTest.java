@@ -28,7 +28,7 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 
 /**
- * Tests for the etcd backend integration. You must have set a system property so, theses tests are executed, e.g.
+ * Tests for the etcd backend integration. You must have setCurrent a system property so, theses tests are executed, e.g.
  * {@code -Detcd.url=http://127.0.0.1:4001}.
  */
 public class EtcdAccessorTest {

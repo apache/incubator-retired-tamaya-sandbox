@@ -90,26 +90,26 @@ public abstract class BaseRemotePropertySource implements PropertySource{
     }
 
     protected Map<String,String> mapConfigurationData(ConfigurationData data){
-        Map<String,String> readProperties;
+        Map<String,String> readProperties = new HashMap<>();
         if(data!=null){
-            readProperties = data.getCombinedProperties();
-            if(readProperties!=null){
-                Map<String,String> newProperties = new HashMap<>();
-                for(Map.Entry<String,String> en:readProperties.entrySet()){
-                    // filter data entries
-                    newProperties.put(en.getKey(), en.getValue());
-                }
-                // the configs served by the tamaya server module has a 'data' root section containing the
-                // config  entries. if not present, we assume an alternate format, which is sued as is...
-                if(newProperties.isEmpty()){
-                    Logger.getLogger(getClass().getName()).info(
-                            "Loaded remote config from: " + data.getResource() + ", does not have a data section, using as is...");
-                    newProperties = readProperties;
-                }
-                Logger.getLogger(getClass().getName()).info(
-                        "Reloaded remote config from: " + data.getResource() + ", entriea read: " + this.properties.size());
-                return newProperties;
+            for(PropertyValue val:data.getData()) {
+                readProperties.putAll(val.asMap());
             }
+            Map<String,String> newProperties = new HashMap<>();
+            for(Map.Entry<String,String> en:readProperties.entrySet()){
+                // filter data entries
+                newProperties.put(en.getKey(), en.getValue());
+            }
+            // the configs served by the tamaya server module has a 'data' root section containing the
+            // config  entries. if not present, we assume an alternate format, which is sued as is...
+            if(newProperties.isEmpty()){
+                Logger.getLogger(getClass().getName()).info(
+                        "Loaded remote config from: " + data.getResource() + ", does not have a data section, using as is...");
+                newProperties = readProperties;
+            }
+            Logger.getLogger(getClass().getName()).info(
+                    "Reloaded remote config from: " + data.getResource() + ", entriea read: " + this.properties.size());
+            return newProperties;
         }
         return Collections.emptyMap();
     }
@@ -138,7 +138,7 @@ public abstract class BaseRemotePropertySource implements PropertySource{
     }
 
     /**
-     * Returns the  default ordinal used, when no ordinal is set, or the ordinal was not parseable to an int value.
+     * Returns the  default ordinal used, when no ordinal is setCurrent, or the ordinal was not parseable to an int value.
      * @return the  default ordinal used, by default 0.
      */
     public int getDefaultOrdinal(){

@@ -19,7 +19,6 @@
 package org.apache.tamaya.model;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.usagetracker.ConfigUsage;
 import org.junit.Test;
 import test.model.TestConfigAccessor;
@@ -35,7 +34,7 @@ public class ConfigUsageStatsTest {
     public void testUsageWhenEnabled(){
         ConfigUsage.enableUsageTracking(true);
         TestConfigAccessor.readConfiguration();
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         String info = ConfigUsage.getInfo();
         assertFalse(info.contains("java.version"));
         assertNotNull(info);
@@ -57,7 +56,7 @@ public class ConfigUsageStatsTest {
         ConfigUsage.enableUsageTracking(false);
         ConfigUsage.clearStats();
         TestConfigAccessor.readConfiguration();
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         String info = ConfigUsage.getInfo();
         assertNotNull(info);
         assertFalse(info.contains("java.version"));

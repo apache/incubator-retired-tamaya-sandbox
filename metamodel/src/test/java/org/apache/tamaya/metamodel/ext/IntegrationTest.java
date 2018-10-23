@@ -19,7 +19,6 @@
 package org.apache.tamaya.metamodel.ext;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.metamodel.CachedFilter;
 import org.apache.tamaya.metamodel.MetaConfiguration;
@@ -42,11 +41,11 @@ public class IntegrationTest {
 
     @Test
     public void checkSystemLoads(){
-        Configuration defaultConfig = ConfigurationProvider.getConfiguration();
+        Configuration defaultConfig = Configuration.current();
         assertThat(defaultConfig).isNotNull();
         
         MetaConfiguration.configure();
-        Configuration defaultMetaConfig = ConfigurationProvider.getConfiguration();
+        Configuration defaultMetaConfig = Configuration.current();
         assertThat(defaultMetaConfig).isNotNull();
         
         assertThat(defaultConfig).isNotEqualTo(defaultMetaConfig);
@@ -87,7 +86,7 @@ public class IntegrationTest {
         assertFalse(config.getContext().getPropertyConverters().isEmpty());
         assertTrue(config.getContext().getPropertyFilters().isEmpty());
         assertEquals(config,
-                ConfigurationProvider.getConfigurationBuilder()
+                Configuration.createConfigurationBuilder()
                         .addDefaultPropertyConverters()
                         .build());
     }
@@ -101,7 +100,7 @@ public class IntegrationTest {
         assertTrue(config.getContext().getPropertyConverters().isEmpty());
         assertTrue(config.getContext().getPropertyFilters().isEmpty());
         assertEquals(config,
-                ConfigurationProvider.getConfigurationBuilder()
+                Configuration.createConfigurationBuilder()
                         .addDefaultPropertySources()
                         .build());
     }
@@ -115,7 +114,7 @@ public class IntegrationTest {
         assertTrue(config.getContext().getPropertyConverters().isEmpty());
         assertFalse(config.getContext().getPropertyFilters().isEmpty());
         assertEquals(config,
-                ConfigurationProvider.getConfigurationBuilder()
+                Configuration.createConfigurationBuilder()
                         .addDefaultPropertyFilters()
                         .build());
 

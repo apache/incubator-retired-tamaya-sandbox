@@ -109,7 +109,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
     /**
      * Decorates a property source to be refreshable or filtered.
      * @param ps the wrapped property source
-     *@param configNode the XML config node
+     *@param configNode the XML config getChild
      * @param params the extracted parameter list   @return the property source to be added to the context.
      */
     private PropertySource decoratePropertySource(PropertySource ps, Node configNode, Map<String, String> params){
@@ -161,7 +161,7 @@ public class PropertySourceReader implements MetaConfigurationReader{
     /**
      * Decorates a property source provider to be refreshable or filtered.
      * @param prov the property source provider to be wrapped.
-     * @param configNode the XML config node
+     * @param configNode the XML config getChild
      * @param params the extracted parameter list   @return the property source provider to be added to the context.
      */
     private PropertySourceProvider decoratePropertySourceProvider(PropertySourceProvider prov, Node configNode, Map<String, String> params){

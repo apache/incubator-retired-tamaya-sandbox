@@ -18,7 +18,8 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.spi.ClassloaderAware;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spi.PropertyValueCombinationPolicy;
@@ -35,9 +36,21 @@ import java.util.logging.Logger;
  * {@code _key.combination-policy=collect|override|fqPolicyClassName}.
  */
 @Priority(100)
-public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy {
+public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy, ClassloaderAware {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(AdaptiveCombinationPolicy.class.getName());
+
+    private ClassLoader classLoader;
+
+    @Override
+    public void init(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
 
     /**
      * Collecting combination policy using (optional) {@code item-separator} parameter for determining the separator
@@ -47,18 +60,12 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
         @Override
         public PropertyValue collect(PropertyValue currentValue, String key, PropertySource propertySource) {
             // check for default collection combination policies for lists, sets, maps etc.
-            final String separator = ConfigurationProvider.getConfiguration().getOrDefault('_' + key+".item-separator", ",");
             PropertyValue newValue = propertySource.get(key);
             if(newValue!=null){
                 if(currentValue==null){
                     return newValue;
                 }
-                String oldVal = currentValue.getValue();
-                newValue = newValue.toBuilder()
-                        .setValue(oldVal + ',' + newValue.getValue())
-                        .addMetaEntry("sources", currentValue.getSource() + "\n" + newValue.getSource())
-                        .build();
-                return newValue;
+                return PropertyValue.create().addChild(newValue).addChild(currentValue);
             }else{
                 if(currentValue!=null){
                     return currentValue;
@@ -80,7 +87,7 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
             }
             return currentValue;
         }
-        String adaptiveCombinationPolicyClass  = ConfigurationProvider.getConfiguration().getOrDefault(
+        String adaptiveCombinationPolicyClass  = Configuration.current().getOrDefault(
                 '_' + key+".combination-policy", "override");
         PropertyValueCombinationPolicy combinationPolicy = null;
         switch(adaptiveCombinationPolicyClass){
@@ -119,4 +126,6 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
         }
         return combinationPolicy.collect(currentValue, key, propertySource);
     }
+
+
 }

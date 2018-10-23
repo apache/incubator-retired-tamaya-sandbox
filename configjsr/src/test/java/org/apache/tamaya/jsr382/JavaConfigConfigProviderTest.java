@@ -34,7 +34,7 @@ public class JavaConfigConfigProviderTest {
 
     @Test
     public void testDefaultConfigAccess(){
-        Config config = ConfigProvider.getConfig();
+        Config config = Configuration.current();
         assertNotNull(config);
         Iterable<String> names = config.getPropertyNames();
         assertNotNull(names);
@@ -43,12 +43,12 @@ public class JavaConfigConfigProviderTest {
             count++;
             System.out.println(count + ": " +name);
         }
-        assertTrue(ConfigurationProvider.getConfiguration().getProperties().size() <= count);
+        assertTrue(Configuration.current().getProperties().size() <= count);
     }
 
     @Test
     public void testClassloaderAccess(){
-        Config config = ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
+        Config config = Configuration.current(Thread.currentThread().getContextClassLoader());
         assertNotNull(config);
         Iterable<String> names = config.getPropertyNames();
         assertNotNull(names);

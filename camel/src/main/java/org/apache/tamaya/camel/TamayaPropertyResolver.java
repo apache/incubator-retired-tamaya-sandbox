@@ -20,7 +20,7 @@ package org.apache.tamaya.camel;
 
 import org.apache.camel.component.properties.PropertiesFunction;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.spi.ClassloaderAware;
 
 import java.util.Objects;
 
@@ -28,8 +28,9 @@ import java.util.Objects;
 /**
  * Implementation of the Camel Properties SPI using Tamaya configuration.
  */
-public class TamayaPropertyResolver implements PropertiesFunction{
+public class TamayaPropertyResolver implements PropertiesFunction, ClassloaderAware {
 
+    private ClassLoader classLoader;
     private final String prefix;
 
     /**
@@ -47,7 +48,24 @@ public class TamayaPropertyResolver implements PropertiesFunction{
 
     @Override
     public String apply(String remainder) {
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current(getClassLoader());
         return config.get(remainder);
+    }
+
+    @Override
+    public void init(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        ClassLoader cl = classLoader;
+        if(cl==null){
+            cl = Thread.currentThread().getContextClassLoader();
+        }
+        if(cl==null){
+            cl = getClass().getClassLoader();
+        }
+        return cl;
     }
 }

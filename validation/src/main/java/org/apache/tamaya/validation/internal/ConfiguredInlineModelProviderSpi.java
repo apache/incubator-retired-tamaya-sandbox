@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -18,22 +18,19 @@
  */
 package org.apache.tamaya.validation.internal;
 
-import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.spi.ClassloaderAware;
 import org.apache.tamaya.validation.ConfigModel;
 import org.apache.tamaya.validation.spi.ConfigModelReader;
 import org.apache.tamaya.validation.spi.ModelProviderSpi;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
  * ConfigModel provider that reads model metadata from the current {@link org.apache.tamaya.Configuration}.
  */
-public class ConfiguredInlineModelProviderSpi implements ModelProviderSpi {
+public class ConfiguredInlineModelProviderSpi implements ModelProviderSpi, ClassloaderAware {
 
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(ConfiguredInlineModelProviderSpi.class.getName());
@@ -42,17 +39,25 @@ public class ConfiguredInlineModelProviderSpi implements ModelProviderSpi {
 
     /** The configModels read. */
     private List<ConfigModel> configModels = new ArrayList<>();
-
+    /** The target classloader used. */
+    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     /**
      * Constructor, typically called by the {@link java.util.ServiceLoader}.
      */
     public ConfiguredInlineModelProviderSpi() {
-        String enabledVal = ConfigurationProvider.getConfiguration().get(MODEL_EANABLED_PARAM);
+        load();
+    }
+
+    /**
+     * Loads the models from the underlying service provider.
+     */
+    public void load(){
+        String enabledVal = Configuration.current(classLoader).get(MODEL_EANABLED_PARAM);
         boolean enabled = enabledVal == null || "true".equalsIgnoreCase(enabledVal);
         if (enabled) {
             LOG.info("Reading model configuration from config...");
-            Map<String,String> config = ConfigurationProvider.getConfiguration().getProperties();
+            Map<String,String> config = Configuration.current().getProperties();
             String owner = config.get("_model.provider");
             if(owner==null){
                 owner = config.toString();
@@ -62,8 +67,17 @@ public class ConfiguredInlineModelProviderSpi implements ModelProviderSpi {
         configModels = Collections.unmodifiableList(configModels);
     }
 
-
     public Collection<ConfigModel> getConfigModels() {
         return configModels;
+    }
+
+    @Override
+    public void init(ClassLoader classLoader) {
+        this.classLoader = Objects.requireNonNull(classLoader);
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

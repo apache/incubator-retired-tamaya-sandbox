@@ -31,7 +31,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ServiceContextManager;
@@ -39,7 +38,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Accessor singleton for accessing/loading meta-configuration.
+ * Accessor singleton for accessing/loading getMeta-configuration.
  */
 public final class MetaConfiguration {
 
@@ -54,10 +53,10 @@ public final class MetaConfiguration {
 
     /**
      * Creates a new {@link Configuration} using {@link #createConfiguration(URL)}
-     * and applies it as default configuration using {@link ConfigurationProvider#setConfiguration(Configuration)}.
+     * and applies it as default configuration using {@link Configuration#current()} (Configuration)}.
      */
     public static void configure(){
-        LOG.info("TAMAYA: Checking for meta-configuration...");
+        LOG.info("TAMAYA: Checking for getMeta-configuration...");
         URL configFile = getDefaultMetaConfig();
         if(configFile==null){
             LOG.warning("TAMAYA: No " + CONFIG_RESOURCE + " found, using defaults.");
@@ -67,14 +66,14 @@ public final class MetaConfiguration {
 
     /**
      * Creates a new {@link Configuration} using {@link #createConfiguration(URL)}
-     * and applies it as default configuration using {@link ConfigurationProvider#setConfiguration(Configuration)}.
-     * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
+     * and applies it as default configuration using {@link Configuration#setCurrent(Configuration)} }.
+     * @param metaConfig URL for loading the {@code tamaya-config.xml} getMeta-configuration.
      */
     public static void configure(URL metaConfig){
         try {
             // Let readers do their work
             Configuration config = createConfiguration(metaConfig);
-            ConfigurationProvider.setConfiguration(config);
+            Configuration.setCurrent(config);
         }catch(Exception e){
             LOG.log(Level.SEVERE, "TAMAYA: Error loading configuration.", e);
         }
@@ -103,7 +102,7 @@ public final class MetaConfiguration {
      * context to the {@link MetaConfigurationReader} instances found in the current
      * {@link org.apache.tamaya.spi.ServiceContext} and returns the corresponding builder
      * instance.
-     * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
+     * @param metaConfig URL for loading the {@code tamaya-config.xml} getMeta-configuration.
      * @return a new configuration context builder, never null.
      * @throws ConfigException If the URL cannot be read.
      */
@@ -114,7 +113,7 @@ public final class MetaConfiguration {
         try {
             document = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder().parse(configFile.openStream());
-            ConfigurationBuilder builder = ConfigurationProvider.getConfigurationBuilder();
+            ConfigurationBuilder builder = Configuration.createConfigurationBuilder();
             for(MetaConfigurationReader reader: ServiceContextManager.getServiceContext().getServices(
                     MetaConfigurationReader.class
             )){
@@ -123,15 +122,15 @@ public final class MetaConfiguration {
             }
             return builder;
         } catch (SAXException | IOException | ParserConfigurationException e) {
-            throw new ConfigException("Cannot read meta-config deom " + metaConfig, e);
+            throw new ConfigException("Cannot read getMeta-config deom " + metaConfig, e);
         }
     }
 
     /**
-     * Reads the meta-configuration and delegates initialization of the current configuration
+     * Reads the getMeta-configuration and delegates initialization of the current configuration
      * context to the {@link MetaConfigurationReader} instances found in the current
      * {@link org.apache.tamaya.spi.ServiceContext}.
-     * @param metaConfig URL for loading the {@code tamaya-config.xml} meta-configuration.
+     * @param metaConfig URL for loading the {@code tamaya-config.xml} getMeta-configuration.
      * @return the new configuration instance.
      */
     public static Configuration createConfiguration(URL metaConfig){

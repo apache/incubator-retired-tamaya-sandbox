@@ -19,8 +19,8 @@
 package org.apache.tamaya.collections;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -34,11 +34,12 @@ import static org.junit.Assert.*;
  * base.map=1::a, 2::b, 3::c, [4:: ]
  * </pre>
  */
+//@Ignore("Readonly support has been deactivated as of now.")
 public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testArrayListList_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = config.get("typed.arraylist", new TypeLiteral<List<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -48,7 +49,7 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testArrayListList_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = (List<String>) config.get("typed.arraylist", List.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -58,7 +59,7 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testLinkedListList_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = config.get("typed.linkedlist", new TypeLiteral<List<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -68,7 +69,7 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testLinkedListList_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = (List<String>) config.get("typed.linkedlist", List.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -79,7 +80,7 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testHashSet_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = config.get("typed.hashset", new TypeLiteral<Set<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -88,7 +89,7 @@ public class CollectionsTypedReadOnlyTests {
     }
     @Test(expected=UnsupportedOperationException.class)
     public void testHashSet_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = (Set<String>) config.get("typed.hashset", Set.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -98,7 +99,7 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testTreeSet_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = config.get("typed.treeset", new TypeLiteral<Set<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -107,7 +108,7 @@ public class CollectionsTypedReadOnlyTests {
     }
     @Test(expected=UnsupportedOperationException.class)
     public void testTreeSet_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = items = (Set<String>) config.get("typed.treeset", Set.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -117,7 +118,7 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testHashMap_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = config.get("typed.hashmap", new TypeLiteral<Map<String,String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -130,7 +131,7 @@ public class CollectionsTypedReadOnlyTests {
     }
     @Test(expected=UnsupportedOperationException.class)
     public void testHashMap_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = (Map<String,String>) config.get("typed.hashmap", Map.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -145,7 +146,7 @@ public class CollectionsTypedReadOnlyTests {
 
     @Test(expected=UnsupportedOperationException.class)
     public void testTreeMap_1(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = config.get("typed.treemap", new TypeLiteral<Map<String,String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -158,7 +159,7 @@ public class CollectionsTypedReadOnlyTests {
     }
     @Test(expected=UnsupportedOperationException.class)
     public void testTreeMap_2(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = (Map<String,String>) config.get("typed.treemap", Map.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());

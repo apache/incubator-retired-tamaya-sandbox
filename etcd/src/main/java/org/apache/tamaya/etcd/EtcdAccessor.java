@@ -144,8 +144,8 @@ public class EtcdAccessor {
      * 
      * <pre>
      * {
-     * "action": "get",
-     * "node": {
+     * "action": "current",
+     * "getChild": {
      * "createdIndex": 2,
      * "key": "/message",
      * "modifiedIndex": 2,
@@ -166,7 +166,7 @@ public class EtcdAccessor {
      * </pre>
      *
      * @param key the requested key
-     * @return the mapped result, including meta-entries.
+     * @return the mapped result, including getMeta-entries.
      */
     public Map<String, String> get(String key) {
         final Map<String, String> result = new HashMap<>();
@@ -180,7 +180,7 @@ public class EtcdAccessor {
                     final JsonReader reader = readerFactory
                             .createReader(new StringReader(EntityUtils.toString(entity)));
                     final JsonObject o = reader.readObject();
-                    final JsonObject node = o.getJsonObject("node");
+                    final JsonObject node = o.getJsonObject("getChild");
                     if (node.containsKey("value")) {
                         result.put(key, node.getString("value"));
                         result.put("_" + key + ".source", "[etcd]" + serverURL);
@@ -210,10 +210,10 @@ public class EtcdAccessor {
     }
 
     /**
-     * Creates/updates an entry in etcd without any ttl set.
+     * Creates/updates an entry in etcd without any ttl setCurrent.
      *
      * @param key   the property key, not null
-     * @param value the value to be set
+     * @param value the value to be setCurrent
      * @return the result map as described above.
      * @see #set(String, String, Integer)
      */
@@ -226,8 +226,8 @@ public class EtcdAccessor {
      * 
      * <pre>
      *     {
-     * "action": "set",
-     * "node": {
+     * "action": "setCurrent",
+     * "getChild": {
      * "createdIndex": 3,
      * "key": "/message",
      * "modifiedIndex": 3,
@@ -259,7 +259,7 @@ public class EtcdAccessor {
      * </pre>
      *
      * @param key        the property key, not null
-     * @param value      the value to be set
+     * @param value      the value to be setCurrent
      * @param ttlSeconds the ttl in seconds (optional)
      * @return the result map as described above.
      */
@@ -282,7 +282,7 @@ public class EtcdAccessor {
                     final JsonReader reader = readerFactory
                             .createReader(new StringReader(EntityUtils.toString(entity)));
                     final JsonObject o = reader.readObject();
-                    final JsonObject node = o.getJsonObject("node");
+                    final JsonObject node = o.getJsonObject("getChild");
                     if (node.containsKey("createdIndex")) {
                         result.put("_" + key + ".createdIndex", String.valueOf(node.getInt("createdIndex")));
                     }
@@ -340,7 +340,7 @@ public class EtcdAccessor {
                     final JsonReader reader = readerFactory
                             .createReader(new StringReader(EntityUtils.toString(entity)));
                     final JsonObject o = reader.readObject();
-                    final JsonObject node = o.getJsonObject("node");
+                    final JsonObject node = o.getJsonObject("getChild");
                     if (node.containsKey("createdIndex")) {
                         result.put("_" + key + ".createdIndex", String.valueOf(node.getInt("createdIndex")));
                     }
@@ -402,11 +402,11 @@ public class EtcdAccessor {
      * 
      * <pre>
      * {
-     * "action": "get",
-     * "node": {
+     * "action": "current",
+     * "getChild": {
      * "key": "/",
      * "dir": true,
-     * "nodes": [
+     * "getChildren": [
      * {
      * "key": "/foo_dir",
      * "dir": true,
@@ -445,7 +445,7 @@ public class EtcdAccessor {
      * </pre>
      *
      * @param directory remote directory to query.
-     * @param recursive allows to set if querying is performed recursively
+     * @param recursive allows to setCurrent if querying is performed recursively
      * @return all properties read from the remote server.
      */
     public Map<String, String> getProperties(String directory, boolean recursive) {
@@ -460,7 +460,7 @@ public class EtcdAccessor {
                     final HttpEntity entity = response.getEntity();
                     final JsonReader reader = readerFactory.createReader(new StringReader(EntityUtils.toString(entity)));
                     final JsonObject o = reader.readObject();
-                    final JsonObject node = o.getJsonObject("node");
+                    final JsonObject node = o.getJsonObject("getChild");
                     if (node != null) {
                         addNodes(result, node);
                     }
@@ -479,7 +479,7 @@ public class EtcdAccessor {
      * Recursively read out all key/values from this etcd JSON array.
      *
      * @param result map with key, values and metadata.
-     * @param node   the node to parse.
+     * @param node   the getChild to parse.
      */
     private void addNodes(Map<String, String> result, JsonObject node) {
         if (!node.containsKey("dir") || "false".equals(node.get("dir").toString())) {
@@ -499,7 +499,7 @@ public class EtcdAccessor {
             }
             result.put("_" + key + ".source", "[etcd]" + serverURL);
         } else {
-            final JsonArray nodes = node.getJsonArray("nodes");
+            final JsonArray nodes = node.getJsonArray("getChildren");
             if (nodes != null) {
                 for (int i = 0; i < nodes.size(); i++) {
                     addNodes(result, nodes.getJsonObject(i));

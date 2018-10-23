@@ -29,7 +29,7 @@ import java.util.Objects;
 /**
  * Simple builder for building a {@link org.apache.tamaya.spi.PropertySource}.
  */
-public final class PropertySourceBuilder {
+public final class SimplePropertySourceBuilder {
     /** The ordinal to be used. */
     private int ordinal;
     /** The name to be used. */
@@ -38,7 +38,7 @@ public final class PropertySourceBuilder {
     private final Map<String,String> properties = new HashMap<>();
 
     /** private constructor. */
-    private PropertySourceBuilder(String name){
+    private SimplePropertySourceBuilder(String name){
         this.name = Objects.requireNonNull(name);
     }
 
@@ -47,8 +47,8 @@ public final class PropertySourceBuilder {
      * @param name The name of the property source, not null.
      * @return a new instance.
      */
-    public static PropertySourceBuilder of(String name){
-        return new PropertySourceBuilder(name);
+    public static SimplePropertySourceBuilder of(String name){
+        return new SimplePropertySourceBuilder(name);
     }
 
     /**
@@ -56,8 +56,8 @@ public final class PropertySourceBuilder {
      * @param name The name of the property source, not null.
      * @return a new instance.
      */
-    public static PropertySourceBuilder from(String name){
-        return new PropertySourceBuilder(name);
+    public static SimplePropertySourceBuilder from(String name){
+        return new SimplePropertySourceBuilder(name);
     }
 
     /**
@@ -66,7 +66,7 @@ public final class PropertySourceBuilder {
      * @param value the property value, not null.
      * @return the bulder for chaining.
      */
-    public PropertySourceBuilder put(String key, String value){
+    public SimplePropertySourceBuilder put(String key, String value){
         this.properties.put(key, value);
         return this;
     }
@@ -76,7 +76,7 @@ public final class PropertySourceBuilder {
      * @param values the new key/values, not null.
      * @return the bulder for chaining.
      */
-    public PropertySourceBuilder putAll(Map<String, String> values){
+    public SimplePropertySourceBuilder putAll(Map<String, String> values){
         this.properties.putAll(values);
         return this;
     }
@@ -86,7 +86,7 @@ public final class PropertySourceBuilder {
      * @param ordinal the explicit ordinal to be used.
      * @return the bulder for chaining.
      */
-    public PropertySourceBuilder withOrdinal(int ordinal){
+    public SimplePropertySourceBuilder withOrdinal(int ordinal){
         this.ordinal = ordinal;
         return this;
     }
@@ -96,7 +96,7 @@ public final class PropertySourceBuilder {
      * @param propertySource the property source, not null.
      * @return the bulder for chaining.
      */
-    public PropertySourceBuilder putAll(PropertySource propertySource){
+    public SimplePropertySourceBuilder putAll(PropertySource propertySource){
         for(PropertyValue val:propertySource.getProperties().values()) {
             this.properties.put(val.getKey(), val.getValue());
         }

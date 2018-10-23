@@ -37,9 +37,9 @@ public final class ComponentConfigurator<T> {
     private ComponentConfigurator(){}
 
     /**
-     * Configures the given instance with whatever is defined in the current child nodes.
+     * Configures the given instance with whatever is defined in the current child getChildren.
      * @param instance the instance to be configured, not null.
-     * @param node the node containing any configuration child nodes, not null.
+     * @param node the getChild containing any configuration child getChildren, not null.
      */
     public static void configure(Object instance, Node node) {
         Map<String,String> params = extractParameters(node);
@@ -47,9 +47,9 @@ public final class ComponentConfigurator<T> {
     }
 
     /**
-     * Configures the given instance with whatever is defined in the current child nodes.
+     * Configures the given instance with whatever is defined in the current child getChildren.
      * @param instance the instance to be configured, not null.
-     * @param params the node containing any configuration child nodes, not null.
+     * @param params the getChild containing any configuration child getChildren, not null.
      */
     public static void configure(Object instance, Map<String,String> params) {
         LOG.finest("Configuring instance: " + instance + " with " + params);
@@ -63,14 +63,14 @@ public final class ComponentConfigurator<T> {
      * String and basic lang types are supported.
      * @param instance the instance to configure.
      * @param key the parameter name, not null.
-     * @param value the value to be set, normally not null.
+     * @param value the value to be setCurrent, normally not null.
      */
     private static void applyParam(Object instance, String key, String value) {
         // apply parameters to instance using reflection ,only if found.
         Class type = instance.getClass();
         try {
             Method[] methods = type.getMethods();
-            String methodName = "set" + toUpperCase(key);
+            String methodName = "setCurrent" + toUpperCase(key);
             for(Method m:methods){
                 if(methodName.equals(m.getName()) && m.getParameterTypes().length==1) {
                     if (applyParam(instance, key, value, m)) {
@@ -98,7 +98,7 @@ public final class ComponentConfigurator<T> {
      * String and basic lang types are supported.
      * @param instance the instance to configure.
      * @param key the parameter name, not null.
-     * @param value the value to be set, normally not null.
+     * @param value the value to be setCurrent, normally not null.
      * @param setter the setter method, not null.
      */
     private static boolean applyParam(Object instance, String key, String value, Method setter) {
@@ -121,7 +121,7 @@ public final class ComponentConfigurator<T> {
      * String and basic lang types are supported.
      * @param instance the instance to configure.
      * @param key the parameter name, not null.
-     * @param value the value to be set, normally not null.
+     * @param value the value to be setCurrent, normally not null.
      * @param field the field method, not null.
      */
     private static void applyParam(Object instance, String key, String value, Field field) {

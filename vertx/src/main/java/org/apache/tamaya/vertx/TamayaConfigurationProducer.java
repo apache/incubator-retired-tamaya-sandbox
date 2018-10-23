@@ -39,9 +39,9 @@ import java.util.TreeMap;
 /**
  * This is a simple verticle registering Tamaya event bus messaging for accessing configuration:
  * <ul>
- *     <li>Don't pass anything, get a {@link JsonObject} with the full Tamaya configuration.</li>
- *     <li>Pass a {@code String} key, get a String return value, if present or a failure.</li>
- *     <li>Pass a {@link JsonArray} of keys, get a {@link JsonObject} return value, with the key/values found.</li>
+ *     <li>Don't pass anything, current a {@link JsonObject} with the full Tamaya configuration.</li>
+ *     <li>Pass a {@code String} key, current a String return value, if present or a failure.</li>
+ *     <li>Pass a {@link JsonArray} of keys, current a {@link JsonObject} return value, with the key/values found.</li>
  * </ul>
  */
 public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
@@ -74,7 +74,7 @@ public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
             if (key == null) {
                 h.fail(HttpResponseStatus.BAD_REQUEST.code(), "Missing config key.");
             } else {
-                String value = ConfigurationProvider.getConfiguration().getOrDefault(key, null);
+                String value = Configuration.current().getOrDefault(key, null);
                 if (value != null) {
                     h.reply(value);
                 } else {
@@ -96,13 +96,13 @@ public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
         MessageConsumer<String> consumer = eventBus.consumer(address);
         consumer.handler(h -> {
             String val = h.body();
-            Configuration config = ConfigurationProvider.getConfiguration();
+            Configuration config = Configuration.current();
             Map<String,String> entries = new TreeMap<>();
             if(val!=null){
                 String[] sections = Json.decodeValue(val, String[].class);
                 for (String section : sections) {
                     if(section!=null) {
-                        entries.putAll(config.with(ConfigurationFunctions.section(section)).getProperties());
+                        entries.putAll(config.map(ConfigurationFunctions.section(section)).getProperties());
                     }
                 }
             }else{

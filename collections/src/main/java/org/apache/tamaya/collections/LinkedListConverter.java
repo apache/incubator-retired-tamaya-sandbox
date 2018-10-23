@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.LinkedList;
@@ -44,12 +43,12 @@ public class LinkedListConverter implements PropertyConverter<LinkedList> {
     }
 
     @Override
-    public LinkedList convert(String value, ConversionContext context) {
-        List<String> rawList = ItemTokenizer.split(value, context);
+    public LinkedList convert(String value) {
+        List<String> rawList = ItemTokenizer.split(value);
         LinkedList<Object> result = new LinkedList<>();
         for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw, context);
-            Object convValue = ItemTokenizer.convertValue(items[1], context);
+            String[] items = ItemTokenizer.splitMapEntry(raw);
+            Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.add(convValue);
                 continue;

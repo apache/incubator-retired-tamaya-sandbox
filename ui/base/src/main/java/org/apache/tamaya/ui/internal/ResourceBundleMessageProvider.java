@@ -50,7 +50,7 @@ public class ResourceBundleMessageProvider implements MessageProvider{
             baseName = System.getenv("tamaya.ui.baseName");
         }
         if(baseName==null || baseName.isEmpty()){
-            baseName = ConfigurationProvider.getConfiguration().get("tamaya.ui.baseName");
+            baseName = Configuration.current().get("tamaya.ui.baseName");
         }
         if(baseName==null || baseName.isEmpty()){
             baseName = "ui/ui.lang/tamaya";

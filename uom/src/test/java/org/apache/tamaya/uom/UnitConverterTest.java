@@ -18,9 +18,7 @@
  */
 package org.apache.tamaya.uom;
 
-import org.apache.tamaya.spi.ConversionContext;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import tec.units.ri.unit.Units;
 
@@ -36,9 +34,7 @@ public class UnitConverterTest {
 	@Test
 	public void canConvertUnitInformation() {
 
-		ConversionContext context = Mockito.mock(ConversionContext.class);
-
-		Unit<?> unit = converter.convert("m", context);
+		Unit<?> unit = converter.convert("m");
 
 		assertThat("Converter failed to convert input value " + unit, notNullValue());
 		assertEquals(unit, Units.METRE);

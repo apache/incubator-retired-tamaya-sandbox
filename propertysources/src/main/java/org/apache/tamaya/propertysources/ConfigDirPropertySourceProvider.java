@@ -66,7 +66,7 @@ public class ConfigDirPropertySourceProvider extends AbstractPathPropertySourceP
                         "Failed to read configuration from " + url);
                 return Collections.emptySet();
             }
-            return asCollection(new MappedConfigurationDataPropertySource(config));
+            return Collections.singleton(new MappedConfigurationDataPropertySource(config));
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,
                     "Failed to read configuration from " + url, e);
@@ -74,9 +74,4 @@ public class ConfigDirPropertySourceProvider extends AbstractPathPropertySourceP
         }
     }
 
-    private Collection<PropertySource> asCollection(PropertySource propertySource) {
-        List<PropertySource> result = new ArrayList<>(1);
-        result.add(propertySource);
-        return result;
-    }
 }

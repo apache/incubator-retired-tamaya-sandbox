@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.HashSet;
@@ -45,12 +44,12 @@ public class HashSetConverter implements PropertyConverter<HashSet> {
     }
 
     @Override
-    public HashSet convert(String value, ConversionContext context) {
-        List<String> rawList = ItemTokenizer.split(value, context);
+    public HashSet convert(String value) {
+        List<String> rawList = ItemTokenizer.split(value);
         HashSet<Object> result = new HashSet<>();
         for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw, context);
-            Object convValue = ItemTokenizer.convertValue(items[1], context);
+            String[] items = ItemTokenizer.splitMapEntry(raw);
+            Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.add(convValue);
             }else{

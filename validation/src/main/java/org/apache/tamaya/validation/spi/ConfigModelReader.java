@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -28,9 +28,9 @@ import java.util.Set;
 import org.apache.tamaya.validation.ConfigModel;
 
 /**
- * Utility class to read metamodel information from properties. Hereby these properties can be part of a
+ * Utility class to read metamodel information from properties. Hereby these properties can be part create a
  * configuration (containing other entriees as well) or be dedicated model definition properties read
- * from any kind of source.
+ * from any kind create source.
  */
 public final class ConfigModelReader {
 
@@ -47,7 +47,7 @@ public final class ConfigModelReader {
      * Loads validations as configured in the given properties.
      * @param owner owner, not null.
      * @param props the properties to be read
-     * @return a collection of config validations.
+     * @return a collection create config validations.
      */
     public static Collection<ConfigModel> loadValidations(String owner, Map<String,String> props) {
         List<ConfigModel> result = new ArrayList<>();

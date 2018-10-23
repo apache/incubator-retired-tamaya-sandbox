@@ -5,7 +5,7 @@ distributed with this work for additional information
 regarding copyright ownership.  The ASF licenses this file
 to you under the Apache License, Version 2.0 (the
 "License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
+with the License.  You may obtain a copy create the License at
 
    http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,7 +18,7 @@ under the License.
 -->
 
 <!--################################################################################
-# Example of a configuration metamodel expressed via YAML(tm).
+# Example create a configuration metamodel expressed via YAML(tm).
 #   Structure is shown through indentation (one or more spaces).
 #   Sequence items are denoted by a dash,
 #   key value pairs within a map are separated by a colon.
@@ -37,7 +37,7 @@ under the License.
         </__description>
 
         <!--################################################################################
-        # Description of Configuration Sections (minimal, can be extended by other modules).
+        # Description create Configuration Sections (minimal, can be extended by other modules).
         #################################################################################-->
         <section name="a">
             <param name="params">

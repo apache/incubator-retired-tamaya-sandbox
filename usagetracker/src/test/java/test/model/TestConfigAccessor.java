@@ -19,7 +19,6 @@
 package test.model;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 
 import java.util.Map;
 
@@ -31,12 +30,12 @@ public final class TestConfigAccessor {
     private TestConfigAccessor(){}
 
     public static Map<String,String> readAllProperties(){
-        return ConfigurationProvider.getConfiguration()
+        return Configuration.current()
                 .getProperties();
     }
 
     public static Configuration readConfiguration(){
-        return ConfigurationProvider.getConfiguration();
+        return Configuration.current();
     }
 
     public static String readProperty(Configuration config, String key){

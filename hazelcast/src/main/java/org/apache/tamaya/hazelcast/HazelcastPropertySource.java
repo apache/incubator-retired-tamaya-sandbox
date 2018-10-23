@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  * Created by atsticks on 03.11.16.
  *
  * Basically all kind of property entris can be stored. Additionally this property source allows
- * to pass additional meta-entries to control the TTL of the data in milliseconds. For illustration
+ * to pass additional getMeta-entries to control the TTL of the data in milliseconds. For illustration
  * the following map will store {@code my.entry} with a TLL of 20000 milliseconds (20 seconds) and
  * store {@code my.otherEntry} with infinite lifetime (as long as the cluster is alive):
  *
@@ -164,11 +164,10 @@ implements MutablePropertySource{
         if(value==null){
             return null;
         }
-        return PropertyValue.builder(key, value, getName())
-                .addMetaEntry("backend", "Hazelcast")
-                .addMetaEntry("instance", hcConfig.getInstanceName())
-                .addMetaEntry("mapReference", mapReference)
-                .build();
+        return PropertyValue.of(key, value, getName())
+                .setMeta("backend", "Hazelcast")
+                .setMeta("instance", hcConfig.getInstanceName())
+                .setMeta("mapReference", mapReference);
     }
 
     @Override

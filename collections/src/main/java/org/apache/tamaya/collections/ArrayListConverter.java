@@ -22,6 +22,7 @@ import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,11 +46,11 @@ public class ArrayListConverter implements PropertyConverter<ArrayList> {
     }
 
     @Override
-    public ArrayList convert(String value, ConversionContext context) {
-        List<String> rawList = ItemTokenizer.split(value, context);
+    public ArrayList convert(String value) {
+        List<String> rawList = ItemTokenizer.split(value);
         ArrayList<Object> mlist = new ArrayList<>();
         for(String raw:rawList){
-            Object convValue = ItemTokenizer.convertValue(raw, context);
+            Object convValue = ItemTokenizer.convertValue(raw);
             if (convValue != null) {
                 mlist.add(convValue);
             }else{

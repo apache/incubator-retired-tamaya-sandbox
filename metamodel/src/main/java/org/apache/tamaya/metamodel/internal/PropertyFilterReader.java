@@ -23,7 +23,6 @@ import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;

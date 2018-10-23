@@ -43,7 +43,7 @@ public class TamayaGeneralSystemInfoProvider extends AbstractTextInfoProvider {
 
     @Override
     protected String getInfo() {
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         return new StringBuilder()
                 .append("Configuration:                   ").append(config.getClass().getName()).append('\n')
                 .append("ConfigurationContext:            ").append(config.getContext().getClass().getName()).append('\n')

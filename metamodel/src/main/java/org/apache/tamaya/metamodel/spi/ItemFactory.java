@@ -21,7 +21,7 @@ package org.apache.tamaya.metamodel.spi;
 import java.util.Map;
 
 /**
- * Factory for items that are configurable using meta-configuration.
+ * Factory for items that are configurable using getMeta-configuration.
  * This allows easy registration using the name, instead of the fully qualified
  * class name.
  */

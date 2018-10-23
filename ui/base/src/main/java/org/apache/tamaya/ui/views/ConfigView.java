@@ -151,7 +151,7 @@ public class ConfigView extends VerticalSpacedLayout implements View {
     private void fillTree() {
         final String keyFilterExp = this.keyFilter.getValue();
         final String valueFilterExp = this.valueFilter.getValue();
-        Configuration config = ConfigurationProvider.getConfiguration()
+        Configuration config = Configuration.current()
                 .with(ConfigurationFunctions.filter(new PropertyMatcher() {
             @Override
             public boolean test(String key, String value) {

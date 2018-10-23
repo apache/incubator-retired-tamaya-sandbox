@@ -19,7 +19,6 @@
 package org.apache.tamaya.collections;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
 import org.junit.Test;
 
@@ -46,7 +45,7 @@ public class CollectionAdvancedTests {
      */
     @Test
     public void testCustomSeparator(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = config.get("sep-list", new TypeLiteral<List<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -65,7 +64,7 @@ public class CollectionAdvancedTests {
      */
     @Test
     public void testTypedContent(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<Currency> items = config.get("currency-list", new TypeLiteral<List<Currency>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -85,7 +84,7 @@ public class CollectionAdvancedTests {
      */
     @Test
     public void testCustomParser(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = config.get("parser-list", new TypeLiteral<List<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -105,7 +104,7 @@ public class CollectionAdvancedTests {
      */
     @Test
     public void testCustomMapParser(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = config.get("redefined-map", Map.class);
         assertNotNull(items);
         assertFalse(items.isEmpty());

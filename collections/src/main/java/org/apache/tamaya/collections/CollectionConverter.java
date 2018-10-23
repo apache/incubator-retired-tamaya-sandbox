@@ -18,11 +18,10 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.spi.ConversionContext;
 
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  *  PropertyConverter for gnerating a LIST representation of values.
@@ -30,33 +29,33 @@ import java.util.Collections;
 public class CollectionConverter implements PropertyConverter<Collection> {
 
     @Override
-    public Collection convert(String value, ConversionContext context) {
-        String collectionType = context.getConfiguration().getOrDefault('_' + context.getKey()+".collection-type", "List");
-        if(collectionType.startsWith("java.util.")){
-            collectionType = collectionType.substring("java.util.".length());
+    public Collection convert(String value) {
+        ConversionContext context = ConversionContext.current();
+        String collectionType = null;
+        if(context!=null) {
+            collectionType = context.getConfiguration().getOrDefault('_' + context.getKey() + ".collection-type", "List");
+            if (collectionType.startsWith("java.util.")) {
+                collectionType = collectionType.substring("java.util.".length());
+            }
         }
         Collection result = null;
-        switch(collectionType){
+        switch (collectionType) {
             case "LinkedList":
-                result = LinkedListConverter.getInstance().convert(value, context);
+                result = LinkedListConverter.getInstance().convert(value);
                 break;
             case "Set":
             case "HashSet":
-                result = HashSetConverter.getInstance().convert(value, context);
+                result = HashSetConverter.getInstance().convert(value);
                 break;
             case "SortedSet":
             case "TreeSet":
-                result = TreeSetConverter.getInstance().convert(value, context);
+                result = TreeSetConverter.getInstance().convert(value);
                 break;
             case "List":
             case "ArrayList":
             default:
-                result = ArrayListConverter.getInstance().convert(value, context);
+                result = ArrayListConverter.getInstance().convert(value);
                 break;
-        }
-        if(context.getConfiguration().getOrDefault('_' + context.getKey()+".read-only",
-                Boolean.class, Boolean.TRUE)){
-            return Collections.unmodifiableCollection(result);
         }
         return result;
     }

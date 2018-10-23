@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -18,7 +18,7 @@
  */
 package org.apache.tamaya.validation.internal;
 
-import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.Configuration;
 import org.apache.tamaya.validation.ConfigModel;
 import org.apache.tamaya.validation.spi.ConfigModelReader;
 import org.apache.tamaya.validation.spi.ModelProviderSpi;
@@ -35,14 +35,14 @@ import java.util.logging.Logger;
  * {@code classpath*:META-INF/configmodel.properties} in the following format:
  * <pre>
  * ###################################################################################
- * # Example of a configuration metamodel expressed via properties.
+ * # Example create a configuration metamodel expressed via properties.
  * ####################################################################################
  *
  * # Metamodel information
  * [model].provider=ConfigModel Extension
  *
  * ####################################################################################
- * # Description of Configuration Sections (minimal, can be extended by other modules).
+ * # Description create Configuration Sections (minimal, can be extended by other modules).
  * # By default its interpreted as a section !
  * ####################################################################################
  *
@@ -114,7 +114,7 @@ public class ConfiguredPropertiesModelProviderSpi implements ModelProviderSpi {
     private List<ConfigModel> configModels = new ArrayList<>();
 
     public ConfiguredPropertiesModelProviderSpi() {
-        String enabledVal = ConfigurationProvider.getConfiguration().get(MODEL_EANABLED_PARAM);
+        String enabledVal = Configuration.current().get(MODEL_EANABLED_PARAM);
         boolean enabled = enabledVal == null || "true".equalsIgnoreCase(enabledVal);
         if(!enabled){
             LOG.info("Reading model data from META-INF/configmodel.properties has been disabled.");

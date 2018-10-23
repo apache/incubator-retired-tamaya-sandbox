@@ -36,6 +36,7 @@ import java.util.Objects;
 @Component
 public class DSLLoadingConfigurationProviderSpi implements ConfigurationProviderSpi{
 
+    // TODO make this provider multi classloader aware...
     private volatile Configuration config;
     private final Object LOCK = new Object();
 
@@ -50,12 +51,12 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
     }
 
     @Override
-    public void setConfiguration(Configuration config) {
+    public void setConfiguration(Configuration config, ClassLoader classLoader) {
         this.config = Objects.requireNonNull(config);
     }
 
     @Override
-    public boolean isConfigurationSettable() {
+    public boolean isConfigurationSettable(ClassLoader classLoader) {
         return true;
     }
 
@@ -70,7 +71,7 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
     }
 
     @Override
-    public Configuration getConfiguration() {
+    public Configuration getConfiguration(ClassLoader classLoader) {
         checkInitialized();
         return config;
     }

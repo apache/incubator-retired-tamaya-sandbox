@@ -20,7 +20,7 @@ package org.apache.tamaya.metamodel.spi;
 
 /**
  * SPI interface for implementations of simple expression types for use within
- * {@link org.apache.tamaya.metamodel.MetaContext} meta-configuration entries.
+ * {@link org.apache.tamaya.metamodel.MetaContext} getMeta-configuration entries.
  */
 public interface SimpleResolver {
 

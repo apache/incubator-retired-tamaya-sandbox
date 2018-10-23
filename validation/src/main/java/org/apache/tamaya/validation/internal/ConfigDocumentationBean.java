@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -19,7 +19,6 @@
 package org.apache.tamaya.validation.internal;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.validation.ConfigModel;
 import org.apache.tamaya.validation.ConfigModelManager;
 import org.apache.tamaya.validation.ModelTarget;
@@ -43,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * MBean implementation of {@link ConfigDocumentationMBean}.
+ * MBean implementation create {@link ConfigDocumentationMBean}.
  */
 public class ConfigDocumentationBean implements ConfigDocumentationMBean{
 
@@ -100,7 +99,7 @@ public class ConfigDocumentationBean implements ConfigDocumentationMBean{
      * @return either the configuration bound to this bean, or the current configuration.
      */
     private Configuration getConfig(){
-        return config!=null?config: ConfigurationProvider.getConfiguration();
+        return config!=null?config: Configuration.current();
     }
 
     @Override

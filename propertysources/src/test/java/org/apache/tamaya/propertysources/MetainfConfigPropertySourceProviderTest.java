@@ -31,7 +31,7 @@ public class MetainfConfigPropertySourceProviderTest {
     public void getPropertySources_Default() throws Exception {
         MetainfConfigPropertySourceProvider provider = new MetainfConfigPropertySourceProvider();
         assertNotNull(provider.getPropertySources());
-        // TODO add test for containing property sources.
+        // TODO addNode test for containing property sources.
     }
 
 }

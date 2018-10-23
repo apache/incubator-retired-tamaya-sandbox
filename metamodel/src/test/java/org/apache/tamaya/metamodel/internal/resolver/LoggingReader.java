@@ -19,12 +19,8 @@
 package org.apache.tamaya.metamodel.internal.resolver;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
-import org.apache.tamaya.spi.ConfigurationContext;
-import org.apache.tamaya.spi.ConfigurationContextBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -50,8 +46,8 @@ public class LoggingReader implements MetaConfigurationReader{
             @Override
             public void run() {
                 Map<String, Object> meta = new HashMap<>();
-                meta.put("context", ConfigurationProvider.getConfiguration().getContext());
-                meta.put("config", ConfigurationProvider.getConfiguration());
+                meta.put("context", Configuration.current().getContext());
+                meta.put("config", Configuration.current());
                 NodeList nodeList = document.getDocumentElement().getElementsByTagName("context");
                 for(int i=0;i<nodeList.getLength();i++){
                     Node node = nodeList.item(i);

@@ -22,7 +22,6 @@ import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.ConversionContext.Builder;
 import org.joda.time.DateTimeZone;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -57,10 +56,8 @@ public class DateTimeZoneConverterTest {
              {"+04:00", DateTimeZone.forID("+04:00")},
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (Object[] pair : inputResultPairs) {
-            DateTimeZone zone = converter.convert((String) pair[0], context);
+            DateTimeZone zone = converter.convert((String) pair[0]);
 
             assertThat("Converter failed to convert input value " + pair[0], zone, notNullValue());
             assertThat(zone, equalTo((DateTimeZone)pair[1]));
@@ -77,10 +74,8 @@ public class DateTimeZoneConverterTest {
              "2007-08-01+00:00"
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (String input : inputValues) {
-            DateTimeZone date = converter.convert(input, context);
+            DateTimeZone date = converter.convert(input);
 
             assertThat(date, nullValue());
         }
@@ -92,13 +87,17 @@ public class DateTimeZoneConverterTest {
         String secondFormat = "All time zone ids supported by Joda Time (DateTimeZoneConverter)";
 
         ConversionContext context = new Builder(TypeLiteral.of(DateTimeZone.class)).build();
+        try {
+            ConversionContext.set(context);
+            DateTimeZone result = converter.convert("+01:00");
 
-        DateTimeZone result = converter.convert("+01:00", context);
-
-        assertThat(result, notNullValue());
-        assertThat(context.getSupportedFormats(), hasSize(2));
-        assertThat(context.getSupportedFormats(), hasItem(firstFormat));
-        assertThat(context.getSupportedFormats(), hasItem(secondFormat));
+            assertThat(result, notNullValue());
+            assertThat(context.getSupportedFormats(), hasSize(2));
+            assertThat(context.getSupportedFormats(), hasItem(firstFormat));
+            assertThat(context.getSupportedFormats(), hasItem(secondFormat));
+        }finally{
+            ConversionContext.reset();
+        }
     }
 
 }

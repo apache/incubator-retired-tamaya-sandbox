@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.validation;
 
+import org.apache.tamaya.Configuration;
 import org.junit.Test;
 
 /**
@@ -26,8 +27,8 @@ import org.junit.Test;
 public class ValidationTests {
 
     @Test
-    public void testDefaults(){
-        System.err.println(ConfigModelManager.validate());
+    public void testValidate_Config(){
+        System.err.println(ConfigModelManager.validate(Configuration.current()));
     }
 
     @Test
@@ -37,12 +38,12 @@ public class ValidationTests {
 
     @Test
     public void testConfigInfo(){
-        System.err.println(ConfigModelManager.getConfigInfoText());
+        System.err.println(ConfigModelManager.getConfigModelDescription(ConfigModelManager.getModels()));
     }
 
     @Test
-    public void testAllValidationsInclUndefined(){
-        System.err.println("Including UNDEFINED: \n" + ConfigModelManager.validate(true));
+    public void testValidateAll(){
+        System.err.println("Including UNDEFINED: \n" + ConfigModelManager.validate(Configuration.current(), true));
     }
 
     @Test

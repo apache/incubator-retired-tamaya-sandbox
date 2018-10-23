@@ -82,7 +82,7 @@ public class ConfigurationResource {
     @Path("/keys")
     public String readConfig(@QueryParam("recursive") Boolean recursive) {
         readCounter.incrementAndGet();
-        final Configuration config = ConfigurationProvider.getConfiguration();
+        final Configuration config = Configuration.current();
         final Map<String, String> children = config.getProperties();
         final JsonArrayBuilder ab = Json.createArrayBuilder();
         for (final Map.Entry<String, String> en : children.entrySet()) {
@@ -122,7 +122,7 @@ public class ConfigurationResource {
     @Path("/keys/{key}")
     public String readConfig(@PathParam("key") String key, @QueryParam("recursive") Boolean recursive) {
         readCounter.incrementAndGet();
-        final Configuration config = ConfigurationProvider.getConfiguration();
+        final Configuration config = Configuration.current();
         if (key != null) {
             if (key.startsWith("/")) {
                 key = key.substring(1);
@@ -194,7 +194,7 @@ public class ConfigurationResource {
     public String writeConfig(@PathParam("key") String key, @javax.ws.rs.FormParam("value") String value,
                               @FormParam("ttl") Integer ttl) {
         writeCounter.incrementAndGet();
-        final Configuration config = ConfigurationProvider.getConfiguration();
+        final Configuration config = Configuration.current();
         if (key.startsWith("/")) {
             key = key.substring(1);
         }
@@ -220,7 +220,7 @@ public class ConfigurationResource {
     @Path("/keys/{key}")
     public String deleteConfig(@PathParam("key") String key) {
         deleteCounter.incrementAndGet();
-        final Configuration config = ConfigurationProvider.getConfiguration();
+        final Configuration config = Configuration.current();
         if (key.startsWith("/")) {
             key = key.substring(1);
         }

@@ -28,6 +28,7 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.junit.Before;
 import org.junit.Rule;
@@ -97,7 +98,7 @@ public class TestInjectedVerticleTest {
                         testContext.assertNotNull(reply.result());
                         testContext.assertNotNull(reply.result().body());
                         Map<String,String> config = Json.decodeValue((String)reply.result().body(), Map.class);
-                        Map<String,String> compareTo = ConfigurationProvider.getConfiguration().getProperties();
+                        Map<String,String> compareTo = Configuration.current().getProperties();
                         testContext.assertEquals(
                                     config.get("user.name"), System.getProperty("user.name"));
                         testContext.assertEquals(

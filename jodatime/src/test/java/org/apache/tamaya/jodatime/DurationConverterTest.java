@@ -58,10 +58,8 @@ public class DurationConverterTest {
 
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (Object[] pair : inputResultPairs) {
-            Duration duration = converter.convert((String) pair[0], context);
+            Duration duration = converter.convert((String) pair[0]);
 
             assertThat("Converter failed to convert input value " + pair[0], duration, notNullValue());
             assertThat(duration, equalTo((Duration) pair[1]));
@@ -78,10 +76,8 @@ public class DurationConverterTest {
                 "fooBar",
         };
 
-        ConversionContext context = Mockito.mock(ConversionContext.class);
-
         for (String input : inputValues) {
-            Duration duration = converter.convert(input, context);
+            Duration duration = converter.convert(input);
 
             assertThat(duration, nullValue());
         }
@@ -92,12 +88,16 @@ public class DurationConverterTest {
         String name = DurationConverter.class.getSimpleName();
 
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Duration.class)).build();
+        try {
+            ConversionContext.set(context);
+            converter.convert("P0DT0H0M0S");
 
-        converter.convert("P0DT0H0M0S", context);
-
-        assertThat(context.getSupportedFormats(), hasSize(3));
-        assertThat(context.getSupportedFormats(), hasItem("PdDThHmMsS (" + name + ")"));
-        assertThat(context.getSupportedFormats(), hasItem("ddThh:mm:ss (" + name + ")"));
-        assertThat(context.getSupportedFormats(), hasItem("PTa.bS ("+name+")"));
+            assertThat(context.getSupportedFormats(), hasSize(3));
+            assertThat(context.getSupportedFormats(), hasItem("PdDThHmMsS (" + name + ")"));
+            assertThat(context.getSupportedFormats(), hasItem("ddThh:mm:ss (" + name + ")"));
+            assertThat(context.getSupportedFormats(), hasItem("PTa.bS (" + name + ")"));
+        }finally{
+            ConversionContext.reset();
+        }
     }
 }

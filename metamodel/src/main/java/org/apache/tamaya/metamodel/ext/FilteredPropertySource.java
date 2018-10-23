@@ -85,12 +85,18 @@ public final class FilteredPropertySource extends BasePropertySource {
         PropertyValue value = wrapped.get(key);
         if(value != null && value.getValue()!=null){
             if(filters!=null){
-                PropertyValue filteredValue = value;
-                for(PropertyFilter pf:filters){
-                    filteredValue = pf.filterProperty(filteredValue, new FilterContext(value, dummyContext));
-                }
-                if(filteredValue!=null){
-                    return filteredValue;
+                try{
+                    FilterContext fc = new FilterContext(value, dummyContext);
+                    FilterContext.set(fc);
+                    PropertyValue filteredValue = value;
+                    for(PropertyFilter pf:filters){
+                        filteredValue = pf.filterProperty(filteredValue);
+                    }
+                    if(filteredValue!=null){
+                        return filteredValue;
+                    }
+                }finally {
+                    FilterContext.reset();
                 }
             }
         }
@@ -104,13 +110,18 @@ public final class FilteredPropertySource extends BasePropertySource {
             Map<String, PropertyValue> result = new HashMap<>();
             synchronized (filters) {
                 for (PropertyValue value : props.values()) {
-                    FilterContext filterContext = new FilterContext(value, props, dummyContext);
-                    PropertyValue filteredValue = value;
-                    for (PropertyFilter pf : filters) {
-                        filteredValue = pf.filterProperty(filteredValue, filterContext);
-                    }
-                    if (filteredValue != null) {
-                        result.put(filteredValue.getKey(), filteredValue);
+                    try{
+                        FilterContext fc = new FilterContext(value, dummyContext);
+                        FilterContext.set(fc);
+                        PropertyValue filteredValue = value;
+                        for (PropertyFilter pf : filters) {
+                            filteredValue = pf.filterProperty(filteredValue);
+                        }
+                        if (filteredValue != null) {
+                            result.put(filteredValue.getKey(), filteredValue);
+                        }
+                    }finally {
+                        FilterContext.reset();
                     }
                 }
             }

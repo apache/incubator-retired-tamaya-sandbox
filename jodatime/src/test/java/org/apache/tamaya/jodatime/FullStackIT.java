@@ -41,7 +41,7 @@ public class FullStackIT {
     @Test
     public void retrieveJodaTimeValuesFromConfiguration() {
 
-        Configuration configuration = ConfigurationProvider.getConfiguration();
+        Configuration configuration = Configuration.current();
 
         String dateTimeString = configuration.get("dateTimeValue");
         DateTime dateTimeValue = configuration.get("dateTimeValue", DateTime.class);
@@ -54,7 +54,7 @@ public class FullStackIT {
 
     @Test
     public void retrieveDateTimeZoneValueFromConfiguration() {
-        Configuration configuration = ConfigurationProvider.getConfiguration();
+        Configuration configuration = Configuration.current();
 
         String zoneAAsString = configuration.get("dateTimeZoneValueA");
         DateTimeZone zoneA = configuration.get("dateTimeZoneValueA", DateTimeZone.class);
@@ -71,7 +71,7 @@ public class FullStackIT {
 
     @Test
     public void retrievePeriodValueFromConfiguration() {
-        Configuration configuration = ConfigurationProvider.getConfiguration();
+        Configuration configuration = Configuration.current();
 
         MutablePeriod referenceValue = new MutablePeriod();
 

@@ -39,7 +39,7 @@ public abstract class AbstractConfiguredVerticle extends AbstractVerticle{
 
     protected Configuration getConfiguration(){
         if(configuration==null){
-            return ConfigurationProvider.getConfiguration();
+            return Configuration.current();
         }
         return configuration;
     }

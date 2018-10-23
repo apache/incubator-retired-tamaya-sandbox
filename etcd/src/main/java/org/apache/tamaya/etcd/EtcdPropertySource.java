@@ -21,7 +21,6 @@ package org.apache.tamaya.etcd;
 import org.apache.tamaya.mutableconfig.ConfigChangeRequest;
 import org.apache.tamaya.mutableconfig.spi.MutablePropertySource;
 import org.apache.tamaya.spi.PropertyValue;
-import org.apache.tamaya.spi.PropertyValueBuilder;
 import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class EtcdPropertySource extends BasePropertySource
 
     private List<EtcdAccessor> etcdBackends;
 
-    private Map<String,String> metaData = new HashMap<>();
+    private Map<String,Object> metaData = new HashMap<>();
 
     public EtcdPropertySource(String prefix, Collection<String> backends){
         this.prefix = prefix==null?"":prefix;
@@ -151,8 +150,9 @@ public class EtcdPropertySource extends BasePropertySource
                 props = accessor.get(key);
                 if(!props.containsKey("_ERROR")) {
                     // No prefix mapping necessary here, since we only access/return the value...
-                    return PropertyValue.builder(key, props.get(key), getName()).setMetaEntries(metaData)
-                            .addMetaEntries(props).removeMetaEntry(key).build();
+                    metaData.putAll(props);
+                    metaData.remove(key);
+                    return PropertyValue.create(key, props.get(key)).setMeta("source", getName()).setMeta(metaData);
                 } else{
                     LOG.log(Level.FINE, "etcd error on " + accessor.getUrl() + ": " + props.get("_ERROR"));
                 }
@@ -182,18 +182,18 @@ public class EtcdPropertySource extends BasePropertySource
 
     private Map<String, PropertyValue> mapPrefix(Map<String, String> props) {
 
-        Map<String, PropertyValueBuilder> builders = new HashMap<>();
+        Map<String, PropertyValue> values = new HashMap<>();
         // Evaluate keys
         for(Map.Entry<String,String> entry:props.entrySet()) {
             if (!entry.getKey().startsWith("_")) {
-                PropertyValueBuilder builder = builders.get(entry.getKey());
-                if (builder == null) {
-                    builder = PropertyValue.builder(entry.getKey(), "", getName()).setMetaEntries(metaData);
-                    builders.put(entry.getKey(), builder);
+                PropertyValue val = values.get(entry.getKey());
+                if (val == null) {
+                    val = PropertyValue.create(entry.getKey(), "").setMeta("source", getName()).setMeta(metaData);
+                    values.put(entry.getKey(), val);
                 }
             }
         }
-        // add meta entries
+        // add getMeta entries
         for(Map.Entry<String,String> entry:props.entrySet()) {
             if (entry.getKey().startsWith("_")) {
                 String key = entry.getKey().substring(1);
@@ -201,29 +201,24 @@ public class EtcdPropertySource extends BasePropertySource
                         ".expiration", ".source"}) {
                     if (key.endsWith(field)) {
                         key = key.substring(0, key.length() - field.length());
-                        PropertyValueBuilder builder = builders.get(key);
-                        if (builder != null) {
-                            builder.addMetaEntry(field, entry.getValue());
+                        PropertyValue val = values.get(key);
+                        if (val != null) {
+                            val.setMeta(field, entry.getValue());
                         }
                     }
                 }
             }
         }
         // Map to value map.
-        Map<String, PropertyValue> values = new HashMap<>();
-        for(Map.Entry<String,PropertyValueBuilder> en:builders.entrySet()) {
+//        Map<String, PropertyValue> values = new HashMap<>();
+        for(Map.Entry<String,PropertyValue> en:values.entrySet()) {
             if(prefix.isEmpty()){
-                values.put(en.getKey(), en.getValue().build());
+                values.put(en.getKey(), en.getValue());
             }else{
-                values.put(prefix + en.getKey(), en.getValue().setKey(prefix + en.getKey()).build());
+                values.put(prefix + en.getKey(), en.getValue().setKey(prefix + en.getKey()));
             }
         }
         return values;
-    }
-
-    @Override
-    public boolean isScannable() {
-        return true;
     }
 
     @Override

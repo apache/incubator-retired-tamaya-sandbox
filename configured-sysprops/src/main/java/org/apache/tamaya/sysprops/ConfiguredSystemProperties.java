@@ -33,7 +33,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 
 /**
  * Properties implementation class that can be applied as current System properties by calling
@@ -330,7 +329,7 @@ public class ConfiguredSystemProperties extends Properties {
 
     protected Properties createNewProperties() {
         Properties props = new Properties(initialProperties);
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String, String> configMap = config.getProperties();
         for (Map.Entry<String, String> en : configMap.entrySet()) {
             props.put(en.getKey(), en.getValue());

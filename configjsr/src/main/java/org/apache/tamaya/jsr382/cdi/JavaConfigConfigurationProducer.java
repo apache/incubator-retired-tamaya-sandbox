@@ -81,14 +81,14 @@ public class JavaConfigConfigurationProducer {
 
     static ConversionContext createConversionContext(String key, InjectionPoint injectionPoint) {
         final Type targetType = injectionPoint.getAnnotated().getBaseType();
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         ConversionContext.Builder builder = new ConversionContext.Builder(config,
-                ConfigurationProvider.getConfiguration().getContext(), key, TypeLiteral.of(targetType));
+                Configuration.current().getContext(), key, TypeLiteral.of(targetType));
         if(targetType instanceof ParameterizedType){
             ParameterizedType pt = (ParameterizedType)targetType;
             if(pt.getRawType().equals(Provider.class)) {
                 builder = new ConversionContext.Builder(config,
-                        ConfigurationProvider.getConfiguration().getContext(), key,
+                        Configuration.current().getContext(), key,
                         TypeLiteral.of(pt.getActualTypeArguments()[0]));
             }
         }
@@ -120,7 +120,7 @@ public class JavaConfigConfigurationProducer {
         Object value = null;
         if (textValue != null || Optional.class.equals(context.getTargetType().getRawType())) {
             LOGGER.log(Level.FINEST, () -> "Converting KEY: " + context.getKey() + "("+context.getTargetType()+"), textValue: " + textValue);
-            List<PropertyConverter> converters = ConfigurationProvider.getConfiguration().getContext()
+            List<PropertyConverter> converters = Configuration.current().getContext()
                     .getPropertyConverters((TypeLiteral)context.getTargetType());
             for (PropertyConverter<Object> converter : converters) {
                 try {
@@ -141,7 +141,7 @@ public class JavaConfigConfigurationProducer {
 
     @Produces
     public Config getConfiguration(){
-        return ConfigProvider.getConfig();
+        return Configuration.current();
     }
 
     @Produces

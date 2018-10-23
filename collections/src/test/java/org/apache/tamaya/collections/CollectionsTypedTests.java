@@ -19,7 +19,6 @@
 package org.apache.tamaya.collections;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
 import org.junit.Test;
 
@@ -40,7 +39,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testArrayListList_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = config.get("typed2.arraylist", new TypeLiteral<List<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -55,7 +54,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testLinkedListList_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         List<String> items = config.get("typed2.linkedlist", new TypeLiteral<List<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -71,7 +70,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testHashSet_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = config.get("typed2.hashset", new TypeLiteral<Set<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -86,7 +85,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testTreeSet_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Set<String> items = config.get("typed2.treeset", new TypeLiteral<Set<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -101,7 +100,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testHashMap_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = config.get("typed2.hashmap", new TypeLiteral<Map<String,String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -124,7 +123,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testTreeMap_String(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Map<String,String> items = config.get("typed2.treemap", new TypeLiteral<Map<String,String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -147,7 +146,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testCollection_HashSet(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Collection<String> items = config.get("typed2.hashset", new TypeLiteral<Collection<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -162,7 +161,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testCollection_TreeSet(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Collection<String> items = config.get("typed2.treeset", new TypeLiteral<Collection<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -177,7 +176,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testCollection_ArrayList(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Collection<String> items = config.get("typed2.arraylist", new TypeLiteral<Collection<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -192,7 +191,7 @@ public class CollectionsTypedTests {
 
     @Test
     public void testCollection_LinkedList(){
-        Configuration config = ConfigurationProvider.getConfiguration();
+        Configuration config = Configuration.current();
         Collection<String> items = config.get("typed2.linkedlist", new TypeLiteral<Collection<String>>(){});
         assertNotNull(items);
         assertFalse(items.isEmpty());

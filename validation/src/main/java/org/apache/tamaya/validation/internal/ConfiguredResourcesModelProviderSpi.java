@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
+ *  with the License.  You may obtain a copy create the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -25,9 +25,11 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.Configuration;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormats;
+import org.apache.tamaya.spi.ClassloaderAware;
+import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.validation.ConfigModel;
 import org.apache.tamaya.validation.spi.ConfigModelReader;
 import org.apache.tamaya.validation.spi.ModelProviderSpi;
@@ -37,28 +39,28 @@ import org.apache.tamaya.resource.ConfigResources;
  * ConfigModel provider that reads model metadata from property files from
  * {@code classpath*:META-INF/configmodel.json} in the following format:
  * <pre>
- *  Example of a configuration metamodel expressed via YAML.
+ *  Example create a configuration metamodel expressed via YAML.
  *  Structure is shown through indentation (one or more spaces).
  *  Sequence items are denoted by a dash,
  *  key value pairs within a map are separated by a colon.
  * </pre>
  */
-public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
+public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi, ClassloaderAware {
 
     /**
      * The logger.
      */
     private static final Logger LOG = Logger.getLogger(ConfiguredResourcesModelProviderSpi.class.getName());
     /**
-     * The parameter that can be used to configure the location of the configuration model resources.
+     * The parameter that can be used to configure the location create the configuration model resources.
      */
     private static final String MODEL_RESOURCE_PARAM = "org.apache.tamaya.model.resources";
     /**
-     * The resource class to checked for testing the availability of the resources extension module.
+     * The resource class to checked for testing the availability create the resources extension module.
      */
     private static final String CONFIG_RESOURCE_CLASS = "org.apache.tamaya.resource.ConfigResource";
     /**
-     * The resource class to checked for testing the availability of the formats extension module.
+     * The resource class to checked for testing the availability create the formats extension module.
      */
     private static final String CONFIGURATION_FORMATS_CLASS = "org.apache.tamaya.format.ConfigurationFormats";
     /**
@@ -74,6 +76,10 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
      * The configModels read.
      */
     private List<ConfigModel> configModels = new ArrayList<>();
+
+    /** The target classloader. */
+    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
 
     /**
      * Initializes the flag showing if the formats module is present (required).
@@ -106,55 +112,74 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi {
         if (!AVAILABLE) {
             LOG.info("tamaya-format extension is required to read model configuration, No extended model support AVAILABLE.");
         } else {
-            final String resources = ConfigurationProvider.getConfiguration().get(MODEL_RESOURCE_PARAM);
-            if (resources == null || resources.trim().isEmpty()) {
-                LOG.info("Mo model resources location configured in " + MODEL_RESOURCE_PARAM + ".");
-                return;
-            }
-            Collection<URL> urls;
-            if (RESOURCES_EXTENSION_AVAILABLE) {
-                LOG.info("Using tamaya-resources extension to read model configuration from " + resources);
-                urls = ConfigResources.getResourceResolver().getResources(resources.split(","));
-            } else {
-                LOG.info("Using default classloader resource location to read model configuration from " + resources);
-                urls = new ArrayList<>();
-                for (final String resource : resources.split(",")) {
-                    if (!resource.trim().isEmpty()) {
-                        Enumeration<URL> configs;
-                        try {
-                            configs = getClass().getClassLoader().getResources(resource);
-                            while (configs.hasMoreElements()) {
-                                urls.add(configs.nextElement());
-                            }
-                        } catch (final IOException e) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE,
-                                    "Error evaluating config model locations from " + resource, e);
+            reload();
+        }
+    }
+
+    /**
+     * Reloads the provider using resources from the current classloader.
+     */
+    public void reload(){
+        final String resources = Configuration.current().get(MODEL_RESOURCE_PARAM);
+        if (resources == null || resources.trim().isEmpty()) {
+            LOG.info("Mo model resources location configured in " + MODEL_RESOURCE_PARAM + ".");
+            return;
+        }
+        Collection<URL> urls;
+        if (RESOURCES_EXTENSION_AVAILABLE) {
+            LOG.info("Using tamaya-resources extension to read model configuration from " + resources);
+            urls = ConfigResources.getResourceResolver(classLoader).getResources(resources.split(","));
+        } else {
+            LOG.info("Using default classloader resource location to read model configuration from " + resources);
+            urls = new ArrayList<>();
+            for (final String resource : resources.split(",")) {
+                if (!resource.trim().isEmpty()) {
+                    Enumeration<URL> configs;
+                    try {
+                        configs = getClass().getClassLoader().getResources(resource);
+                        while (configs.hasMoreElements()) {
+                            urls.add(configs.nextElement());
                         }
+                    } catch (final IOException e) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE,
+                                "Error evaluating config model locations from " + resource, e);
                     }
                 }
             }
-            // Reading configs
-            for (final URL config : urls) {
-                try (InputStream is = config.openStream()) {
-                    final ConfigurationData data = ConfigurationFormats.readConfigurationData(config);
-                    Map<String,String> props = data.getCombinedProperties();
-                    String owner = props.get("_model.provider");
-                    if(owner==null){
-                        owner = config.toString();
-                    }
-                    configModels.addAll(ConfigModelReader.loadValidations(owner, props));
-                } catch (final Exception e) {
-                    Logger.getLogger(getClass().getName()).log(Level.SEVERE,
-                            "Error loading config model data from " + config, e);
+        }
+        // Reading configs
+        for (final URL config : urls) {
+            try (InputStream is = config.openStream()) {
+                final ConfigurationData data = ConfigurationFormats.readConfigurationData(config);
+                Map<String,String> props = new HashMap<>();
+                for(PropertyValue val:data.getData()){
+                    props.putAll(val.asMap());
                 }
+                String owner = props.get("_model.provider");
+                if(owner==null){
+                    owner = config.toString();
+                }
+                configModels.addAll(ConfigModelReader.loadValidations(owner, props));
+            } catch (final Exception e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE,
+                        "Error loading config model data from " + config, e);
             }
         }
         configModels = Collections.unmodifiableList(configModels);
     }
 
-
     @Override
     public Collection<ConfigModel> getConfigModels() {
         return configModels;
+    }
+
+    @Override
+    public void init(ClassLoader classLoader) {
+        this.classLoader = Objects.requireNonNull(classLoader);
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

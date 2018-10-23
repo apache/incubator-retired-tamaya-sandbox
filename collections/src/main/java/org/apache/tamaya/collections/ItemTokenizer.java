@@ -18,10 +18,9 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
-import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.spi.ConversionContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +44,15 @@ final class ItemTokenizer {
      * {@code indexOf} calls, one by one. The last unresolvable item (without any next separator token)
      * is added at the end of the list.
      * @param value the value, not null.
-     * @param context the conversion context.
      * @return the tokenized value as list, in order of occurrence.
      */
-    public static List<String> split(String value, ConversionContext context){
-        return split(value, ConfigurationProvider.getConfiguration().getOrDefault(
-                '_' + context.getKey() + ".item-separator", ","));
+    public static List<String> split(String value){
+        ConversionContext ctx = ConversionContext.current();
+        if(ctx != null){
+            return split(value, ctx.getConfiguration().getOrDefault(
+                    '_' + ctx.getKey() + ".item-separator", ","));
+        }
+        return split(value, ",");
     }
 
     /**
@@ -82,16 +84,19 @@ final class ItemTokenizer {
     }
 
     /**
-     * plits the given String value as a map entry, splitting it into key and value part with the given separator.
+     * Splits the given String value as a map entry, splitting it into key and value part with the given separator.
      * If the value cannot be split then {@code key = value = mapEntry} is used for further processing. key or value
-     * parts are normally trimmed, unless they are enmcosed with brackets {@code []}.
+     * parts are normally trimmed, unless they are enclosed with brackets {@code []}.
      * @param mapEntry the entry, not null.
-     * @param context the conversion context.
      * @return an array of length 2, with the trimmed and parsed key/value pair.
      */
-    public static String[] splitMapEntry(String mapEntry, ConversionContext context){
-        return splitMapEntry(mapEntry, ConfigurationProvider.getConfiguration().getOrDefault(
-                '_' + context.getKey()+".map-entry-separator", "::"));
+    public static String[] splitMapEntry(String mapEntry){
+        ConversionContext ctx = ConversionContext.current();
+        if(ctx != null){
+            return splitMapEntry(mapEntry, ctx.getConfiguration().getOrDefault(
+                    '_' + ctx.getKey() + ".map-entry-separator", "="));
+        }
+        return splitMapEntry(mapEntry, "=");
     }
 
     /**
@@ -128,42 +133,48 @@ final class ItemTokenizer {
     /**
      * Parses the given value into the required collection target type, defined by the context.
      * @param value the raw String value.
-     * @param context the context
      * @return the parsed value, or null.
      */
-    public static Object convertValue(String value, ConversionContext context) {
-        String converterClass = context.getConfiguration().get('_' + context.getKey() + ".item-converters");
-        List<PropertyConverter<Object>> valueConverters = new ArrayList<>(1);
-        if (converterClass != null) {
-            try {
-                valueConverters.add((PropertyConverter<Object>) Class.forName(converterClass).newInstance());
-            } catch (Exception e) {
-                LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
-            }
-        }
-        if (TypeLiteral.getTypeParameters(context.getTargetType().getType()).length>0) {
-            valueConverters.addAll(context.getConfigurationContext().getPropertyConverters(
-                    TypeLiteral.of(TypeLiteral.getTypeParameters(context.getTargetType().getType())[0])));
-        }
-        ConversionContext ctx = new ConversionContext.Builder(context.getConfiguration(),
-                context.getConfigurationContext(), context.getKey(),
-                TypeLiteral.of(context.getTargetType().getType())).build();
-        Object result = null;
-        if (valueConverters.isEmpty()) {
-            return value;
-        } else {
-            for (PropertyConverter<Object> conv : valueConverters) {
+    public static Object convertValue(String value) {
+        ConversionContext context = ConversionContext.current();
+        if (context != null) {
+            String converterClass = context.getConfiguration().get('_' + context.getKey() + ".item-converters");
+            List<PropertyConverter<Object>> valueConverters = new ArrayList<>(1);
+            if (converterClass != null) {
                 try {
-                    result = conv.convert(value, ctx);
-                    if (result != null) {
-                        return result;
-                    }
+                    valueConverters.add((PropertyConverter<Object>) Class.forName(converterClass).newInstance());
                 } catch (Exception e) {
                     LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
                 }
             }
+            if (TypeLiteral.getTypeParameters(context.getTargetType().getType()).length > 0) {
+                valueConverters.addAll(context.getConfigurationContext().getPropertyConverters(
+                        TypeLiteral.of(TypeLiteral.getTypeParameters(context.getTargetType().getType())[0])));
+            }
+
+            try{
+                ConversionContext.set(new ConversionContext.Builder(context.getConfiguration(), context.getKey(),
+                        TypeLiteral.of(context.getTargetType().getType())).build());
+                Object result = null;
+                if (valueConverters.isEmpty()) {
+                    return value;
+                } else {
+                    for (PropertyConverter<Object> conv : valueConverters) {
+                        try {
+                            result = conv.convert(value);
+                            if (result != null) {
+                                return result;
+                            }
+                        } catch (Exception e) {
+                            LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
+                        }
+                    }
+                }
+                LOG.log(Level.SEVERE, "Failed to convert collection value type for '" + value + "'.");
+            }finally {
+                ConversionContext.set(context);
+            }
         }
-        LOG.log(Level.SEVERE, "Failed to convert collection value type for '" + value + "'.");
         return null;
     }
 

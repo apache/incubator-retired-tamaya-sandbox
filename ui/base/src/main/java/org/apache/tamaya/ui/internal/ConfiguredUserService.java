@@ -47,7 +47,7 @@ public class ConfiguredUserService implements UserService{
      */
     public ConfiguredUserService(){
         // read from config
-        Map<String,String> config = ConfigurationProvider.getConfiguration().with(
+        Map<String,String> config = Configuration.current().with(
                 ConfigurationFunctions.section("tamaya.users.", true)).getProperties();
         for(Map.Entry<String,String> en:config.entrySet()){
             if(en.getKey().endsWith(".pwd")){

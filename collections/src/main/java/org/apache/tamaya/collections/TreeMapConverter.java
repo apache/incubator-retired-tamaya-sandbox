@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.collections;
 
-import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.List;
@@ -45,12 +44,12 @@ public class TreeMapConverter implements PropertyConverter<TreeMap> {
     }
 
     @Override
-    public TreeMap convert(String value, ConversionContext context) {
-        List<String> rawList = ItemTokenizer.split(value, context);
+    public TreeMap convert(String value) {
+        List<String> rawList = ItemTokenizer.split(value);
         TreeMap result = new TreeMap();
         for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw, context);
-            Object convValue = ItemTokenizer.convertValue(items[1], context);
+            String[] items = ItemTokenizer.splitMapEntry(raw);
+            Object convValue = ItemTokenizer.convertValue(items[1]);
             if(convValue!=null){
                 result.put(items[0], convValue);
             }else{
