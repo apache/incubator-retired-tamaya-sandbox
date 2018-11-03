@@ -30,8 +30,7 @@ import java.util.Map;
 public class MapConverter implements PropertyConverter<Map> {
 
     @Override
-    public Map convert(String value) {
-        ConversionContext context = ConversionContext.current();
+    public Map convert(String value, ConversionContext context) {
         String collectionType = "HashMap";
         boolean readOnly = false;
         if(context!=null) {
@@ -45,15 +44,15 @@ public class MapConverter implements PropertyConverter<Map> {
         switch(collectionType){
             case "TreeMap":
             case "SortedMap":
-                result = TreeMapConverter.getInstance().convert(value);
+                result = TreeMapConverter.getInstance().convert(value, context);
                 break;
             case "ConcurrentHashMap":
-                result = ConcurrentHashMapConverter.getInstance().convert(value);
+                result = ConcurrentHashMapConverter.getInstance().convert(value, context);
                 break;
             case "Map":
             case "HashMap":
             default:
-                result = HashMapConverter.getInstance().convert(value);
+                result = HashMapConverter.getInstance().convert(value, context);
                 break;
         }
         if(readOnly){

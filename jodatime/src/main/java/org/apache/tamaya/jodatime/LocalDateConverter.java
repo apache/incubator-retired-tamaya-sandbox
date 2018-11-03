@@ -66,10 +66,8 @@ public class LocalDateConverter implements PropertyConverter<LocalDate> {
     }
 
     @Override
-    public LocalDate convert(String value) {
-        ConversionContext.doOptional(context -> {
-            context.addSupportedFormats(LocalDateConverter.class, PARSER_FORMATS);
-                });
+    public LocalDate convert(String value, ConversionContext context) {
+        context.addSupportedFormats(LocalDateConverter.class, PARSER_FORMATS);
 
         String trimmed = Objects.requireNonNull(value).trim();
         LocalDate result = null;

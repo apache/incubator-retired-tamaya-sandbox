@@ -36,10 +36,9 @@ import java.util.logging.Filter;
 public class UsageTrackerFilter implements PropertyFilter{
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value) {
+    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
         ConfigUsageSpi tracker = ServiceContextManager.getServiceContext().getService(ConfigUsageSpi.class);
-        FilterContext context = FilterContext.get();
-        if (context == null || context.isSinglePropertyScoped()) {
+        if (context.isSinglePropertyScoped()) {
             tracker.recordSingleKeyAccess(value, context.current());
         } else {
             tracker.recordAllPropertiesAccess(context.current());

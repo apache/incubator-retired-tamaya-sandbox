@@ -19,6 +19,7 @@
 package org.apache.tamaya.metamodel;
 
 import org.apache.tamaya.metamodel.spi.ItemFactory;
+import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
 
@@ -83,7 +84,7 @@ public class MapFilter implements PropertyFilter{
     }
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value) {
+    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
         value = value.mutable();
         String key = value.getKey();
         if(matches !=null){

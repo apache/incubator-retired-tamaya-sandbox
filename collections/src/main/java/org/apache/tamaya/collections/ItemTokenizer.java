@@ -46,13 +46,9 @@ final class ItemTokenizer {
      * @param value the createValue, not null.
      * @return the tokenized createValue as createList, in order of occurrence.
      */
-    public static List<String> split(String value){
-        ConversionContext ctx = ConversionContext.current();
-        if(ctx != null){
-            String itemSeparator = (String)ctx.getMeta().getOrDefault("item-separator", ",");
-            return split(value, itemSeparator);
-        }
-        return split(value, ",");
+    public static List<String> split(String value, ConversionContext ctx){
+        String itemSeparator = (String)ctx.getMeta().getOrDefault("item-separator", ",");
+        return split(value, itemSeparator);
     }
 
     /**
@@ -87,13 +83,9 @@ final class ItemTokenizer {
      * @param mapEntry the entry, not null.
      * @return an array of length 2, with the trimmed and parsed key/createValue pair.
      */
-    public static String[] splitMapEntry(String mapEntry){
-        ConversionContext ctx = ConversionContext.current();
-        if(ctx != null){
-            String entrySeparator = (String)ctx.getMeta().getOrDefault("map-entry-separator", "=");
-            return splitMapEntry(mapEntry, entrySeparator);
-        }
-        return splitMapEntry(mapEntry, "=");
+    public static String[] splitMapEntry(String mapEntry, ConversionContext ctx){
+        String entrySeparator = (String)ctx.getMeta().getOrDefault("map-entry-separator", "=");
+        return splitMapEntry(mapEntry, entrySeparator);
     }
 
     /**
@@ -132,41 +124,34 @@ final class ItemTokenizer {
      * @param value the raw String createValue.
      * @return the parsed createValue, or null.
      */
-    public static <T> T convertValue(String value, TypeLiteral<T> targetType) {
-        ConversionContext context = ConversionContext.current();
-        if (context != null) {
-            String converterClass = context.getMeta().get("item-converter");
-            List<PropertyConverter<T>> valueConverters = new ArrayList<>(1);
-            if (converterClass != null) {
+    public static <T> T convertValue(String value, TypeLiteral<T> targetType, ConversionContext context) {
+        String converterClass = context.getMeta().get("item-converter");
+        List<PropertyConverter<T>> valueConverters = new ArrayList<>(1);
+        if (converterClass != null) {
+            try {
+                valueConverters.add((PropertyConverter<T>) Class.forName(converterClass).newInstance());
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
+            }
+        }
+        valueConverters.addAll(context.getConfigurationContext().getPropertyConverters(targetType));
+        if (valueConverters.isEmpty()) {
+            if(targetType.getRawType().equals(String.class)) {
+                return (T)value;
+            }
+        } else {
+            ConversionContext newContext = new ConversionContext.Builder(context.getConfiguration(), context.getKey(),
+                    targetType).build();
+            T result = null;
+            for (PropertyConverter<T> conv : valueConverters) {
                 try {
-                    valueConverters.add((PropertyConverter<T>) Class.forName(converterClass).newInstance());
+                    result = conv.convert(value, newContext);
+                    if (result != null) {
+                        return result;
+                    }
                 } catch (Exception e) {
                     LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
                 }
-            }
-            valueConverters.addAll(context.getConfigurationContext().getPropertyConverters(targetType));
-            try{
-                if (valueConverters.isEmpty()) {
-                    if(targetType.getRawType().equals(String.class)) {
-                        return (T)value;
-                    }
-                } else {
-                    ConversionContext.set(new ConversionContext.Builder(context.getConfiguration(), context.getKey(),
-                            targetType).build());
-                    T result = null;
-                    for (PropertyConverter<T> conv : valueConverters) {
-                        try {
-                            result = conv.convert(value);
-                            if (result != null) {
-                                return result;
-                            }
-                        } catch (Exception e) {
-                            LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
-                        }
-                    }
-                }
-            }finally {
-                ConversionContext.set(context);
             }
         }
         LOG.log(Level.SEVERE, "Failed to convert collection createValue type for '" + value + "'.");

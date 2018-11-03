@@ -46,19 +46,7 @@ public class TreeSetConverter implements PropertyConverter<TreeSet> {
     }
 
     @Override
-    public TreeSet convert(String value) {
-        TreeSet result = null;
-        ConversionContext context = ConversionContext.current();
-        if(context!=null) {
-            result = CollectionConverter.convertList(context, TreeSet::new);
-        }
-        else {
-            List<String> rawList = ItemTokenizer.split(value);
-            result = new TreeSet<>();
-            for (String raw : rawList) {
-                result.add(raw);
-            }
-        }
-        return result;
+    public TreeSet convert(String value, ConversionContext context) {
+        return CollectionConverter.convertList(context, TreeSet::new);
     }
 }

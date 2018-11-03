@@ -18,6 +18,8 @@
  */
 package org.apache.tamaya.uom;
 
+import org.apache.tamaya.TypeLiteral;
+import org.apache.tamaya.spi.ConversionContext;
 import org.junit.Test;
 
 import tec.units.ri.unit.Units;
@@ -34,7 +36,8 @@ public class UnitConverterTest {
 	@Test
 	public void canConvertUnitInformation() {
 
-		Unit<?> unit = converter.convert("m");
+		ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Unit.class)).build();
+		Unit<?> unit = converter.convert("m", context);
 
 		assertThat("Converter failed to convert input createValue " + unit, notNullValue());
 		assertEquals(unit, Units.METRE);

@@ -30,8 +30,7 @@ import java.util.Set;
 public class SetConverter implements PropertyConverter<Set> {
 
     @Override
-    public Set convert(String value) {
-        ConversionContext context = ConversionContext.current();
+    public Set convert(String value, ConversionContext context) {
         String collectionType = "Set";
         boolean readOnly = false;
         if(context!=null) {
@@ -44,12 +43,12 @@ public class SetConverter implements PropertyConverter<Set> {
         Set result;
         switch(collectionType){
             case "TreeSet":
-                result = TreeSetConverter.getInstance().convert(value);
+                result = TreeSetConverter.getInstance().convert(value, context);
                 break;
             case "Set":
             case "HashSet":
             default:
-                result = HashSetConverter.getInstance().convert(value);
+                result = HashSetConverter.getInstance().convert(value, context);
                 break;
         }
         if(readOnly){

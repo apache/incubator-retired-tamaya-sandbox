@@ -87,10 +87,8 @@ public class InstantConverter implements PropertyConverter<Instant> {
     }
 
     @Override
-    public Instant convert(String value) {
-        ConversionContext.doOptional(context -> {
-            context.addSupportedFormats(InstantConverter.class, PARSER_FORMATS);
-        });
+    public Instant convert(String value, ConversionContext context) {
+        context.addSupportedFormats(InstantConverter.class, PARSER_FORMATS);
 
         String trimmed = Objects.requireNonNull(value).trim();
         try {

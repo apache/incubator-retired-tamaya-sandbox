@@ -43,40 +43,28 @@ public class DurationConverter implements PropertyConverter<Duration> {
     private PeriodConverter periodConverter = new PeriodConverter();
 
     @Override
-    public Duration convert(String value) {
+    public Duration convert(String value, ConversionContext context) {
         String trimmed = Objects.requireNonNull(value).trim();
-        addSupportedFormats();
+        context.addSupportedFormats(getClass(), "PTa.bS");
+        context.addSupportedFormats(getClass(), "PdDThHmMsS");
+        context.addSupportedFormats(getClass(), "ddThh:mm:ss");
         try {
             return Duration.parse(value);
         }catch(Exception e){
+            ConversionContext subContext = new ConversionContext.Builder(context.getConfiguration(), context.getKey(), context.getTargetType())
+                    .setValues(context.getValues()).build();
             Period period = null;
-            ConversionContext ctx = ConversionContext.current();
-            try {
-                ConversionContext.reset();
-                if (value.startsWith("P")) {
-                    period = periodConverter.convert("P0Y0M0W" + value.substring(1));
-                }
-                if (period == null) {
-                    period = periodConverter.convert("P0000-00-" + value);
-                }
-                if (period != null) {
-                    return period.toStandardDuration();
-                }
-            }finally{
-                if(ctx!=null){
-                    ConversionContext.set(ctx);
-                }
+            if (value.startsWith("P")) {
+                period = periodConverter.convert("P0Y0M0W" + value.substring(1), subContext);
+            }
+            if (period == null) {
+                period = periodConverter.convert("P0000-00-" + value, subContext);
+            }
+            if (period != null) {
+                return period.toStandardDuration();
             }
         }
         return null;
-    }
-
-    private void addSupportedFormats() {
-        ConversionContext.doOptional(context -> {
-            context.addSupportedFormats(getClass(), "PTa.bS");
-            context.addSupportedFormats(getClass(), "PdDThHmMsS");
-            context.addSupportedFormats(getClass(), "ddThh:mm:ss");
-        });
     }
 
 }

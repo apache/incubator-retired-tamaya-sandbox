@@ -68,9 +68,9 @@ public class DateTimeConverterTest {
              {" 2007-08-31T16:47:01.123+00:00", FORMATTER.parseDateTime("2007-08-31T16:47:01.123+00:00")},
              {"2007-08-31T16:47:01+00:00 ", FORMATTER.parseDateTime("2007-08-31T16:47:01.0+00:00")},
         };
-
+        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTime.class)).build();
         for (Object[] pair : inputResultPairs) {
-            DateTime date = converter.convert((String)pair[0]);
+            DateTime date = converter.convert((String)pair[0], context);
 
             assertThat("Converter failed to convert input createValue " + pair[0], date, notNullValue());
             assertThat(date.isEqual((DateTime)pair[1]), is(true));
@@ -83,8 +83,9 @@ public class DateTimeConverterTest {
              "00:00", "a", "-", "+ :00", "+00:"
         };
 
+        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTime.class)).build();
         for (String input : inputValues) {
-            DateTime date = converter.convert(input);
+            DateTime date = converter.convert(input, context);
 
             assertThat(date, nullValue());
         }
@@ -93,18 +94,13 @@ public class DateTimeConverterTest {
     @Test
     public void allSupportedFormatsAreAddedToTheConversionContext() {
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTime.class)).build();
-        try {
-            ConversionContext.set(context);
-            converter.convert("2007-08-31T16+00:00");
+        converter.convert("2007-08-31T16+00:00", context);
 
-            assertThat(context.getSupportedFormats(), hasSize(DateTimeConverter.PARSER_FORMATS.length));
+        assertThat(context.getSupportedFormats(), hasSize(DateTimeConverter.PARSER_FORMATS.length));
 
-            for (String format : DateTimeConverter.PARSER_FORMATS) {
-                String expected = format + " (" + DateTimeConverter.class.getSimpleName() + ")";
-                assertThat(context.getSupportedFormats(), hasItem(expected));
-            }
-        }finally {
-            ConversionContext.reset();
+        for (String format : DateTimeConverter.PARSER_FORMATS) {
+            String expected = format + " (" + DateTimeConverter.class.getSimpleName() + ")";
+            assertThat(context.getSupportedFormats(), hasItem(expected));
         }
     }
 }

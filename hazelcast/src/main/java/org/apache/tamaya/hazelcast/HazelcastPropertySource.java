@@ -179,11 +179,6 @@ implements MutablePropertySource{
         return PropertyValue.map(this.configMap, getName(), meta);
     }
 
-    @Override
-    public boolean isScannable() {
-        return true;
-    }
-
     /**
      * Reloads the configuration map from Hazelcast completely.
      */

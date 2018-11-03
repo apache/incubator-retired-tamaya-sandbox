@@ -56,10 +56,9 @@ public class ImmutableFilter implements PropertyFilter{
     private Map<String,PropertyValue> map = new ConcurrentHashMap<>();
 
     @Override
-    public PropertyValue filterProperty(PropertyValue value) {
+    public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
         String key = value.getKey();
-        FilterContext context = FilterContext.get();
-        if(context!=null && !context.isSinglePropertyScoped()) {
+        if(!context.isSinglePropertyScoped()) {
             key = value.getKey() + "_all";
         }
         PropertyValue val = map.get(key);

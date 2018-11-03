@@ -31,7 +31,7 @@ import java.util.TreeSet;
 public class SortedSetConverter implements PropertyConverter<SortedSet> {
 
     @Override
-    public SortedSet convert(String value) {
-        return TreeSetConverter.getInstance().convert(value);
+    public SortedSet convert(String value, ConversionContext context) {
+        return TreeSetConverter.getInstance().convert(value, context);
     }
 }

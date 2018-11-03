@@ -42,12 +42,8 @@ public class HashMapConverter implements PropertyConverter<HashMap> {
     }
 
     @Override
-    public HashMap convert(String value) {
-        ConversionContext context = ConversionContext.current();
-        if(context!=null){
-            return CollectionConverter.convertMap(context, HashMap::new);
-        }
-        return (HashMap)CollectionConverter.convertSimpleMap(value);
+    public HashMap convert(String value, ConversionContext context) {
+        return CollectionConverter.convertMap(context, HashMap::new);
     }
 
 

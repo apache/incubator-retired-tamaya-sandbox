@@ -68,23 +68,23 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
         T result = collectionSupplier.get();
         switch (mappingType) {
             case node_all:
-                return convertListByNodes(context.getValues(), context.getConfiguration(),
+                return convertListByNodes(context.getValues(), context,
                         collectionTargetType, result, true);
             case node:
-                return convertListByNodes(context.getValues(), context.getConfiguration(),
+                return convertListByNodes(context.getValues(), context,
                         collectionTargetType, result, false);
             case value:
-                return convertListByValues(context.getValues(), context.getConfiguration(),
+                return convertListByValues(context.getValues(), context,
                         collectionTargetType, result, false);
             default:
             case value_all:
-                return convertListByValues(context.getValues(), context.getConfiguration(),
+                return convertListByValues(context.getValues(), context,
                         collectionTargetType, result, true);
         }
     }
 
     private static <T extends Collection> T convertListByValues(List<PropertyValue> values,
-                                                                Configuration config,
+                                                                ConversionContext context,
                                                                 TypeLiteral<?> targetType,
                                                                 T result,
                                                                 boolean combine) {
@@ -92,9 +92,9 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
             values = Collections.singletonList(values.get(0));
         }
         for (PropertyValue val : values) {
-            List<String> tokenList = ItemTokenizer.split(val.getValue());
+            List<String> tokenList = ItemTokenizer.split(val.getValue(), context);
             for (String token : tokenList) {
-                Object o = ItemTokenizer.convertValue(token, targetType);
+                Object o = ItemTokenizer.convertValue(token, targetType, context);
                 if (o != null) {
                     result.add(o);
                 }else{
@@ -107,7 +107,7 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
     }
 
     private static <T extends Collection> T convertListByNodes(List<PropertyValue> values,
-                                                               Configuration config,
+                                                               ConversionContext context,
                                                                TypeLiteral<?> targetType,
                                                                T result,
                                                                boolean combine) {
@@ -119,7 +119,7 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
                 if(targetType.equals(TypeLiteral.of(String.class))){
                     result.add(itemNode.getValue());
                 }else {
-                    Object o = ItemTokenizer.convertValue(itemNode.getValue(), targetType);
+                    Object o = ItemTokenizer.convertValue(itemNode.getValue(), targetType, context);
                     if (o != null) {
                         result.add(o);
                     }else{
@@ -147,35 +147,35 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
         T result = collectionSupplier.get();
         switch (mappingType) {
             case node_all:
-                return convertMapByNodes(context.getValues(), context.getConfiguration(),
+                return convertMapByNodes(context.getValues(), context,
                         collectionTargetType, result, true);
             case node:
-                return convertMapByNodes(context.getValues(), context.getConfiguration(),
+                return convertMapByNodes(context.getValues(), context,
                         collectionTargetType, result, false);
             case value:
-                return convertMapByValues(context.getValues(), context.getConfiguration(),
+                return convertMapByValues(context.getValues(), context,
                         collectionTargetType, result, false);
             default:
             case value_all:
-                return convertMapByValues(context.getValues(), context.getConfiguration(),
+                return convertMapByValues(context.getValues(), context,
                         collectionTargetType, result, true);
         }
     }
 
 
     private static <T extends Map> T convertMapByValues(List<PropertyValue> values,
-                                                                Configuration config,
-                                                                TypeLiteral<?> targetType,
-                                                                T result,
-                                                                boolean combine) {
+                                                        ConversionContext context,
+                                                        TypeLiteral<?> targetType,
+                                                        T result,
+                                                        boolean combine) {
         if(!combine){
             values = Collections.singletonList(values.get(0));
         }
         for (PropertyValue val : values) {
-            List<String> tokenList = ItemTokenizer.split(val.getValue());
+            List<String> tokenList = ItemTokenizer.split(val.getValue(), context);
             for(String token:tokenList) {
-                String[] keyValue = ItemTokenizer.splitMapEntry(token);
-                Object o = ItemTokenizer.convertValue(keyValue[1], targetType);
+                String[] keyValue = ItemTokenizer.splitMapEntry(token, context);
+                Object o = ItemTokenizer.convertValue(keyValue[1], targetType, context);
                 if (o != null) {
                     result.put(keyValue[0], o);
                 }else{
@@ -188,16 +188,16 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
     }
 
     private static <T extends Map> T convertMapByNodes(List<PropertyValue> values,
-                                                               Configuration config,
-                                                               TypeLiteral<?> targetType,
-                                                               T result,
-                                                               boolean combine) {
+                                                       ConversionContext context,
+                                                       TypeLiteral<?> targetType,
+                                                       T result,
+                                                       boolean combine) {
         if(!combine){
             values = Collections.singletonList(values.get(0));
         }
         for (PropertyValue val : values) {
             for(PropertyValue itemNode:val) {
-                Object o = ItemTokenizer.convertValue(itemNode.getValue(), targetType);
+                Object o = ItemTokenizer.convertValue(itemNode.getValue(), targetType, context);
                 if (o != null) {
                     result.put(itemNode.getKey(), o);
                 }else{
@@ -210,8 +210,8 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
     }
 
 
-    public static ArrayList<String> convertSimpleList(String value) {
-        List<String> rawList = ItemTokenizer.split(value);
+    public static ArrayList<String> convertSimpleList(String value, ConversionContext context) {
+        List<String> rawList = ItemTokenizer.split(value, context);
         ArrayList<String> mlist = new ArrayList<>();
         for(String raw:rawList){
             String convValue = raw;
@@ -222,11 +222,11 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
         return mlist;
     }
 
-    public static Map<String,String> convertSimpleMap(String value) {
-        List<String> rawList = ItemTokenizer.split(value);
+    public static Map<String,String> convertSimpleMap(String value, ConversionContext context) {
+        List<String> rawList = ItemTokenizer.split(value, context);
         HashMap<String,String> result = new HashMap(rawList.size());
         for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw);
+            String[] items = ItemTokenizer.splitMapEntry(raw, context);
             if(items.length==1){
                 result.put(items[0], items[0]);
             }else{
@@ -237,8 +237,7 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
     }
 
     @Override
-    public Collection convert(String value) {
-        ConversionContext context = ConversionContext.current();
+    public Collection convert(String value, ConversionContext context) {
         String collectionType = "List";
         if(context!=null) {
             collectionType = (String)context.getMeta().getOrDefault("collection-type", "List");
@@ -249,20 +248,20 @@ public final class CollectionConverter implements PropertyConverter<Collection> 
         Collection result = null;
         switch (collectionType) {
             case "LinkedList":
-                result = LinkedListConverter.getInstance().convert(value);
+                result = LinkedListConverter.getInstance().convert(value, context);
                 break;
             case "Set":
             case "HashSet":
-                result = HashSetConverter.getInstance().convert(value);
+                result = HashSetConverter.getInstance().convert(value, context);
                 break;
             case "SortedSet":
             case "TreeSet":
-                result = TreeSetConverter.getInstance().convert(value);
+                result = TreeSetConverter.getInstance().convert(value, context);
                 break;
             case "List":
             case "ArrayList":
             default:
-                result = ArrayListConverter.getInstance().convert(value);
+                result = ArrayListConverter.getInstance().convert(value, context);
                 break;
         }
         return result;

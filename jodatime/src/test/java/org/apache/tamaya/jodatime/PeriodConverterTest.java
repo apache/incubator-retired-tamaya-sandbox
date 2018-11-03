@@ -62,8 +62,9 @@ public class PeriodConverterTest {
              {"P0002-03-00T00:00:05", FORMATTER.parsePeriod("P2Y3M0W0DT0H0M5S")}
         };
 
+        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Period.class)).build();
         for (Object[] pair : inputResultPairs) {
-            Period period = converter.convert((String) pair[0]);
+            Period period = converter.convert((String) pair[0], context);
 
             assertThat("Converter failed to convert input createValue " + pair[0], period, notNullValue());
             assertThat(period, equalTo((Period)pair[1]));
@@ -78,8 +79,9 @@ public class PeriodConverterTest {
             "P0002T00:05"
         };
 
+        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Period.class)).build();
         for (String input : inputValues) {
-            Period period = converter.convert(input);
+            Period period = converter.convert(input, context);
 
             assertThat(period, nullValue());
         }
@@ -90,15 +92,10 @@ public class PeriodConverterTest {
         String name = PeriodConverter.class.getSimpleName();
 
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Period.class)).build();
-        try {
-            ConversionContext.set(context);
-            converter.convert("P7Y0M0W0DT0H0M0S");
+        converter.convert("P7Y0M0W0DT0H0M0S", context);
 
-            assertThat(context.getSupportedFormats(), hasSize(2));
-            assertThat(context.getSupportedFormats(), hasItem("PyYmMwWdDThHmMsS (" + name + ")"));
-            assertThat(context.getSupportedFormats(), hasItem("Pyyyy-mm-ddThh:mm:ss (" + name + ")"));
-        }finally{
-            ConversionContext.reset();
-        }
+        assertThat(context.getSupportedFormats(), hasSize(2));
+        assertThat(context.getSupportedFormats(), hasItem("PyYmMwWdDThHmMsS (" + name + ")"));
+        assertThat(context.getSupportedFormats(), hasItem("Pyyyy-mm-ddThh:mm:ss (" + name + ")"));
     }
 }

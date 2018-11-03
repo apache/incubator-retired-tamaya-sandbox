@@ -50,10 +50,8 @@ public class LocalTimeConverter implements PropertyConverter<LocalTime> {
     };
 
     @Override
-    public LocalTime convert(String value) {
-        ConversionContext.doOptional(context -> {
-                    context.addSupportedFormats(LocalTimeConverter.class, PARSER_FORMATS);
-                });
+    public LocalTime convert(String value, ConversionContext context) {
+        context.addSupportedFormats(LocalTimeConverter.class, PARSER_FORMATS);
 
         String trimmed = Objects.requireNonNull(value).trim();
         try {

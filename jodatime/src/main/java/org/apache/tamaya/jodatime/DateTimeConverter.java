@@ -90,10 +90,8 @@ public class DateTimeConverter implements PropertyConverter<DateTime> {
     }
 
     @Override
-    public DateTime convert(String value) {
-        ConversionContext.doOptional(context -> {
-            context.addSupportedFormats(DateTimeConverter.class, PARSER_FORMATS);
-        });
+    public DateTime convert(String value, ConversionContext context) {
+        context.addSupportedFormats(DateTimeConverter.class, PARSER_FORMATS);
 
         String trimmed = Objects.requireNonNull(value).trim();
         DateTime result = null;

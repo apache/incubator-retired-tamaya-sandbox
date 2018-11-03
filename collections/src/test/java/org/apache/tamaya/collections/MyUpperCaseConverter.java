@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.collections;
 
+import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 /**
@@ -26,7 +27,7 @@ import org.apache.tamaya.spi.PropertyConverter;
  */
 public class MyUpperCaseConverter implements PropertyConverter<String>{
     @Override
-    public String convert(String value) {
+    public String convert(String value, ConversionContext context) {
         return "("+value.toUpperCase()+")";
     }
 }

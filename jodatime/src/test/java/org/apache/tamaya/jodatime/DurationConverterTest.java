@@ -58,8 +58,9 @@ public class DurationConverterTest {
 
         };
 
+        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Duration.class)).build();
         for (Object[] pair : inputResultPairs) {
-            Duration duration = converter.convert((String) pair[0]);
+            Duration duration = converter.convert((String) pair[0], context);
 
             assertThat("Converter failed to convert input createValue " + pair[0], duration, notNullValue());
             assertThat(duration, equalTo((Duration) pair[1]));
@@ -75,9 +76,9 @@ public class DurationConverterTest {
                 "-",
                 "fooBar",
         };
-
+        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Duration.class)).build();
         for (String input : inputValues) {
-            Duration duration = converter.convert(input);
+            Duration duration = converter.convert(input, context);
 
             assertThat(duration, nullValue());
         }
@@ -88,16 +89,11 @@ public class DurationConverterTest {
         String name = DurationConverter.class.getSimpleName();
 
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Duration.class)).build();
-        try {
-            ConversionContext.set(context);
-            converter.convert("P0DT0H0M0S");
+        converter.convert("P0DT0H0M0S", context);
 
-            assertThat(context.getSupportedFormats(), hasSize(3));
-            assertThat(context.getSupportedFormats(), hasItem("PdDThHmMsS (" + name + ")"));
-            assertThat(context.getSupportedFormats(), hasItem("ddThh:mm:ss (" + name + ")"));
-            assertThat(context.getSupportedFormats(), hasItem("PTa.bS (" + name + ")"));
-        }finally{
-            ConversionContext.reset();
-        }
+        assertThat(context.getSupportedFormats(), hasSize(3));
+        assertThat(context.getSupportedFormats(), hasItem("PdDThHmMsS (" + name + ")"));
+        assertThat(context.getSupportedFormats(), hasItem("ddThh:mm:ss (" + name + ")"));
+        assertThat(context.getSupportedFormats(), hasItem("PTa.bS (" + name + ")"));
     }
 }

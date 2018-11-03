@@ -42,9 +42,10 @@ public class DateTimeZoneConverter implements PropertyConverter<DateTimeZone> {
     private static final Pattern IS_INTEGER_VALUE = Pattern.compile(PATTERN_REGEX);
 
     @Override
-    public DateTimeZone convert(String value) {
+    public DateTimeZone convert(String value, ConversionContext context) {
         String trimmed = requireNonNull(value).trim();
-        addSupportedFormats();
+        context.addSupportedFormats(DateTimeZoneConverter.class, "Time zone in the form [+-]hh:mm via the regex " + PATTERN_REGEX);
+        context.addSupportedFormats(DateTimeZoneConverter.class, "All time zone ids supported by Joda Time");
 
         DateTimeZone result = null;
 
@@ -61,13 +62,6 @@ public class DateTimeZoneConverter implements PropertyConverter<DateTimeZone> {
         }
 
         return result;
-    }
-
-    private void addSupportedFormats() {
-        ConversionContext.doOptional(context -> {
-            context.addSupportedFormats(DateTimeZoneConverter.class, "Time zone in the form [+-]hh:mm via the regex " + PATTERN_REGEX);
-            context.addSupportedFormats(DateTimeZoneConverter.class, "All time zone ids supported by Joda Time");
-        });
     }
 
     private boolean isSingleIntegerValue(String value) {

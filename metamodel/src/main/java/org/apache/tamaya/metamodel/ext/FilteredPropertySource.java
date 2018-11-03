@@ -85,18 +85,13 @@ public final class FilteredPropertySource extends BasePropertySource {
         PropertyValue value = wrapped.get(key);
         if(value != null && value.getValue()!=null){
             if(filters!=null){
-                try{
-                    FilterContext fc = new FilterContext(value, dummyContext);
-                    FilterContext.set(fc);
-                    PropertyValue filteredValue = value;
-                    for(PropertyFilter pf:filters){
-                        filteredValue = pf.filterProperty(filteredValue);
-                    }
-                    if(filteredValue!=null){
-                        return filteredValue;
-                    }
-                }finally {
-                    FilterContext.reset();
+                FilterContext fc = new FilterContext(value, dummyContext);
+                PropertyValue filteredValue = value;
+                for(PropertyFilter pf:filters){
+                    filteredValue = pf.filterProperty(filteredValue, fc);
+                }
+                if(filteredValue!=null){
+                    return filteredValue;
                 }
             }
         }
@@ -110,29 +105,19 @@ public final class FilteredPropertySource extends BasePropertySource {
             Map<String, PropertyValue> result = new HashMap<>();
             synchronized (filters) {
                 for (PropertyValue value : props.values()) {
-                    try{
-                        FilterContext fc = new FilterContext(value, dummyContext);
-                        FilterContext.set(fc);
-                        PropertyValue filteredValue = value;
-                        for (PropertyFilter pf : filters) {
-                            filteredValue = pf.filterProperty(filteredValue);
-                        }
-                        if (filteredValue != null) {
-                            result.put(filteredValue.getKey(), filteredValue);
-                        }
-                    }finally {
-                        FilterContext.reset();
+                    FilterContext fc = new FilterContext(value, dummyContext);
+                    PropertyValue filteredValue = value;
+                    for (PropertyFilter pf : filters) {
+                        filteredValue = pf.filterProperty(filteredValue, fc);
+                    }
+                    if (filteredValue != null) {
+                        result.put(filteredValue.getKey(), filteredValue);
                     }
                 }
             }
             return result;
         }
         return Collections.emptyMap();
-    }
-
-    @Override
-    public boolean isScannable() {
-        return wrapped.isScannable();
     }
 
     /**

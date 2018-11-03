@@ -43,13 +43,8 @@ public class ArrayListConverter implements PropertyConverter<ArrayList> {
     }
 
     @Override
-    public ArrayList convert(String value) {
-        ConversionContext context = ConversionContext.current();
-        if(context!=null){
-            // Use configurable mechanism
-            return CollectionConverter.convertList(context, ArrayList::new);
-        }
-        return CollectionConverter.convertSimpleList(value);
+    public ArrayList convert(String value, ConversionContext context) {
+        return CollectionConverter.convertList(context, ArrayList::new);
     }
 
 }

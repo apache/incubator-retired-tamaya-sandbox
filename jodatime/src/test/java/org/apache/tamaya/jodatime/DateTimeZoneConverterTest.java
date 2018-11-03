@@ -55,9 +55,9 @@ public class DateTimeZoneConverterTest {
              {" +00:00 ", DateTimeZone.forID("+00:00")},
              {"+04:00", DateTimeZone.forID("+04:00")},
         };
-
+        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTimeZone.class)).build();
         for (Object[] pair : inputResultPairs) {
-            DateTimeZone zone = converter.convert((String) pair[0]);
+            DateTimeZone zone = converter.convert((String) pair[0], context);
 
             assertThat("Converter failed to convert input createValue " + pair[0], zone, notNullValue());
             assertThat(zone, equalTo((DateTimeZone)pair[1]));
@@ -74,8 +74,9 @@ public class DateTimeZoneConverterTest {
              "2007-08-01+00:00"
         };
 
+        ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTimeZone.class)).build();
         for (String input : inputValues) {
-            DateTimeZone date = converter.convert(input);
+            DateTimeZone date = converter.convert(input, context);
 
             assertThat(date, nullValue());
         }
@@ -87,17 +88,12 @@ public class DateTimeZoneConverterTest {
         String secondFormat = "All time zone ids supported by Joda Time (DateTimeZoneConverter)";
 
         ConversionContext context = new Builder(TypeLiteral.of(DateTimeZone.class)).build();
-        try {
-            ConversionContext.set(context);
-            DateTimeZone result = converter.convert("+01:00");
+        DateTimeZone result = converter.convert("+01:00", context);
 
-            assertThat(result, notNullValue());
-            assertThat(context.getSupportedFormats(), hasSize(2));
-            assertThat(context.getSupportedFormats(), hasItem(firstFormat));
-            assertThat(context.getSupportedFormats(), hasItem(secondFormat));
-        }finally{
-            ConversionContext.reset();
-        }
+        assertThat(result, notNullValue());
+        assertThat(context.getSupportedFormats(), hasSize(2));
+        assertThat(context.getSupportedFormats(), hasItem(firstFormat));
+        assertThat(context.getSupportedFormats(), hasItem(secondFormat));
     }
 
 }

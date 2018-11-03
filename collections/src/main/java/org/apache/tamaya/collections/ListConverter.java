@@ -31,8 +31,7 @@ import java.util.function.Supplier;
 public class ListConverter implements PropertyConverter<List> {
 
     @Override
-    public List convert(String value) {
-        ConversionContext context = ConversionContext.current();
+    public List convert(String value, ConversionContext context) {
         String collectionType = "ArrayList";
         boolean readOnly = false;
         if(context!=null) {
@@ -45,12 +44,12 @@ public class ListConverter implements PropertyConverter<List> {
         List result = null;
         switch(collectionType){
             case "LinkedList":
-                result = LinkedListConverter.getInstance().convert(value);
+                result = LinkedListConverter.getInstance().convert(value, context);
                 break;
             case "List":
             case "ArrayList":
             default:
-                result = ArrayListConverter.getInstance().convert(value);
+                result = ArrayListConverter.getInstance().convert(value, context);
                 break;
         }
         if(readOnly){
