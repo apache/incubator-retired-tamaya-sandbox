@@ -80,7 +80,7 @@ public final class EnabledPropertySourceProvider
 
     /**
      * Returns the enabled property.
-     * @return the enabled value.
+     * @return the enabled createValue.
      */
     @Override
     public boolean isEnabled(){
@@ -89,7 +89,7 @@ public final class EnabledPropertySourceProvider
 
     /**
      * Enables/disables this property source.
-     * @param enabled the enabled value.
+     * @param enabled the enabled createValue.
      */
     @Override
     public void setEnabled(boolean enabled){

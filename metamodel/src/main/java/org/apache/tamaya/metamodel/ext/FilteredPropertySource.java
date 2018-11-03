@@ -37,7 +37,7 @@ import org.apache.tamaya.spisupport.propertysource.BasePropertySource;
 
 /**
  * Property source that allows filtering on property source level. This class is thread-safe, accesses using or
- * changing the filter list are synchronized.
+ * changing the filter createList are synchronized.
  */
 public final class FilteredPropertySource extends BasePropertySource {
 
@@ -172,7 +172,7 @@ public final class FilteredPropertySource extends BasePropertySource {
 
     /**
      * Access the current filters present.
-     * @return a copy of the current filter list.
+     * @return a copy of the current filter createList.
      */
     public List<PropertyFilter> getPropertyFilter(){
         synchronized (filters){

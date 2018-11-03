@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Simple filter that never changes a key/value pair returned, regardless if a value
+ * Simple filter that never changes a key/createValue pair returned, regardless if a createValue
  * is changing underneath, hereby different values for single and multi-property access
  * are considered.
  */

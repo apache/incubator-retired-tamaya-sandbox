@@ -18,10 +18,10 @@
 */
 
 //##################################################################################
-// Example create a configuration metamodel expressed via YAML(tm).
+// Example createObject a configuration metamodel expressed via YAML(tm).
 //  Structure is shown through indentation (one or more spaces).
 //  Sequence items are denoted by a dash,
-//  key value pairs within a map are separated by a colon.
+//  key createValue pairs within a map are separated by a colon.
 //##################################################################################
 
 //##################################################################################
@@ -39,7 +39,7 @@
       "description": "an (reusable) number type parameter (optional)"
     },
     //##################################################################################
-    // Description create Configuration Sections (minimal, can be extended by other modules).
+    // Description createObject Configuration Sections (minimal, can be extended by other modules).
     //##################################################################################
     "_a.model": {
       "class": "Section",

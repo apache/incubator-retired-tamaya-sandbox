@@ -75,7 +75,7 @@ public final class ComponentFactory<T> {
                 }
             }
         }
-        // Multiple instances: create a new instance using the parameterless constructor for all subsequent
+        // Multiple instances: createObject a new instance using the parameterless constructor for all subsequent
         // resolutions.
         if(loaded.contains(comp.getClass().getName())){
             return (T)comp.getClass().newInstance();

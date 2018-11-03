@@ -32,16 +32,19 @@ public class MapConverter implements PropertyConverter<Map> {
     @Override
     public Map convert(String value) {
         ConversionContext context = ConversionContext.current();
-        String collectionType = null;
+        String collectionType = "HashMap";
+        boolean readOnly = false;
         if(context!=null) {
-            collectionType = context.getConfiguration().getOrDefault('_' + context.getKey() + ".collection-type", "Map");
+            collectionType = (String)context.getMeta().getOrDefault("collection-type", "HashMap");
             if (collectionType.startsWith("java.util.")) {
                 collectionType = collectionType.substring("java.util.".length());
             }
+            readOnly = Boolean.parseBoolean((String)context.getMeta().getOrDefault("read-only", "false"));
         }
         Map result = null;
         switch(collectionType){
             case "TreeMap":
+            case "SortedMap":
                 result = TreeMapConverter.getInstance().convert(value);
                 break;
             case "ConcurrentHashMap":
@@ -53,12 +56,8 @@ public class MapConverter implements PropertyConverter<Map> {
                 result = HashMapConverter.getInstance().convert(value);
                 break;
         }
-        ConversionContext ctx = ConversionContext.current();
-        if(ctx != null){
-            if(ctx.getConfiguration().getOrDefault(
-                    '_' + ctx.getKey() + ".read-only", Boolean.class, true)){
-                return Collections.unmodifiableMap(result);
-            }
+        if(readOnly){
+            return Collections.unmodifiableMap(result);
         }
         return result;
     }

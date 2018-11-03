@@ -61,9 +61,9 @@ public final class SimplePropertySourceBuilder {
     }
 
     /**
-     * Sets a new property key/value.
+     * Sets a new property key/createValue.
      * @param key the property key, not null.
-     * @param value the property value, not null.
+     * @param value the property createValue, not null.
      * @return the bulder for chaining.
      */
     public SimplePropertySourceBuilder put(String key, String value){

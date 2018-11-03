@@ -37,9 +37,9 @@ public final class ComponentConfigurator<T> {
     private ComponentConfigurator(){}
 
     /**
-     * Configures the given instance with whatever is defined in the current child getChildren.
+     * Configures the given instance with whatever is defined in the current child getList.
      * @param instance the instance to be configured, not null.
-     * @param node the getChild containing any configuration child getChildren, not null.
+     * @param node the getField containing any configuration child getList, not null.
      */
     public static void configure(Object instance, Node node) {
         Map<String,String> params = extractParameters(node);
@@ -47,9 +47,9 @@ public final class ComponentConfigurator<T> {
     }
 
     /**
-     * Configures the given instance with whatever is defined in the current child getChildren.
+     * Configures the given instance with whatever is defined in the current child getList.
      * @param instance the instance to be configured, not null.
-     * @param params the getChild containing any configuration child getChildren, not null.
+     * @param params the getField containing any configuration child getList, not null.
      */
     public static void configure(Object instance, Map<String,String> params) {
         LOG.finest("Configuring instance: " + instance + " with " + params);
@@ -63,7 +63,7 @@ public final class ComponentConfigurator<T> {
      * String and basic lang types are supported.
      * @param instance the instance to configure.
      * @param key the parameter name, not null.
-     * @param value the value to be setCurrent, normally not null.
+     * @param value the createValue to be setCurrent, normally not null.
      */
     private static void applyParam(Object instance, String key, String value) {
         // apply parameters to instance using reflection ,only if found.
@@ -98,7 +98,7 @@ public final class ComponentConfigurator<T> {
      * String and basic lang types are supported.
      * @param instance the instance to configure.
      * @param key the parameter name, not null.
-     * @param value the value to be setCurrent, normally not null.
+     * @param value the createValue to be setCurrent, normally not null.
      * @param setter the setter method, not null.
      */
     private static boolean applyParam(Object instance, String key, String value, Method setter) {
@@ -121,7 +121,7 @@ public final class ComponentConfigurator<T> {
      * String and basic lang types are supported.
      * @param instance the instance to configure.
      * @param key the parameter name, not null.
-     * @param value the value to be setCurrent, normally not null.
+     * @param value the createValue to be setCurrent, normally not null.
      * @param field the field method, not null.
      */
     private static void applyParam(Object instance, String key, String value, Field field) {
@@ -189,7 +189,7 @@ public final class ComponentConfigurator<T> {
             }
         }catch(Exception e){
             LOG.log(Level.WARNING,
-                    "Failed to convert value '"+value+"' to required target type: " + targetType.getName(), e);
+                    "Failed to convert createValue '"+value+"' to required target type: " + targetType.getName(), e);
             return null;
         }
     }

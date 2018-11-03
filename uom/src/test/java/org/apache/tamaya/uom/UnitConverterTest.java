@@ -36,7 +36,7 @@ public class UnitConverterTest {
 
 		Unit<?> unit = converter.convert("m");
 
-		assertThat("Converter failed to convert input value " + unit, notNullValue());
+		assertThat("Converter failed to convert input createValue " + unit, notNullValue());
 		assertEquals(unit, Units.METRE);
 	}
 

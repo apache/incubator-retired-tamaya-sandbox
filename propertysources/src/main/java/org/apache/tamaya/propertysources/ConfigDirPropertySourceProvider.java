@@ -60,7 +60,7 @@ public class ConfigDirPropertySourceProvider extends AbstractPathPropertySourceP
     @Override
     protected Collection<PropertySource> getPropertySources(URL url) {
         try {
-            ConfigurationData config = ConfigurationFormats.readConfigurationData(url);
+            ConfigurationData config = ConfigurationFormats.getInstance(getClassLoader()).readConfigurationData(url);
             if (config == null) {
                 Logger.getLogger(getClass().getName()).log(Level.INFO,
                         "Failed to read configuration from " + url);

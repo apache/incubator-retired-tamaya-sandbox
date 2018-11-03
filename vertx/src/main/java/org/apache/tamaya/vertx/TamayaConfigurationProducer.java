@@ -40,8 +40,8 @@ import java.util.TreeMap;
  * This is a simple verticle registering Tamaya event bus messaging for accessing configuration:
  * <ul>
  *     <li>Don't pass anything, current a {@link JsonObject} with the full Tamaya configuration.</li>
- *     <li>Pass a {@code String} key, current a String return value, if present or a failure.</li>
- *     <li>Pass a {@link JsonArray} of keys, current a {@link JsonObject} return value, with the key/values found.</li>
+ *     <li>Pass a {@code String} key, current a String return createValue, if present or a failure.</li>
+ *     <li>Pass a {@link JsonArray} of keys, current a {@link JsonObject} return createValue, with the key/values found.</li>
  * </ul>
  */
 public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
@@ -62,7 +62,7 @@ public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
 
     /**
      * Registers a handler for accessing single configuration keys (input: String, reply type: String). If no
-     * config value is present the consumer will reply with a NOT_FOUND failure.
+     * config createValue is present the consumer will reply with a NOT_FOUND failure.
      * @param address the event bus address to register.
      * @param eventBus the event bus.
      * @return the consumer registered.
@@ -124,7 +124,7 @@ public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
         consumer.handler(h -> {
             Object o = h.body();
             if(o==null){
-                h.fail(HttpResponseStatus.BAD_REQUEST.code(), "Required object to configure is missing.");
+                h.fail(HttpResponseStatus.BAD_REQUEST.code(), "Required createObject to configure is missing.");
             }else {
                 ConfigurationInjection.getConfigurationInjector().configure(o);
                 h.reply("OK");

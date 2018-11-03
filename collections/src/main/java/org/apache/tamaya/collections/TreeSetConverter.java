@@ -18,8 +18,10 @@
  */
 package org.apache.tamaya.collections;
 
+import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -45,16 +47,16 @@ public class TreeSetConverter implements PropertyConverter<TreeSet> {
 
     @Override
     public TreeSet convert(String value) {
-        List<String> rawList = ItemTokenizer.split(value);
-        TreeSet<Object> result = new TreeSet<>();
-        for(String raw:rawList){
-            String[] items = ItemTokenizer.splitMapEntry(raw);
-            Object convValue = ItemTokenizer.convertValue(items[1]);
-            if(convValue!=null){
-                result.add(convValue);
-                continue;
-            }else{
-                LOG.log(Level.SEVERE, "Failed to convert collection value type for '"+raw+"'.");
+        TreeSet result = null;
+        ConversionContext context = ConversionContext.current();
+        if(context!=null) {
+            result = CollectionConverter.convertList(context, TreeSet::new);
+        }
+        else {
+            List<String> rawList = ItemTokenizer.split(value);
+            result = new TreeSet<>();
+            for (String raw : rawList) {
+                result.add(raw);
             }
         }
         return result;

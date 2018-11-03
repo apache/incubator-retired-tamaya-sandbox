@@ -93,7 +93,7 @@ public abstract class BaseRemotePropertySource implements PropertySource{
         Map<String,String> readProperties = new HashMap<>();
         if(data!=null){
             for(PropertyValue val:data.getData()) {
-                readProperties.putAll(val.asMap());
+                readProperties.putAll(val.toMap());
             }
             Map<String,String> newProperties = new HashMap<>();
             for(Map.Entry<String,String> en:readProperties.entrySet()){
@@ -138,7 +138,7 @@ public abstract class BaseRemotePropertySource implements PropertySource{
     }
 
     /**
-     * Returns the  default ordinal used, when no ordinal is setCurrent, or the ordinal was not parseable to an int value.
+     * Returns the  default ordinal used, when no ordinal is setCurrent, or the ordinal was not parseable to an int createValue.
      * @return the  default ordinal used, by default 0.
      */
     public int getDefaultOrdinal(){

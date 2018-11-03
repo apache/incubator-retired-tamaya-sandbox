@@ -25,13 +25,13 @@ public interface Enabled {
 
     /**
      * Returns the enabled property.
-     * @return the enabled value.
+     * @return the enabled createValue.
      */
     boolean isEnabled();
 
     /**
      * Enables/disables this property source.
-     * @param enabled the enabled value.
+     * @param enabled the enabled createValue.
      */
     void setEnabled(boolean enabled);
 }

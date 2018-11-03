@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -34,9 +34,9 @@ import java.util.logging.Logger;
  * Default configuration Model for a configuration parameter.
  */
 public class ParameterModel extends AbstractConfigModel {
-    /** Optional regular expression for validating the value. */
+    /** Optional regular expression for validating the createValue. */
     private final String regEx;
-    /** The target type into which the value must be convertible. */
+    /** The target type into which the createValue must be convertible. */
     private final Class<?> type;
 
     /**
@@ -72,7 +72,7 @@ public class ParameterModel extends AbstractConfigModel {
         }
         if (configValue != null && regEx != null) {
             if (!configValue.matches(regEx)) {
-                result.add(Validation.createError(this, "Config value not matching expression: " + regEx + ", was " +
+                result.add(Validation.createError(this, "Config createValue not matching expression: " + regEx + ", was " +
                         configValue));
             }
         }
@@ -107,7 +107,7 @@ public class ParameterModel extends AbstractConfigModel {
      * @param owner the owner name, not null.
      * @param name the fully qualified parameter name.
      * @param required the required flag.
-     * @param expression an optional regular expression to validate a value.
+     * @param expression an optional regular expression to validate a createValue.
      * @return the new ConfigModel instance.
      */
     public static ConfigModel of(String owner, String name, boolean required, String expression) {

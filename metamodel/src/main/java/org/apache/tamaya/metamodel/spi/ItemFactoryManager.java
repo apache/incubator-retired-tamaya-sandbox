@@ -79,7 +79,7 @@ public final class ItemFactoryManager {
             registerItemFactory(factory);
             return factory;
         }catch(Exception e){
-            LOG.severe("Failed to create factory for configured class: " + type.getName() +
+            LOG.severe("Failed to createObject factory for configured class: " + type.getName() +
                     " and type: " + id);
             return null;
         }
@@ -114,7 +114,7 @@ public final class ItemFactoryManager {
             try {
                 return instanceType.newInstance();
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, "Failed to create configured instance of type:" + instanceType, e);
+                LOG.log(Level.SEVERE, "Failed to createObject configured instance of type:" + instanceType, e);
                 return null;
             }
         }

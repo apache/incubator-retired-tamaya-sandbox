@@ -149,10 +149,10 @@ public class EtcdPropertySource extends BasePropertySource
             try{
                 props = accessor.get(key);
                 if(!props.containsKey("_ERROR")) {
-                    // No prefix mapping necessary here, since we only access/return the value...
+                    // No prefix mapping necessary here, since we only access/return the createValue...
                     metaData.putAll(props);
                     metaData.remove(key);
-                    return PropertyValue.create(key, props.get(key)).setMeta("source", getName()).setMeta(metaData);
+                    return PropertyValue.createValue(key, props.get(key)).setMeta("source", getName()).setMeta(metaData);
                 } else{
                     LOG.log(Level.FINE, "etcd error on " + accessor.getUrl() + ": " + props.get("_ERROR"));
                 }
@@ -188,7 +188,7 @@ public class EtcdPropertySource extends BasePropertySource
             if (!entry.getKey().startsWith("_")) {
                 PropertyValue val = values.get(entry.getKey());
                 if (val == null) {
-                    val = PropertyValue.create(entry.getKey(), "").setMeta("source", getName()).setMeta(metaData);
+                    val = PropertyValue.createValue(entry.getKey(), "").setMeta("source", getName()).setMeta(metaData);
                     values.put(entry.getKey(), val);
                 }
             }
@@ -209,13 +209,13 @@ public class EtcdPropertySource extends BasePropertySource
                 }
             }
         }
-        // Map to value map.
+        // Map to createValue map.
 //        Map<String, PropertyValue> values = new HashMap<>();
         for(Map.Entry<String,PropertyValue> en:values.entrySet()) {
             if(prefix.isEmpty()){
                 values.put(en.getKey(), en.getValue());
             }else{
-                values.put(prefix + en.getKey(), en.getValue().setKey(prefix + en.getKey()));
+                values.put(prefix + en.getKey(), en.getValue().mutable().setKey(prefix + en.getKey()));
             }
         }
         return values;

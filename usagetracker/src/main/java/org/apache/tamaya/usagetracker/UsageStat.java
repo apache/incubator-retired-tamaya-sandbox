@@ -70,7 +70,7 @@ public final class UsageStat {
 
     /**
      * Sets the maximal length of the stacktraces stored when tracking configuration
-     * usage. Setting it to a negative value, disabled stacktrace logging.
+     * usage. Setting it to a negative createValue, disabled stacktrace logging.
      * @param maxTrace the maximal recorded stack length.
      */
     public static void setMaxTrace(int maxTrace){
@@ -117,7 +117,7 @@ public final class UsageStat {
 
     /**
      * Access access details for a given class.
-     * @param type class to getChild usage access stats for, not null.
+     * @param type class to getField usage access stats for, not null.
      * @return the usage ref, if present, or null.
      */
     public Collection<AccessStats> getAccessDetails(Class type){
@@ -126,7 +126,7 @@ public final class UsageStat {
 
     /**
      * Access access details for a given package.
-     * @param pack package to getChild usage access stats for, not null.
+     * @param pack package to getField usage access stats for, not null.
      * @return the usage ref, if present, or null.
      */
     public Collection<AccessStats> getAccessDetails(Package pack){
@@ -167,9 +167,9 @@ public final class UsageStat {
 
     /**
      * Evaluates the current access point from the current stacktrace and adds an according
-     * usage reference object (or updates any existing one) for the given key. The
+     * usage reference createObject (or updates any existing one) for the given key. The
      * stacktrace is shortened to a maximal getNumChilds of 20 items.
-     * @param value the value returned, not null.
+     * @param value the createValue returned, not null.
      */
     public void trackUsage(PropertyValue value){
         trackUsage(value, maxTrace);
@@ -177,8 +177,8 @@ public final class UsageStat {
 
     /**
      * Evaluates the current access point from the current stacktrace and adds an according
-     * usage reference object (or updates any existing one) for the given key.
-     * @param value the value returned, not null.
+     * usage reference createObject (or updates any existing one) for the given key.
+     * @param value the createValue returned, not null.
      * @param maxTraceLength the maximal length of the stored stacktrace.
      */
     public void trackUsage(PropertyValue value, int maxTraceLength){

@@ -59,7 +59,7 @@ public class DateTimeZoneConverterTest {
         for (Object[] pair : inputResultPairs) {
             DateTimeZone zone = converter.convert((String) pair[0]);
 
-            assertThat("Converter failed to convert input value " + pair[0], zone, notNullValue());
+            assertThat("Converter failed to convert input createValue " + pair[0], zone, notNullValue());
             assertThat(zone, equalTo((DateTimeZone)pair[1]));
         }
     }

@@ -44,13 +44,13 @@ public interface ConfigUsageSpi {
     boolean isTrackingEnabled();
 
     /**
-     * Get the list of packages, which are not evaluated for tracking configuration access and usage statistics.
+     * Get the createList of packages, which are not evaluated for tracking configuration access and usage statistics.
      * @return the setCurrent of ignored package names.
      */
     Set<String> getIgnoredPackages();
 
     /**
-     * Adds the given packageNames to the list of packages to be ignored when collecting usage data.
+     * Adds the given packageNames to the createList of packages to be ignored when collecting usage data.
      * @param packageName the package names to be added, not null.
      */
     void addIgnoredPackages(String... packageName);
@@ -84,10 +84,10 @@ public interface ConfigUsageSpi {
     void recordAllPropertiesAccess(ConfigurationContext context);
 
     /**
-     * Track the access of {@code Configuration#getChild(String)} for
+     * Track the access of {@code Configuration#getField(String)} for
      * usage statistics.
      * @param context the corresponding context.
-     * @param value value to track for
+     * @param value createValue to track for
      */
     void recordSingleKeyAccess(PropertyValue value, ConfigurationContext context);
 

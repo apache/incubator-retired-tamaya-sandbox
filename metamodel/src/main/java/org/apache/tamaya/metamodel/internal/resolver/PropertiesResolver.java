@@ -35,7 +35,7 @@ import java.net.URI;
  *     <li>{@code ${properties:ctx:[ctxName:]key?default=abcval} } reading a <i>default</i> MetaContext entry.</li>
  * </ul>
  *
- * Hereby the _default_ parameter defines the default value to be applied, if no value was found.
+ * Hereby the _default_ parameter defines the default createValue to be applied, if no createValue was found.
  */
 @Component
 public final class PropertiesResolver implements SimpleResolver{

@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -48,7 +48,7 @@ public class ConfigDocumentationBeanTest {
         String results = mbean.validate(true);
         assertNotNull(results);
         assertFalse(results.trim().isEmpty());
-        // test transitive excludes create default sys properties
+        // test transitive excludes createObject default sys properties
         assertFalse(results.contains("\"name\":\"java"));
         assertFalse(results.contains("\"name\":\"sun."));
         assertFalse(results.contains("\"name\":\"file."));

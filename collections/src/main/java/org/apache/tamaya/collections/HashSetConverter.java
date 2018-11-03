@@ -18,6 +18,8 @@
  */
 package org.apache.tamaya.collections;
 
+import org.apache.tamaya.TypeLiteral;
+import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.HashSet;
@@ -45,15 +47,19 @@ public class HashSetConverter implements PropertyConverter<HashSet> {
 
     @Override
     public HashSet convert(String value) {
+        ConversionContext context = ConversionContext.current();
+        if(context!=null){
+            return CollectionConverter.convertList(context, HashSet::new);
+        }
         List<String> rawList = ItemTokenizer.split(value);
         HashSet<Object> result = new HashSet<>();
         for(String raw:rawList){
             String[] items = ItemTokenizer.splitMapEntry(raw);
-            Object convValue = ItemTokenizer.convertValue(items[1]);
+            Object convValue = ItemTokenizer.convertValue(items[1], TypeLiteral.of(String.class));
             if(convValue!=null){
                 result.add(convValue);
             }else{
-                LOG.log(Level.SEVERE, "Failed to convert collection value type for '"+raw+"'.");
+                LOG.log(Level.SEVERE, "Failed to convert collection createValue type for '"+raw+"'.");
             }
         }
         return result;

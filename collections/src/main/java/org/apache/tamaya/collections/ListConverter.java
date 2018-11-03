@@ -23,6 +23,7 @@ import org.apache.tamaya.spi.ConversionContext;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  *  PropertyConverter for gnerating a LIST representation of values.
@@ -32,12 +33,14 @@ public class ListConverter implements PropertyConverter<List> {
     @Override
     public List convert(String value) {
         ConversionContext context = ConversionContext.current();
-        String collectionType = null;
+        String collectionType = "ArrayList";
+        boolean readOnly = false;
         if(context!=null) {
-            collectionType = context.getConfiguration().getOrDefault('_' + context.getKey() + ".collection-type", "List");
+            collectionType = (String)context.getMeta().getOrDefault("collection-type", "ArrayList");
             if (collectionType.startsWith("java.util.")) {
                 collectionType = collectionType.substring("java.util.".length());
             }
+            readOnly = Boolean.parseBoolean((String)context.getMeta().getOrDefault("read-only", "false"));
         }
         List result = null;
         switch(collectionType){
@@ -50,12 +53,8 @@ public class ListConverter implements PropertyConverter<List> {
                 result = ArrayListConverter.getInstance().convert(value);
                 break;
         }
-        ConversionContext ctx = ConversionContext.current();
-        if(ctx != null){
-            if(ctx.getConfiguration().getOrDefault(
-                    '_' + ctx.getKey() + ".read-only", Boolean.class, true)){
-                return Collections.unmodifiableList(result);
-            }
+        if(readOnly){
+            return Collections.unmodifiableList(result);
         }
         return result;
     }

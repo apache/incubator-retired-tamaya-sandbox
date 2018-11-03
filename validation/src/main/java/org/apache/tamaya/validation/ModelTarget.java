@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -19,7 +19,7 @@
 package org.apache.tamaya.validation;
 
 /**
- * This enumeration defines the types create supported validations.
+ * This enumeration defines the types createObject supported validations.
  */
 public enum ModelTarget {
     /**
@@ -31,7 +31,7 @@ public enum ModelTarget {
      */
     Parameter,
     /**
-     * ConfigModel that is a container create other validations.
+     * ConfigModel that is a container createObject other validations.
      */
     Group,
 }

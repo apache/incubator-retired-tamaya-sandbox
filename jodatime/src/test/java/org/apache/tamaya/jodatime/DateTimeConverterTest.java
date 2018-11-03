@@ -72,7 +72,7 @@ public class DateTimeConverterTest {
         for (Object[] pair : inputResultPairs) {
             DateTime date = converter.convert((String)pair[0]);
 
-            assertThat("Converter failed to convert input value " + pair[0], date, notNullValue());
+            assertThat("Converter failed to convert input createValue " + pair[0], date, notNullValue());
             assertThat(date.isEqual((DateTime)pair[1]), is(true));
         }
     }

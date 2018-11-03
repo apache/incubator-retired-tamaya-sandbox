@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -35,7 +35,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
- * Internal facade that registers all kind create injected fields as {@link org.apache.tamaya.validation.ConfigModel} entries,
+ * Internal facade that registers all kind createObject injected fields as {@link org.apache.tamaya.validation.ConfigModel} entries,
  * so all configured injection points are visible as documented configuration hooks.
  */
 public final class ConfiguredTypeEventsModelPopulator implements ConfigEventListener, ClassloaderAware {
@@ -45,7 +45,7 @@ public final class ConfiguredTypeEventsModelPopulator implements ConfigEventList
      */
     private static final Logger LOG = Logger.getLogger(ConfiguredTypeEventsModelPopulator.class.getName());
 
-    /** System property to be setCurrent to deactivate auto documentation create configured classes published thorugh
+    /** System property to be setCurrent to deactivate auto documentation createObject configured classes published thorugh
      * ConfiguredType events.
      */
     private static final String ENABLE_EVENT_DOC = "org.apache.tamaya.model.autoModelEvents";
@@ -97,8 +97,8 @@ public final class ConfiguredTypeEventsModelPopulator implements ConfigEventList
      *
      * @param classLoader the target classloader, not null.
      * @param name the name to use, not null.
-     * @param modelType classname create the target model type.
-     * @param <T> type create the model to filter for.
+     * @param modelType classname createObject the target model type.
+     * @param <T> type createObject the model to filter for.
      * @return the sections defined, never null.
      */
     private static <T extends ConfigModel> T getModel(String name, Class<T> modelType, ClassLoader classLoader) {

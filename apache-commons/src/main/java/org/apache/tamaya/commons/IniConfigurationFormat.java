@@ -23,6 +23,7 @@ import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormat;
+import org.apache.tamaya.spi.ObjectValue;
 import org.apache.tamaya.spi.PropertyValue;
 
 import java.io.File;
@@ -51,7 +52,7 @@ public class IniConfigurationFormat implements ConfigurationFormat {
 
     @Override
     public ConfigurationData readConfiguration(String name, InputStream inputStream) {
-        PropertyValue data = PropertyValue.create();
+        PropertyValue data = PropertyValue.createObject();
         data.setMeta("name", name);
         try {
             HierarchicalINIConfiguration commonIniConfiguration;
@@ -63,12 +64,13 @@ public class IniConfigurationFormat implements ConfigurationFormat {
             }
             for (String section : commonIniConfiguration.getSections()) {
                 SubnodeConfiguration sectionConfig = commonIniConfiguration.getSection(section);
-                PropertyValue sectionNode = data.getOrCreateChild(section);
+                PropertyValue sectionNode = ((ObjectValue) data).getOrSetField(section,
+                        () -> PropertyValue.createObject(section));
                 Map<String, String> properties = new HashMap<>();
                 Iterator<String> keyIter = sectionConfig.getKeys();
                 while (keyIter.hasNext()) {
                     String key = keyIter.next();
-                    sectionNode.addProperty(key, sectionConfig.getString(key));
+                    ((ObjectValue) sectionNode).setField(key, sectionConfig.getString(key));
                 }
             }
         } catch (Exception e) {

@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Helper class that implements the tokenizing of the entries of a configuration value.
+ * Helper class that implements the tokenizing of the entries of a configuration createValue.
  */
 final class ItemTokenizer {
 
@@ -40,23 +40,23 @@ final class ItemTokenizer {
     private ItemTokenizer(){}
 
     /**
-     * Splits the given value using the given separator. Matcjhing is done by traversing the String value using
+     * Splits the given createValue using the given separator. Matcjhing is done by traversing the String createValue using
      * {@code indexOf} calls, one by one. The last unresolvable item (without any next separator token)
-     * is added at the end of the list.
-     * @param value the value, not null.
-     * @return the tokenized value as list, in order of occurrence.
+     * is added at the end of the createList.
+     * @param value the createValue, not null.
+     * @return the tokenized createValue as createList, in order of occurrence.
      */
     public static List<String> split(String value){
         ConversionContext ctx = ConversionContext.current();
         if(ctx != null){
-            return split(value, ctx.getConfiguration().getOrDefault(
-                    '_' + ctx.getKey() + ".item-separator", ","));
+            String itemSeparator = (String)ctx.getMeta().getOrDefault("item-separator", ",");
+            return split(value, itemSeparator);
         }
         return split(value, ",");
     }
 
     /**
-     * Splits the given value using the given separator. Matcjhing is done by traversing the String value using
+     * Splits the given createValue using the given separator. Matching is done by traversing the String value using
      * {@code indexOf} calls, one by one. The last unresolvable item (without any next separator token)
      * is added at the end of the list.
      * @param value the value, not null.
@@ -71,9 +71,6 @@ final class ItemTokenizer {
             if (value.charAt(end - 1) != '\\') {
                 result.add(value.substring(start, end));
                 start = end + separator.length();
-                end = value.indexOf(separator,start);
-            }else{
-                end = value.indexOf(separator,end + separator.length());
             }
             end = value.indexOf(separator,start);
         }
@@ -84,28 +81,28 @@ final class ItemTokenizer {
     }
 
     /**
-     * Splits the given String value as a map entry, splitting it into key and value part with the given separator.
-     * If the value cannot be split then {@code key = value = mapEntry} is used for further processing. key or value
+     * Splits the given String createValue as a map entry, splitting it into key and createValue part with the given separator.
+     * If the createValue cannot be split then {@code key = createValue = mapEntry} is used for further processing. key or createValue
      * parts are normally trimmed, unless they are enclosed with brackets {@code []}.
      * @param mapEntry the entry, not null.
-     * @return an array of length 2, with the trimmed and parsed key/value pair.
+     * @return an array of length 2, with the trimmed and parsed key/createValue pair.
      */
     public static String[] splitMapEntry(String mapEntry){
         ConversionContext ctx = ConversionContext.current();
         if(ctx != null){
-            return splitMapEntry(mapEntry, ctx.getConfiguration().getOrDefault(
-                    '_' + ctx.getKey() + ".map-entry-separator", "="));
+            String entrySeparator = (String)ctx.getMeta().getOrDefault("map-entry-separator", "=");
+            return splitMapEntry(mapEntry, entrySeparator);
         }
         return splitMapEntry(mapEntry, "=");
     }
 
     /**
-     * Splits the given String value as a map entry, splitting it into key and value part with the given separator.
-     * If the value cannot be split then {@code key = value = mapEntry} is used for further processing. key or value
+     * Splits the given String createValue as a map entry, splitting it into key and createValue part with the given separator.
+     * If the createValue cannot be split then {@code key = createValue = mapEntry} is used for further processing. key or createValue
      * parts are normally trimmed, unless they are enmcosed with brackets {@code []}.
      * @param mapEntry the entry, not null.
      * @param separator the separator, not null.
-     * @return an array of length 2, with the trimmed and parsed key/value pair.
+     * @return an array of length 2, with the trimmed and parsed key/createValue pair.
      */
     public static String[] splitMapEntry(final String mapEntry, final String separator) {
         int index = mapEntry.indexOf(separator);
@@ -131,35 +128,33 @@ final class ItemTokenizer {
     }
 
     /**
-     * Parses the given value into the required collection target type, defined by the context.
-     * @param value the raw String value.
-     * @return the parsed value, or null.
+     * Parses the given createValue into the required collection target type, defined by the context.
+     * @param value the raw String createValue.
+     * @return the parsed createValue, or null.
      */
-    public static Object convertValue(String value) {
+    public static <T> T convertValue(String value, TypeLiteral<T> targetType) {
         ConversionContext context = ConversionContext.current();
         if (context != null) {
-            String converterClass = context.getConfiguration().get('_' + context.getKey() + ".item-converters");
-            List<PropertyConverter<Object>> valueConverters = new ArrayList<>(1);
+            String converterClass = context.getMeta().get("item-converter");
+            List<PropertyConverter<T>> valueConverters = new ArrayList<>(1);
             if (converterClass != null) {
                 try {
-                    valueConverters.add((PropertyConverter<Object>) Class.forName(converterClass).newInstance());
+                    valueConverters.add((PropertyConverter<T>) Class.forName(converterClass).newInstance());
                 } catch (Exception e) {
                     LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
                 }
             }
-            if (TypeLiteral.getTypeParameters(context.getTargetType().getType()).length > 0) {
-                valueConverters.addAll(context.getConfigurationContext().getPropertyConverters(
-                        TypeLiteral.of(TypeLiteral.getTypeParameters(context.getTargetType().getType())[0])));
-            }
-
+            valueConverters.addAll(context.getConfigurationContext().getPropertyConverters(targetType));
             try{
-                ConversionContext.set(new ConversionContext.Builder(context.getConfiguration(), context.getKey(),
-                        TypeLiteral.of(context.getTargetType().getType())).build());
-                Object result = null;
                 if (valueConverters.isEmpty()) {
-                    return value;
+                    if(targetType.getRawType().equals(String.class)) {
+                        return (T)value;
+                    }
                 } else {
-                    for (PropertyConverter<Object> conv : valueConverters) {
+                    ConversionContext.set(new ConversionContext.Builder(context.getConfiguration(), context.getKey(),
+                            targetType).build());
+                    T result = null;
+                    for (PropertyConverter<T> conv : valueConverters) {
                         try {
                             result = conv.convert(value);
                             if (result != null) {
@@ -170,11 +165,11 @@ final class ItemTokenizer {
                         }
                     }
                 }
-                LOG.log(Level.SEVERE, "Failed to convert collection value type for '" + value + "'.");
             }finally {
                 ConversionContext.set(context);
             }
         }
+        LOG.log(Level.SEVERE, "Failed to convert collection createValue type for '" + value + "'.");
         return null;
     }
 

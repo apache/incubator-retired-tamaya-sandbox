@@ -46,7 +46,7 @@ public class MetainfConfigPropertySourceProvider extends AbstractPathPropertySou
     @Override
     protected Collection<PropertySource> getPropertySources(URL url) {
         try {
-            ConfigurationData config = ConfigurationFormats.readConfigurationData(url);
+            ConfigurationData config = ConfigurationFormats.getInstance(getClassLoader()).readConfigurationData(url);
             return Collections.singleton(new MappedConfigurationDataPropertySource(config));
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,

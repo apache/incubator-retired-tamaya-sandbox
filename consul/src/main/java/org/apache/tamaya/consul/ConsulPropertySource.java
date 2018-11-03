@@ -95,7 +95,7 @@ implements MutablePropertySource{
     }
 
     /**
-     * Returns the  default ordinal used, when no ordinal is setCurrent, or the ordinal was not parseable to an int value.
+     * Returns the  default ordinal used, when no ordinal is setCurrent, or the ordinal was not parseable to an int createValue.
      * @return the  default ordinal used, by default 1000.
      */
     public int getDefaultOrdinal(){
@@ -139,7 +139,7 @@ implements MutablePropertySource{
                 if(!valueOpt.isPresent()) {
                     LOG.log(Level.FINE, "key not found in consul: " + reqKey);
                 }else{
-                    // No prefix mapping necessary here, since we only access/return the value...
+                    // No prefix mapping necessary here, since we only access/return the createValue...
                     Value value = valueOpt.get();
                     Map<String,String> props = new HashMap<>();
                     props.put(reqKey+".createIndex", String.valueOf(value.getCreateIndex()));

@@ -61,8 +61,7 @@ public class CommonsConfigPropertySource implements PropertySource {
 
     @Override
     public PropertyValue get(String key) {
-        return PropertyValue.of(key, commonsConfig.getString(key),
-                getName());
+        return PropertyValue.createValue(key, commonsConfig.getString(key)).setMeta("source", getName());
     }
 
     @Override
@@ -71,13 +70,10 @@ public class CommonsConfigPropertySource implements PropertySource {
         Iterator<String> keyIter = commonsConfig.getKeys();
         while (keyIter.hasNext()) {
             String key = keyIter.next();
-            config.put(key, PropertyValue.of(key, commonsConfig.getString(key), getName()));
+            config.put(key, PropertyValue.createValue(key, commonsConfig.getString(key))
+            .setMeta("source", getName()));
         }
         return config;
     }
 
-    @Override
-    public boolean isScannable() {
-        return true;
-    }
 }

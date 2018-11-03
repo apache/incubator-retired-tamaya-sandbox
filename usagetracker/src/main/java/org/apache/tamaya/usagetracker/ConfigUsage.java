@@ -61,7 +61,7 @@ public final class ConfigUsage {
     }
 
     /**
-     * Adds the given packageNames to the list of packages to be ignored when collecting usage data.
+     * Adds the given packageNames to the createList of packages to be ignored when collecting usage data.
      * @param packageName the package names to be added, not null.
      */
     public static void addIgnoredPackages(String... packageName){

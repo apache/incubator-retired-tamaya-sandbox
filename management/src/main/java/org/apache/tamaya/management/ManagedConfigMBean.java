@@ -57,7 +57,7 @@ public interface ManagedConfigMBean {
      *     ConfigurationContext[gqContextClassName] {
      *         version = 2345-34334-2333-3434,
      *         config {
-     *             key = "value",
+     *             key = "createValue",
      *             key2 = "value2"
      *             ...
      *         },

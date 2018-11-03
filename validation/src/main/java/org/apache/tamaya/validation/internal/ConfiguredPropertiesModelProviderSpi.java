@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -35,14 +35,14 @@ import java.util.logging.Logger;
  * {@code classpath*:META-INF/configmodel.properties} in the following format:
  * <pre>
  * ###################################################################################
- * # Example create a configuration metamodel expressed via properties.
+ * # Example createObject a configuration metamodel expressed via properties.
  * ####################################################################################
  *
  * # Metamodel information
  * [model].provider=ConfigModel Extension
  *
  * ####################################################################################
- * # Description create Configuration Sections (minimal, can be extended by other modules).
+ * # Description createObject Configuration Sections (minimal, can be extended by other modules).
  * # By default its interpreted as a section !
  * ####################################################################################
  *

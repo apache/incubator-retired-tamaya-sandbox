@@ -114,10 +114,10 @@ public class URLPropertySourceFactory implements ItemFactory<PropertySource>{
             ConfigurationData data;
             try {
                 if (formats.length == 0) {
-                    data = ConfigurationFormats.readConfigurationData(resource);
+                    data = ConfigurationFormats.getInstance().readConfigurationData(resource);
                 } else {
-                    data = ConfigurationFormats.readConfigurationData(resource,
-                            ConfigurationFormats.getFormats(formats));
+                    data = ConfigurationFormats.getInstance().readConfigurationData(resource,
+                            ConfigurationFormats.getInstance().getFormats(formats));
                 }
                 return data;
             } catch (Exception e) {

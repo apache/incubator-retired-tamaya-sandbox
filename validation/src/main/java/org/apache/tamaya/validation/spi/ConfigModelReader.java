@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -28,9 +28,9 @@ import java.util.Set;
 import org.apache.tamaya.validation.ConfigModel;
 
 /**
- * Utility class to read metamodel information from properties. Hereby these properties can be part create a
+ * Utility class to read metamodel information from properties. Hereby these properties can be part createObject a
  * configuration (containing other entriees as well) or be dedicated model definition properties read
- * from any kind create source.
+ * from any kind createObject source.
  */
 public final class ConfigModelReader {
 
@@ -47,7 +47,7 @@ public final class ConfigModelReader {
      * Loads validations as configured in the given properties.
      * @param owner owner, not null.
      * @param props the properties to be read
-     * @return a collection create config validations.
+     * @return a collection createObject config validations.
      */
     public static Collection<ConfigModel> loadValidations(String owner, Map<String,String> props) {
         List<ConfigModel> result = new ArrayList<>();
@@ -95,7 +95,7 @@ public final class ConfigModelReader {
      * @param paramName the param name, not null.
      * @param description the optional description
      * @param type the param type, default is String.
-     * @param reqVal the required value, default is 'false'.
+     * @param reqVal the required createValue, default is 'false'.
      * @param regEx an optional regular expression to be checked for this param
      * @param validations the optional custom validations to be performed.
      * @return the new validation for this parameter.
@@ -120,7 +120,7 @@ public final class ConfigModelReader {
      * Creates a section validation.
      * @param sectionName the section's name, not null.
      * @param description the optional description
-     * @param reqVal the required value, default is 'false'.
+     * @param reqVal the required createValue, default is 'false'.
      * @param validations the optional custom validations to be performed.
      * @return the new validation for this section.
      */

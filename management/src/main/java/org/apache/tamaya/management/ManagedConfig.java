@@ -20,7 +20,6 @@ package org.apache.tamaya.management;
 
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
 
 import java.util.Map;
@@ -92,7 +91,7 @@ public class ManagedConfig implements ManagedConfigMBean {
 
     /**
      * Evaluate the current configuration. By default this class is temporarely setting the
-     * TCCL to the instance active on bean creation and then calls {@link ConfigurationProvider#getConfiguration()}.
+     * TCCL to the instance active on bean creation and then calls {@link Configuration#current()} .
      *
      * @return the configuration instance to be used.
      */

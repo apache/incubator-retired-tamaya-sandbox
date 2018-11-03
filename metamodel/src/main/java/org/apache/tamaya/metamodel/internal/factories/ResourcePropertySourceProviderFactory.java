@@ -61,10 +61,10 @@ public class ResourcePropertySourceProviderFactory implements ItemFactory<Proper
                 ConfigurationData data;
                 try {
                     if (formats.length == 0) {
-                        data = ConfigurationFormats.readConfigurationData(resource);
+                        data = ConfigurationFormats.getInstance().readConfigurationData(resource);
                     } else {
-                        data = ConfigurationFormats.readConfigurationData(resource,
-                                ConfigurationFormats.getFormats(formats));
+                        data = ConfigurationFormats.getInstance().readConfigurationData(resource,
+                                ConfigurationFormats.getInstance().getFormats(formats));
                     }
                     propertySources.add(new MappedConfigurationDataPropertySource(data));
                 } catch (Exception e) {

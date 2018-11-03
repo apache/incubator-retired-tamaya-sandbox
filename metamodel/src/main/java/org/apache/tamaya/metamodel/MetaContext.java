@@ -113,7 +113,7 @@ public final class MetaContext {
     /**
      * Access the given context property.
      * @param key the key, not null
-     * @return the value, or null.
+     * @return the createValue, or null.
      */
     public String getProperty(String key){
         return getProperty(key, null);
@@ -121,10 +121,10 @@ public final class MetaContext {
 
     /**
      * Access the given context property.
-     * @param key the key, not the default value.
-     * @param defaultValue the default value to be returned, if no value is defined, or the
-     *                     stored value's TTL has been reached.
-     * @return the value, default value or null.
+     * @param key the key, not the default createValue.
+     * @param defaultValue the default createValue to be returned, if no createValue is defined, or the
+     *                     stored createValue's TTL has been reached.
+     * @return the createValue, default createValue or null.
      */
     public String getProperty(String key, String defaultValue){
         Value value = this.properties.get(key);
@@ -141,8 +141,8 @@ public final class MetaContext {
     /**
      * Sets the given context property.
      * @param key the key, not null.
-     * @param value the value, not null.
-     * @return the previous value, or null.
+     * @param value the createValue, not null.
+     * @return the previous createValue, or null.
      */
     public String setProperty(String key, String value){
        return setProperty(key, value, 0, TimeUnit.MILLISECONDS);
@@ -151,10 +151,10 @@ public final class MetaContext {
     /**
      * Sets the given context property.
      * @param key the key, not null.
-     * @param value the value, not null.
+     * @param value the createValue, not null.
      * @param ttl the time to live. Zero or less than zero means, no timeout.
      * @param unit the target time unit.
-     * @return the previous value, or null.
+     * @return the previous createValue, or null.
      */
     public String setProperty(String key, String value, int ttl, TimeUnit unit){
         Value previous = this.properties.put(key, new Value(key, value, ttl));
@@ -165,18 +165,18 @@ public final class MetaContext {
     }
 
     /**
-     * Sets the given property unless there is already a value defined.
+     * Sets the given property unless there is already a createValue defined.
      * @param key the key, not null.
-     * @param value the value, not null.
+     * @param value the createValue, not null.
      */
     public void setPropertyIfAbsent(String key, String value){
         setPropertyIfAbsent(key, value, 0, TimeUnit.MILLISECONDS);
     }
 
     /**
-     * Sets the given property unless there is already a value defined.
+     * Sets the given property unless there is already a createValue defined.
      * @param key the key, not null.
-     * @param value the value, not null.
+     * @param value the createValue, not null.
      * @param ttl the time to live. Zero or less than zero means, no timeout.
      * @param unit the target time unit.
      */
@@ -277,12 +277,12 @@ public final class MetaContext {
             }
         }
 
-        /** Method to check if a value is still valid. */
+        /** Method to check if a createValue is still valid. */
         boolean isValid(){
             return this.validUntil<=0 || this.validUntil>=System.currentTimeMillis();
         }
 
-        /** Method that invalidates a value. */
+        /** Method that invalidates a createValue. */
         void invalidate(){
             this.validUntil = 0;
         }

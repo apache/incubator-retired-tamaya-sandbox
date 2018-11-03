@@ -65,7 +65,7 @@ public class ConfigManagementSupport {
     /**
      * Registers the {@link ManagedConfigMBean} mbean for accessing config documentation into the local platform
      * mbean server.
-     * @param context An optional context parameter to be added to the object name.
+     * @param context An optional context parameter to be added to the createObject name.
      * @return the registered ObjectName, or null, if no bean could be created.
      */
     public static ObjectName registerMBean(String context) {
@@ -104,7 +104,7 @@ public class ConfigManagementSupport {
     /**
      * Unegisters the {@link ManagedConfigMBean} mbean for accessing config documentation into the local
      * platform mbean server.
-     * @param context An optional context parameter to be added to the object name.
+     * @param context An optional context parameter to be added to the createObject name.
      * @return the unregistered ObjectName, or null, if no bean could be created.
      */
     public static ObjectName unregisterMBean(String context) {

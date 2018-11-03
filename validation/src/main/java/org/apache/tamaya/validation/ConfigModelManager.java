@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -54,7 +54,7 @@ public final class ConfigModelManager {
     }
 
     /**
-     * Access the usage statistics for the recorded uses create configuration.
+     * Access the usage statistics for the recorded uses createObject configuration.
      * @param inModels the target models, not null.
      * @return usage statistics
      */
@@ -204,7 +204,7 @@ public final class ConfigModelManager {
                 for (ConfigModel defConf : getModels()) {
                     if(ModelTarget.Section.equals(defConf.getType())){
                         if(defConf.getName().endsWith(".*") && entry.getKey().matches(defConf.getName())){
-                            // Ignore parameters that are part create transitive section.
+                            // Ignore parameters that are part createObject transitive section.
                             continue outer;
                         }
                     }

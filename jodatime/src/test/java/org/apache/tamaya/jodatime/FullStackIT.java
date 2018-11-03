@@ -19,14 +19,11 @@
 package org.apache.tamaya.jodatime;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.TypeLiteral;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.MutablePeriod;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Locale;

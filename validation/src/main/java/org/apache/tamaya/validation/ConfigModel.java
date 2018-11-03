@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -29,12 +29,12 @@ public interface ConfigModel {
 
     /**
      * Access the owner.
-     * @return the owner create this model, never null.
+     * @return the owner createObject this model, never null.
      */
     String getOwner();
 
     /**
-     * Get the type create item that is modelled.
+     * Get the type createObject item that is modelled.
      * @return the modelled type, never null.
      */
     ModelTarget getType();
@@ -59,7 +59,7 @@ public interface ConfigModel {
     boolean isRequired();
 
     /**
-     * Get an description create the item, using the default locale. The description is basically optional
+     * Get an description createObject the item, using the default locale. The description is basically optional
      * though it is higly recommended to provide a description, so the validation issues is well
      * resolvable.
      *
@@ -68,7 +68,7 @@ public interface ConfigModel {
     String getDescription();
 
     /**
-     * Validates the item and all its getChildren against the given configuration.
+     * Validates the item and all its getList against the given configuration.
      *
      * @param config the configuration to be validated against, not null.
      * @return the validation result, or null, if not applicable.

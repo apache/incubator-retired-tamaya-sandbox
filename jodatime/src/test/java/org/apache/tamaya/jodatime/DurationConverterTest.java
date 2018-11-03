@@ -61,7 +61,7 @@ public class DurationConverterTest {
         for (Object[] pair : inputResultPairs) {
             Duration duration = converter.convert((String) pair[0]);
 
-            assertThat("Converter failed to convert input value " + pair[0], duration, notNullValue());
+            assertThat("Converter failed to convert input createValue " + pair[0], duration, notNullValue());
             assertThat(duration, equalTo((Duration) pair[1]));
         }
     }

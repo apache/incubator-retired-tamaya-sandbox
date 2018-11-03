@@ -18,10 +18,12 @@
  */
 package org.apache.tamaya.collections;
 
+import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.Collections;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  *  PropertyConverter for gnerating a LIST representation of values.
@@ -30,6 +32,6 @@ public class SortedSetConverter implements PropertyConverter<SortedSet> {
 
     @Override
     public SortedSet convert(String value) {
-        return Collections.unmodifiableSortedSet(TreeSetConverter.getInstance().convert(value));
+        return TreeSetConverter.getInstance().convert(value);
     }
 }

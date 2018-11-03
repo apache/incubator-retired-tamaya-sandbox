@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Simple filter that never changes a key/value pair returned, regardless if a value
+ * Simple filter that never changes a key/createValue pair returned, regardless if a createValue
  * is changing underneath, hereby different values for single and multi-property access
  * are considered.
  */
@@ -78,7 +78,7 @@ public class CachedFilter implements PropertyFilter{
     }
 
     /**
-     * Method checks for a cached value. if present and valid the cached value is returned.
+     * Method checks for a cached createValue. if present and valid the cached createValue is returned.
      * If not valid the cached entry is removed/updated.
      * @param value
      * @return

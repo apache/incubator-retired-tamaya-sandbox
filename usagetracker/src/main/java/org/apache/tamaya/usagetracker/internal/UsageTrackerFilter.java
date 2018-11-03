@@ -29,7 +29,7 @@ import java.util.logging.Filter;
 
 /**
  * Configuration filter to be applied at the end of the filter chain. This filter
- * actually does not change the current filter value, but use the filter process
+ * actually does not change the current filter createValue, but use the filter process
  * to track configuration usage.
  */
 @Priority(Integer.MAX_VALUE)

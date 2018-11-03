@@ -57,7 +57,7 @@ public class CollectionsTypedReadOnlyTests {
         items.add("test");
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testLinkedListList_1(){
         Configuration config = Configuration.current();
         List<String> items = config.get("typed.linkedlist", new TypeLiteral<List<String>>(){});
@@ -67,7 +67,7 @@ public class CollectionsTypedReadOnlyTests {
         items.add("test");
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testLinkedListList_2(){
         Configuration config = Configuration.current();
         List<String> items = (List<String>) config.get("typed.linkedlist", List.class);
@@ -78,7 +78,7 @@ public class CollectionsTypedReadOnlyTests {
     }
 
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testHashSet_1(){
         Configuration config = Configuration.current();
         Set<String> items = config.get("typed.hashset", new TypeLiteral<Set<String>>(){});
@@ -87,7 +87,7 @@ public class CollectionsTypedReadOnlyTests {
         assertEquals(10, items.size());
         items.add("test");
     }
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testHashSet_2(){
         Configuration config = Configuration.current();
         Set<String> items = (Set<String>) config.get("typed.hashset", Set.class);
@@ -97,7 +97,7 @@ public class CollectionsTypedReadOnlyTests {
         items.add("test");
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testTreeSet_1(){
         Configuration config = Configuration.current();
         Set<String> items = config.get("typed.treeset", new TypeLiteral<Set<String>>(){});
@@ -106,7 +106,7 @@ public class CollectionsTypedReadOnlyTests {
         assertEquals(10, items.size());
         items.add("test");
     }
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testTreeSet_2(){
         Configuration config = Configuration.current();
         Set<String> items = items = (Set<String>) config.get("typed.treeset", Set.class);
@@ -144,7 +144,7 @@ public class CollectionsTypedReadOnlyTests {
     }
 
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testTreeMap_1(){
         Configuration config = Configuration.current();
         Map<String,String> items = config.get("typed.treemap", new TypeLiteral<Map<String,String>>(){});
@@ -157,7 +157,7 @@ public class CollectionsTypedReadOnlyTests {
         assertEquals(" ", items.get("4"));
         items.put("g","hjhhj");
     }
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testTreeMap_2(){
         Configuration config = Configuration.current();
         Map<String,String> items = (Map<String,String>) config.get("typed.treemap", Map.class);

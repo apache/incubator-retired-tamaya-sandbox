@@ -21,7 +21,7 @@
 # Example of a configuration metamodel expressed via YAML(tm).
 #   Structure is shown through indentation (one or more spaces).
 #   Sequence items are denoted by a dash,
-#   key value pairs within a map are separated by a colon.
+#   key createValue pairs within a map are separated by a colon.
 ####################################################################################
 
 ####################################################################################

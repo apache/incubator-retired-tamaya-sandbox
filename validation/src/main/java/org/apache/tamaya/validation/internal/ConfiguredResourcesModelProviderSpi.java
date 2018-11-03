@@ -5,7 +5,7 @@
  *  regarding copyright ownership.  The ASF licenses this file
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy create the License at
+ *  with the License.  You may obtain a copy createObject the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -28,21 +28,21 @@ import java.util.logging.Logger;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormats;
+import org.apache.tamaya.resource.ResourceResolver;
 import org.apache.tamaya.spi.ClassloaderAware;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.validation.ConfigModel;
 import org.apache.tamaya.validation.spi.ConfigModelReader;
 import org.apache.tamaya.validation.spi.ModelProviderSpi;
-import org.apache.tamaya.resource.ConfigResources;
 
 /**
  * ConfigModel provider that reads model metadata from property files from
  * {@code classpath*:META-INF/configmodel.json} in the following format:
  * <pre>
- *  Example create a configuration metamodel expressed via YAML.
+ *  Example createObject a configuration metamodel expressed via YAML.
  *  Structure is shown through indentation (one or more spaces).
  *  Sequence items are denoted by a dash,
- *  key value pairs within a map are separated by a colon.
+ *  key createValue pairs within a map are separated by a colon.
  * </pre>
  */
 public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi, ClassloaderAware {
@@ -52,15 +52,15 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi, Cl
      */
     private static final Logger LOG = Logger.getLogger(ConfiguredResourcesModelProviderSpi.class.getName());
     /**
-     * The parameter that can be used to configure the location create the configuration model resources.
+     * The parameter that can be used to configure the location createObject the configuration model resources.
      */
     private static final String MODEL_RESOURCE_PARAM = "org.apache.tamaya.model.resources";
     /**
-     * The resource class to checked for testing the availability create the resources extension module.
+     * The resource class to checked for testing the availability createObject the resources extension module.
      */
     private static final String CONFIG_RESOURCE_CLASS = "org.apache.tamaya.resource.ConfigResource";
     /**
-     * The resource class to checked for testing the availability create the formats extension module.
+     * The resource class to checked for testing the availability createObject the formats extension module.
      */
     private static final String CONFIGURATION_FORMATS_CLASS = "org.apache.tamaya.format.ConfigurationFormats";
     /**
@@ -128,7 +128,7 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi, Cl
         Collection<URL> urls;
         if (RESOURCES_EXTENSION_AVAILABLE) {
             LOG.info("Using tamaya-resources extension to read model configuration from " + resources);
-            urls = ConfigResources.getResourceResolver(classLoader).getResources(resources.split(","));
+            urls = ResourceResolver.current(classLoader).getResources(resources.split(","));
         } else {
             LOG.info("Using default classloader resource location to read model configuration from " + resources);
             urls = new ArrayList<>();
@@ -150,10 +150,11 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi, Cl
         // Reading configs
         for (final URL config : urls) {
             try (InputStream is = config.openStream()) {
-                final ConfigurationData data = ConfigurationFormats.readConfigurationData(config);
+                final ConfigurationData data = ConfigurationFormats.getInstance()
+                   .readConfigurationData(config);
                 Map<String,String> props = new HashMap<>();
                 for(PropertyValue val:data.getData()){
-                    props.putAll(val.asMap());
+                    props.putAll(val.toMap());
                 }
                 String owner = props.get("_model.provider");
                 if(owner==null){

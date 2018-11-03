@@ -100,7 +100,7 @@ public class ManagedConfigTest {
     public void testRegisterMBean() throws Exception {
         ObjectName on = ConfigManagementSupport.registerMBean();
         ConfigManagementSupport.registerMBean();
-        // Lookup object name
+        // Lookup createObject name
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         assertTrue(mbs.getMBeanInfo(on)!=null);
     }
@@ -110,7 +110,7 @@ public class ManagedConfigTest {
         ObjectName on1 = ConfigManagementSupport.registerMBean("SubContext1");
         ConfigManagementSupport.registerMBean("SubContext1");
         ObjectName on2 = ConfigManagementSupport.registerMBean("SubContext2");
-        // Lookup object name
+        // Lookup createObject name
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         assertTrue(mbs.getMBeanInfo(on1)!=null);
         assertTrue(mbs.getMBeanInfo(on2)!=null);

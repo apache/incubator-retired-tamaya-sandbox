@@ -38,9 +38,9 @@ public class CollectionAdvancedTests {
     /**
      * Tests if a custom separator works, Config is
      * <pre>
-     *  sep-list=a,b,c|d,e,f|g,h,i
-     *  _sep-list.collection-type=List
-     *  _sep-list.collection-separator=|
+     *  sep-createList=a,b,c|d,e,f|g,h,i
+     *  _sep-createList.collection-type=List
+     *  _sep-createList.collection-separator=|
      * </pre>
      */
     @Test
@@ -58,8 +58,8 @@ public class CollectionAdvancedTests {
     /**
      * Test typed content.
      * <pre>
-     *  currency-list=CHF,USD,YEN
-     *  _currency-list.collection-type=List
+     *  currency-createList=CHF,USD,YEN
+     *  _currency-createList.collection-type=List
      * </pre>
      */
     @Test
@@ -77,9 +77,9 @@ public class CollectionAdvancedTests {
     /**
      * Tests if a custom parser works, Config is
      * <pre>
-     *  parser-list=a,b,c
-     *  _parser-list.collection-type=List
-     *  _parser-list.item-converter=org.apache.tamaya.collections.MyUpperCaseConverter
+     *  parser-createList=a,b,c
+     *  _parser-createList.collection-type=List
+     *  _parser-createList.item-converter=org.apache.tamaya.collections.MyUpperCaseConverter
      * </pre>
      */
     @Test

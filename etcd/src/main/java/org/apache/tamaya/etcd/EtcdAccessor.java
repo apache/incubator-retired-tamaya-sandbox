@@ -139,17 +139,17 @@ public class EtcdAccessor {
     }
 
     /**
-     * Ask etcd for a single key, value pair. Hereby the response returned from
+     * Ask etcd for a single key, createValue pair. Hereby the response returned from
      * etcd:
      * 
      * <pre>
      * {
      * "action": "current",
-     * "getChild": {
+     * "getField": {
      * "createdIndex": 2,
      * "key": "/message",
      * "modifiedIndex": 2,
-     * "value": "Hello world"
+     * "createValue": "Hello world"
      * }
      * }
      * </pre>
@@ -157,7 +157,7 @@ public class EtcdAccessor {
      * is mapped to:
      * 
      * <pre>
-     *     key=value
+     *     key=createValue
      *     _key.source=[etcd]http://127.0.0.1:4001
      *     _key.createdIndex=12
      *     _key.modifiedIndex=34
@@ -180,9 +180,9 @@ public class EtcdAccessor {
                     final JsonReader reader = readerFactory
                             .createReader(new StringReader(EntityUtils.toString(entity)));
                     final JsonObject o = reader.readObject();
-                    final JsonObject node = o.getJsonObject("getChild");
-                    if (node.containsKey("value")) {
-                        result.put(key, node.getString("value"));
+                    final JsonObject node = o.getJsonObject("getField");
+                    if (node.containsKey("createValue")) {
+                        result.put(key, node.getString("createValue"));
                         result.put("_" + key + ".source", "[etcd]" + serverURL);
                     }
                     if (node.containsKey("createdIndex")) {
@@ -213,7 +213,7 @@ public class EtcdAccessor {
      * Creates/updates an entry in etcd without any ttl setCurrent.
      *
      * @param key   the property key, not null
-     * @param value the value to be setCurrent
+     * @param value the createValue to be setCurrent
      * @return the result map as described above.
      * @see #set(String, String, Integer)
      */
@@ -227,16 +227,16 @@ public class EtcdAccessor {
      * <pre>
      *     {
      * "action": "setCurrent",
-     * "getChild": {
+     * "getField": {
      * "createdIndex": 3,
      * "key": "/message",
      * "modifiedIndex": 3,
-     * "value": "Hello etcd"
+     * "createValue": "Hello etcd"
      * },
      * "prevNode": {
      * "createdIndex": 2,
      * "key": "/message",
-     * "value": "Hello world",
+     * "createValue": "Hello world",
      * "modifiedIndex": 2
      * }
      * }
@@ -245,7 +245,7 @@ public class EtcdAccessor {
      * is mapped to:
      * 
      * <pre>
-     *     key=value
+     *     key=createValue
      *     _key.source=[etcd]http://127.0.0.1:4001
      *     _key.createdIndex=12
      *     _key.modifiedIndex=34
@@ -259,7 +259,7 @@ public class EtcdAccessor {
      * </pre>
      *
      * @param key        the property key, not null
-     * @param value      the value to be setCurrent
+     * @param value      the createValue to be setCurrent
      * @param ttlSeconds the ttl in seconds (optional)
      * @return the result map as described above.
      */
@@ -270,7 +270,7 @@ public class EtcdAccessor {
             put.setConfig(RequestConfig.copy(RequestConfig.DEFAULT).setSocketTimeout(socketTimeout)
                     .setConnectionRequestTimeout(timeout).setConnectTimeout(connectTimeout).build());
             final List<NameValuePair> nvps = new ArrayList<>();
-            nvps.add(new BasicNameValuePair("value", value));
+            nvps.add(new BasicNameValuePair("createValue", value));
             if (ttlSeconds != null) {
                 nvps.add(new BasicNameValuePair("ttl", ttlSeconds.toString()));
             }
@@ -282,7 +282,7 @@ public class EtcdAccessor {
                     final JsonReader reader = readerFactory
                             .createReader(new StringReader(EntityUtils.toString(entity)));
                     final JsonObject o = reader.readObject();
-                    final JsonObject node = o.getJsonObject("getChild");
+                    final JsonObject node = o.getJsonObject("getField");
                     if (node.containsKey("createdIndex")) {
                         result.put("_" + key + ".createdIndex", String.valueOf(node.getInt("createdIndex")));
                     }
@@ -295,7 +295,7 @@ public class EtcdAccessor {
                     if (node.containsKey("ttl")) {
                         result.put("_" + key + ".ttl", String.valueOf(node.getInt("ttl")));
                     }
-                    result.put(key, node.getString("value"));
+                    result.put(key, node.getString("createValue"));
                     result.put("_" + key + ".source", "[etcd]" + serverURL);
                     parsePrevNode(key, result, node);
                     EntityUtils.consume(entity);
@@ -322,7 +322,7 @@ public class EtcdAccessor {
      *     _key.prevNode.modifiedIndex=34
      *     _key.prevNode.ttl=300
      *     _key.prevNode.expiration=...
-     *     _key.prevNode.value=...
+     *     _key.prevNode.createValue=...
      * </pre>
      *
      * @param key the key to be deleted.
@@ -340,7 +340,7 @@ public class EtcdAccessor {
                     final JsonReader reader = readerFactory
                             .createReader(new StringReader(EntityUtils.toString(entity)));
                     final JsonObject o = reader.readObject();
-                    final JsonObject node = o.getJsonObject("getChild");
+                    final JsonObject node = o.getJsonObject("getField");
                     if (node.containsKey("createdIndex")) {
                         result.put("_" + key + ".createdIndex", String.valueOf(node.getInt("createdIndex")));
                     }
@@ -382,7 +382,7 @@ public class EtcdAccessor {
             if (prevNode.containsKey("ttl")) {
                 result.put("_" + key + ".prevNode.ttl", String.valueOf(prevNode.getInt("ttl")));
             }
-            result.put("_" + key + ".prevNode.value", prevNode.getString("value"));
+            result.put("_" + key + ".prevNode.createValue", prevNode.getString("createValue"));
         }
     }
 
@@ -403,10 +403,10 @@ public class EtcdAccessor {
      * <pre>
      * {
      * "action": "current",
-     * "getChild": {
+     * "getField": {
      * "key": "/",
      * "dir": true,
-     * "getChildren": [
+     * "getList": [
      * {
      * "key": "/foo_dir",
      * "dir": true,
@@ -415,7 +415,7 @@ public class EtcdAccessor {
      * },
      * {
      * "key": "/foo",
-     * "value": "two",
+     * "createValue": "two",
      * "modifiedIndex": 1,
      * "createdIndex": 1
      * }
@@ -460,7 +460,7 @@ public class EtcdAccessor {
                     final HttpEntity entity = response.getEntity();
                     final JsonReader reader = readerFactory.createReader(new StringReader(EntityUtils.toString(entity)));
                     final JsonObject o = reader.readObject();
-                    final JsonObject node = o.getJsonObject("getChild");
+                    final JsonObject node = o.getJsonObject("getField");
                     if (node != null) {
                         addNodes(result, node);
                     }
@@ -479,12 +479,12 @@ public class EtcdAccessor {
      * Recursively read out all key/values from this etcd JSON array.
      *
      * @param result map with key, values and metadata.
-     * @param node   the getChild to parse.
+     * @param node   the getField to parse.
      */
     private void addNodes(Map<String, String> result, JsonObject node) {
         if (!node.containsKey("dir") || "false".equals(node.get("dir").toString())) {
             final String key = node.getString("key").substring(1);
-            result.put(key, node.getString("value"));
+            result.put(key, node.getString("createValue"));
             if (node.containsKey("createdIndex")) {
                 result.put("_" + key + ".createdIndex", String.valueOf(node.getInt("createdIndex")));
             }
@@ -499,7 +499,7 @@ public class EtcdAccessor {
             }
             result.put("_" + key + ".source", "[etcd]" + serverURL);
         } else {
-            final JsonArray nodes = node.getJsonArray("getChildren");
+            final JsonArray nodes = node.getJsonArray("getList");
             if (nodes != null) {
                 for (int i = 0; i < nodes.size(); i++) {
                     addNodes(result, nodes.getJsonObject(i));

@@ -99,7 +99,7 @@ public class EtcdAccessorTest {
         assertEquals(value, accessor.get("testDelete").get("testDelete"));
         assertNotNull(result.get("_testDelete.createdIndex"));
         result = accessor.delete("testDelete");
-        assertEquals(value, result.get("_testDelete.prevNode.value"));
+        assertEquals(value, result.get("_testDelete.prevNode.createValue"));
         assertNull(accessor.get("testDelete").get("testDelete"));
     }
 

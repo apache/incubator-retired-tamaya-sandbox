@@ -65,7 +65,7 @@ public class AdaptiveCombinationPolicy implements PropertyValueCombinationPolicy
                 if(currentValue==null){
                     return newValue;
                 }
-                return PropertyValue.create().addChild(newValue).addChild(currentValue);
+                return newValue.toListValue().add(currentValue);
             }else{
                 if(currentValue!=null){
                     return currentValue;

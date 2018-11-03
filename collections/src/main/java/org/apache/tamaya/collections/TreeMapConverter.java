@@ -18,6 +18,8 @@
  */
 package org.apache.tamaya.collections;
 
+import org.apache.tamaya.TypeLiteral;
+import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.List;
@@ -45,15 +47,19 @@ public class TreeMapConverter implements PropertyConverter<TreeMap> {
 
     @Override
     public TreeMap convert(String value) {
+        ConversionContext context = ConversionContext.current();
+        if(context!=null){
+            return CollectionConverter.convertMap(context, TreeMap::new);
+        }
         List<String> rawList = ItemTokenizer.split(value);
         TreeMap result = new TreeMap();
         for(String raw:rawList){
             String[] items = ItemTokenizer.splitMapEntry(raw);
-            Object convValue = ItemTokenizer.convertValue(items[1]);
+            Object convValue = ItemTokenizer.convertValue(items[1], TypeLiteral.of(String.class));
             if(convValue!=null){
                 result.put(items[0], convValue);
             }else{
-                LOG.log(Level.SEVERE, "Failed to convert collection value type for '"+raw+"'.");
+                LOG.log(Level.SEVERE, "Failed to convert collection createValue type for '"+raw+"'.");
             }
         }
         return result;

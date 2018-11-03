@@ -18,6 +18,8 @@
  */
 package org.apache.tamaya.collections;
 
+import org.apache.tamaya.TypeLiteral;
+import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.LinkedList;
@@ -44,16 +46,20 @@ public class LinkedListConverter implements PropertyConverter<LinkedList> {
 
     @Override
     public LinkedList convert(String value) {
+        ConversionContext context = ConversionContext.current();
+        if(context!=null){
+            return CollectionConverter.convertList(context, LinkedList::new);
+        }
         List<String> rawList = ItemTokenizer.split(value);
         LinkedList<Object> result = new LinkedList<>();
         for(String raw:rawList){
             String[] items = ItemTokenizer.splitMapEntry(raw);
-            Object convValue = ItemTokenizer.convertValue(items[1]);
+            Object convValue = ItemTokenizer.convertValue(items[1], TypeLiteral.of(String.class));
             if(convValue!=null){
                 result.add(convValue);
                 continue;
             }else{
-                LOG.log(Level.SEVERE, "Failed to convert collection value type for '"+raw+"'.");
+                LOG.log(Level.SEVERE, "Failed to convert collection createValue type for '"+raw+"'.");
             }
         }
         return result;

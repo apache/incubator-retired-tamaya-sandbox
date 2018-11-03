@@ -65,7 +65,7 @@ public class PeriodConverterTest {
         for (Object[] pair : inputResultPairs) {
             Period period = converter.convert((String) pair[0]);
 
-            assertThat("Converter failed to convert input value " + pair[0], period, notNullValue());
+            assertThat("Converter failed to convert input createValue " + pair[0], period, notNullValue());
             assertThat(period, equalTo((Period)pair[1]));
         }
     }

@@ -40,7 +40,7 @@ public class JavaResolverTest {
 
     @Test
     public void evaluateDirect() throws Exception {
-        assertEquals("value", r.evaluate("\"value\""));
+        assertEquals("createValue", r.evaluate("\"createValue\""));
         assertEquals("1.1", r.evaluate("1.1"));
         assertEquals("1", r.evaluate("1"));
     }

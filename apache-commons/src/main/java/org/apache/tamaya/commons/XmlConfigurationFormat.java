@@ -22,6 +22,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.format.ConfigurationFormat;
+import org.apache.tamaya.spi.ObjectValue;
 import org.apache.tamaya.spi.PropertyValue;
 
 import java.io.File;
@@ -48,7 +49,7 @@ public class XmlConfigurationFormat implements ConfigurationFormat {
 
     @Override
     public ConfigurationData readConfiguration(String name, InputStream inputStream) {
-        PropertyValue data = PropertyValue.create();
+        PropertyValue data = PropertyValue.createObject();
         data.setMeta("name", name);
         data.setMeta("format.class", getClass().getName());
         try {
@@ -62,7 +63,7 @@ public class XmlConfigurationFormat implements ConfigurationFormat {
             Iterator<String> keyIter = commonXmlConfiguration.getKeys();
             while (keyIter.hasNext()) {
                 String key = keyIter.next();
-                data.addProperty(key, commonXmlConfiguration.getString(key));
+                ((ObjectValue) data).setField(key, commonXmlConfiguration.getString(key));
             }
         } catch (Exception e) {
             throw new ConfigException("Failed to parse xml-file format from " + name, e);

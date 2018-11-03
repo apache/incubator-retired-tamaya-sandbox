@@ -113,7 +113,7 @@ public class DefaultConfigUsage implements ConfigUsageSpi {
 
     @Override
     public void recordAllPropertiesAccess(ConfigurationContext context){
-        recordSingleKeyAccess(PropertyValue.create("<<all>>","<not stored>"), context);
+        recordSingleKeyAccess(PropertyValue.createValue("<<all>>","<not stored>"), context);
     }
 
     @Override
