@@ -188,7 +188,7 @@ public final class UsageStat {
             List<String> trace = new ArrayList<>();
             stack:
             for (StackTraceElement ste : e.getStackTrace()) {
-                for (String ignored : ConfigUsage.getIgnoredPackages()) {
+                for (String ignored : ConfigUsage.getInstance().getIgnoredPackages()) {
                     if (ste.getClassName().startsWith(ignored)) {
                         continue stack;
                     }

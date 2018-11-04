@@ -23,6 +23,7 @@ import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.usagetracker.spi.ConfigUsageSpi;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -36,8 +37,10 @@ public final class ConfigUsage {
 
     private static final String NO_USAGE_TRACKER_SPI_COMPONENT_MESSAGE = "No UsageTrackerSpi component available.";
 
+    private ConfigUsageSpi spi;
+
     /** The loaded usage tracking SPI. */
-    private static ConfigUsageSpi spi(){
+    private static ConfigUsageSpi spi(ClassLoader classLoader){
         ConfigUsageSpi spi = ServiceContextManager
                 .getServiceContext().getService(ConfigUsageSpi.class);
         if(spi==null){
@@ -49,31 +52,41 @@ public final class ConfigUsage {
     /**
      * Singleton constructor.
      */
-    private ConfigUsage() {
+    private ConfigUsage(ConfigUsageSpi spi) {
+        this.spi = Objects.requireNonNull(spi);
+    }
+
+    public static ConfigUsage getInstance(){
+        return getInstance(ServiceContextManager.getDefaultClassLoader());
+    }
+
+    public static ConfigUsage getInstance(ClassLoader classLoader){
+        return  ServiceContextManager.getServiceContext(classLoader).getService(ConfigUsage.class,
+                () -> new ConfigUsage(spi(classLoader)));
     }
 
     /**
      * Returns a setCurrent of package names that are to be ignored when collecting usage data.
      * @return the ignored package names, not null.
      */
-    public static Set<String> getIgnoredPackages(){
-        return spi().getIgnoredPackages();
+    public Set<String> getIgnoredPackages(){
+        return spi.getIgnoredPackages();
     }
 
     /**
      * Adds the given packageNames to the createList of packages to be ignored when collecting usage data.
      * @param packageName the package names to be added, not null.
      */
-    public static void addIgnoredPackages(String... packageName){
-        spi().addIgnoredPackages(packageName);
+    public void addIgnoredPackages(String... packageName){
+        spi.addIgnoredPackages(packageName);
     }
 
     /**
      * Enables/disables usage tracking.
      * @param enabled setCurrent to true to enable usage tracking.
      */
-    public static void enableUsageTracking(boolean enabled){
-        spi().enableUsageTracking(enabled);
+    public void enableUsageTracking(boolean enabled){
+        spi.enableUsageTracking(enabled);
     }
 
     /**
@@ -82,23 +95,23 @@ public final class ConfigUsage {
      * @param key the fully qualified configuration key, not null.
      * @return the stats collected, or null.
      */
-    public static UsageStat getSinglePropertyStats(String key){
-        return spi().getSinglePropertyStats(key);
+    public UsageStat getSinglePropertyStats(String key){
+        return spi.getSinglePropertyStats(key);
     }
 
     /**
      * Get the recorded usage references of configuration.
      * @return the recorded usge references, never null.
      */
-    public static Collection<UsageStat> getUsageStats() {
-        return spi().getUsageStats();
+    public Collection<UsageStat> getUsageStats() {
+        return spi.getUsageStats();
     }
 
     /**
      * Clears all collected usage statistics.
      */
-    public static void clearStats() {
-        spi().clearStats();
+    public void clearStats() {
+        spi.clearStats();
     }
 
     /**
@@ -106,24 +119,24 @@ public final class ConfigUsage {
      * If usage stats collection is not activated (default), this method returns null.
      * @return the stats collected, or null.
      */
-    public static UsageStat getAllPropertiesStats(){
-        return spi().getAllPropertiesStats();
+    public UsageStat getAllPropertiesStats(){
+        return spi.getAllPropertiesStats();
     }
 
     /**
      * Allows to check if usage tracking is enabled (should be disbled by default).
      * @return true, if usage tracking is enabled.
      */
-    public static boolean isTrackingEnabled(){
-        return spi().isTrackingEnabled();
+    public boolean isTrackingEnabled(){
+        return spi.isTrackingEnabled();
     }
 
     /**
      * Access the usage statistics for the recorded uses of configuration.
      * @return usage info or default message.
      */
-    public static String getInfo(){
-        return spi().getInfo();
+    public String getInfo(){
+        return spi.getInfo();
     }
 
 }

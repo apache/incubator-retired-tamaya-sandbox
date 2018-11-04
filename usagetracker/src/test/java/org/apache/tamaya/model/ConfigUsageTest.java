@@ -28,14 +28,14 @@ import static org.junit.Assert.*;
 /**
  * Created by Anatole on 09.08.2015.
  */
-public class ConfigUsageStatsTest {
+public class ConfigUsageTest {
 
     @Test
     public void testUsageWhenEnabled(){
-        ConfigUsage.enableUsageTracking(true);
+        ConfigUsage.getInstance().enableUsageTracking(true);
         TestConfigAccessor.readConfiguration();
         Configuration config = Configuration.current();
-        String info = ConfigUsage.getInfo();
+        String info = ConfigUsage.getInstance().getInfo();
         assertFalse(info.contains("java.version"));
         assertNotNull(info);
         config = TestConfigAccessor.readConfiguration();
@@ -44,20 +44,20 @@ public class ConfigUsageStatsTest {
         TestConfigAccessor.readProperty(config, "java.version");
         TestConfigAccessor.readProperty(config, "java.version");
         config.get("java.version");
-        info = ConfigUsage.getInfo();
+        info = ConfigUsage.getInstance().getInfo();
         System.out.println(info);
         assertTrue(info.contains("java.version"));
         assertNotNull(info);
-        ConfigUsage.enableUsageTracking(false);
+        ConfigUsage.getInstance().enableUsageTracking(false);
     }
 
     @Test
     public void testUsageWhenDisabled(){
-        ConfigUsage.enableUsageTracking(false);
-        ConfigUsage.clearStats();
+        ConfigUsage.getInstance().enableUsageTracking(false);
+        ConfigUsage.getInstance().clearStats();
         TestConfigAccessor.readConfiguration();
         Configuration config = Configuration.current();
-        String info = ConfigUsage.getInfo();
+        String info = ConfigUsage.getInstance().getInfo();
         assertNotNull(info);
         assertFalse(info.contains("java.version"));
         config = TestConfigAccessor.readConfiguration();
@@ -66,9 +66,9 @@ public class ConfigUsageStatsTest {
         TestConfigAccessor.readProperty(config, "java.version");
         TestConfigAccessor.readProperty(config, "java.version");
         config.get("java.version");
-        info = ConfigUsage.getInfo();
+        info = ConfigUsage.getInstance().getInfo();
         assertFalse(info.contains("java.version"));
         assertNotNull(info);
-        ConfigUsage.enableUsageTracking(false);
+        ConfigUsage.getInstance().enableUsageTracking(false);
     }
 }
