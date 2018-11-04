@@ -34,6 +34,10 @@ final class ItemTokenizer {
 
     private static final Logger LOG = Logger.getLogger(ItemTokenizer.class.getName());
 
+    public static final String ITEM_SEPARATOR = "item-separator";
+    public static final String MAP_ENTRY_SEPARATOR = "map-entry-separator";
+    public static final String ITEM_CONVERTER = "item-converter";
+
     /**
      * Private singleton.
      */
@@ -47,7 +51,7 @@ final class ItemTokenizer {
      * @return the tokenized createValue as createList, in order of occurrence.
      */
     public static List<String> split(String value, ConversionContext ctx){
-        String itemSeparator = (String)ctx.getMeta().getOrDefault("item-separator", ",");
+        String itemSeparator = (String)ctx.getMeta().getOrDefault(ITEM_SEPARATOR, ",");
         return split(value, itemSeparator);
     }
 
@@ -84,7 +88,7 @@ final class ItemTokenizer {
      * @return an array of length 2, with the trimmed and parsed key/createValue pair.
      */
     public static String[] splitMapEntry(String mapEntry, ConversionContext ctx){
-        String entrySeparator = (String)ctx.getMeta().getOrDefault("map-entry-separator", "=");
+        String entrySeparator = (String)ctx.getMeta().getOrDefault(MAP_ENTRY_SEPARATOR, "=");
         return splitMapEntry(mapEntry, entrySeparator);
     }
 
@@ -125,7 +129,7 @@ final class ItemTokenizer {
      * @return the parsed createValue, or null.
      */
     public static <T> T convertValue(String value, TypeLiteral<T> targetType, ConversionContext context) {
-        String converterClass = context.getMeta().get("item-converter");
+        String converterClass = context.getMeta().get(ITEM_CONVERTER);
         List<PropertyConverter<T>> valueConverters = new ArrayList<>(1);
         if (converterClass != null) {
             try {
