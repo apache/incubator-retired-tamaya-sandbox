@@ -41,11 +41,6 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
     private final Object LOCK = new Object();
 
     @Override
-    public ConfigurationContextBuilder getConfigurationContextBuilder() {
-        return ServiceContextManager.getServiceContext().create(ConfigurationContextBuilder.class);
-    }
-
-    @Override
     public ConfigurationBuilder getConfigurationBuilder() {
         return new DefaultConfigurationBuilder();
     }
@@ -61,16 +56,6 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
     }
 
     @Override
-    public void setConfigurationContext(ConfigurationContext context){
-        this.config = Objects.requireNonNull(createConfiguration(context));
-    }
-
-    @Override
-    public boolean isConfigurationContextSettable() {
-        return true;
-    }
-
-    @Override
     public Configuration getConfiguration(ClassLoader classLoader) {
         checkInitialized();
         return config;
@@ -81,25 +66,18 @@ public class DSLLoadingConfigurationProviderSpi implements ConfigurationProvider
         return new DefaultConfiguration(context);
     }
 
-    @Override
-    public ConfigurationContext getConfigurationContext() {
-        checkInitialized();
-        return config.getContext();
-    }
-
     private void checkInitialized() {
         if(config==null){
             synchronized (LOCK) {
                 if(config==null){
                     // load defaults
-                    this.config = new DefaultConfiguration(
-                            new DefaultConfigurationContextBuilder()
+                    this.config = new DefaultConfigurationBuilder()
                                 .addDefaultPropertyConverters()
                                 .addDefaultPropertyFilters()
                                 .addDefaultPropertySources()
                                 .sortPropertyFilter(PropertyFilterComparator.getInstance())
                                 .sortPropertySources(PropertySourceComparator.getInstance())
-                                .build());
+                                .build();
                 }
             }
         }

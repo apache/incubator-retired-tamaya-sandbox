@@ -133,12 +133,13 @@ final class ItemTokenizer {
         List<PropertyConverter<T>> valueConverters = new ArrayList<>(1);
         if (converterClass != null) {
             try {
-                valueConverters.add((PropertyConverter<T>) Class.forName(converterClass).newInstance());
+                valueConverters.add((PropertyConverter<T>) Class.forName(converterClass).getConstructor()
+                        .newInstance());
             } catch (Exception e) {
                 LOG.log(Level.SEVERE, "Error convertion config to ArrayList type.", e);
             }
         }
-        valueConverters.addAll(context.getConfigurationContext().getPropertyConverters(targetType));
+        valueConverters.addAll(context.getConfiguration().getContext().getPropertyConverters(targetType));
         if (valueConverters.isEmpty()) {
             if(targetType.getRawType().equals(String.class)) {
                 return (T)value;
