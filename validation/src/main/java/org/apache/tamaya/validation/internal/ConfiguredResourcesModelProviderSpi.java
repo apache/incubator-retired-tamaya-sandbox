@@ -128,7 +128,7 @@ public class ConfiguredResourcesModelProviderSpi implements ModelProviderSpi, Cl
         Collection<URL> urls;
         if (RESOURCES_EXTENSION_AVAILABLE) {
             LOG.info("Using tamaya-resources extension to read model configuration from " + resources);
-            urls = ResourceResolver.current(classLoader).getResources(resources.split(","));
+            urls = ResourceResolver.getInstance(classLoader).getResources(resources.split(","));
         } else {
             LOG.info("Using default classloader resource location to read model configuration from " + resources);
             urls = new ArrayList<>();

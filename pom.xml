@@ -794,16 +794,13 @@ under the License.
     </build>
 
     <modules>
-        <module>collections</module>
-        <module>hazelcast</module>
+
         <module>apache-commons</module>
         <module>jodatime</module>
         <module>usagetracker</module>
         <module>validation</module>
         <module>remote</module>
         <module>configured-sysprops</module>
-        <module>etcd</module>
-        <module>consul</module>
         <module>camel</module>
         <module>propertysources</module>
         <!--<module>ui</module>-->
