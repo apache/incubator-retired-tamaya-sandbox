@@ -34,16 +34,23 @@ import java.util.Objects;
 /**
  * Created by atsticks on 23.03.17.
  */
-final class JavaConfigBuilder implements ConfigBuilder{
+final class JavaConfigBuilderAdapter implements ConfigBuilder{
 
     private ConfigurationBuilder configBuilder;
-    private ClassLoader classLoader;
 
-    JavaConfigBuilder(ConfigurationBuilder contextBuilder){
-        this.configBuilder = Objects.requireNonNull(contextBuilder);
-        contextBuilder.addDefaultPropertyConverters();
+    /**
+     * Create a new ConfigBuilder using the given Tamaya config builder.
+     * @param configBuilder
+     */
+    JavaConfigBuilderAdapter(ConfigurationBuilder configBuilder){
+        this.configBuilder = Objects.requireNonNull(configBuilder);
+        configBuilder.addDefaultPropertyConverters();
     }
 
+    /**
+     * Access the underlying Tamaya {@link ConfigurationBuilder}.
+     * @return the Tamaya builder, not null.
+     */
     public ConfigurationBuilder getConfigurationBuilder(){
         return configBuilder;
     }
@@ -64,7 +71,7 @@ final class JavaConfigBuilder implements ConfigBuilder{
         configBuilder.addPropertySources(
                 new SystemPropertySource(400),
                 new EnvironmentPropertySource(300),
-                new JavaConfigDefaultProperties());
+                new JavaConfigDefaultPropertiesPropertySource());
         configBuilder.sortPropertySources(PropertySourceComparator.getInstance());
         return this;
     }
@@ -76,10 +83,10 @@ final class JavaConfigBuilder implements ConfigBuilder{
     @Override
     public ConfigBuilder addDiscoveredSources() {
         for(ConfigSource configSource: ServiceContextManager.getServiceContext().getServices(ConfigSource.class)){
-            configBuilder.addPropertySources(JavaConfigAdapter.toPropertySource(configSource));
+            configBuilder.addPropertySources(JavaConfigAdapterFactory.toPropertySource(configSource));
         }
         for(ConfigSourceProvider configSourceProvider: ServiceContextManager.getServiceContext().getServices(ConfigSourceProvider.class)){
-            configBuilder.addPropertySources(JavaConfigAdapter.toPropertySources(configSourceProvider.getConfigSources(
+            configBuilder.addPropertySources(JavaConfigAdapterFactory.toPropertySources(configSourceProvider.getConfigSources(
                     Thread.currentThread().getContextClassLoader()
             )));
         }
@@ -97,22 +104,33 @@ final class JavaConfigBuilder implements ConfigBuilder{
             TypeLiteral targetType = TypeLiteral.of(
                     TypeLiteral.getGenericInterfaceTypeParameters(converter.getClass(),Converter.class)[0]);
             configBuilder.addPropertyConverters(targetType,
-                    JavaConfigAdapter.toPropertyConverter(converter));
+                    JavaConfigAdapterFactory.toPropertyConverter(converter));
         }
         return this;
     }
 
     @Override
-    public ConfigBuilder forClassLoader(ClassLoader loader) {
-        this.classLoader = loader;
+    public ConfigBuilder forClassLoader(ClassLoader classLoader) {
+        this.configBuilder.setClassLoader(classLoader);
         return this;
     }
 
     @Override
     public ConfigBuilder withSources(ConfigSource... sources) {
         for(ConfigSource source:sources){
-            configBuilder.addPropertySources(JavaConfigAdapter.toPropertySource(source));
+            configBuilder.addPropertySources(JavaConfigAdapterFactory.toPropertySource(source));
         }
+        return this;
+    }
+
+    @Override
+    public <T> ConfigBuilder withConverter(Class<T> aClass, int priority, Converter<T> converter) {
+        TypeLiteral lit = TypeLiteral.of(aClass);
+        TypeLiteral target = TypeLiteral.of(aClass);
+        configBuilder.removePropertyConverters(target);
+        configBuilder.addPropertyConverters(
+                target,
+                JavaConfigAdapterFactory.toPropertyConverter(converter, priority));
         return this;
     }
 
@@ -124,13 +142,20 @@ final class JavaConfigBuilder implements ConfigBuilder{
             configBuilder.removePropertyConverters(target);
             configBuilder.addPropertyConverters(
                     target,
-                    JavaConfigAdapter.toPropertyConverter(converter));
+                    JavaConfigAdapterFactory.toPropertyConverter(converter));
         }
         return this;
     }
 
     @Override
     public Config build() {
-        return JavaConfigAdapter.toConfig(configBuilder.build());
+        return JavaConfigAdapterFactory.toConfig(configBuilder.build());
+    }
+
+    @Override
+    public String toString() {
+        return "JavaConfigBuilderAdapter{" +
+                "configBuilder=" + configBuilder +
+                '}';
     }
 }

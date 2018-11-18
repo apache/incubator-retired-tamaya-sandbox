@@ -35,7 +35,7 @@ public class JavaConfigConfigTest {
 
     @Test
     public void testDefaultConfigAccess() {
-        Config config = Configuration.current();
+        Config config = ConfigProvider.getConfig();
         Iterable<ConfigSource> sources = config.getConfigSources();
         int count = 0;
         for (ConfigSource cs : sources) {
@@ -46,7 +46,7 @@ public class JavaConfigConfigTest {
 
     @Test
     public void testOptionalAccess(){
-        Config config = Configuration.current();
+        Config config = ConfigProvider.getConfig();
         int count = 0;
         for(String key:config.getPropertyNames()){
             Optional<String> val = config.getOptionalValue(key, String.class);
@@ -59,7 +59,7 @@ public class JavaConfigConfigTest {
 
     @Test
     public void testGetValue(){
-        Config config = Configuration.current();
+        Config config = ConfigProvider.getConfig();
         int count = 0;
         for(String key:config.getPropertyNames()){
             String val = config.getValue(key, String.class);
@@ -69,26 +69,26 @@ public class JavaConfigConfigTest {
 
     @Test(expected = NoSuchElementException.class)
     public void testGetValue_NoValue(){
-        Config config = Configuration.current();
+        Config config = ConfigProvider.getConfig();
         config.getValue("fooBar", String.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetValue_InvalidType(){
-        Config config = Configuration.current();
+        Config config = ConfigProvider.getConfig();
         config.getValue("java.version", Integer.class);
     }
 
     @Test
     public void testEmptySystemProperty(){
         System.setProperty("my.empty.property", "");
-        Config config = Configuration.current();
+        Config config = ConfigProvider.getConfig();
         assertEquals("", config.getValue("my.empty.property", String.class));
     }
 
     @Test
     public void testEmptyConfigProperty(){
-        Config config = Configuration.current();
+        Config config = ConfigProvider.getConfig();
         assertEquals("", config.getValue("my.empty.property.in.config.file", String.class));
     }
 

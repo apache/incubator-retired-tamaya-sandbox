@@ -30,14 +30,22 @@ import java.util.Optional;
 /**
  * Property source implementation that wraps a Javaconfig {@link ConfigSource} instance.
  */
-public class TamayaPropertySource implements PropertySource {
+class TamayaPropertySourceAdapter implements PropertySource {
 
     private ConfigSource delegate;
 
-    public TamayaPropertySource(ConfigSource configSource){
+    /**
+     * Creates a new instance.
+     * @param configSource the underlying config source, not null.
+     */
+    public TamayaPropertySourceAdapter(ConfigSource configSource){
         this.delegate = Objects.requireNonNull(configSource);
     }
 
+    /**
+     * Access the underlying config source.
+     * @return the underlying config source, not null.
+     */
     public ConfigSource getConfigSource(){
         return this.delegate;
     }
@@ -72,7 +80,9 @@ public class TamayaPropertySource implements PropertySource {
     }
 
     @Override
-    public boolean isScannable() {
-        return true;
+    public String toString() {
+        return "TamayaPropertySourceAdapter{" +
+                "delegate=" + delegate +
+                '}';
     }
 }

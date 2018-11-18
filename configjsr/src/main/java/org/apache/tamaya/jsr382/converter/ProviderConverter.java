@@ -77,7 +77,7 @@ public class ProviderConverter implements PropertyConverter<Provider> {
         @Override
         public T query(Configuration config) {
             List<PropertyConverter<T>> converters = config.getContext().getPropertyConverters(type);
-            ConversionContext context = new ConversionContext.Builder(type).setConfigurationContext(config.getContext())
+            ConversionContext context = new ConversionContext.Builder(type).setConfiguration(config)
                     .setConfiguration(config).setKey(ConvertQuery.class.getName()).build();
             for(PropertyConverter<?> conv: converters) {
                 try{

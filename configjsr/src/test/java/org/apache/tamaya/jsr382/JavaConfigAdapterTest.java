@@ -28,7 +28,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import javax.config.Config;
+import javax.config.ConfigAccessor;
 import javax.config.ConfigProvider;
+import javax.config.ConfigSnapshot;
 import javax.config.spi.ConfigBuilder;
 import javax.config.spi.ConfigSource;
 import javax.config.spi.Converter;
@@ -40,7 +42,7 @@ public class JavaConfigAdapterTest {
     @Test
     public void toConfig() throws Exception {
         Configuration config = Configuration.current();
-        Config mpConfig = JavaConfigAdapter.toConfig(config);
+        Config mpConfig = JavaConfigAdapterFactory.toConfig(config);
         assertNotNull(mpConfig);
         assertEquals(config.getProperties().keySet(), mpConfig.getPropertyNames());
     }
@@ -48,20 +50,20 @@ public class JavaConfigAdapterTest {
     @Test
     public void toConfigWithTamayaConfiguration() throws Exception {
         Configuration configuration = new MyConfiguration();
-        JavaConfig config = new JavaConfig(configuration);
-        TamayaConfiguration tamayaConfiguration = new TamayaConfiguration(config);
+        JavaConfigAdapter config = new JavaConfigAdapter(configuration);
+        TamayaConfigurationAdapter tamayaConfiguration = new TamayaConfigurationAdapter(config);
 
-        Config result = JavaConfigAdapter.toConfig(tamayaConfiguration);
+        Config result = JavaConfigAdapterFactory.toConfig(tamayaConfiguration);
 
         Assertions.assertThat(result).isNotNull()
-                  .isInstanceOf(JavaConfig.class)
+                  .isInstanceOf(JavaConfigAdapter.class)
                   .isSameAs(config);
     }
 
     @Test
     public void toConfiguration() throws Exception {
-        Config mpConfig = Configuration.current();
-        Configuration config = JavaConfigAdapter.toConfiguration(mpConfig);
+        Config mpConfig = ConfigProvider.getConfig();
+        Configuration config = JavaConfigAdapterFactory.toConfiguration(mpConfig);
         assertNotNull(config);
         assertEquals(mpConfig.getPropertyNames(), config.getProperties().keySet());
     }
@@ -69,10 +71,10 @@ public class JavaConfigAdapterTest {
     @Test
     public void toConfigurationWithNoneJavaConfigConfig() throws Exception {
         Config config = new MyConfig();
-        Configuration result = JavaConfigAdapter.toConfiguration(config);
+        Configuration result = JavaConfigAdapterFactory.toConfiguration(config);
 
         Assertions.assertThat(result).isNotNull()
-                  .isInstanceOf(TamayaConfiguration.class);
+                  .isInstanceOf(TamayaConfigurationAdapter.class);
     }
 
     @Test
@@ -84,7 +86,7 @@ public class JavaConfigAdapterTest {
                 .build();
         List<PropertySource> tamayaSources = new ArrayList<>();
         tamayaSources.add(testPropertySource);
-        List<ConfigSource> configSources = JavaConfigAdapter.toConfigSources(tamayaSources);
+        List<ConfigSource> configSources = JavaConfigAdapterFactory.toConfigSources(tamayaSources);
         assertNotNull(configSources);
         assertEquals(tamayaSources.size(), configSources.size());
         compare(testPropertySource, configSources.get(0));
@@ -108,7 +110,7 @@ public class JavaConfigAdapterTest {
                 .build();
         List<ConfigSource> configSources = new ArrayList<>();
         configSources.add(configSource);
-        List<PropertySource> propertySources = JavaConfigAdapter.toPropertySources(configSources);
+        List<PropertySource> propertySources = JavaConfigAdapterFactory.toPropertySources(configSources);
         assertNotNull(propertySources);
         assertEquals(propertySources.size(), configSources.size());
         compare(propertySources.get(0), configSource);
@@ -121,7 +123,7 @@ public class JavaConfigAdapterTest {
                 .withSimpleProperty("string0", "value0")
                 .withSimpleProperty("int0", "0")
                 .build();
-        ConfigSource configSource = JavaConfigAdapter.toConfigSource(tamayaSource);
+        ConfigSource configSource = JavaConfigAdapterFactory.toConfigSource(tamayaSource);
         assertNotNull(configSource);
         compare(tamayaSource, configSource);
     }
@@ -133,28 +135,28 @@ public class JavaConfigAdapterTest {
                 .withProperty("string0", "value0")
                 .withProperty("int0", "0")
                 .build();
-        PropertySource tamayaSource = JavaConfigAdapter.toPropertySource(configSource);
+        PropertySource tamayaSource = JavaConfigAdapterFactory.toPropertySource(configSource);
         assertNotNull(configSource);
         compare(tamayaSource, configSource);
     }
 
     @Test
     public void toPropertyConverter() throws Exception {
-        PropertyConverter<String> tamayaConverter = JavaConfigAdapter.toPropertyConverter(new UppercaseConverter());
+        PropertyConverter<String> tamayaConverter = JavaConfigAdapterFactory.toPropertyConverter(new UppercaseConverter());
         assertNotNull(tamayaConverter);
         assertEquals("ABC", tamayaConverter.convert("aBC", null));
     }
 
     @Test
     public void toConverter() throws Exception {
-        Converter<String> mpConverter = JavaConfigAdapter.toConverter(new UppercasePropertyConverter());
+        Converter<String> mpConverter = JavaConfigAdapterFactory.toConverter(new UppercasePropertyConverter());
         assertNotNull(mpConverter);
         assertEquals("ABC", mpConverter.convert("aBC"));
     }
 
     @Test
     public void toConfigBuilder() throws Exception {
-        ConfigBuilder builder = JavaConfigAdapter.toConfigBuilder(ConfigurationProvider.getConfigurationBuilder());
+        ConfigBuilder builder = JavaConfigAdapterFactory.toConfigBuilder(ConfigurationProvider.getConfigurationBuilder());
         assertNotNull(builder);
     }
 
@@ -162,7 +164,7 @@ public class JavaConfigAdapterTest {
     public void toStringMap() throws Exception {
         Map<String,PropertyValue> props = new HashMap<>();
         props.put("a", PropertyValue.of("a","b", "toStringMap"));
-        Map<String, String> mpProps = JavaConfigAdapter.toStringMap(props);
+        Map<String, String> mpProps = JavaConfigAdapterFactory.toStringMap(props);
         assertNotNull(mpProps);
         assertEquals(props.keySet(), mpProps.keySet());
         assertEquals(mpProps.get("a"), "b");
@@ -172,7 +174,7 @@ public class JavaConfigAdapterTest {
     public void toPropertyValueMap() throws Exception {
         Map<String,String> props = new HashMap<>();
         props.put("a", "b");
-        Map<String, PropertyValue> tamayaProps = JavaConfigAdapter.toPropertyValueMap(props, "toPropertyValueMap");
+        Map<String, PropertyValue> tamayaProps = JavaConfigAdapterFactory.toPropertyValueMap(props, "toPropertyValueMap");
         assertNotNull(tamayaProps);
         assertEquals(tamayaProps.keySet(), props.keySet());
         assertEquals(tamayaProps.get("a").getValue(), "b");
@@ -191,13 +193,23 @@ public class JavaConfigAdapterTest {
         }
 
         @Override
+        public ConfigAccessor<String> access(String propertyName) {
+            throw new RuntimeException("Not implemented yet!");
+        }
+
+        @Override
+        public ConfigSnapshot snapshotFor(ConfigAccessor<?>... configValues) {
+            return null;
+        }
+
+        @Override
         public Iterable<String> getPropertyNames() {
             throw new RuntimeException("Not implemented yet!");
         }
 
         @Override
         public Iterable<ConfigSource> getConfigSources() {
-            throw new RuntimeException("Not implemented yet!");
+            return Collections.emptyList();
         }
     }
 
@@ -239,6 +251,11 @@ public class JavaConfigAdapterTest {
 
         @Override
         public ConfigurationContext getContext() {
+            return ConfigurationContext.EMPTY;
+        }
+
+        @Override
+        public ConfigurationSnapshot getSnapshot(Iterable<String> keys) {
             throw new RuntimeException("Not implemented yet!");
         }
     }

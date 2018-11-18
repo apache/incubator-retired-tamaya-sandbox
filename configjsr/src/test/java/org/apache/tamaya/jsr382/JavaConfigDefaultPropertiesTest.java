@@ -25,7 +25,7 @@ import org.junit.Test;
 public class JavaConfigDefaultPropertiesTest {
     @Test
     public void hasOrdinalOf100() throws Exception {
-        JavaConfigDefaultProperties properties = new JavaConfigDefaultProperties();
+        JavaConfigDefaultPropertiesPropertySource properties = new JavaConfigDefaultPropertiesPropertySource();
         Assertions.assertThat(properties.getOrdinal()).isEqualTo(100);
     }
 }

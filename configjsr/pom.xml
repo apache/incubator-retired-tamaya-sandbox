@@ -37,7 +37,6 @@ under the License.
         <geronimo-atinject-1.0-spec.version>1.0</geronimo-atinject-1.0-spec.version>
         <geronimo-jcdi-1.1-spec.version>1.0</geronimo-jcdi-1.1-spec.version>
         <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
-        <tamaya-version>0.4-incubating-SNAPSHOT</tamaya-version>
         <arquillian.version>1.1.13.Final</arquillian.version>
         <arquillian-weld-embedded.version>2.0.0.Beta5</arquillian-weld-embedded.version>
         <cdi-api.version>2.0</cdi-api.version>
@@ -61,33 +60,40 @@ under the License.
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-core</artifactId>
-            <version>${tamaya-version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya</groupId>
             <artifactId>tamaya-api</artifactId>
-            <version>${tamaya-version}</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tamaya.ext</groupId>
+            <artifactId>tamaya-injection-api</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-functions</artifactId>
-            <version>${tamaya-version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-events</artifactId>
-            <version>${tamaya-version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
         </dependency>
+        <!-- Config API -->
         <dependency>
-            <groupId>javax.config</groupId>
-            <artifactId>javaconfig-api</artifactId>
-            <version>${jsr.version}</version>
+            <groupId>com.github.eclipse</groupId>
+            <artifactId>ConfigJSR</artifactId>
+            <version>bdab2f22923ba83e93a841f61e177c95796cfb68</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -164,5 +170,13 @@ under the License.
             </build>
         </profile>
     </profiles>
+
+    <!-- Used to resolve the latest Config JSR API release. -->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
 </project>

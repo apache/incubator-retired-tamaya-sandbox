@@ -54,11 +54,18 @@ public class JavaConfigSourceProvider implements ConfigSourceProvider{
 
     @Override
     public Iterable<ConfigSource> getConfigSources(ClassLoader forClassLoader) {
-        if(delegate instanceof TamayaPropertySourceProvider){
-            return ((TamayaPropertySourceProvider)delegate).getConfigSourceProvider()
+        if(delegate instanceof TamayaPropertySourceProviderAdapter){
+            return ((TamayaPropertySourceProviderAdapter)delegate).getConfigSourceProvider()
                     .getConfigSources(forClassLoader);
         }else {
-            return JavaConfigAdapter.toConfigSources(delegate.getPropertySources());
+            return JavaConfigAdapterFactory.toConfigSources(delegate.getPropertySources());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "JavaConfigSourceProvider{" +
+                "delegate=" + delegate +
+                '}';
     }
 }

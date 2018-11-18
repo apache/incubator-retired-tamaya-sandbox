@@ -20,6 +20,7 @@ package org.apache.tamaya.jsr382;
 
 import org.apache.tamaya.*;
 import org.apache.tamaya.spi.ConfigurationContext;
+import org.apache.tamaya.spisupport.DefaultConfigurationSnapshot;
 
 import javax.config.Config;
 import java.util.*;
@@ -27,14 +28,24 @@ import java.util.*;
 /**
  * Configuration implementation that wraps a Javaconfig {@link Config} instance.
  */
-public class TamayaConfiguration implements Configuration{
+class TamayaConfigurationAdapter implements Configuration{
 
     private Config delegate;
+    private ConfigurationContext context;
 
-    public TamayaConfiguration(Config config){
+    /**
+     * Creates a new adapter based on the given {@link Config}.
+     * @param config the config, not null.
+     */
+    public TamayaConfigurationAdapter(Config config){
         this.delegate = Objects.requireNonNull(config);
+        this.context = JavaConfigAdapterFactory.toConfigurationContext(config);
     }
 
+    /**
+     * Get the underlying config.
+     * @return the underlying config, not null.
+     */
     public Config getConfig(){
         return delegate;
     }
@@ -68,26 +79,32 @@ public class TamayaConfiguration implements Configuration{
 
     @Override
     public <T> T getOrDefault(String key, TypeLiteral<T> type, T defaultValue) {
-        return null;
+        return delegate.getOptionalValue(key, type.getRawType()).orElse(defaultValue);
     }
 
     @Override
     public Map<String, String> getProperties() {
-        return null;
+        Map<String,String> properties = new HashMap<>();
+        for(String key:this.delegate.getPropertyNames()) {
+            properties.put(key, delegate.getValue(key, String.class));
+        }
+        return properties;
     }
 
     @Override
-    public Configuration with(ConfigOperator operator) {
-        return operator.operate(this);
-    }
-
-    @Override
-    public <T> T query(ConfigQuery<T> query) {
-        return query.query(this);
+    public ConfigurationSnapshot getSnapshot(Iterable<String> keys){
+        return new DefaultConfigurationSnapshot(this, keys);
     }
 
     @Override
     public ConfigurationContext getContext() {
-        return null;
+        return context;
+    }
+
+    @Override
+    public String toString() {
+        return "TamayaConfigurationAdapter{" +
+                "delegate=" + delegate +
+                '}';
     }
 }

@@ -1,10 +1,7 @@
-# Sandbox implementation of the JSR 382 API
+# Apache Tamaya - JSR 382 API Implementation
 
-As long as the API is not properly published to an official Maven repository you need to checkout the sourcecode from:
+This module implements the current JSR 382 Configuration API. It will be
+released as a final extension, when the JSR published a stable
+release to build against.
 
-https://github.com/eclipse/ConfigJSR
-
-Once 
-https://github.com/eclipse/ConfigJSR/issues/1
-is done we may be able to properly add this module to our builds.
 

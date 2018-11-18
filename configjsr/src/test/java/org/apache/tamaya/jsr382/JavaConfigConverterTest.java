@@ -34,7 +34,7 @@ public class JavaConfigConverterTest {
 
     @Test
     public void returnedPropertyConverterIsTheOneOfTheDelegate() throws Exception {
-        JavaConfigConverter<String> mpConverter = new JavaConfigConverter<>(converter);
+        JavaConfigConverterAdapter<String> mpConverter = new JavaConfigConverterAdapter<>(converter);
 
         assertThat(mpConverter.getPropertyConverter()).isSameAs(converter);
     }

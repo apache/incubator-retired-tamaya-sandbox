@@ -19,8 +19,8 @@
 package org.apache.tamaya.jsr382.tck;
 
 import org.apache.tamaya.core.internal.converters.OptionalConverter;
-import org.apache.tamaya.jsr382.JavaConfigAdapter;
-import org.apache.tamaya.jsr382.JavaConfigProviderResolver;
+import org.apache.tamaya.jsr382.JavaConfigAdapterFactory;
+import org.apache.tamaya.jsr382.TamayaConfigProviderResolver;
 import org.apache.tamaya.jsr382.cdi.JavaConfigCDIExtension;
 import org.apache.tamaya.jsr382.converter.BooleanAsIntegerConverterFix;
 import org.apache.tamaya.spi.PropertyConverter;
@@ -61,11 +61,11 @@ public class TamayaConfigArchiveProcessor implements ApplicationArchiveProcessor
 
             JavaArchive configJar = ShrinkWrap
                     .create(JavaArchive.class, "tamaya-config-impl.jar")
-                    .addPackage(JavaConfigAdapter.class.getPackage())
+                    .addPackage(JavaConfigAdapterFactory.class.getPackage())
                     .addPackage(JavaConfigCDIExtension.class.getPackage())
                     .addPackage(BooleanAsIntegerConverterFix.class.getPackage())
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                    .addAsServiceProvider(ConfigProviderResolver.class, JavaConfigProviderResolver.class)
+                    .addAsServiceProvider(ConfigProviderResolver.class, TamayaConfigProviderResolver.class)
                     .addAsServiceProvider(PropertyConverter.class, BooleanAsIntegerConverterFix.class)
                     .addAsServiceProvider(PropertyConverter.class, OptionalConverter.class)
                     .addAsServiceProvider(Extension.class, JavaConfigCDIExtension.class);

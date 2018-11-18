@@ -83,13 +83,12 @@ public class JavaConfigConfigurationProducer {
         final Type targetType = injectionPoint.getAnnotated().getBaseType();
         Configuration config = Configuration.current();
         ConversionContext.Builder builder = new ConversionContext.Builder(config,
-                Configuration.current().getContext(), key, TypeLiteral.of(targetType));
+                key, TypeLiteral.of(targetType));
         if(targetType instanceof ParameterizedType){
             ParameterizedType pt = (ParameterizedType)targetType;
             if(pt.getRawType().equals(Provider.class)) {
                 builder = new ConversionContext.Builder(config,
-                        Configuration.current().getContext(), key,
-                        TypeLiteral.of(pt.getActualTypeArguments()[0]));
+                        key, TypeLiteral.of(pt.getActualTypeArguments()[0]));
             }
         }
         if (injectionPoint.getMember() instanceof AnnotatedElement) {
@@ -141,7 +140,7 @@ public class JavaConfigConfigurationProducer {
 
     @Produces
     public Config getConfiguration(){
-        return Configuration.current();
+        return ConfigProvider.getConfig();
     }
 
     @Produces

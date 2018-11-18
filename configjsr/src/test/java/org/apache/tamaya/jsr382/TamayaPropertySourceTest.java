@@ -35,7 +35,7 @@ public class TamayaPropertySourceTest {
 
     @Test
     public void isScannable() throws Exception {
-        TamayaPropertySource source = new TamayaPropertySource(configSource);
+        TamayaPropertySourceAdapter source = new TamayaPropertySourceAdapter(configSource);
 
         assertThat(source.isScannable()).isTrue();
     }
@@ -44,7 +44,7 @@ public class TamayaPropertySourceTest {
     public void ordinalIsTheSameAsOfTheConfigSource() throws Exception {
         when(configSource.getOrdinal()).thenReturn(44);
 
-        TamayaPropertySource source = new TamayaPropertySource(configSource);
+        TamayaPropertySourceAdapter source = new TamayaPropertySourceAdapter(configSource);
 
         assertThat(source.getOrdinal()).isEqualTo(44);
     }

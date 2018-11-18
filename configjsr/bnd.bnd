@@ -11,9 +11,9 @@ javac.target: 1.8
 
 Automatic-Module-Name: org.apache.tamaya.jsr382
 Bundle-Version: ${version}.${tstamp}
-Bundle-Name: Apache Tamaya - JSR 382
+Bundle-Name: Apache Tamaya - JSR 382 Support
 Bundle-SymbolicName: org.apache.tamaya.jsr382
-Bundle-Description: Apacha Tamaya Config - JSR 382 Implementation
+Bundle-Description: Apacha Tamaya Config - JSR 382 API Implementation
 Bundle-Category: Implementation
 Bundle-Copyright: (C) Apache Foundation
 Bundle-License: Apache Licence version 2

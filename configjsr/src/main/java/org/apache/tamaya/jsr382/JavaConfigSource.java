@@ -25,6 +25,8 @@ import javax.config.spi.ConfigSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Javaconfig {@link ConfigSource} implementation that wraps a {@link PropertySource} instance.
@@ -75,4 +77,35 @@ public class JavaConfigSource implements ConfigSource{
         return valueMap;
     }
 
+    /**
+     * The callback should get invoked if an attribute change got detected inside the ConfigSource.
+     *
+     * @param callback will be set by the {@link javax.config.Config} after this
+     *                 {@code ConfigSource} got created and before any configured values
+     *                 get served.
+     * @return ChangeSupport informing the {@link javax.config.Config} implementation about support for changes by this source
+     * @see ChangeSupport
+     */
+    // TODO implement change support in Tamaya
+    public ChangeSupport setOnAttributeChange(Consumer<Set<String>> callback) {
+        switch(delegate.getChangeSupport()){
+            case SUPPORTED:
+                delegate.addChangeListener((s,ps) -> {
+                    callback.accept(s);
+                });
+                return ChangeSupport.SUPPORTED;
+            case IMMUTABLE:
+                return ChangeSupport.IMMUTABLE;
+            case UNSUPPORTED:
+            default:
+                return ChangeSupport.UNSUPPORTED;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "JavaConfigSource{" +
+                "delegate=" + delegate +
+                '}';
+    }
 }

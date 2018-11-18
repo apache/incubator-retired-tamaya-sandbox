@@ -19,6 +19,7 @@
 package org.apache.tamaya.jsr382;
 
 
+import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
@@ -26,22 +27,38 @@ import javax.config.spi.Converter;
 import java.util.Objects;
 
 /**
- * Converter implementation that wraps a Javaconfig {@link Converter} instance.
+ * Tamaya converter implementation that wraps a Java config {@link javax.config.spi.Converter} instance.
  */
-public class TamayaPropertyConverter<T> implements PropertyConverter<T> {
+public class JavaConfigConverterAdapter<T> implements Converter<T> {
 
-    private Converter<T> delegate;
+    private PropertyConverter<T> delegate;
 
-    public TamayaPropertyConverter(Converter<T> delegate){
+    /**
+     * Creates a new Converter, baed on the given Tamaya {@link org.apache.tamaya.spi.PropertyConverter}.
+     * @param delegate the delegate, not null.
+     */
+    public JavaConfigConverterAdapter(PropertyConverter<T> delegate){
         this.delegate = Objects.requireNonNull(delegate);
     }
 
-    public Converter<T> getConverter(){
+    /**
+     * Access the underlying Tamaya converter.
+     * @return the Tamaya converter, not null.
+     */
+    public PropertyConverter<T> getPropertyConverter(){
         return this.delegate;
     }
 
     @Override
-    public T convert(String value, ConversionContext context) {
-        return delegate.convert(value);
+    public T convert(String value) {
+        return delegate.convert(value, new ConversionContext.Builder("JavaConfig:no-key", TypeLiteral.of(
+                TypeLiteral.of(getClass()).getType())).build());
+    }
+
+    @Override
+    public String toString() {
+        return "JavaConfigConverterAdapter{" +
+                "delegate=" + delegate +
+                '}';
     }
 }

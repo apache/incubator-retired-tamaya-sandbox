@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.jsr382;
 
+import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.spi.ConfigurationBuilder;
 
@@ -31,7 +32,7 @@ import java.util.logging.Logger;
 /**
  * Created by atsticks on 23.03.17.
  */
-public class JavaConfigProviderResolver extends ConfigProviderResolver {
+public class TamayaConfigProviderResolver extends ConfigProviderResolver {
 
     private Map<ClassLoader, Config> configs = new ConcurrentHashMap<>();
 
@@ -44,12 +45,13 @@ public class JavaConfigProviderResolver extends ConfigProviderResolver {
     public Config getConfig(ClassLoader loader) {
         Config config = this.configs.get(loader);
         if(config==null){
-            ConfigurationBuilder builder = ConfigurationProvider.getConfigurationBuilder();
+            ConfigurationBuilder builder = Configuration.createConfigurationBuilder();
+            builder.setClassLoader(loader);
             builder.addDefaultPropertyConverters();
-            JavaConfigBuilder microConfigBuilder = new JavaConfigBuilder(builder);
-            microConfigBuilder.addDefaultSources();
-            microConfigBuilder.addDiscoveredSources();
-            config = microConfigBuilder.build();
+            JavaConfigBuilderAdapter javaConfigBuilder = new JavaConfigBuilderAdapter(builder);
+            javaConfigBuilder.addDefaultSources();
+            javaConfigBuilder.addDiscoveredSources();
+            config = javaConfigBuilder.build();
             this.configs.put(loader, config);
         }
         return config;
@@ -57,7 +59,7 @@ public class JavaConfigProviderResolver extends ConfigProviderResolver {
 
     @Override
     public ConfigBuilder getBuilder() {
-        return new JavaConfigBuilder(ConfigurationProvider.getConfigurationBuilder());
+        return new JavaConfigBuilderAdapter(Configuration.createConfigurationBuilder());
     }
 
     @Override
@@ -78,5 +80,12 @@ public class JavaConfigProviderResolver extends ConfigProviderResolver {
                 return;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "TamayaConfigProviderResolver{" +
+                "configs=" + configs.size() +
+                '}';
     }
 }

@@ -18,32 +18,21 @@
  */
 package org.apache.tamaya.jsr382;
 
+import org.apache.tamaya.spisupport.propertysource.PropertiesResourcePropertySource;
 
-import org.apache.tamaya.TypeLiteral;
-import org.apache.tamaya.spi.ConversionContext;
-import org.apache.tamaya.spi.PropertyConverter;
-
-import javax.config.spi.Converter;
-import java.util.Objects;
 
 /**
- * Property source implementation that wraps a Java config {@link javax.config.spi.ConfigSource} instance.
+ * Default property source for config properties in the classpath.
  */
-public class JavaConfigConverter<T> implements Converter<T> {
+public class JavaConfigDefaultPropertiesPropertySource extends PropertiesResourcePropertySource {
 
-    private PropertyConverter<T> delegate;
-
-    public JavaConfigConverter(PropertyConverter<T> delegate){
-        this.delegate = Objects.requireNonNull(delegate);
-    }
-
-    public PropertyConverter<T> getPropertyConverter(){
-        return this.delegate;
+    public JavaConfigDefaultPropertiesPropertySource() {
+        super("META-INF/javaconfig.properties", null);
+        setDefaultOrdinal(100);
     }
 
     @Override
-    public T convert(String value) {
-        return delegate.convert(value, new ConversionContext.Builder("JavaConfig:no-key", TypeLiteral.of(
-                TypeLiteral.of(getClass()).getType())).build());
+    public String toString() {
+        return "JavaConfigDefaultPropertiesPropertySource{}";
     }
 }
