@@ -137,11 +137,10 @@ public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
-        super.start(startFuture);
         registerMultiConfigEntryProvider(mapBusTarget, vertx.eventBus());
         registerSingleConfigEntryProvider(singleBusTarget, vertx.eventBus());
         registerConfigurationInjector(injectionBusTarget, vertx.eventBus());
-        startFuture.complete();
+        super.start(startFuture);
     }
 
     public String getInjectionBusTarget() {

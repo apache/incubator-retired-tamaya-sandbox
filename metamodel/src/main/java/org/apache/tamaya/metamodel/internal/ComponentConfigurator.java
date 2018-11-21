@@ -178,6 +178,7 @@ public final class ComponentConfigurator<T> {
                 default:
                     if(Enum.class.isAssignableFrom(targetType)){
                         Method m = targetType.getDeclaredMethod("valueOf", String.class);
+                        m.setAccessible(true);
                         return m.invoke(null, value);
                     }
                     Constructor c = targetType.getConstructor(String.class);
