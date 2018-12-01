@@ -809,6 +809,7 @@ under the License.
         <module>uom</module>
         <module>vertx</module>
         <module>configjsr</module>
+        <module>documentation</module>
         <!-- Once the API is officially available ... -->
         <!--   module>configjsr</module-->
     </modules>
