@@ -19,12 +19,10 @@
 package org.apache.tamaya.validation.spi;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.validation.ConfigModel;
-import org.apache.tamaya.validation.ModelTarget;
-import org.apache.tamaya.validation.Validation;
+import org.apache.tamaya.doc.DocumentedProperty;
+import org.apache.tamaya.validation.ValidationCheck;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -33,48 +31,56 @@ import java.util.logging.Logger;
 /**
  * Default configuration Model for a configuration parameter.
  */
-public class ParameterModel extends AbstractConfigModel {
-    /** Optional regular expression for validating the createValue. */
-    private final String regEx;
-    /** The target type into which the createValue must be convertible. */
-    private final Class<?> type;
+public class PropertyValidator implements ConfigValidator {
+
+    /** The parameter's target type. */
+    private Class<?> type;
+    /** The fully qualified parameter name. */
+    private String name;
+    /** The optional description. */
+    private String description;
+    /** The required flag. */
+    private boolean required;
+    /** The owner instance, not null. */
+    private Object owner;
 
     /**
-     * Internal constructor.
+     * Create a new property validator.
+     * @param documentedProperty the property docs, not null.
+     */
+    public PropertyValidator(DocumentedProperty documentedProperty) {
+        this.name = Objects.requireNonNull(documentedProperty.getName());
+        this.description = documentedProperty.getDescription();
+        this.required = documentedProperty.isRequired();
+        this.owner = documentedProperty;
+        this.type = documentedProperty.getValueType();
+    }
+
+    /**
+     * Create a new property validator.
      * @param builder the builder, not null.
      */
-    protected ParameterModel(Builder builder) {
-        super(builder.owner, builder.name, builder.required, builder.description);
-        this.regEx = builder.regEx;
+    private PropertyValidator(Builder builder) {
+        this.name = Objects.requireNonNull(builder.name);
+        this.description = builder.description;
+        this.required = builder.required;
+        this.owner = builder.owner;
         this.type = builder.type;
     }
 
-    @Override
-    public ModelTarget getType() {
-        return ModelTarget.Parameter;
-    }
-
-    /**
-     * Get the required parameter type.
-     *
-     * @return the type.
-     */
-    public Class<?> getParameterType() {
-        return type;
-    }
 
     @Override
-    public Collection<Validation> validate(Configuration config) {
-        List<Validation> result = new ArrayList<>(1);
-        String configValue = config.get(getName());
-        if (configValue == null && isRequired()) {
-            result.add(Validation.createMissing(this));
+    public List<ValidationCheck> validate(Configuration config) {
+        List<ValidationCheck> result = new ArrayList<>(1);
+        String configValue = config.getOrDefault(name, null);
+        String baseText = description;
+        if(baseText==null){
+            baseText = "Validation failure for property '" + name + "': ";
+        }else{
+            baseText = baseText + " Validation failure: ";
         }
-        if (configValue != null && regEx != null) {
-            if (!configValue.matches(regEx)) {
-                result.add(Validation.createError(this, "Config createValue not matching expression: " + regEx + ", was " +
-                        configValue));
-            }
+        if (configValue == null && required) {
+            result.add(ValidationCheck.createMissing(this, baseText + " Missing."));
         }
         return result;
     }
@@ -82,12 +88,9 @@ public class ParameterModel extends AbstractConfigModel {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(getType()).append(": ").append(getName());
-        if (isRequired()) {
-            b.append(", required: ").append(isRequired());
-        }
-        if (regEx != null) {
-            b.append(", expression: ").append(regEx);
+        b.append(type).append(": ").append(name);
+        if (required) {
+            b.append(", required: ").append(required);
         }
         return b.toString();
     }
@@ -107,11 +110,10 @@ public class ParameterModel extends AbstractConfigModel {
      * @param owner the owner name, not null.
      * @param name the fully qualified parameter name.
      * @param required the required flag.
-     * @param expression an optional regular expression to validate a createValue.
      * @return the new ConfigModel instance.
      */
-    public static ConfigModel of(String owner, String name, boolean required, String expression) {
-        return new Builder(owner, name).setRequired(required).setExpression(expression).build();
+    public static PropertyValidator of(Object owner, String name, boolean required) {
+        return new Builder(name, owner).setRequired(required).build();
     }
 
     /**
@@ -121,7 +123,7 @@ public class ParameterModel extends AbstractConfigModel {
      * @param required the required flag.
      * @return the new ConfigModel instance.
      */
-    public static ConfigModel of(String owner, String name, boolean required) {
+    public static PropertyValidator of(String owner, String name, boolean required) {
         return new Builder(owner, name).setRequired(required).build();
     }
 
@@ -131,7 +133,7 @@ public class ParameterModel extends AbstractConfigModel {
      * @param name the fully qualified parameter name.
      * @return the new ConfigModel instance.
      */
-    public static ConfigModel of(String owner, String name) {
+    public static PropertyValidator of(String owner, String name) {
         return new Builder(owner, name).setRequired(false).build();
     }
 
@@ -142,25 +144,22 @@ public class ParameterModel extends AbstractConfigModel {
     public static class Builder {
         /** The parameter's target type. */
         private Class<?> type;
-        /** The owner. */
-        private String owner;
         /** The fully qualified parameter name. */
         private String name;
-        /** The optional validation expression. */
-        private String regEx;
         /** The optional description. */
         private String description;
         /** The required flag. */
         private boolean required;
+        /** The validation owner. */
+        private Object owner;
 
         /**
          * Creates a new Builder.
-         * @param owner owner, not null.
          * @param name the fully qualified parameter name, not null.
          */
-        public Builder(String owner, String name) {
-            this.owner = Objects.requireNonNull(owner);
+        public Builder(String name, Object owner) {
             this.name = Objects.requireNonNull(name);
+            this.owner = Objects.requireNonNull(owner);
         }
 
         /**
@@ -202,21 +201,11 @@ public class ParameterModel extends AbstractConfigModel {
         }
 
         /**
-         * Sets the optional validation expression
-         * @param expression the validation expression
-         * @return the Builder for chaining
-         */
-        public Builder setExpression(String expression) {
-            this.regEx = expression;
-            return this;
-        }
-
-        /**
          * Sets the owner name.
          * @param owner the owner name, not null.
          * @return the Builder for chaining
          */
-        public Builder setOwner(String owner) {
+        public Builder setOwner(Object owner) {
             this.owner = Objects.requireNonNull(owner);
             return this;
         }
@@ -235,8 +224,8 @@ public class ParameterModel extends AbstractConfigModel {
          * Creates a new ConfigModel with the given parameters.
          * @return a new ConfigModel , never null.
          */
-        public ConfigModel build() {
-            return new ParameterModel(this);
+        public PropertyValidator build() {
+            return new PropertyValidator(this);
         }
     }
 }

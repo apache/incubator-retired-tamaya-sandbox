@@ -18,42 +18,80 @@
  */
 package org.apache.tamaya.validation;
 
+import org.apache.tamaya.ConfigurationSnapshot;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 /**
- * Enum type describing the different validation results supported.
+ * Result of a validation performed on a configuration.
  */
-public enum ValidationResult {
-    /**
-     * The validated item is valid
-     */
-    VALID,
-    /**
-     * The validated item is deprecated.
-     */
-    DEPRECATED,
-    /**
-     * The validated item is correct, but the createValue is worth a warning.
-     */
-    WARNING,
-    /**
-     * The given section or parameter is not a defined/validated item. It may be still valid, but typically,
-     * when validation is fully implemented, such a parameter or section should be removed.
-     */
-    UNDEFINED,
-    /**
-     * A required parameter or section is missing.
-     */
-    MISSING,
-    /**
-     * The validated item has an invalid createValue.
-     */
-    ERROR;
+public final class ValidationResult {
+    private ConfigurationSnapshot snapshot;
+    private List<ValidationCheck> result;
 
     /**
-     * Method to quickly evaluate if the current state is an error state.
-     *
-     * @return true, if the state is not ERROR or MISSING.
+     * Creates a new validation result.
+     * @param snapshot the snapshpt config, not null.
+     * @param result the result, not null.
      */
-    boolean isError() {
-        return this.ordinal() == MISSING.ordinal() || this.ordinal() == ERROR.ordinal();
+    public ValidationResult(ConfigurationSnapshot snapshot, List<ValidationCheck> result) {
+        this.snapshot = Objects.requireNonNull(snapshot);
+        this.result = Objects.requireNonNull(result);
+    }
+
+    /**
+     * Access the validated snapshot.
+     * @return the snapshot, not null.
+     */
+    public ConfigurationSnapshot getSnapshot() {
+        return snapshot;
+    }
+
+    /**
+     * Access the validation findings.
+     * @return the findings, not null.
+     */
+    public List<ValidationCheck> getResult() {
+        return result;
+    }
+
+    /**
+     * Checks if the validation does not include errors.
+     * @return true if no errors were identified.
+     */
+    public boolean isSuccessfull(){
+        for(ValidationCheck check:this.result){
+            if(check.getResult().isError()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Get the the findings filtered by Finding types given.
+     * @param findingTypes the findingTypes.
+     * @return the filterered list.
+     */
+    public List<ValidationCheck> getResultByFindings(ValidationCheck.Finding... findingTypes){
+        List<ValidationCheck.Finding> findings = Arrays.asList(findingTypes);
+        if(findings.isEmpty()){
+            return result;
+        }else{
+            return result.stream()
+                    .filter(f -> findings.contains(f))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "ValidationResult{" +
+                "snapshot=" + snapshot +
+                ", result=" + result +
+                '}';
     }
 }

@@ -16,22 +16,22 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.validation;
+package org.apache.tamaya.validation.spi;
 
-/**
- * This enumeration defines the types createObject supported validations.
- */
-public enum ModelTarget {
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.validation.ValidationCheck;
+
+import java.util.List;
+import java.util.function.Function;
+
+@FunctionalInterface
+public interface ConfigValidator {
+
     /**
-     * A configuration section.
+     * Validaters the configuration.
+     * @param config the configuration to validate, not null.
+     * @return the findings evaluated.
      */
-    Section,
-    /**
-     * A configuration paramter.
-     */
-    Parameter,
-    /**
-     * ConfigModel that is a container createObject other validations.
-     */
-    Group,
+    List<ValidationCheck> validate(Configuration config);
+
 }
