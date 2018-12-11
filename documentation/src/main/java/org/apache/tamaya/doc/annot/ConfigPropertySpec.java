@@ -32,7 +32,7 @@ public @interface ConfigPropertySpec {
 
     /**
      * The property name. The full property key is a combination of the parent
-     * @return
+     * @return the name of the property, taken from the default resolution, if empty.
      */
     String name() default "";
 

@@ -19,6 +19,7 @@
 package org.apache.tamaya.doc;
 
 import org.apache.tamaya.doc.annot.*;
+import org.apache.tamaya.spi.ServiceContextManager;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -39,9 +40,20 @@ import java.util.List;
 /**
  * Class to read and store the current configuration documentation.
  */
-public final class ConfigDocumenter {
+public class ConfigDocumenter {
 
     private DocumentedConfiguration docs = new DocumentedConfiguration();
+
+
+    public static ConfigDocumenter getInstance(){
+        return ServiceContextManager.getServiceContext()
+                .getService(ConfigDocumenter.class, ConfigDocumenter::new);
+    }
+
+    public static ConfigDocumenter getInstance(ClassLoader classLoader){
+        return ServiceContextManager.getServiceContext(classLoader)
+                .getService(ConfigDocumenter.class, ConfigDocumenter::new);
+    }
 
     /**
      * Read documentation from the given classes.

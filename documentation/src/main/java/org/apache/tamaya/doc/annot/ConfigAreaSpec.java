@@ -60,14 +60,14 @@ public @interface ConfigAreaSpec {
     PropertyValue.ValueType areaType() default PropertyValue.ValueType.MAP;
 
     /**
-     * The minimal cardinality required. A cardinality > 0 means that the corresponding area must be present
+     * The minimal cardinality required. A cardinality &gt; 0 means that the corresponding area must be present
      * in your configuration. This can be ensured/checked by a configuration validation system.
      * @return the minimal cardinality.
      */
     int min() default 0;
 
     /**
-     * The maximal cardinality allowed. A cardinality > 0 means that the corresponding area must not be present
+     * The maximal cardinality allowed. A cardinality &gt; 0 means that the corresponding area must not be present
      * in your configuration more than the configured times. This can be ensured/checked by a configuration validation
      * system.
      * @return the maximal cardinality.

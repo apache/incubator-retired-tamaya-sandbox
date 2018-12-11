@@ -60,7 +60,7 @@ public final class DocumentedConfiguration {
 
     /**
      * Get the current configuration name.
-     * @return the name, or '<undefined>'.
+     * @return the name, or {@code <undefined>}.
      */
     public String getName() {
         if(name==null){
@@ -71,7 +71,7 @@ public final class DocumentedConfiguration {
 
     /**
      * Get the current configuration version.
-     * @return the version, or '<undefined>'.
+     * @return the version, or {@code <undefined>}.
      */
     public String getVersion() {
         if(version==null){
