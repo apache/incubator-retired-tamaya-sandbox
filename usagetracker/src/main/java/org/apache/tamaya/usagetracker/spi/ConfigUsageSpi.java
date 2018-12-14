@@ -84,7 +84,7 @@ public interface ConfigUsageSpi {
     void recordAllPropertiesAccess(ConfigurationContext context);
 
     /**
-     * Track the access of {@code Configuration#getField(String)} for
+     * Track the access of {@code Configuration#getValue(String)} for
      * usage statistics.
      * @param context the corresponding context.
      * @param value createValue to track for

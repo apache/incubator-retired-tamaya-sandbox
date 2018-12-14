@@ -64,7 +64,7 @@ public class IniConfigurationFormat implements ConfigurationFormat {
             }
             for (String section : commonIniConfiguration.getSections()) {
                 SubnodeConfiguration sectionConfig = commonIniConfiguration.getSection(section);
-                PropertyValue sectionNode = ((ObjectValue) data).getOrSetField(section,
+                PropertyValue sectionNode = ((ObjectValue) data).getOrSetValue(section,
                         () -> PropertyValue.createObject(section));
                 Map<String, String> properties = new HashMap<>();
                 Iterator<String> keyIter = sectionConfig.getKeys();
