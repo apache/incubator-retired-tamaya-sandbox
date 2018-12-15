@@ -36,7 +36,7 @@ public class TamayaPropertiesComponent extends PropertiesComponent{
     private List<TamayaPropertyResolver> resolvers = new ArrayList<>();
 
     /**
-     * Constructor similar to getParent.
+     * Constructor similar to parent.
      */
     public TamayaPropertiesComponent(){
         super();
@@ -50,7 +50,7 @@ public class TamayaPropertiesComponent extends PropertiesComponent{
     }
 
     /**
-     * Constructor similar to getParent with additional locations.
+     * Constructor similar to parent with additional locations.
      * @param locations additional locations for Camel.  
      */
     public TamayaPropertiesComponent(String ... locations){
@@ -65,7 +65,7 @@ public class TamayaPropertiesComponent extends PropertiesComponent{
     }
 
     /**
-     * Constructor similar to getParent with only one location.
+     * Constructor similar to parent with only one location.
      * @param location addition location for Camel.
      */
     public TamayaPropertiesComponent(String location){

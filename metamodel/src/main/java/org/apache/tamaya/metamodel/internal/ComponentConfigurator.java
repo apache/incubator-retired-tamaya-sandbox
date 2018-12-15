@@ -37,9 +37,9 @@ public final class ComponentConfigurator<T> {
     private ComponentConfigurator(){}
 
     /**
-     * Configures the given instance with whatever is defined in the current child getList.
+     * Configures the given instance with whatever is defined in the current child values.
      * @param instance the instance to be configured, not null.
-     * @param node the getField containing any configuration child getList, not null.
+     * @param node the value containing any configuration child values, not null.
      */
     public static void configure(Object instance, Node node) {
         Map<String,String> params = extractParameters(node);
@@ -47,9 +47,9 @@ public final class ComponentConfigurator<T> {
     }
 
     /**
-     * Configures the given instance with whatever is defined in the current child getList.
+     * Configures the given instance with whatever is defined in the current child values.
      * @param instance the instance to be configured, not null.
-     * @param params the getField containing any configuration child getList, not null.
+     * @param params the value containing any configuration child values, not null.
      */
     public static void configure(Object instance, Map<String,String> params) {
         LOG.finest("Configuring instance: " + instance + " with " + params);

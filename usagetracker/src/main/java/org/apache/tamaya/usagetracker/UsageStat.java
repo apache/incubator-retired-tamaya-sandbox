@@ -117,7 +117,7 @@ public final class UsageStat {
 
     /**
      * Access access details for a given class.
-     * @param type class to getValue usage access stats for, not null.
+     * @param type class to value usage access stats for, not null.
      * @return the usage ref, if present, or null.
      */
     public Collection<AccessStats> getAccessDetails(Class type){
@@ -126,7 +126,7 @@ public final class UsageStat {
 
     /**
      * Access access details for a given package.
-     * @param pack package to getValue usage access stats for, not null.
+     * @param pack package to determine usage access stats for, not null.
      * @return the usage ref, if present, or null.
      */
     public Collection<AccessStats> getAccessDetails(Package pack){
