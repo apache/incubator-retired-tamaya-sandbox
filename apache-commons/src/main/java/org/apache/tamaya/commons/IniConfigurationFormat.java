@@ -70,7 +70,7 @@ public class IniConfigurationFormat implements ConfigurationFormat {
                 Iterator<String> keyIter = sectionConfig.getKeys();
                 while (keyIter.hasNext()) {
                     String key = keyIter.next();
-                    ((ObjectValue) sectionNode).setField(key, sectionConfig.getString(key));
+                    ((ObjectValue) sectionNode).setValue(key, sectionConfig.getString(key));
                 }
             }
         } catch (Exception e) {

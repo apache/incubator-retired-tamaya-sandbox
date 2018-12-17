@@ -63,7 +63,7 @@ public class XmlConfigurationFormat implements ConfigurationFormat {
             Iterator<String> keyIter = commonXmlConfiguration.getKeys();
             while (keyIter.hasNext()) {
                 String key = keyIter.next();
-                ((ObjectValue) data).setField(key, commonXmlConfiguration.getString(key));
+                ((ObjectValue) data).setValue(key, commonXmlConfiguration.getString(key));
             }
         } catch (Exception e) {
             throw new ConfigException("Failed to parse xml-file format from " + name, e);
