@@ -97,9 +97,9 @@ under the License.
     </licenses>
 
     <scm>
-        <connection>scm:git://git.apache.org/incubator-tamaya-extensions.git</connection>
-        <developerConnection>scm:git://git.apache.org/incubator-tamaya-extensions.git</developerConnection>
-        <url>https://git-wip-us.apache.org/repos/asf?p=incubator-tamaya-extensions.git</url>
+        <connection>scm:git://gitbox.apache.org/incubator-tamaya-extensions.git</connection>
+        <developerConnection>scm:git://gitbox.apache.org/incubator-tamaya-extensions.git</developerConnection>
+        <url>https://gitbox.apache.org/repos/asf?p=incubator-tamaya-extensions.git</url>
     </scm>
 
     <issueManagement>
