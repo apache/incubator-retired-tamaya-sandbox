@@ -40,8 +40,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Tests the Tamaya Vertx configuration support.
- * Created by atsticks on 08.03.17.
+ * Tests the Tamaya Vertx configuration support. Created by atsticks on
+ * 08.03.17.
  */
 @RunWith(VertxUnitRunner.class)
 public class ConfigVerticleTest {
@@ -52,39 +52,46 @@ public class ConfigVerticleTest {
     private TamayaConfigurationProducer producerVerticle = new TamayaConfigurationProducer();
 
     @Before
-    public void prepare(){
-        vertxContext.vertx().deployVerticle(producerVerticle);
+    public void prepare(final TestContext testContext) {
+        final Async deployAsync = testContext.async();
+        vertxContext.vertx().deployVerticle(producerVerticle, res -> {
+            if (!res.succeeded()) {
+                testContext.fail();
+            }
+            deployAsync.complete();
+        });
     }
 
     @Test
-    public void testSingle(final TestContext testContext){
+
+    public void testSingle(final TestContext testContext) {
         final Async async = testContext.async();
         vertxContext.vertx().eventBus().send(TamayaConfigurationProducer.DEFAULT_CONFIG_GET_SINGLE_ADDRESS,
                 "user.home", new Handler<AsyncResult<Message<String>>>() {
-                    @Override
-                    public void handle(AsyncResult<Message<String>> reply) {
-                        testContext.assertEquals(
-                                reply.result().body(),
-                                System.getProperty("user.home"));
-                        async.complete();
-                    }
-                });
+            @Override
+            public void handle(AsyncResult<Message<String>> reply) {
+                testContext.assertEquals(
+                        reply.result().body(),
+                        System.getProperty("user.home"));
+                async.complete();
+            }
+        });
     }
 
     @Test
-    public void testMap(final TestContext testContext){
+    public void testMap(final TestContext testContext) {
         final Async async = testContext.async();
         String selector = "[]{\"user.*\"}";
         vertxContext.vertx().eventBus().send(TamayaConfigurationProducer.DEFAULT_CONFIG_GET_MULTI_ADDRESS,
                 selector, reply -> {
                     testContext.assertNotNull(reply.result());
                     testContext.assertNotNull(reply.result().body());
-                    Map<String,String> config = Json.decodeValue((String)reply.result().body(),
+                    Map<String, String> config = Json.decodeValue((String) reply.result().body(),
                             Map.class);
-                    Map<String,String> compareTo = Configuration.current()
-                    .map(ConfigurationFunctions.filter((k,v) -> k.matches("user."))).getProperties();
+                    Map<String, String> compareTo = Configuration.current()
+                            .map(ConfigurationFunctions.filter((k, v) -> k.matches("user."))).getProperties();
                     testContext.assertEquals(config.size(), compareTo.size());
-                    for(Map.Entry<String,String> en:compareTo.entrySet()){
+                    for (Map.Entry<String, String> en : compareTo.entrySet()) {
                         testContext.assertEquals(
                                 config.get(en.getKey()), en.getValue());
                     }
@@ -93,7 +100,7 @@ public class ConfigVerticleTest {
     }
 
     @Test
-    public void testConfigCalls(TestContext testContext){
+    public void testConfigCalls(TestContext testContext) {
         testContext.assertNotNull(producerVerticle.getConfiguration());
         testContext.assertEquals(
                 producerVerticle.getConfigValue("user.home"),

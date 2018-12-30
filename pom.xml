@@ -637,10 +637,10 @@ under the License.
 
 
         <plugins>
-            <plugin>
+           <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
-                <version>4.2.0</version>
+                <version>4.2.2</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -652,6 +652,9 @@ under the License.
                         <configuration>
                             <startLevel>80</startLevel>
                             <aggregateFeatures>true</aggregateFeatures>
+                            <excludedArtifactIds>
+                                <excludedArtifactId>tamaya-doc_alpha</excludedArtifactId>
+                            </excludedArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
