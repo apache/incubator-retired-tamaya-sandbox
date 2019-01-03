@@ -58,7 +58,7 @@ under the License.
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jaxrs_2.0_spec</artifactId>
-            <version>1.0-alpha-1</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
