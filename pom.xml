@@ -479,11 +479,33 @@ under the License.
                 </plugin>
 
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.4</version>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>create</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                        <shortRevisionLength>8</shortRevisionLength>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <configuration>
                         <archive>
+                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                             <addMavenDescriptor>false</addMavenDescriptor>
+                            <manifest>
+                              <addDefaultImplementationEntries>false</addDefaultImplementationEntries>
+                            </manifest>
                             <manifestEntries>
                                 <Specification-Title>Apache ${project.name}</Specification-Title>
                                 <Specification-Version>${project.version}</Specification-Version>
@@ -492,7 +514,6 @@ under the License.
                                 <Implementation-Version>${project.version} ${buildNumber}</Implementation-Version>
                                 <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
                                 <SCM-Revision>${buildNumber}</SCM-Revision>
-                                <SCM-url>${project.scm.url}</SCM-url>
                             </manifestEntries>
                         </archive>
                     </configuration>
@@ -792,6 +813,10 @@ under the License.
                     <source>${maven.compile.sourceLevel}</source>
                     <target>${maven.compile.targetLevel}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>buildnumber-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>biz.aQute.bnd</groupId>
