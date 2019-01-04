@@ -68,11 +68,6 @@ under the License.
             <artifactId>hjson</artifactId>
             <version>${hjson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tamaya.ext</groupId>
-            <artifactId>tamaya-formats</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
