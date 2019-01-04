@@ -51,7 +51,7 @@ public abstract class AbstractValidator implements ConfigValidator {
 
     /**
      * Get the area or paramter key.
-     * @return
+     * @return the key.
      */
     public String getKey() {
         return key;

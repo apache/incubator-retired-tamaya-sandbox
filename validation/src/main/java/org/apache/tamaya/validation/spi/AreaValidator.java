@@ -182,6 +182,7 @@ public class AreaValidator implements ConfigValidator {
         /**
          * Creates a new Builder.
          * @param name the fully qualified parameter name, not null.
+         * @param owner the owner name, not null.
          */
         public Builder(String name, Object owner) {
             this.name = Objects.requireNonNull(name);
