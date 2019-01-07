@@ -45,6 +45,7 @@ public final class ConfigValidation {
 
     /**
      * Access a singleton using the default classloader.
+     * @return a validation manager.
      */
     public static ConfigValidation getInstance() {
         return ServiceContextManager.getServiceContext(
@@ -55,6 +56,7 @@ public final class ConfigValidation {
     /**
      * Access a singleton using the given target classloader.
      * @param classLoader the classloader, not null.
+     * @return a validation manager.
      */
     public static ConfigValidation getInstance(ClassLoader classLoader){
         return ServiceContextManager.getServiceContext(classLoader).getService(ConfigValidation.class, ConfigValidation::new);

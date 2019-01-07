@@ -151,6 +151,7 @@ public final class JavaConfigAdapterFactory {
      * Converts a JavaConfig {@link Converter} into a Tamaya {@link PropertyConverter}.
      * @param converter the JavaConfig {@link Converter} instance, not null.
      * @param <T> the target type
+     * @param priority the priority level of this converter.
      * @return the corresponding Tamaya {@link PropertyConverter} instance, never null.
      */
     public static <T> PropertyConverter<T> toPropertyConverter(Converter<T> converter, int priority) {
