@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
@@ -38,7 +38,7 @@ public class ResourcePropertySourceProviderFactoryTest {
 
     @Test
     public void getName() throws Exception {
-        assertEquals("resources", f.getName());
+        assertThat("resources").isEqualTo(f.getName());
     }
 
     @Test
@@ -46,19 +46,19 @@ public class ResourcePropertySourceProviderFactoryTest {
         Map<String,String> params = new HashMap<>();
         params.put("location", "GLOBAL.properties");
         PropertySourceProvider prov = f.create(params);
-        assertNotNull(prov);
+        assertThat(prov).isNotNull();
     }
 
     @Test
     public void create_Error() throws Exception {
         Map<String,String> params = new HashMap<>();
         PropertySourceProvider prov = f.create(Collections.<String, String>emptyMap());
-        assertNull("Should return null for missing location.", prov);
+        assertThat(prov).isNull();
     }
 
     @Test
     public void getType() throws Exception {
-        assertEquals(PropertySourceProvider.class, f.getType());
+        assertThat(PropertySourceProvider.class).isEqualTo(f.getType());
     }
 
 }

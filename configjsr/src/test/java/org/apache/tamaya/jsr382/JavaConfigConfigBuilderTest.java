@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.jsr382;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import javax.config.Config;
@@ -31,7 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by atsticks on 24.03.17.
@@ -63,40 +62,40 @@ public class JavaConfigConfigBuilderTest {
     @Test
     public void testBuildEmptyConfig(){
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        assertNotNull(builder);
+        assertThat(builder).isNotNull();
         Config config = builder.build();
-        assertNotNull(config);
-        assertFalse(config.getPropertyNames().iterator().hasNext());
-        assertFalse(config.getConfigSources().iterator().hasNext());
+        assertThat(config).isNotNull();
+        assertThat(config.getPropertyNames().iterator().hasNext()).isFalse();
+        assertThat(config.getConfigSources().iterator().hasNext()).isFalse();
     }
 
     @Test
     public void testBuildConfig(){
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        assertNotNull(builder);
+        assertThat(builder).isNotNull();
         builder.withSources(testSource);
         Config config = builder.build();
-        assertNotNull(config);
-        assertTrue(config.getPropertyNames().iterator().hasNext());
-        assertTrue(config.getConfigSources().iterator().hasNext());
-        assertNotNull(config.getValue("timestamp", String.class));
+        assertThat(config).isNotNull();
+        assertThat(config.getPropertyNames().iterator().hasNext()).isTrue();
+        assertThat(config.getConfigSources().iterator().hasNext()).isTrue();
+        assertThat(config.getValue("timestamp", String.class)).isNotNull();
         ConfigSource src = config.getConfigSources().iterator().next();
-        assertNotNull(src);
-        assertEquals(src, testSource);
+        assertThat(src).isNotNull();
+        assertThat(src).isEqualTo(testSource);
     }
 
     @Test
     public void testBuildDefaultConfig(){
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        assertNotNull(builder);
+        assertThat(builder).isNotNull();
         builder.addDefaultSources();
         Config config = builder.build();
-        assertNotNull(config);
-        assertTrue(config.getPropertyNames().iterator().hasNext());
-        assertTrue(config.getConfigSources().iterator().hasNext());
-        assertNotNull(config.getValue("java.home", String.class));
+        assertThat(config).isNotNull();
+        assertThat(config.getPropertyNames().iterator().hasNext()).isTrue();
+        assertThat(config.getConfigSources().iterator().hasNext()).isTrue();
+        assertThat(config.getValue("java.home", String.class)).isNotNull();
         ConfigSource src = config.getConfigSources().iterator().next();
-        assertNotNull(src);
+        assertThat(src).isNotNull();
     }
 
     @Test
@@ -112,7 +111,7 @@ public class JavaConfigConfigBuilderTest {
                                          .map(ConfigSource::getName)
                                          .collect(Collectors.toList());
 
-        Assertions.assertThat(name).hasSize(4)
+        assertThat(name).hasSize(4)
                   .containsExactlyInAnyOrder("paris",
                                              "SystemPropertySource",
                                              "environment-properties",

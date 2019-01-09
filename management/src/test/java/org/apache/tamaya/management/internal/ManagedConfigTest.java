@@ -28,7 +28,7 @@ import java.lang.management.ManagementFactory;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Created by Anatole on 20.08.2015.
@@ -40,26 +40,26 @@ public class ManagedConfigTest {
     @org.junit.Test
     public void testGetJsonConfigurationInfo() throws Exception {
         String info = bean.getJsonConfigurationInfo();
-        assertNotNull(info);
-        assertTrue(info.contains("java.version"));
+        assertThat(info).isNotNull();
+        assertThat(info.contains("java.version")).isTrue();
         System.out.println(bean.getJsonConfigurationInfo());
     }
 
     @org.junit.Test
     public void testGetXmlConfigurationInfo() throws Exception {
         String info = bean.getXmlConfigurationInfo();
-        assertNotNull(info);
-        assertTrue(info.contains("java.version"));
-        assertTrue(info.contains("<configuration>"));
+        assertThat(info).isNotNull();
+        assertThat(info.contains("java.version")).isTrue();
+        assertThat(info.contains("<configuration>")).isTrue();
         System.out.println(bean.getXmlConfigurationInfo());
     }
 
     @org.junit.Test
     public void testGetConfiguration() throws Exception {
         Map<String,String> config = bean.getConfiguration();
-        assertNotNull(config);
+        assertThat(config).isNotNull();
         for(Map.Entry<Object, Object> en:System.getProperties().entrySet()){
-            assertEquals(config.get(en.getKey()),en.getValue());
+            assertThat(config.get(en.getKey())).isEqualTo(en.getValue());
         }
     }
 
@@ -67,33 +67,33 @@ public class ManagedConfigTest {
     public void testGetConfigurationArea() throws Exception {
         Map<String,String> cfg = bean.getSection("java", false);
         for(Map.Entry<String,String> en:cfg.entrySet()){
-            assertEquals(System.getProperty(en.getKey()), en.getValue());
+            assertThat(System.getProperty(en.getKey())).isEqualTo(en.getValue());
         }
     }
 
     @org.junit.Test
     public void testGetAreas() throws Exception {
         Set<String> sections = (bean.getSections());
-        assertNotNull(sections);
-        assertTrue(sections.contains("java"));
-        assertTrue(sections.contains("file"));
+        assertThat(sections).isNotNull();
+        assertThat(sections.contains("java")).isTrue();
+        assertThat(sections.contains("file")).isTrue();
     }
 
     @org.junit.Test
     public void testGetTransitiveAreas() throws Exception {
         Set<String> sections = (bean.getTransitiveSections());
         Set<String> sectionsNT = (bean.getSections());
-        assertNotNull(sections);
-        assertTrue(sections.contains("java"));
-        assertTrue(sections.contains("sun"));
-        assertTrue(sections.contains("sun.os"));
-        assertTrue(sectionsNT.size()<sections.size());
+        assertThat(sections).isNotNull();
+        assertThat(sections.contains("java")).isTrue();
+        assertThat(sections.contains("sun")).isTrue();
+        assertThat(sections.contains("sun.os")).isTrue();
+        assertThat(sectionsNT.size() < sections.size()).isTrue();
     }
 
     @org.junit.Test
     public void testIsAreaExisting() throws Exception {
-        assertTrue(bean.isAreaExisting("java"));
-        assertFalse(bean.isAreaExisting("sd.fldsfl.erlwsf"));
+        assertThat(bean.isAreaExisting("java")).isTrue();
+        assertThat(bean.isAreaExisting("sd.fldsfl.erlwsf")).isFalse();
     }
 
     @org.junit.Test
@@ -102,7 +102,7 @@ public class ManagedConfigTest {
         ConfigManagementSupport.registerMBean();
         // Lookup createObject name
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        assertTrue(mbs.getMBeanInfo(on)!=null);
+        assertThat(mbs.getMBeanInfo(on) != null).isTrue();
     }
 
     @org.junit.Test
@@ -112,7 +112,7 @@ public class ManagedConfigTest {
         ObjectName on2 = ConfigManagementSupport.registerMBean("SubContext2");
         // Lookup createObject name
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        assertTrue(mbs.getMBeanInfo(on1)!=null);
-        assertTrue(mbs.getMBeanInfo(on2)!=null);
+        assertThat(mbs.getMBeanInfo(on1) != null).isTrue();
+        assertThat(mbs.getMBeanInfo(on2) != null).isTrue();
     }
 }

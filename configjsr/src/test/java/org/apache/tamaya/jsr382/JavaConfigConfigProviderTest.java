@@ -24,8 +24,7 @@ import org.junit.Test;
 import javax.config.Config;
 import javax.config.ConfigProvider;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by atsticks on 24.03.17.
@@ -35,9 +34,9 @@ public class JavaConfigConfigProviderTest {
     @Test
     public void testDefaultConfigAccess(){
         Config config = ConfigProvider.getConfig();
-        assertNotNull(config);
+        assertThat(config).isNotNull();
         Iterable<String> names = config.getPropertyNames();
-        assertNotNull(names);
+        assertThat(names).isNotNull();
         int count = 0;
         for(String name:names){
             count++;
@@ -47,20 +46,20 @@ public class JavaConfigConfigProviderTest {
         for(String s:ConfigProvider.getConfig().getPropertyNames()){
             cfgCount++;
         }
-        assertTrue(cfgCount <= count);
+        assertThat(cfgCount <= count).isTrue();
     }
 
     @Test
     public void testClassloaderAccess(){
         Config config = ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
-        assertNotNull(config);
+        assertThat(config).isNotNull();
         Iterable<String> names = config.getPropertyNames();
-        assertNotNull(names);
+        assertThat(names).isNotNull();
         int count = 0;
         for(String name:names){
             count++;
         }
-        assertTrue(count>0);
+        assertThat(count > 0).isTrue();
     }
 
 }

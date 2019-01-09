@@ -23,7 +23,7 @@ import org.apache.tamaya.usagetracker.ConfigUsage;
 import org.junit.Test;
 import test.model.TestConfigAccessor;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Anatole on 09.08.2015.
@@ -36,8 +36,8 @@ public class ConfigUsageTest {
         TestConfigAccessor.readConfiguration();
         Configuration config = Configuration.current();
         String info = ConfigUsage.getInstance().getInfo();
-        assertFalse(info.contains("java.version"));
-        assertNotNull(info);
+        assertThat(info.contains("java.version")).isFalse();
+        assertThat(info).isNotNull();
         config = TestConfigAccessor.readConfiguration();
         config.getProperties();
         TestConfigAccessor.readProperty(config, "java.locale");
@@ -46,8 +46,8 @@ public class ConfigUsageTest {
         config.get("java.version");
         info = ConfigUsage.getInstance().getInfo();
         System.out.println(info);
-        assertTrue(info.contains("java.version"));
-        assertNotNull(info);
+        assertThat(info.contains("java.version")).isTrue();
+        assertThat(info).isNotNull();
         ConfigUsage.getInstance().enableUsageTracking(false);
     }
 
@@ -58,8 +58,8 @@ public class ConfigUsageTest {
         TestConfigAccessor.readConfiguration();
         Configuration config = Configuration.current();
         String info = ConfigUsage.getInstance().getInfo();
-        assertNotNull(info);
-        assertFalse(info.contains("java.version"));
+        assertThat(info).isNotNull();
+        assertThat(info.contains("java.version")).isFalse();
         config = TestConfigAccessor.readConfiguration();
         config.getProperties();
         TestConfigAccessor.readProperty(config, "java.locale");
@@ -67,8 +67,8 @@ public class ConfigUsageTest {
         TestConfigAccessor.readProperty(config, "java.version");
         config.get("java.version");
         info = ConfigUsage.getInstance().getInfo();
-        assertFalse(info.contains("java.version"));
-        assertNotNull(info);
+        assertThat(info.contains("java.version")).isFalse();
+        assertThat(info).isNotNull();
         ConfigUsage.getInstance().enableUsageTracking(false);
     }
 }

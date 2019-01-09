@@ -18,16 +18,13 @@
  */
 package org.apache.tamaya.server;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class VersionPropertiesTest {
 
@@ -38,9 +35,11 @@ public class VersionPropertiesTest {
         Properties properties = new Properties();
         properties.load(resource);
 
-        assertThat(VersionProperties.getVersion(), not(Matchers.isEmptyOrNullString()));
-        assertThat(VersionProperties.getVersion(), equalTo(properties.get("server.version")));
-        assertThat(VersionProperties.getProduct(), not(Matchers.isEmptyOrNullString()));
-        assertThat(VersionProperties.getProduct(), equalTo(properties.get("server.product")));
+        assertThat(VersionProperties.getVersion()).isNotNull();
+        assertThat(VersionProperties.getVersion()).isNotEqualTo("");
+        assertThat(VersionProperties.getVersion()).isEqualTo(properties.get("server.version"));
+        assertThat(VersionProperties.getProduct()).isNotNull();
+        assertThat(VersionProperties.getProduce()).isNotEqualTo("");
+        assertThat(VersionProperties.getProduct()).isEqualTo(properties.get("server.product"));
     }
 }

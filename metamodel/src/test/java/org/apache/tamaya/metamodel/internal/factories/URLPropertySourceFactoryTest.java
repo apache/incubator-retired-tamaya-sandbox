@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
@@ -37,7 +37,7 @@ public class URLPropertySourceFactoryTest {
 
     @Test
     public void getName() throws Exception {
-        assertEquals("url", f.getName());
+        assertThat("url").isEqualTo(f.getName());
     }
 
     @Test
@@ -45,19 +45,19 @@ public class URLPropertySourceFactoryTest {
         Map<String,String> params = new HashMap<>();
         params.put("location", "http://apache.org");
         PropertySource ps = f.create(params);
-        assertNotNull(ps);
+        assertThat(ps).isNotNull();
     }
 
     @Test
     public void create_Error() throws Exception {
         Map<String,String> params = new HashMap<>();
         PropertySource ps = f.create(Collections.<String, String>emptyMap());
-        assertNull("Should return null for missing location.", ps);
+        assertThat(ps).isNull();
     }
 
     @Test
     public void getType() throws Exception {
-        assertEquals(PropertySource.class, f.getType());
+        assertThat(PropertySource.class).isEqualTo(f.getType());
     }
 
 }
