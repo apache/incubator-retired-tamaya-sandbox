@@ -21,6 +21,7 @@ package org.apache.tamaya.management.internal;
 import org.apache.tamaya.management.ConfigManagementSupport;
 import org.apache.tamaya.management.ManagedConfig;
 import org.apache.tamaya.management.ManagedConfigMBean;
+import org.junit.Test;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -37,7 +38,7 @@ public class ManagedConfigTest {
 
     private final ManagedConfigMBean bean = new ManagedConfig();
 
-    @org.junit.Test
+    @Test
     public void testGetJsonConfigurationInfo() throws Exception {
         String info = bean.getJsonConfigurationInfo();
         assertThat(info).isNotNull();
@@ -45,7 +46,7 @@ public class ManagedConfigTest {
         System.out.println(bean.getJsonConfigurationInfo());
     }
 
-    @org.junit.Test
+    @Test
     public void testGetXmlConfigurationInfo() throws Exception {
         String info = bean.getXmlConfigurationInfo();
         assertThat(info).isNotNull();
@@ -54,7 +55,7 @@ public class ManagedConfigTest {
         System.out.println(bean.getXmlConfigurationInfo());
     }
 
-    @org.junit.Test
+    @Test
     public void testGetConfiguration() throws Exception {
         Map<String,String> config = bean.getConfiguration();
         assertThat(config).isNotNull();
@@ -63,7 +64,7 @@ public class ManagedConfigTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testGetConfigurationArea() throws Exception {
         Map<String,String> cfg = bean.getSection("java", false);
         for(Map.Entry<String,String> en:cfg.entrySet()){
@@ -71,7 +72,7 @@ public class ManagedConfigTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testGetAreas() throws Exception {
         Set<String> sections = (bean.getSections());
         assertThat(sections).isNotNull();
@@ -79,7 +80,7 @@ public class ManagedConfigTest {
         assertThat(sections.contains("file")).isTrue();
     }
 
-    @org.junit.Test
+    @Test
     public void testGetTransitiveAreas() throws Exception {
         Set<String> sections = (bean.getTransitiveSections());
         Set<String> sectionsNT = (bean.getSections());
@@ -90,13 +91,13 @@ public class ManagedConfigTest {
         assertThat(sectionsNT.size() < sections.size()).isTrue();
     }
 
-    @org.junit.Test
+    @Test
     public void testIsAreaExisting() throws Exception {
         assertThat(bean.isAreaExisting("java")).isTrue();
         assertThat(bean.isAreaExisting("sd.fldsfl.erlwsf")).isFalse();
     }
 
-    @org.junit.Test
+    @Test
     public void testRegisterMBean() throws Exception {
         ObjectName on = ConfigManagementSupport.registerMBean();
         ConfigManagementSupport.registerMBean();
@@ -105,14 +106,14 @@ public class ManagedConfigTest {
         assertThat(mbs.getMBeanInfo(on) != null).isTrue();
     }
 
-    @org.junit.Test
+    @Test
     public void testRegisterMBean1() throws Exception {
         ObjectName on1 = ConfigManagementSupport.registerMBean("SubContext1");
         ConfigManagementSupport.registerMBean("SubContext1");
         ObjectName on2 = ConfigManagementSupport.registerMBean("SubContext2");
         // Lookup createObject name
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        assertThat(mbs.getMBeanInfo(on1) != null).isTrue();
-        assertThat(mbs.getMBeanInfo(on2) != null).isTrue();
+        assertThat(mbs.getMBeanInfo(on1)).isNotNull();
+        assertThat(mbs.getMBeanInfo(on2)).isNotNull();
     }
 }
