@@ -39,7 +39,7 @@ public class ManagedConfigTest {
     private final ManagedConfigMBean bean = new ManagedConfig();
 
     @Test
-    public void testGetJsonConfigurationInfo() throws Exception {
+    public void testGetJsonConfigurationInfo() {
         String info = bean.getJsonConfigurationInfo();
         assertThat(info).isNotNull();
         assertThat(info.contains("java.version")).isTrue();
@@ -47,7 +47,7 @@ public class ManagedConfigTest {
     }
 
     @Test
-    public void testGetXmlConfigurationInfo() throws Exception {
+    public void testGetXmlConfigurationInfo() {
         String info = bean.getXmlConfigurationInfo();
         assertThat(info).isNotNull();
         assertThat(info.contains("java.version")).isTrue();
@@ -56,7 +56,7 @@ public class ManagedConfigTest {
     }
 
     @Test
-    public void testGetConfiguration() throws Exception {
+    public void testGetConfiguration() {
         Map<String,String> config = bean.getConfiguration();
         assertThat(config).isNotNull();
         for(Map.Entry<Object, Object> en:System.getProperties().entrySet()){
@@ -65,7 +65,7 @@ public class ManagedConfigTest {
     }
 
     @Test
-    public void testGetConfigurationArea() throws Exception {
+    public void testGetConfigurationArea() {
         Map<String,String> cfg = bean.getSection("java", false);
         for(Map.Entry<String,String> en:cfg.entrySet()){
             assertThat(System.getProperty(en.getKey())).isEqualTo(en.getValue());
@@ -73,7 +73,7 @@ public class ManagedConfigTest {
     }
 
     @Test
-    public void testGetAreas() throws Exception {
+    public void testGetAreas() {
         Set<String> sections = (bean.getSections());
         assertThat(sections).isNotNull();
         assertThat(sections.contains("java")).isTrue();
@@ -81,7 +81,7 @@ public class ManagedConfigTest {
     }
 
     @Test
-    public void testGetTransitiveAreas() throws Exception {
+    public void testGetTransitiveAreas() {
         Set<String> sections = (bean.getTransitiveSections());
         Set<String> sectionsNT = (bean.getSections());
         assertThat(sections).isNotNull();
@@ -92,7 +92,7 @@ public class ManagedConfigTest {
     }
 
     @Test
-    public void testIsAreaExisting() throws Exception {
+    public void testIsAreaExisting() {
         assertThat(bean.isAreaExisting("java")).isTrue();
         assertThat(bean.isAreaExisting("sd.fldsfl.erlwsf")).isFalse();
     }
