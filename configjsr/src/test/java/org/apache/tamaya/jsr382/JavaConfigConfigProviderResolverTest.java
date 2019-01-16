@@ -25,7 +25,7 @@ import javax.config.spi.ConfigProviderResolver;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Created by atsticks on 24.03.17.
@@ -34,39 +34,39 @@ public class JavaConfigConfigProviderResolverTest {
 
     @Test
     public void testInstance(){
-        assertNotNull(ConfigProviderResolver.instance());
+        assertThat(ConfigProviderResolver.instance()).isNotNull();
     }
 
     @Test
     public void testGetBuilder(){
-        assertNotNull(ConfigProviderResolver.instance().getBuilder());
+        assertThat(ConfigProviderResolver.instance().getBuilder()).isNotNull();
     }
 
     @Test
     public void testGetConfig(){
-        assertNotNull(ConfigProviderResolver.instance().getConfig());
+        assertThat(ConfigProviderResolver.instance().getConfig()).isNotNull();
     }
 
     @Test
     public void testGetConfig_CL(){
-        assertNotNull(ConfigProviderResolver.instance().getConfig(ClassLoader.getSystemClassLoader()));
+        assertThat(ConfigProviderResolver.instance().getConfig(ClassLoader.getSystemClassLoader())).isNotNull();
     }
 
     @Test
     public void testRegisterAndReleaseConfig(){
         ClassLoader cl = new URLClassLoader(new URL[]{});
         Config emptyConfig = ConfigProviderResolver.instance().getBuilder().build();
-        assertNotNull(emptyConfig);
+        assertThat(emptyConfig).isNotNull();
         Config cfg = ConfigProviderResolver.instance().getConfig(cl);
-        assertNotNull(cfg);
+        assertThat(cfg).isNotNull();
         ConfigProviderResolver.instance().registerConfig(emptyConfig, cl);
         cfg = ConfigProviderResolver.instance().getConfig(cl);
-        assertNotNull(cfg);
-        assertEquals(cfg, emptyConfig);
+        assertThat(cfg).isNotNull();
+        assertThat(cfg).isEqualTo(emptyConfig);
         ConfigProviderResolver.instance().releaseConfig(emptyConfig);
         cfg = ConfigProviderResolver.instance().getConfig(cl);
-        assertNotNull(cfg);
-        assertNotSame(cfg, emptyConfig);
+        assertThat(cfg).isNotNull();
+        assertThat(cfg).isNotSameAs(emptyConfig);
     }
 
 }

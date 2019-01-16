@@ -20,8 +20,7 @@ package org.apache.tamaya.hjson;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link PathBasedHJSONPropertySourceProvider}.
@@ -33,8 +32,8 @@ public class PathBasedHJSONPropertySourceProviderTest {
         PathBasedHJSONPropertySourceProvider provider = new PathBasedHJSONPropertySourceProvider(
                 "configs/valid/*.hjson"
         );
-        assertNotNull(provider.getPropertySources());
-        assertEquals(7, provider.getPropertySources().size());
+        assertThat(provider.getPropertySources()).isNotNull();
+        assertThat(7).isEqualTo(provider.getPropertySources().size());
     }
 
     @Test
@@ -42,8 +41,8 @@ public class PathBasedHJSONPropertySourceProviderTest {
         PathBasedHJSONPropertySourceProvider provider = new PathBasedHJSONPropertySourceProvider(
                 "configs/valid/cyril*.hjson"
         );
-        assertNotNull(provider.getPropertySources());
-        assertEquals(1, provider.getPropertySources().size());
+        assertThat(provider.getPropertySources()).isNotNull();
+        assertThat(1).isEqualTo(provider.getPropertySources().size());
     }
 
     @Test
@@ -51,8 +50,8 @@ public class PathBasedHJSONPropertySourceProviderTest {
         PathBasedHJSONPropertySourceProvider provider = new PathBasedHJSONPropertySourceProvider(
                 "configs/valid/simple-*.hjson"
         );
-        assertNotNull(provider.getPropertySources());
-        assertEquals(3, provider.getPropertySources().size());
+        assertThat(provider.getPropertySources()).isNotNull();
+        assertThat(3).isEqualTo(provider.getPropertySources().size());
     }
 
     @Test
@@ -60,7 +59,7 @@ public class PathBasedHJSONPropertySourceProviderTest {
         PathBasedHJSONPropertySourceProvider provider = new PathBasedHJSONPropertySourceProvider(
                 "configs/valid/foo*.hjson", "configs/valid/*.HJSON"
         );
-        assertNotNull(provider.getPropertySources());
-        assertEquals(0, provider.getPropertySources().size());
+        assertThat(provider.getPropertySources()).isNotNull();
+        assertThat(0).isEqualTo(provider.getPropertySources().size());
     }
 }

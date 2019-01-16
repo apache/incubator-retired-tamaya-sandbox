@@ -22,7 +22,7 @@ import org.apache.tamaya.doc.formats.HtmlDocFormat;
 import org.apache.tamaya.doc.formats.TextDocFormat;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigDocumenterTest {
 
@@ -31,7 +31,7 @@ public class ConfigDocumenterTest {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readClasses(AnnotatedDocConfigBean.class);
         DocumentedConfiguration documentation = reader.getDocumentation();
-        assertNotNull(documentation);
+        assertThat(documentation).isNotNull();
         System.out.println(new TextDocFormat().apply(documentation));
     }
 
@@ -40,7 +40,7 @@ public class ConfigDocumenterTest {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readClasses(AnnotBasedStandaloneConfigDocumentation.class);
         DocumentedConfiguration documentation = reader.getDocumentation();
-        assertNotNull(documentation);
+        assertThat(documentation).isNotNull();
         System.out.println(new TextDocFormat().apply(documentation));
     }
 
@@ -49,7 +49,7 @@ public class ConfigDocumenterTest {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readPackages("org.apache.tamaya.doc");
         DocumentedConfiguration documentation = reader.getDocumentation();
-        assertNotNull(documentation);
+        assertThat(documentation).isNotNull();
         System.out.println(new TextDocFormat().apply(documentation));
     }
 
@@ -58,7 +58,7 @@ public class ConfigDocumenterTest {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readPackages("org.apache.tamaya.doc");
         DocumentedConfiguration documentation = reader.getDocumentation();
-        assertNotNull(documentation);
+        assertThat(documentation).isNotNull();
         System.out.println(new HtmlDocFormat().apply(documentation));
     }
 }

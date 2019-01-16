@@ -28,9 +28,7 @@ import org.junit.Test;
 
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.joda.time.format.ISODateTimeFormat.dateTime;
 
 public class FullStackIT {
@@ -43,10 +41,10 @@ public class FullStackIT {
         String dateTimeString = configuration.get("dateTimeValue");
         DateTime dateTimeValue = configuration.get("dateTimeValue", DateTime.class);
 
-        assertThat(dateTimeString, notNullValue());
-        assertThat(dateTimeString, equalTo("2010-08-08T14:00:15.5+10:00"));
-        assertThat(dateTimeValue, notNullValue());
-        assertThat(dateTimeValue.getMillis(), equalTo(dateTime().parseDateTime(dateTimeString).getMillis()));
+        assertThat(dateTimeString).isNotNull();
+        assertThat(dateTimeString).isEqualTo("2010-08-08T14:00:15.5+10:00");
+        assertThat(dateTimeValue).isNotNull();
+        assertThat(dateTimeValue.getMillis()).isEqualTo(dateTime().parseDateTime(dateTimeString).getMillis());
     }
 
     @Test
@@ -56,14 +54,14 @@ public class FullStackIT {
         String zoneAAsString = configuration.get("dateTimeZoneValueA");
         DateTimeZone zoneA = configuration.get("dateTimeZoneValueA", DateTimeZone.class);
 
-        assertThat(zoneAAsString, equalTo("UTC"));
-        assertThat(zoneA, equalTo(DateTimeZone.forID("UTC")));
+        assertThat(zoneAAsString).isEqualTo("UTC");
+        assertThat(zoneA).isEqualTo(DateTimeZone.forID("UTC"));
 
         String zoneBAsString = configuration.get("dateTimeZoneValueB");
         DateTimeZone zoneB = configuration.get("dateTimeZoneValueB", DateTimeZone.class);
 
-        assertThat(zoneBAsString, equalTo("+01:00"));
-        assertThat(zoneB, equalTo(DateTimeZone.forOffsetHours(1)));
+        assertThat(zoneBAsString).isEqualTo("+01:00");
+        assertThat(zoneB).isEqualTo(DateTimeZone.forOffsetHours(1));
     }
 
     @Test
@@ -78,7 +76,7 @@ public class FullStackIT {
         String periodAsString = configuration.get("periodValueA");
         Period period = configuration.get("periodValueA", Period.class);
 
-        assertThat(periodAsString, equalTo("P1Y1M1W1DT1H1M1S"));
-        assertThat(period, equalTo(referenceValue.toPeriod()));
+        assertThat(periodAsString).isEqualTo("P1Y1M1W1DT1H1M1S");
+        assertThat(period).isEqualTo(referenceValue.toPeriod());
     }
 }

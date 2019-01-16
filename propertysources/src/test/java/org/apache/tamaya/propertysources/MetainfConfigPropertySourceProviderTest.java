@@ -20,7 +20,7 @@ package org.apache.tamaya.propertysources;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by atsticks on 30.10.16.
@@ -30,7 +30,7 @@ public class MetainfConfigPropertySourceProviderTest {
     @Test
     public void getPropertySources_Default() throws Exception {
         MetainfConfigPropertySourceProvider provider = new MetainfConfigPropertySourceProvider();
-        assertNotNull(provider.getPropertySources());
+        assertThat(provider.getPropertySources()).isNotNull();
         // TODO addNode test for containing property sources.
     }
 

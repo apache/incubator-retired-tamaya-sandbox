@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
@@ -34,19 +34,19 @@ public class PropertiesResolverTest {
 
     @Test
     public void getResolverId() throws Exception {
-        assertEquals(r.getResolverId(), "properties");
+        assertThat(r.getResolverId()).isEqualTo("properties");
     }
 
     @Test
     public void evaluate() throws Exception {
         for(Map.Entry<String,String> en: System.getenv().entrySet()){
-            assertEquals(en.getValue(), r.evaluate("env:"+en.getKey()));
+            assertThat(en.getValue()).isEqualTo(r.evaluate("env:"+en.getKey()));
         }
-        assertEquals("foo", r.evaluate("env:fsdifoisfo?default=foo"));
+        assertThat("foo").isEqualTo(r.evaluate("env:fsdifoisfo?default=foo"));
         for(Map.Entry en: System.getProperties().entrySet()){
-            assertEquals(en.getValue(), r.evaluate("system:"+en.getKey()));
+            assertThat(en.getValue()).isEqualTo(r.evaluate("system:"+en.getKey()));
         }
-        assertEquals("foo", r.evaluate("system:fsdifoisfo?default=foo"));
+        assertThat("foo").isEqualTo(r.evaluate("system:fsdifoisfo?default=foo"));
     }
 
 }

@@ -26,9 +26,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DateTimeZoneConverterIT {
     @Test
@@ -45,8 +43,8 @@ public class DateTimeZoneConverterIT {
             }
         }
 
-        assertThat("Converter not found via service context.", converter, notNullValue());
-        assertThat(converter, instanceOf(DateTimeZoneConverter.class));
+        assertThat(converter).isNotNull();
+        assertThat(converter).isInstanceOf(DateTimeZoneConverter.class);
     }
 
 }

@@ -26,12 +26,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PeriodConverterTest {
     /*
@@ -66,8 +61,8 @@ public class PeriodConverterTest {
         for (Object[] pair : inputResultPairs) {
             Period period = converter.convert((String) pair[0], context);
 
-            assertThat("Converter failed to convert input createValue " + pair[0], period, notNullValue());
-            assertThat(period, equalTo((Period)pair[1]));
+            assertThat(period).isNotNull();
+            assertThat(period).isEqualTo((Period) pair[1]);
         }
     }
 
@@ -83,7 +78,7 @@ public class PeriodConverterTest {
         for (String input : inputValues) {
             Period period = converter.convert(input, context);
 
-            assertThat(period, nullValue());
+            assertThat(period).isNull();
         }
     }
 
@@ -94,8 +89,8 @@ public class PeriodConverterTest {
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Period.class)).build();
         converter.convert("P7Y0M0W0DT0H0M0S", context);
 
-        assertThat(context.getSupportedFormats(), hasSize(2));
-        assertThat(context.getSupportedFormats(), hasItem("PyYmMwWdDThHmMsS (" + name + ")"));
-        assertThat(context.getSupportedFormats(), hasItem("Pyyyy-mm-ddThh:mm:ss (" + name + ")"));
+        assertThat(context.getSupportedFormats().size()).isEqualTo(2);
+        assertThat(context.getSupportedFormats().contains("PyYmMwWdDThHmMsS (" + name + ")")).isTrue();
+        assertThat(context.getSupportedFormats().contains("Pyyyy-mm-ddThh:mm:ss (" + name + ")")).isTrue();
     }
 }

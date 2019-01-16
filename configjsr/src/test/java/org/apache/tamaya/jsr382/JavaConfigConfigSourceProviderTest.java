@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import javax.config.spi.ConfigSource;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaConfigConfigSourceProviderTest {
     @Test
@@ -35,11 +35,11 @@ public class JavaConfigConfigSourceProviderTest {
                         .withSimpleProperty("a", "b").build())
                 .build();
         JavaConfigSourceProvider provider = new JavaConfigSourceProvider(prov);
-        assertNotNull(provider);
+        assertThat(provider).isNotNull();
         Iterable<ConfigSource> configSources = provider.getConfigSources(null);
-        assertNotNull(configSources);
-        assertTrue(configSources.iterator().hasNext());
-        assertEquals("b", configSources.iterator().next().getValue("a"));
+        assertThat(configSources).isNotNull();
+        assertThat(configSources.iterator().hasNext()).isTrue();
+        assertThat("b").isEqualTo(configSources.iterator().next().getValue("a"));
     }
 
 }

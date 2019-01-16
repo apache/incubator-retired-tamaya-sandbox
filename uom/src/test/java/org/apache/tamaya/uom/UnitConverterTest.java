@@ -18,17 +18,15 @@
  */
 package org.apache.tamaya.uom;
 
+import javax.measure.Unit;
+
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConversionContext;
 import org.junit.Test;
 
 import tec.units.ri.unit.Units;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
-
-import javax.measure.Unit;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UnitConverterTest {
 	private UnitConverter converter = new UnitConverter();
@@ -39,8 +37,8 @@ public class UnitConverterTest {
 		ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Unit.class)).build();
 		Unit<?> unit = converter.convert("m", context);
 
-		assertThat("Converter failed to convert input createValue " + unit, notNullValue());
-		assertEquals(unit, Units.METRE);
+		assertThat(unit).isNotNull();
+		assertThat(unit).isEqualTo(Units.METRE);
 	}
 
 }

@@ -48,10 +48,6 @@ under the License.
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>java-hamcrest</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-resources</artifactId>
             <version>${project.parent.version}</version>
@@ -60,6 +56,10 @@ under the License.
             <groupId>org.apache.tamaya.ext</groupId>
             <artifactId>tamaya-formats</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
     </dependencies>
 

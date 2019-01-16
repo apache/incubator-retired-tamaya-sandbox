@@ -24,8 +24,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.junit.Assert.*;
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by atsticks on 18.04.17.
@@ -36,19 +35,19 @@ public class CLIArgumentsFactoryTest {
 
     @Test
     public void getName() throws Exception {
-        assertEquals("CLI", f.getName());
+        assertThat("CLI").isEqualTo(f.getName());
     }
 
     @Test
     public void create() throws Exception {
         PropertySource ps = f.create(Collections.EMPTY_MAP);
-        assertNotNull(ps);
-        assertTrue(ps instanceof CLIPropertySource);
+        assertThat(ps).isNotNull();
+        assertThat(ps).isInstanceOf(CLIPropertySource.class);
     }
 
     @Test
     public void getType() throws Exception {
-        assertEquals(PropertySource.class, f.getType());
+        assertThat(PropertySource.class).isEqualTo(f.getType());
     }
 
 }
