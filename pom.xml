@@ -342,16 +342,11 @@ under the License.
                     </executions>
                     <configuration>
                         <logViolationsToConsole>true</logViolationsToConsole>
-                        <configLocation>checkstyle/style.xml</configLocation>
+                        <configLocation>buildtools/src/main/resources/checkstyle/style.xml</configLocation>
                         <failOnViolation>false</failOnViolation>
                     </configuration>
 
                     <dependencies>
-                        <dependency>
-                            <groupId>org.apache.tamaya</groupId>
-                            <artifactId>buildconfigurations</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
@@ -1019,6 +1014,18 @@ under the License.
                 <configuration>
                     <skip>false</skip>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>
