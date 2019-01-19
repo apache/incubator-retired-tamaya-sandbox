@@ -70,7 +70,7 @@ under the License.
         <asciidoctor.version>1.5.6</asciidoctor.version>
         <asciidoctor-diagramm.version>1.2.1</asciidoctor-diagramm.version>
         <asciidoctorj.version>1.5.6</asciidoctorj.version>
-        <checkstyle.version>2.15</checkstyle.version>
+        <checkstyle.version>3.0.0</checkstyle.version>
         <enforcer.version>3.0.0-M1</enforcer.version>
         <gem.plugin>1.0.7</gem.plugin>
         <sources.plugin>3.0.1</sources.plugin>
@@ -333,8 +333,8 @@ under the License.
                     <version>${checkstyle.version}</version>
                     <executions>
                         <execution>
-                            <id>verify-style</id>
-                            <phase>process-classes</phase>
+                            <id>checkstyle</id>
+                            <phase>validate</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
@@ -342,19 +342,15 @@ under the License.
                     </executions>
                     <configuration>
                         <logViolationsToConsole>true</logViolationsToConsole>
-                        <configLocation>checkstyle/style.xml</configLocation>
+                        <configLocation>buildtools/src/main/resources/checkstyle/style.xml</configLocation>
+                        <failOnViolation>false</failOnViolation>
                     </configuration>
 
                     <dependencies>
                         <dependency>
-                            <groupId>org.apache.tamaya</groupId>
-                            <artifactId>buildconfigurations</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                        <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>6.2</version>
+                            <version>7.8</version>
                             <exclusions><!-- MCHECKSTYLE-156 -->
                                 <exclusion>
                                     <groupId>com.sun</groupId>
@@ -818,6 +814,10 @@ under the License.
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
@@ -1014,6 +1014,18 @@ under the License.
                 <configuration>
                     <skip>false</skip>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>
