@@ -163,7 +163,7 @@ public abstract class CommonHJSONTestCaseCollection {
 
         PropertySource properties = getPropertiesFrom(configURL);
 
-        assertThat(3).isEqualTo(properties.getProperties().size());
+        assertThat(properties.getProperties()).hasSize(3);
 
         PropertyValue keyA = properties.get("a");
         PropertyValue keyB = properties.get("b");

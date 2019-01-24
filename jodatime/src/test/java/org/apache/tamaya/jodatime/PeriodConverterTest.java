@@ -61,8 +61,7 @@ public class PeriodConverterTest {
         for (Object[] pair : inputResultPairs) {
             Period period = converter.convert((String) pair[0], context);
 
-            assertThat(period).isNotNull();
-            assertThat(period).isEqualTo((Period) pair[1]);
+            assertThat(period).isNotNull().isEqualTo((Period) pair[1]);
         }
     }
 
@@ -89,8 +88,7 @@ public class PeriodConverterTest {
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Period.class)).build();
         converter.convert("P7Y0M0W0DT0H0M0S", context);
 
-        assertThat(context.getSupportedFormats().size()).isEqualTo(2);
-        assertThat(context.getSupportedFormats().contains("PyYmMwWdDThHmMsS (" + name + ")")).isTrue();
-        assertThat(context.getSupportedFormats().contains("Pyyyy-mm-ddThh:mm:ss (" + name + ")")).isTrue();
+        assertThat(context.getSupportedFormats()).hasSize(2)
+            .contains("PyYmMwWdDThHmMsS (" + name + ")", "Pyyyy-mm-ddThh:mm:ss (" + name + ")");
     }
 }

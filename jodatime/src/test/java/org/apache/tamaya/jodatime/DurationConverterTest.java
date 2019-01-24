@@ -57,8 +57,7 @@ public class DurationConverterTest {
         for (Object[] pair : inputResultPairs) {
             Duration duration = converter.convert((String) pair[0], context);
 
-            assertThat(duration).isNotNull();
-            assertThat(duration).isEqualTo((Duration) pair[1]);
+            assertThat(duration).isNotNull().isEqualTo((Duration) pair[1]);
         }
     }
 
@@ -86,9 +85,7 @@ public class DurationConverterTest {
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Duration.class)).build();
         converter.convert("P0DT0H0M0S", context);
 
-        assertThat(context.getSupportedFormats().size()).isEqualTo(3);
-        assertThat(context.getSupportedFormats().contains("PdDThHmMsS (" + name + ")")).isTrue();
-        assertThat(context.getSupportedFormats().contains("ddThh:mm:ss (" + name + ")")).isTrue();
-        assertThat(context.getSupportedFormats().contains("PTa.bS (" + name + ")")).isTrue();
+        assertThat(context.getSupportedFormats()).hasSize(3)
+            .contains("PdDThHmMsS (" + name + ")", "ddThh:mm:ss (" + name + ")", "PTa.bS (" + name + ")");
     }
 }

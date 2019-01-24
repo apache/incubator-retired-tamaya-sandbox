@@ -41,17 +41,14 @@ public class ManagedConfigTest {
     @Test
     public void testGetJsonConfigurationInfo() {
         String info = bean.getJsonConfigurationInfo();
-        assertThat(info).isNotNull();
-        assertThat(info.contains("java.version")).isTrue();
+        assertThat(info).isNotNull().contains("java.version");
         System.out.println(bean.getJsonConfigurationInfo());
     }
 
     @Test
     public void testGetXmlConfigurationInfo() {
         String info = bean.getXmlConfigurationInfo();
-        assertThat(info).isNotNull();
-        assertThat(info.contains("java.version")).isTrue();
-        assertThat(info.contains("<configuration>")).isTrue();
+        assertThat(info).isNotNull().contains("java.version", "<configuration>");
         System.out.println(bean.getXmlConfigurationInfo());
     }
 
@@ -75,19 +72,14 @@ public class ManagedConfigTest {
     @Test
     public void testGetAreas() {
         Set<String> sections = (bean.getSections());
-        assertThat(sections).isNotNull();
-        assertThat(sections.contains("java")).isTrue();
-        assertThat(sections.contains("file")).isTrue();
+        assertThat(sections).isNotNull().contains("java", "file");
     }
 
     @Test
     public void testGetTransitiveAreas() {
         Set<String> sections = (bean.getTransitiveSections());
         Set<String> sectionsNT = (bean.getSections());
-        assertThat(sections).isNotNull();
-        assertThat(sections.contains("java")).isTrue();
-        assertThat(sections.contains("sun")).isTrue();
-        assertThat(sections.contains("sun.os")).isTrue();
+        assertThat(sections).isNotNull().contains("java", "sun", "sun.os");
         assertThat(sectionsNT.size() < sections.size()).isTrue();
     }
 
