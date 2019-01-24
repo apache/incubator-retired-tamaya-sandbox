@@ -23,6 +23,10 @@ import org.apache.tamaya.spi.PropertyConverter;
 
 import java.util.Objects;
 
+/**
+ * A prioritized property converter.
+ * @param <T> the property type
+ */
 final class PriorizedPropertyConverter<T> implements PropertyConverter<T> {
 
     private final PropertyConverter<T> delegate;

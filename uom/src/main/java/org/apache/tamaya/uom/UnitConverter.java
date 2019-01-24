@@ -36,26 +36,26 @@ import static java.util.Objects.requireNonNull;
  */
 // TODO not sure, if this could clash with JSR 363's own UnitConverter, but unless that's used here, it might be OK
 public class UnitConverter implements PropertyConverter<Unit> {
-	private static final String PATTERN_REGEX = "(\\+|-)?\\d+";
-	private static final Pattern IS_INTEGER_VALUE = Pattern.compile(PATTERN_REGEX);
+    private static final String PATTERN_REGEX = "(\\+|-)?\\d+";
+    private static final Pattern IS_INTEGER_VALUE = Pattern.compile(PATTERN_REGEX);
 
-	@Override
-	public Unit convert(String value, ConversionContext context) {
-		String trimmed = requireNonNull(value).trim();
-		context.addSupportedFormats(UnitConverter.class, "All Units supported by JSR 363");
-		UnitFormat format = ServiceProvider.current().getUnitFormatService().getUnitFormat();
+    @Override
+    public Unit convert(String value, ConversionContext context) {
+        String trimmed = requireNonNull(value).trim();
+        context.addSupportedFormats(UnitConverter.class, "All Units supported by JSR 363");
+        UnitFormat format = ServiceProvider.current().getUnitFormatService().getUnitFormat();
 
-		Unit result = null;
+        Unit result = null;
 
-		try {
-			result = format.parse(trimmed);
+        try {
+            result = format.parse(trimmed);
 
-		} catch (RuntimeException e) {
-			result = null; // Give the next converter a change. Read the JavaDoc
-							// of convert
-		}
+        } catch (RuntimeException e) {
+            result = null; // Give the next converter a change. Read the JavaDoc
+                            // of convert
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

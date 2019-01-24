@@ -59,10 +59,10 @@ public class LocalDateConverter implements PropertyConverter<LocalDate> {
             DateTimeFormat.forPattern(PARSER_FORMATS[3]).getParser(),
     };
 
-    protected static final DateTimeFormatter formatter;
+    protected static final DateTimeFormatter FORMATTER;
 
     static {
-        formatter = new DateTimeFormatterBuilder().append(null, FORMATS).toFormatter();
+        FORMATTER = new DateTimeFormatterBuilder().append(null, FORMATS).toFormatter();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class LocalDateConverter implements PropertyConverter<LocalDate> {
         LocalDate result = null;
 
         try {
-            result = formatter.parseLocalDate(trimmed);
+            result = FORMATTER.parseLocalDate(trimmed);
         } catch (RuntimeException e) {
             // Ok, go on and try the next parser
         }

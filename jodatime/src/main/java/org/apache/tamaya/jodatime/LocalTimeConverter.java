@@ -21,7 +21,7 @@ package org.apache.tamaya.jodatime;
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 import org.joda.time.LocalTime;
-import org.joda.time.format.*;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.Objects;
 

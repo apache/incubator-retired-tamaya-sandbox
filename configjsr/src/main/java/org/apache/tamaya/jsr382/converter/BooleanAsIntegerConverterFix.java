@@ -22,7 +22,6 @@ import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import javax.annotation.Priority;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 

@@ -129,6 +129,9 @@ public class MaskFilter implements PropertyFilter{
                 '}';
     }
 
+    /**
+     * The target policy for masking properties.
+     */
     private enum TargetPolicy {
         ALL,
         SINGLEVALUE,

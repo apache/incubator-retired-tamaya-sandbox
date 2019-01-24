@@ -24,6 +24,7 @@ import java.util.Map;
  * Factory for items that are configurable using getMeta-configuration.
  * This allows easy registration using the name, instead of the fully qualified
  * class name.
+ * @param <T> The item type
  */
 public interface ItemFactory<T> {
 

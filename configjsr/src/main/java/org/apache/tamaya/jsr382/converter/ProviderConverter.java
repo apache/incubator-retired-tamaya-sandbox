@@ -64,6 +64,10 @@ public class ProviderConverter implements PropertyConverter<Provider> {
         return getClass().hashCode();
     }
 
+    /**
+     * A class for converting from a String to a particular type.
+     * @param <T> the ConfigQuery type
+     */
     private static final class ConvertQuery<T> implements ConfigQuery<T> {
 
         private String rawValue;

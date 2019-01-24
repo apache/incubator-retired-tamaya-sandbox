@@ -18,7 +18,11 @@
  */
 package org.apache.tamaya.doc;
 
-import org.apache.tamaya.doc.annot.*;
+import org.apache.tamaya.doc.annot.ConfigSpec;
+import org.apache.tamaya.doc.annot.ConfigAreaSpec;
+import org.apache.tamaya.doc.annot.ConfigAreaSpecs;
+import org.apache.tamaya.doc.annot.ConfigPropertySpec;
+import org.apache.tamaya.doc.annot.ConfigPropertySpecs;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
@@ -33,8 +37,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**

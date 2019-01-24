@@ -25,7 +25,8 @@ import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
 
 import javax.security.auth.Subject;
-import java.security.*;
+import java.security.AccessController;
+import java.security.Principal;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -127,6 +128,9 @@ public class SecuredFilter implements PropertyFilter{
                 '}';
     }
 
+    /**
+     * The security policy for filtering meta values.
+     */
     public enum SecurePolicy{
         HIDE,
         WARN_ONLY,
