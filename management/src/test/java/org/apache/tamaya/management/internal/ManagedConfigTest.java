@@ -80,7 +80,7 @@ public class ManagedConfigTest {
         Set<String> sections = (bean.getTransitiveSections());
         Set<String> sectionsNT = (bean.getSections());
         assertThat(sections).isNotNull().contains("java", "sun", "sun.os");
-        assertThat(sectionsNT.size() < sections.size()).isTrue();
+        assertThat(sectionsNT.size()).isLessThan(sections.size());
     }
 
     @Test
