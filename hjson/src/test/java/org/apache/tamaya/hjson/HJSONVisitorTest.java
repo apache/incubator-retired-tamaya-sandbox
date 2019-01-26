@@ -47,12 +47,12 @@ public class HJSONVisitorTest {
 		assertThat(data).isNotNull();
 
 		ObjectValue ov = data.toObjectValue();
-		assertThat(ov.getValues().size()).isEqualTo(6);
-		assertThat(data.toMap()).containsKeys("key.sub", "anotherKey", "notAnotherKey", "number", "null");
-		assertThat(data.toMap()).containsEntry("key.sub", "createValue");
-		assertThat(data.toMap()).containsEntry("null", null);
-		assertThat(data.toMap()).containsEntry("anotherKey", "true");
-		assertThat(data.toMap()).doesNotContainEntry("empty", null);
+		assertThat(ov.getValues()).hasSize(6);
+		assertThat(data.toMap()).containsKeys("key.sub", "anotherKey", "notAnotherKey", "number", "null")
+		        .containsEntry("key.sub", "createValue")
+                .containsEntry("null", null)
+                .containsEntry("anotherKey", "true")
+                .doesNotContainEntry("empty", null);
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class HJSONVisitorTest {
 		HJSONDataBuilder visitor = new HJSONDataBuilder("Test:parsingWorksOnEmptyObject", startNode);
 		PropertyValue data = visitor.build();
 		assertThat(data).isNotNull();
-		assertThat(data.isLeaf());
+		assertThat(data.isLeaf()).isFalse();
 	}
 
 	@Test

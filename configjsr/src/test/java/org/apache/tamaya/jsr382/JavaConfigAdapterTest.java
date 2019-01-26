@@ -86,8 +86,7 @@ public class JavaConfigAdapterTest {
         List<PropertySource> tamayaSources = new ArrayList<>();
         tamayaSources.add(testPropertySource);
         List<ConfigSource> configSources = JavaConfigAdapterFactory.toConfigSources(tamayaSources);
-        assertThat(configSources).isNotNull();
-        assertThat(tamayaSources.size()).isEqualTo(configSources.size());
+        assertThat(configSources).isNotNull().hasSize(tamayaSources.size());
         compare(testPropertySource, configSources.get(0));
     }
 
@@ -110,8 +109,7 @@ public class JavaConfigAdapterTest {
         List<ConfigSource> configSources = new ArrayList<>();
         configSources.add(configSource);
         List<PropertySource> propertySources = JavaConfigAdapterFactory.toPropertySources(configSources);
-        assertThat(propertySources).isNotNull();
-        assertThat(propertySources.size()).isEqualTo(configSources.size());
+        assertThat(propertySources).isNotNull().hasSize(configSources.size());
         compare(propertySources.get(0), configSource);
     }
 
@@ -164,9 +162,8 @@ public class JavaConfigAdapterTest {
         Map<String,PropertyValue> props = new HashMap<>();
         props.put("a", PropertyValue.of("a","b", "toStringMap"));
         Map<String, String> mpProps = JavaConfigAdapterFactory.toStringMap(props);
-        assertThat(mpProps).isNotNull();
+        assertThat(mpProps).isNotNull().containsEntry("a", "b");
         assertThat(props.keySet()).isEqualTo(mpProps.keySet());
-        assertThat(mpProps.get("a")).isEqualTo("b");
     }
 
     @Test

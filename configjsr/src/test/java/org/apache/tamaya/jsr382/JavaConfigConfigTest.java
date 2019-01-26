@@ -52,8 +52,7 @@ public class JavaConfigConfigTest {
             Optional<String> val = config.getOptionalValue(key, String.class);
             assertThat(val).isNotNull();
             val = config.getOptionalValue(key + System.currentTimeMillis(), String.class);
-            assertThat(val).isNotNull();
-            assertThat(val.isPresent()).isFalse();
+            assertThat(val).isNotNull().isNotPresent();
         }
     }
 
