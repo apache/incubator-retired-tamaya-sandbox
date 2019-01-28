@@ -162,7 +162,7 @@ public final class JavaConfigAdapterFactory {
      */
     public static <T> PropertyConverter<T> toPropertyConverter(Converter<T> converter, int priority) {
         if(converter instanceof JavaConfigConverterAdapter){
-            return PriorizedPropertyConverter.of(((JavaConfigConverterAdapter)converter).getPropertyConverter(), priority);
+            return PrioritizedPropertyConverter.of(((JavaConfigConverterAdapter)converter).getPropertyConverter(), priority);
         }
         return new TamayaPropertyConverterAdapter(converter);
     }

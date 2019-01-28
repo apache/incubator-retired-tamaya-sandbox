@@ -27,21 +27,21 @@ import java.util.Objects;
  * A prioritized property converter.
  * @param <T> the property type
  */
-final class PriorizedPropertyConverter<T> implements PropertyConverter<T> {
+final class PrioritizedPropertyConverter<T> implements PropertyConverter<T> {
 
     private final PropertyConverter<T> delegate;
     private int priority;
 
-    public PriorizedPropertyConverter(PropertyConverter<T> propertyConverter, int priority) {
+    public PrioritizedPropertyConverter(PropertyConverter<T> propertyConverter, int priority) {
         this.priority = priority;
         this.delegate = Objects.requireNonNull(propertyConverter);
     }
 
     public static <T> PropertyConverter<T> of(PropertyConverter<T> propertyConverter, int priority) {
-        if(propertyConverter instanceof PriorizedPropertyConverter){
-            return ((PriorizedPropertyConverter)propertyConverter).setPriority(priority);
+        if(propertyConverter instanceof PrioritizedPropertyConverter){
+            return ((PrioritizedPropertyConverter)propertyConverter).setPriority(priority);
         }
-        return new PriorizedPropertyConverter<>(propertyConverter, priority);
+        return new PrioritizedPropertyConverter<>(propertyConverter, priority);
     }
 
     private PropertyConverter<T> setPriority(int priority) {
@@ -56,7 +56,7 @@ final class PriorizedPropertyConverter<T> implements PropertyConverter<T> {
 
     @Override
     public String toString() {
-        return "PriorizedPropertyConverter{" +
+        return "PrioritizedPropertyConverter{" +
                 "delegate=" + delegate +
                 ", priority=" + priority +
                 '}';
