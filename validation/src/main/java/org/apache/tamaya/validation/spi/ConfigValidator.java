@@ -22,13 +22,15 @@ import org.apache.tamaya.Configuration;
 import org.apache.tamaya.validation.ValidationCheck;
 
 import java.util.List;
-import java.util.function.Function;
 
+/**
+ * A configuration validator.
+ */
 @FunctionalInterface
 public interface ConfigValidator {
 
     /**
-     * Validaters the configuration.
+     * Validates the configuration.
      * @param config the configuration to validate, not null.
      * @return the findings evaluated.
      */

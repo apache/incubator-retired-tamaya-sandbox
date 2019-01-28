@@ -99,6 +99,9 @@ public class URLPropertySourceFactory implements ItemFactory<PropertySource>{
         return PropertySource.class;
     }
 
+    /**
+     * A lazy configuration data supplier.
+     */
     private static final class LazyDataSupplier implements Supplier<ConfigurationData> {
 
         private String[] formats;
@@ -127,6 +130,9 @@ public class URLPropertySourceFactory implements ItemFactory<PropertySource>{
         }
     }
 
+    /**
+     * A refreshable configuration property source.
+     */
     private static final class RefreshablePropertySource extends MappedConfigurationDataPropertySource
     implements Refreshable{
 

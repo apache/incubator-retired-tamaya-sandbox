@@ -19,7 +19,8 @@
 package org.apache.tamaya.jsr382;
 
 import org.apache.tamaya.TypeLiteral;
-import org.apache.tamaya.spi.*;
+import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.spisupport.PropertySourceComparator;
 import org.apache.tamaya.spisupport.propertysource.EnvironmentPropertySource;
 import org.apache.tamaya.spisupport.propertysource.SystemPropertySource;

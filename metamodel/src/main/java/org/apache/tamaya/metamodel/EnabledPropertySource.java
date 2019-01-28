@@ -40,7 +40,7 @@ public final class EnabledPropertySource
     private String enabledExpression;
     private PropertySource wrapped;
     private boolean enabled;
-    private static final JavaResolver resolver = new JavaResolver();
+    private static final JavaResolver RESOLVER = new JavaResolver();
 
     public EnabledPropertySource(PropertySource wrapped, Map<String,String> context, String expression) {
         this.enabledExpression = Objects.requireNonNull(expression);
@@ -50,7 +50,7 @@ public final class EnabledPropertySource
 
     protected boolean calculateEnabled(Map<String, String> context) {
         try {
-            return Boolean.TRUE.equals(resolver.evaluate(enabledExpression, context));
+            return Boolean.TRUE.equals(RESOLVER.evaluate(enabledExpression, context));
         } catch (Exception e) {
             LOG.severe("Invalid Boolean expression: '"
                     +enabledExpression+"': " + e + ", property source will be disabled: " +

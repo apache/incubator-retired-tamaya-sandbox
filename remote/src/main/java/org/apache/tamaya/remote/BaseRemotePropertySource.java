@@ -64,7 +64,7 @@ public abstract class BaseRemotePropertySource implements PropertySource{
     public void reload(){
         ConfigurationFormat format = getConfigurationFormat();
         for(URL url:getAccessURLs()) {
-            try(InputStream is = url.openStream()) {
+            try (InputStream is = url.openStream()) {
                 ConfigurationData data = format.readConfiguration(url.toString(), is);
                 if(data!=null){
                     Map<String,String> newProperties = mapConfigurationData(data);
@@ -76,8 +76,7 @@ public abstract class BaseRemotePropertySource implements PropertySource{
                                 "Reloaded remote config from: " + url + ", entries read: " + this.properties.size());
                     }
                 }
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Failed to load config from url: " + url, e);
             }
         }

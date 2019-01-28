@@ -20,7 +20,6 @@ package org.apache.tamaya.jsr382;
 
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.events.FrozenConfiguration;
 
 import javax.config.Config;
 import javax.config.ConfigAccessor;

@@ -41,9 +41,9 @@ import org.apache.tamaya.Configuration;
  */
 public class ConfiguredSystemProperties extends Properties {
 
-	private static final long serialVersionUID = 2152870929299226804L;
+    private static final long serialVersionUID = 2152870929299226804L;
 
-	private static final Logger LOG = Logger.getLogger(ConfiguredSystemProperties.class.getName());
+    private static final Logger LOG = Logger.getLogger(ConfiguredSystemProperties.class.getName());
     private Properties initialProperties;
     private static volatile Properties contextualProperties;
 
@@ -173,7 +173,7 @@ public class ConfiguredSystemProperties extends Properties {
     }
 
     @SuppressWarnings("deprecation")
-	@Override
+    @Override
     public void save(OutputStream out, String comments) {
         super.save(out, comments);
     }

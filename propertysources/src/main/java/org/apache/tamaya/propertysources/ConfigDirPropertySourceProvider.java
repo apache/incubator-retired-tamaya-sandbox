@@ -26,10 +26,8 @@ import org.apache.tamaya.resource.AbstractPathPropertySourceProvider;
 import org.apache.tamaya.spi.PropertySource;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

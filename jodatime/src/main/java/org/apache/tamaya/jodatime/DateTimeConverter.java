@@ -83,10 +83,10 @@ public class DateTimeConverter implements PropertyConverter<DateTime> {
          DateTimeFormat.forPattern(PARSER_FORMATS[11]).getParser(),
     };
 
-    protected static final DateTimeFormatter formatter;
+    protected static final DateTimeFormatter FORMATTER;
 
     static {
-        formatter = new DateTimeFormatterBuilder().append(null, FORMATS).toFormatter();
+        FORMATTER = new DateTimeFormatterBuilder().append(null, FORMATS).toFormatter();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class DateTimeConverter implements PropertyConverter<DateTime> {
         DateTime result = null;
 
         try {
-            result = formatter.parseDateTime(trimmed);
+            result = FORMATTER.parseDateTime(trimmed);
         } catch (RuntimeException e) {
             // Ok, go on and try the next parser
         }

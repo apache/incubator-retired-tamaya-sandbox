@@ -24,9 +24,14 @@ import org.apache.tamaya.inject.api.ConfigDefaultSections;
 import org.apache.tamaya.inject.spi.InjectionUtils;
 import org.apache.tamaya.spi.PropertyValue;
 
-import java.lang.reflect.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * A class representing the documented area of a configuration.
+ */
 public final class DocumentedArea {
 
     private final AnnotatedElement owner;
@@ -221,8 +226,12 @@ public final class DocumentedArea {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DocumentedArea that = (DocumentedArea) o;
 

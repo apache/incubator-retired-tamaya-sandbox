@@ -18,9 +18,15 @@
  */
 package org.apache.tamaya.jsr382;
 
-
-import org.apache.tamaya.*;
-import org.apache.tamaya.spi.*;
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.TypeLiteral;
+import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ConfigurationContext;
+import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spi.PropertyValue;
+import org.apache.tamaya.spi.ServiceContext;
+import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.spisupport.DefaultConfigurationContext;
 import org.apache.tamaya.spisupport.DefaultMetaDataProvider;
 import org.apache.tamaya.spisupport.MetadataProvider;

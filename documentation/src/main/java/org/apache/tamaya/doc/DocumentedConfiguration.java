@@ -157,12 +157,18 @@ public final class DocumentedConfiguration {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DocumentedConfiguration)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DocumentedConfiguration)) {
+            return false;
+        }
 
         DocumentedConfiguration that = (DocumentedConfiguration) o;
 
-        if (!name.equals(that.name)) return false;
+        if (!name.equals(that.name)) {
+            return false;
+        }
         return version.equals(that.version);
     }
 

@@ -18,7 +18,6 @@ package org.apache.tamaya.jsr382.cdi;
 
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
