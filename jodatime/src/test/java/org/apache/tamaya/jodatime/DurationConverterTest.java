@@ -24,7 +24,6 @@ import org.joda.time.Duration;
 import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.PeriodFormatter;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +36,7 @@ public class DurationConverterTest {
 
     private static DurationConverter converter = new DurationConverter();
 
-    private static PeriodFormatter FORMATTER = ISOPeriodFormat.standard();
+    private static final PeriodFormatter FORMATTER = ISOPeriodFormat.standard();
 
     @Test
     public void canConvertPropertiesInAllSupportedFormats() {

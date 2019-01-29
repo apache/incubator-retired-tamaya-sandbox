@@ -25,7 +25,7 @@ import javax.config.spi.ConfigProviderResolver;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by atsticks on 24.03.17.

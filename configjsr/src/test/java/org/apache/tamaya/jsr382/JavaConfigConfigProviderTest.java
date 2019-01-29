@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.jsr382;
 
-import org.apache.tamaya.ConfigurationProvider;
 import org.junit.Test;
 
 import javax.config.Config;

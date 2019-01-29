@@ -22,7 +22,11 @@ import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationSnapshot;
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.functions.ConfigurationFunctions;
-import org.apache.tamaya.spi.*;
+import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ConversionContext;
+import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spi.PropertyValue;
 
 import javax.config.Config;
 import javax.config.ConfigAccessor;
