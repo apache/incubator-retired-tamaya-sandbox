@@ -29,7 +29,7 @@ import java.lang.management.ManagementFactory;
 import java.util.Map;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Anatole on 20.08.2015.

@@ -34,7 +34,7 @@ public class DateTimeConverterTest {
      */
     private static DateTimeConverter converter = new DateTimeConverter();
 
-    private static DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     @Test
     public void canConvertISO8601DateTimeSpecWithTimezoneOffset() {

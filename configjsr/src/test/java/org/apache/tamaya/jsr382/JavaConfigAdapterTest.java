@@ -18,7 +18,10 @@
  */
 package org.apache.tamaya.jsr382;
 
-import org.apache.tamaya.*;
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.ConfigurationProvider;
+import org.apache.tamaya.ConfigurationSnapshot;
+import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConfigurationContext;
 import org.apache.tamaya.spi.PropertyConverter;
 import org.apache.tamaya.spi.PropertySource;
@@ -35,7 +38,7 @@ import javax.config.spi.ConfigSource;
 import javax.config.spi.Converter;
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaConfigAdapterTest {
     @Test

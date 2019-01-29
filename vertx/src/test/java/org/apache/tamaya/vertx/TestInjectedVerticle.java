@@ -20,21 +20,13 @@ package org.apache.tamaya.vertx;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageCodec;
-import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.Json;
-import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
-import org.apache.tamaya.functions.ConfigurationFunctions;
-import org.apache.tamaya.functions.PropertyMatcher;
 import org.apache.tamaya.inject.api.Config;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 /**
  * Small configured verticle for testing Tamaya's vertx support.

@@ -342,6 +342,8 @@ under the License.
                     </executions>
                     <configuration>
                         <logViolationsToConsole>true</logViolationsToConsole>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <suppressionsLocation>buildtools/src/main/resources/checkstyle/suppressions.xml</suppressionsLocation>
                         <configLocation>buildtools/src/main/resources/checkstyle/style.xml</configLocation>
                     </configuration>
 
