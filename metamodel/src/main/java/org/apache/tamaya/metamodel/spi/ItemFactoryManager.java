@@ -38,9 +38,9 @@ public final class ItemFactoryManager {
 
     private static final Logger LOG = Logger.getLogger(ItemFactoryManager.class.getName());
 
-	private Map<Class, List<ItemFactory<?>>> factoryRegistry = new ConcurrentHashMap<>();
+    private Map<Class, List<ItemFactory<?>>> factoryRegistry = new ConcurrentHashMap<>();
 
-    private static ItemFactoryManager INSTANCE = new ItemFactoryManager();
+    private static final ItemFactoryManager INSTANCE = new ItemFactoryManager();
 
     private ItemFactoryManager(){
     }
@@ -49,7 +49,7 @@ public final class ItemFactoryManager {
         return INSTANCE;
     }
 
-	public <T> List<ItemFactory<T>> getFactories(Class<T> type){
+    public <T> List<ItemFactory<T>> getFactories(Class<T> type){
         List<ItemFactory<?>> factories = factoryRegistry.get(type);
         if(factories==null){
             Collection<ItemFactory> allFactories =
@@ -94,6 +94,10 @@ public final class ItemFactoryManager {
         factories.add(factory);
     }
 
+    /**
+     * A factory class for simple items.
+     * @param <I> the item type
+     */
     private static class SimpleItemFactory<I> implements ItemFactory<I> {
 
         private Class<I> type;
@@ -126,8 +130,12 @@ public final class ItemFactoryManager {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof SimpleItemFactory)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof SimpleItemFactory)) {
+                return false;
+            }
             SimpleItemFactory<?> that = (SimpleItemFactory<?>) o;
             return Objects.equals(getType(), that.getType()) &&
                     Objects.equals(instanceType, that.instanceType);

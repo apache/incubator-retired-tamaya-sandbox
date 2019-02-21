@@ -24,16 +24,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Matchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DateTimeConverterTest {
     /*
@@ -42,7 +34,7 @@ public class DateTimeConverterTest {
      */
     private static DateTimeConverter converter = new DateTimeConverter();
 
-    private static DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     @Test
     public void canConvertISO8601DateTimeSpecWithTimezoneOffset() {
@@ -72,8 +64,8 @@ public class DateTimeConverterTest {
         for (Object[] pair : inputResultPairs) {
             DateTime date = converter.convert((String)pair[0], context);
 
-            assertThat("Converter failed to convert input createValue " + pair[0], date, notNullValue());
-            assertThat(date.isEqual((DateTime)pair[1]), is(true));
+            assertThat(date).isNotNull();
+            assertThat(date.isEqual((DateTime) pair[1])).isTrue();
         }
     }
 
@@ -87,7 +79,7 @@ public class DateTimeConverterTest {
         for (String input : inputValues) {
             DateTime date = converter.convert(input, context);
 
-            assertThat(date, nullValue());
+            assertThat(date).isNull();
         }
     }
 
@@ -96,11 +88,11 @@ public class DateTimeConverterTest {
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTime.class)).build();
         converter.convert("2007-08-31T16+00:00", context);
 
-        assertThat(context.getSupportedFormats(), hasSize(DateTimeConverter.PARSER_FORMATS.length));
+        assertThat(context.getSupportedFormats()).hasSize(DateTimeConverter.PARSER_FORMATS.length);
 
         for (String format : DateTimeConverter.PARSER_FORMATS) {
             String expected = format + " (" + DateTimeConverter.class.getSimpleName() + ")";
-            assertThat(context.getSupportedFormats(), hasItem(expected));
+            assertThat(context.getSupportedFormats()).contains(expected);
         }
     }
 }

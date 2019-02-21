@@ -30,6 +30,9 @@ import java.lang.reflect.Type;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A text-based documentation format.
+ */
 public class TextDocFormat implements DocFormat<String> {
     @Override
     public String apply(ConfigurationDocumentation documentedConfiguration) {
@@ -93,19 +96,18 @@ public class TextDocFormat implements DocFormat<String> {
     }
 
     private String printOwner(AnnotatedElement owner) {
-        if(owner instanceof Type){
+        if (owner instanceof Type) {
             return ((Type)owner).getTypeName();
-        }else if(owner instanceof Field){
+        } else if (owner instanceof Field) {
             Field f = (Field)owner;
             return f.getDeclaringClass().getName()+ '#' + f.getName()+": " + f.getType().getName();
-        }
-        else if(owner instanceof Method){
+        } else if (owner instanceof Method) {
             Method m = (Method)owner;
             return m.getDeclaringClass().getName()+ '#' + m.getName()+
                     "("+String.join(", ", Stream.of(m.getParameterTypes()).map(c -> c.getName())
                     .collect(Collectors.toList())) + "): " +
                     m.getReturnType().getName();
-        }else{
+        } else {
             return String.valueOf(owner);
         }
     }

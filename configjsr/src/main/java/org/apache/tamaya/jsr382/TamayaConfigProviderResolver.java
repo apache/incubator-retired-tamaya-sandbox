@@ -19,7 +19,6 @@
 package org.apache.tamaya.jsr382;
 
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.spi.ConfigurationBuilder;
 
 import javax.config.Config;

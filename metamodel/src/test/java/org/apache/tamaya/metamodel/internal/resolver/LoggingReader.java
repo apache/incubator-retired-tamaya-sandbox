@@ -38,7 +38,7 @@ import java.util.TimerTask;
  */
 public class LoggingReader implements MetaConfigurationReader{
 
-    private static final JavaResolver resolver = new JavaResolver();
+    private static final JavaResolver RESOLVER = new JavaResolver();
 
     @Override
     public void read(final Document document, ConfigurationBuilder configBuilder) {
@@ -58,7 +58,7 @@ public class LoggingReader implements MetaConfigurationReader{
                         try {
                             line = reader.readLine();
                             while(line!=null){
-                                Object res = resolver.evaluate(line);
+                                Object res = RESOLVER.evaluate(line);
                                 if(res!=null) {
                                     System.out.println(res);
                                 }

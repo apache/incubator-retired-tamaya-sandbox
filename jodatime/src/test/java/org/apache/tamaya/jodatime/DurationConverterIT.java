@@ -25,9 +25,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DurationConverterIT {
     @Test
@@ -44,8 +42,8 @@ public class DurationConverterIT {
             }
         }
 
-        assertThat("Converter not found via service context.", converter, notNullValue());
-        assertThat(converter, instanceOf(DurationConverter.class));
+        assertThat(converter).isNotNull();
+        assertThat(converter).isInstanceOf(DurationConverter.class);
     }
 
 }

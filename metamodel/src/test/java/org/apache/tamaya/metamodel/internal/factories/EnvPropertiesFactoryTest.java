@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
@@ -36,19 +36,19 @@ public class EnvPropertiesFactoryTest {
 
     @Test
     public void getName() throws Exception {
-        assertEquals("env-properties", f.getName());
+        assertThat("env-properties").isEqualTo(f.getName());
     }
 
     @Test
     public void create() throws Exception {
         PropertySource ps = f.create(Collections.EMPTY_MAP);
-        assertNotNull(ps);
-        assertTrue(ps instanceof EnvironmentPropertySource);
+        assertThat(ps).isNotNull();
+        assertThat(ps).isInstanceOf(EnvironmentPropertySource.class);
     }
 
     @Test
     public void getType() throws Exception {
-        assertEquals(PropertySource.class, f.getType());
+        assertThat(PropertySource.class).isEqualTo(f.getType());
     }
 
 }

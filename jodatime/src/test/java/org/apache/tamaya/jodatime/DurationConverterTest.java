@@ -24,14 +24,8 @@ import org.joda.time.Duration;
 import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.PeriodFormatter;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DurationConverterTest {
 
@@ -42,7 +36,7 @@ public class DurationConverterTest {
 
     private static DurationConverter converter = new DurationConverter();
 
-    private static PeriodFormatter FORMATTER = ISOPeriodFormat.standard();
+    private static final PeriodFormatter FORMATTER = ISOPeriodFormat.standard();
 
     @Test
     public void canConvertPropertiesInAllSupportedFormats() {
@@ -62,8 +56,7 @@ public class DurationConverterTest {
         for (Object[] pair : inputResultPairs) {
             Duration duration = converter.convert((String) pair[0], context);
 
-            assertThat("Converter failed to convert input createValue " + pair[0], duration, notNullValue());
-            assertThat(duration, equalTo((Duration) pair[1]));
+            assertThat(duration).isNotNull().isEqualTo((Duration) pair[1]);
         }
     }
 
@@ -80,7 +73,7 @@ public class DurationConverterTest {
         for (String input : inputValues) {
             Duration duration = converter.convert(input, context);
 
-            assertThat(duration, nullValue());
+            assertThat(duration).isNull();
         }
     }
 
@@ -91,9 +84,7 @@ public class DurationConverterTest {
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(Duration.class)).build();
         converter.convert("P0DT0H0M0S", context);
 
-        assertThat(context.getSupportedFormats(), hasSize(3));
-        assertThat(context.getSupportedFormats(), hasItem("PdDThHmMsS (" + name + ")"));
-        assertThat(context.getSupportedFormats(), hasItem("ddThh:mm:ss (" + name + ")"));
-        assertThat(context.getSupportedFormats(), hasItem("PTa.bS (" + name + ")"));
+        assertThat(context.getSupportedFormats()).hasSize(3)
+            .contains("PdDThHmMsS (" + name + ")", "ddThh:mm:ss (" + name + ")", "PTa.bS (" + name + ")");
     }
 }

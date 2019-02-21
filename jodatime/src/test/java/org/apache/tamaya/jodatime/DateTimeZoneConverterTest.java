@@ -23,15 +23,8 @@ import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.ConversionContext.Builder;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DateTimeZoneConverterTest {
     private DateTimeZoneConverter converter = new DateTimeZoneConverter();
@@ -59,8 +52,7 @@ public class DateTimeZoneConverterTest {
         for (Object[] pair : inputResultPairs) {
             DateTimeZone zone = converter.convert((String) pair[0], context);
 
-            assertThat("Converter failed to convert input createValue " + pair[0], zone, notNullValue());
-            assertThat(zone, equalTo((DateTimeZone)pair[1]));
+            assertThat(zone).isNotNull().isEqualTo((DateTimeZone)pair[1]);
         }
     }
 
@@ -78,7 +70,7 @@ public class DateTimeZoneConverterTest {
         for (String input : inputValues) {
             DateTimeZone date = converter.convert(input, context);
 
-            assertThat(date, nullValue());
+            assertThat(date).isNull();
         }
     }
 
@@ -90,10 +82,8 @@ public class DateTimeZoneConverterTest {
         ConversionContext context = new Builder(TypeLiteral.of(DateTimeZone.class)).build();
         DateTimeZone result = converter.convert("+01:00", context);
 
-        assertThat(result, notNullValue());
-        assertThat(context.getSupportedFormats(), hasSize(2));
-        assertThat(context.getSupportedFormats(), hasItem(firstFormat));
-        assertThat(context.getSupportedFormats(), hasItem(secondFormat));
+        assertThat(result).isNotNull();
+        assertThat(context.getSupportedFormats()).hasSize(2).containsExactly(firstFormat, secondFormat);
     }
 
 }

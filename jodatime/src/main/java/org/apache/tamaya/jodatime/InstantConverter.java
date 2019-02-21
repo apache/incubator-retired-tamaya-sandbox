@@ -21,7 +21,11 @@ package org.apache.tamaya.jodatime;
 import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 import org.joda.time.Instant;
-import org.joda.time.format.*;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.DateTimeParser;
 
 import java.util.Objects;
 
@@ -80,10 +84,10 @@ public class InstantConverter implements PropertyConverter<Instant> {
          DateTimeFormat.forPattern(PARSER_FORMATS[11]).getParser(),
     };
 
-    protected static final DateTimeFormatter formatter;
+    protected static final DateTimeFormatter FORMATTER;
 
     static {
-        formatter = new DateTimeFormatterBuilder().append(null, FORMATS).toFormatter();
+        FORMATTER = new DateTimeFormatterBuilder().append(null, FORMATS).toFormatter();
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.util.Objects;
 
 /**
  * Tamaya converter implementation that wraps a Java config {@link javax.config.spi.Converter} instance.
+ * @param <T> the converter type
  */
 public class JavaConfigConverterAdapter<T> implements Converter<T> {
 

@@ -30,8 +30,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static j2html.TagCreator.*;
+import static j2html.TagCreator.b;
+import static j2html.TagCreator.body;
+import static j2html.TagCreator.h1;
+import static j2html.TagCreator.h2;
+import static j2html.TagCreator.h4;
+import static j2html.TagCreator.head;
+import static j2html.TagCreator.html;
+import static j2html.TagCreator.i;
+import static j2html.TagCreator.li;
+import static j2html.TagCreator.link;
+import static j2html.TagCreator.meta;
+import static j2html.TagCreator.p;
+import static j2html.TagCreator.pre;
+import static j2html.TagCreator.table;
+import static j2html.TagCreator.td;
+import static j2html.TagCreator.text;
+import static j2html.TagCreator.th;
+import static j2html.TagCreator.title;
+import static j2html.TagCreator.thead;
+import static j2html.TagCreator.tr;
+import static j2html.TagCreator.ul;
 
+/**
+ * An HTML-based documentation format.
+ */
 public class HtmlDocFormat implements DocFormat<String> {
     @Override
     public String apply(ConfigurationDocumentation documentedConfiguration) {

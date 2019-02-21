@@ -44,6 +44,9 @@ import java.util.logging.Logger;
 public class MetaContextReader implements MetaConfigurationReader {
 
     private static final Logger LOG = Logger.getLogger(MetaContextReader.class.getName());
+    private static final int INVALUE = 0;
+    private static final int BEFORE_EXP = 1;
+    private static final int INEXP = 2;
 
     private Map<String,SimpleResolver> resolvers = new ConcurrentHashMap<>();
 
@@ -98,9 +101,6 @@ public class MetaContextReader implements MetaConfigurationReader {
     private String resolvePlaceholders(String value) {
         StringBuilder result = new StringBuilder();
         StringBuilder exp = new StringBuilder();
-        final int INVALUE = 0;
-        final int BEFORE_EXP = 1;
-        final int INEXP = 2;
         int state = INVALUE;
         StringTokenizer tokenizer = new StringTokenizer(value, "${}", true);
         while(tokenizer.hasMoreTokens()){
@@ -108,16 +108,16 @@ public class MetaContextReader implements MetaConfigurationReader {
             switch(token){
                 case "$":
                     switch(state){
-                        case INVALUE:
-                        default:
-                            state = BEFORE_EXP;
-                            break;
                         case BEFORE_EXP: // escaped
                             result.append(token);
                             state = INVALUE;
                             break;
                         case INEXP:
                             exp.append(token);
+                            break;
+                        case INVALUE:
+                        default:
+                            state = BEFORE_EXP;
                             break;
                     }
                     break;
@@ -146,6 +146,8 @@ public class MetaContextReader implements MetaConfigurationReader {
                         case BEFORE_EXP:
                             result.append("$").append(token);
                             state = INVALUE;
+                            break;
+                        default:
                             break;
                     }
                     break;

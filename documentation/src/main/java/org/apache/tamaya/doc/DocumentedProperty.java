@@ -27,6 +27,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * A class representing a documented configuration property.
+ */
 public final class DocumentedProperty {
 
     private final AnnotatedElement owner;
@@ -185,8 +188,12 @@ public final class DocumentedProperty {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DocumentedProperty that = (DocumentedProperty) o;
 

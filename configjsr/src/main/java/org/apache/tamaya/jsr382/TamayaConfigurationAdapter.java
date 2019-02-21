@@ -18,7 +18,9 @@
  */
 package org.apache.tamaya.jsr382;
 
-import org.apache.tamaya.*;
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.ConfigurationSnapshot;
+import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConfigurationContext;
 import org.apache.tamaya.spisupport.DefaultConfigurationSnapshot;
 

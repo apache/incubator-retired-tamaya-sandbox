@@ -25,7 +25,7 @@ import java.util.*;
 /**
  * Documentation of an application configuration.
  */
-public final class ConfigurationDocumentation {
+public final class DocumentedConfiguration {
 
     private String name;
     private String version;
@@ -39,13 +39,13 @@ public final class ConfigurationDocumentation {
     /**
      * Creates a new empty configuration documentation.
      */
-    public ConfigurationDocumentation(){}
+    public DocumentedConfiguration(){}
 
     /**
      * Creates a new configuration documentation and initializes it with the values from the annotation given.
      * @param annotation the spec annotation, not null.
      */
-    public ConfigurationDocumentation(ConfigSpec annotation){
+    public DocumentedConfiguration(ConfigSpec annotation){
         init(annotation, null);
     }
 
@@ -176,7 +176,7 @@ public final class ConfigurationDocumentation {
         return allProperties.get(path);
     }
 
-    public ConfigurationDocumentation addProperty(DocumentedProperty property){
+    public DocumentedConfiguration addProperty(DocumentedProperty property){
         for(String key:property.getKeys()) {
             this.allProperties.put(key, property);
         }
@@ -184,7 +184,7 @@ public final class ConfigurationDocumentation {
         return this;
     }
 
-    public ConfigurationDocumentation addGroup(DocumentedArea group){
+    public DocumentedConfiguration addGroup(DocumentedArea group){
         for(String basePath:group.getBasePaths()) {
             this.allGroups.put(basePath, group);
         }
@@ -194,12 +194,18 @@ public final class ConfigurationDocumentation {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ConfigurationDocumentation)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DocumentedConfiguration)) {
+            return false;
+        }
 
-        ConfigurationDocumentation that = (ConfigurationDocumentation) o;
+        DocumentedConfiguration that = (DocumentedConfiguration) o;
 
-        if (!name.equals(that.name)) return false;
+        if (!name.equals(that.name)) {
+            return false;
+        }
         return version.equals(that.version);
     }
 

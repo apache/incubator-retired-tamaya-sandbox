@@ -19,13 +19,11 @@
 package org.apache.tamaya.hjson;
 
 import org.apache.tamaya.spi.PropertySource;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import java.net.URL;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HJSONPropertySourceTest extends CommonHJSONTestCaseCollection {
 
@@ -33,17 +31,17 @@ public class HJSONPropertySourceTest extends CommonHJSONTestCaseCollection {
     public void tamayaOrdinalKeywordIsNotPropagatedAsNormalProperty() throws Exception {
         URL configURL = HJSONPropertySourceTest.class.getResource("/configs/valid/with-explicit-priority.hjson");
 
-        assertThat(configURL, CoreMatchers.notNullValue());
+        assertThat(configURL).isNotNull();
 
         HJSONPropertySource source = new HJSONPropertySource(configURL, 4);
-        assertEquals(source.getOrdinal(), 16784);
+        assertThat(source.getOrdinal()).isEqualTo(16784);
     }
     
     @Test
     public void testAcceptJsonArrays() throws Exception {
         URL configURL = HJSONPropertySourceTest.class.getResource("/configs/invalid/array.hjson");
 
-        assertThat(configURL, CoreMatchers.notNullValue());
+        assertThat(configURL).isNotNull();
 
         new HJSONPropertySource(configURL);
     }

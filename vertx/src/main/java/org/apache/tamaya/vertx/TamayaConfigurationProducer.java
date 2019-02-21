@@ -19,7 +19,6 @@
 package org.apache.tamaya.vertx;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.MessageConsumer;
@@ -27,9 +26,7 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
-import org.apache.tamaya.functions.PropertyMatcher;
 import org.apache.tamaya.inject.ConfigurationInjection;
 import org.apache.tamaya.inject.api.Config;
 

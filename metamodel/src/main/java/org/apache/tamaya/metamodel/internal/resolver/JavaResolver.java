@@ -18,7 +18,11 @@
  */
 package org.apache.tamaya.metamodel.internal.resolver;
 
-import bsh.*;
+import bsh.BshClassManager;
+import bsh.EvalError;
+import bsh.Interpreter;
+import bsh.NameSpace;
+import bsh.UtilEvalError;
 import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.spi.SimpleResolver;
 import org.osgi.service.component.annotations.Component;
@@ -96,7 +100,7 @@ public final class JavaResolver implements SimpleResolver{
         return System.getProperty(key);
     }
 
-    public static long TIME(){
+    public static long time(){
         return System.currentTimeMillis();
     }
 

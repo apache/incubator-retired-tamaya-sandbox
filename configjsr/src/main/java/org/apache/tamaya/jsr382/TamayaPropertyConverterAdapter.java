@@ -27,6 +27,7 @@ import java.util.Objects;
 
 /**
  * Converter implementation that wraps a Javaconfig {@link Converter} instance.
+ * @param <T> the property converter type
  */
 final class TamayaPropertyConverterAdapter<T> implements PropertyConverter<T> {
 

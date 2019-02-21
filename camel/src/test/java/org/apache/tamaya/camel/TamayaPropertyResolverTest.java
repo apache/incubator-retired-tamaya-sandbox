@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import java.io.InputStream;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for integration of Tamaya with Apache Camel using Java DSL and XML DSL.
@@ -49,7 +49,7 @@ public class TamayaPropertyResolverTest {
         // test configuration is injected right...
         Greeter proxy = new ProxyBuilder(camelContext).endpoint("direct:hello").build(Greeter.class);
         String greetMessage = proxy.greet();
-        assertEquals("Good Bye from Apache Tamaya!", greetMessage);
+        assertThat("Good Bye from Apache Tamaya!").isEqualTo(greetMessage);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class TamayaPropertyResolverTest {
         // test configuration is injected right...
         Greeter proxy = new ProxyBuilder(camelContext).endpoint("direct:hello").build(Greeter.class);
         String greetMessage = proxy.greet();
-        assertEquals("Good Bye from Apache Tamaya!", greetMessage);
+        assertThat("Good Bye from Apache Tamaya!").isEqualTo(greetMessage);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class TamayaPropertyResolverTest {
         // test configuration is injected right...
         Greeter proxy = new ProxyBuilder(camelContext).endpoint("direct:hello").build(Greeter.class);
         String greetMessage = proxy.greet();
-        assertEquals("Good Bye from Apache Tamaya!", greetMessage);
+        assertThat("Good Bye from Apache Tamaya!").isEqualTo(greetMessage);
     }
 
     @Test
@@ -103,11 +103,11 @@ public class TamayaPropertyResolverTest {
         }
         camelContext.start();
         Greeter greeter = new ProxyBuilder(camelContext).endpoint("direct:hello1").build(Greeter.class);
-        assertEquals("Good Bye from Apache Tamaya!", greeter.greet());
+        assertThat("Good Bye from Apache Tamaya!").isEqualTo(greeter.greet());
         greeter = new ProxyBuilder(camelContext).endpoint("direct:hello2").build(Greeter.class);
-        assertEquals("Good Bye from Apache Tamaya!", greeter.greet());
+        assertThat("Good Bye from Apache Tamaya!").isEqualTo(greeter.greet());
         greeter = new ProxyBuilder(camelContext).endpoint("direct:hello3").build(Greeter.class);
-        assertEquals("Good Bye from Apache Tamaya!", greeter.greet());
+        assertThat("Good Bye from Apache Tamaya!").isEqualTo(greeter.greet());
     }
 
     public interface Greeter {

@@ -27,7 +27,6 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,9 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Tests the Tamaya Vertx configuration support. Created by atsticks on
