@@ -23,7 +23,7 @@ import java.util.*;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.doc.ConfigDocumenter;
 import org.apache.tamaya.doc.DocumentedArea;
-import org.apache.tamaya.doc.ConfigurationDocumentation;
+import org.apache.tamaya.doc.DocumentedConfiguration;
 import org.apache.tamaya.doc.DocumentedProperty;
 import org.apache.tamaya.spi.ClassloaderAware;
 import org.apache.tamaya.spi.ServiceContextManager;
@@ -59,7 +59,7 @@ public class ConfigValidationDocumentationReader implements ClassloaderAware {
      */
     public List<ConfigValidator> loadValidations(ClassLoader classLoader) {
         List<ConfigValidator> result = new ArrayList<>();
-        ConfigurationDocumentation configDoc = ConfigDocumenter.getInstance(classLoader).getDocumentation();
+        DocumentedConfiguration configDoc = ConfigDocumenter.getInstance(classLoader).getDocumentation();
         for(DocumentedArea docArea: configDoc.getAllAreasSorted()){
             loadValidations(docArea, result);
         }
@@ -71,12 +71,12 @@ public class ConfigValidationDocumentationReader implements ClassloaderAware {
 
     private void loadValidations(DocumentedArea docArea, List<ConfigValidator> result) {
         result.add(new AreaValidator(docArea));
-        for(DocumentedProperty propDoc:docArea.getPropertiesSorted()){
-            result.add(new PropertyValidator(propDoc));
-        }
-        for(DocumentedArea area:docArea.getAreasSorted()){
-            loadValidations(area, result);
-        }
+//        for(DocumentedProperty propDoc:docArea.getPropertiesSorted()){
+//            result.add(new PropertyValidator(propDoc));
+//        }
+//        for(DocumentedArea area:docArea.getAreasSorted()){
+//            loadValidations(area, result);
+//        }
     }
 
     @Override

@@ -27,13 +27,13 @@ import java.math.BigDecimal;
  */
 public class TestVerticle extends AbstractConfiguredVerticle{
 
-    @Config("user.name")
+    @Config(key="user.name")
     String userName;
 
-    @Config("user.home")
+    @Config(key="user.home")
     String userHome;
 
-    @Config(value = "any.number.BD", defaultValue = "1.123456789")
+    @Config(key= "any.number.BD", defaultValue = "1.123456789")
     BigDecimal anyNumber;
 
     public TestVerticle(){

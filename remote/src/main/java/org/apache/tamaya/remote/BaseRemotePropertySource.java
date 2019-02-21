@@ -114,11 +114,6 @@ public abstract class BaseRemotePropertySource implements PropertySource{
     }
 
     @Override
-    public boolean isScannable(){
-        return true;
-    }
-
-    @Override
     public PropertyValue get(String key) {
         return getProperties().get(key);
     }
