@@ -192,11 +192,11 @@ public final class ValidationCheck {
         }
         if(source instanceof ConfigPropertySpec){
             ConfigPropertySpec pspec = (ConfigPropertySpec) source;
-            return result + ": " + pspec.name() + " (property)"+finalMessage + '\n';
+            return result + ": " + pspec.key() + " (property)"+finalMessage + '\n';
         }
         else if(source instanceof ConfigAreaSpec){
             ConfigAreaSpec gspec = (ConfigAreaSpec) source;
-            return result + ": " + gspec.path() + " (group)"+finalMessage + '\n';
+            return result + ": " + gspec.basePaths() + " (group)"+finalMessage + '\n';
         }
         return result + ": " + source + ")"+finalMessage + '\n';
     }

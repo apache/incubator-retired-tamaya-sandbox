@@ -23,7 +23,7 @@ import java.util.*;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.doc.ConfigDocumenter;
 import org.apache.tamaya.doc.DocumentedArea;
-import org.apache.tamaya.doc.DocumentedConfiguration;
+import org.apache.tamaya.doc.ConfigurationDocumentation;
 import org.apache.tamaya.doc.DocumentedProperty;
 import org.apache.tamaya.spi.ClassloaderAware;
 import org.apache.tamaya.spi.ServiceContextManager;
@@ -59,7 +59,7 @@ public class ConfigValidationDocumentationReader implements ClassloaderAware {
      */
     public List<ConfigValidator> loadValidations(ClassLoader classLoader) {
         List<ConfigValidator> result = new ArrayList<>();
-        DocumentedConfiguration configDoc = ConfigDocumenter.getInstance(classLoader).getDocumentation();
+        ConfigurationDocumentation configDoc = ConfigDocumenter.getInstance(classLoader).getDocumentation();
         for(DocumentedArea docArea: configDoc.getAllAreasSorted()){
             loadValidations(docArea, result);
         }
