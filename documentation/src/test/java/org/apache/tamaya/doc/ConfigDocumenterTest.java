@@ -30,7 +30,7 @@ public class ConfigDocumenterTest {
     public void getDocumentationAndPrint_ConfigBean() {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readClasses(AnnotatedDocConfigBean.class);
-        DocumentedConfiguration documentation = reader.getDocumentation();
+        ConfigurationDocumentation documentation = reader.getDocumentation();
         assertNotNull(documentation);
         System.out.println(new TextDocFormat().apply(documentation));
     }
@@ -39,7 +39,7 @@ public class ConfigDocumenterTest {
     public void getDocumentationAndPrint_AnnotationType() {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readClasses(AnnotBasedStandaloneConfigDocumentation.class);
-        DocumentedConfiguration documentation = reader.getDocumentation();
+        ConfigurationDocumentation documentation = reader.getDocumentation();
         assertNotNull(documentation);
         System.out.println(new TextDocFormat().apply(documentation));
     }
@@ -48,7 +48,7 @@ public class ConfigDocumenterTest {
     public void getDocumentationAndPrint_Package() {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readPackages("org.apache.tamaya.doc");
-        DocumentedConfiguration documentation = reader.getDocumentation();
+        ConfigurationDocumentation documentation = reader.getDocumentation();
         assertNotNull(documentation);
         System.out.println(new TextDocFormat().apply(documentation));
     }
@@ -57,7 +57,7 @@ public class ConfigDocumenterTest {
     public void getDocumentationAndPrint_Package_html() {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readPackages("org.apache.tamaya.doc");
-        DocumentedConfiguration documentation = reader.getDocumentation();
+        ConfigurationDocumentation documentation = reader.getDocumentation();
         assertNotNull(documentation);
         System.out.println(new HtmlDocFormat().apply(documentation));
     }

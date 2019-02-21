@@ -20,6 +20,6 @@ package org.apache.tamaya.doc;
 
 import java.util.function.Function;
 
-public interface DocFormat<T> extends Function<DocumentedConfiguration, T> {
+public interface DocFormat<T> extends Function<ConfigurationDocumentation, T> {
 
 }

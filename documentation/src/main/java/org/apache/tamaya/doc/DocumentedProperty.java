@@ -31,11 +31,13 @@ public final class DocumentedProperty {
 
     private final AnnotatedElement owner;
     private ConfigPropertySpec propertySpec;
-    private String name;
+    private String mainKey;
+    private Set<String> keys = new TreeSet<>();
     private String defaultValue;
     private boolean required;
     private String description;
     private Class<?> valueType;
+    private DocumentedArea parentArea;
 
     private Set<DocumentedArea> dependsOnGroups = new TreeSet<>();
     private Set<DocumentedProperty> dependsOnProperties = new TreeSet<>();
@@ -44,13 +46,18 @@ public final class DocumentedProperty {
     public DocumentedProperty(ConfigPropertySpec annot, AnnotatedElement owner){
         this.owner = owner;
         this.propertySpec = annot;
-        if(!annot.name().isEmpty()) {
-            this.name = annot.name();
+        if(!(annot.keys().length==0)) {
+            this.mainKey = annot.keys()[0];
+            this.keys.addAll(Arrays.asList(annot.keys()));
         }else{
             if(owner instanceof Field) {
-                this.name = String.join(", ", InjectionUtils.getKeys((Field) owner));
+                List<String> evalKeys = InjectionUtils.getKeys((Field) owner);
+                this.mainKey = evalKeys.get(0);
+                this.keys.addAll(evalKeys);
             }else if(owner instanceof Method) {
-                this.name = String.join(", ", InjectionUtils.getKeys((Method) owner));
+                List<String> evalKeys = InjectionUtils.getKeys((Method) owner);
+                this.mainKey = evalKeys.get(0);
+                this.keys.addAll(evalKeys);
             }
         }
         this.description = annot.description();
@@ -67,14 +74,16 @@ public final class DocumentedProperty {
         Config configAnnot = owner.getAnnotation(Config.class);
         if(configAnnot!=null){
             this.required = configAnnot.required();
-            this.defaultValue = configAnnot.defaultValue();
+            if(!Config.UNCONFIGURED_VALUE.equals(configAnnot.defaultValue())) {
+                this.defaultValue = configAnnot.defaultValue();
+            }
         }
     }
 
-    void resolve(DocumentedConfiguration documentation){
+    void resolve(ConfigurationDocumentation documentation){
         if(propertySpec !=null){
             for(String key: propertySpec.dependsOnAreas()){
-                this.dependsOnGroups.add(documentation.getGroup(key));
+                this.dependsOnGroups.add(documentation.getArea(key));
             }
             for(String key: propertySpec.dependsOnProperties()){
                 this.dependsOnProperties.add(documentation.getProperty(key));
@@ -97,8 +106,18 @@ public final class DocumentedProperty {
         return required;
     }
 
-    public String getName() {
-        return name;
+    public Set<String> getKeys() {
+        return Collections.unmodifiableSet(keys);
+    }
+
+    public Set<String> getBackupKeys() {
+        Set<String> result = new TreeSet<>(keys);
+        result.remove(getMainKey());
+        return result;
+    }
+
+    public String getMainKey() {
+        return this.mainKey;
     }
 
     public String getDescription() {
@@ -106,6 +125,10 @@ public final class DocumentedProperty {
             return "";
         }
         return description;
+    }
+
+    public DocumentedArea getParentArea(){
+        return parentArea;
     }
 
     public Class<?> getValueType() {
@@ -120,8 +143,13 @@ public final class DocumentedProperty {
         return dependsOnProperties;
     }
 
-    public DocumentedProperty path(String path) {
-        this.name = path;
+    public DocumentedProperty addKey(String key) {
+        this.keys.add(key);
+        return this;
+    }
+
+    public DocumentedProperty parentArea(DocumentedArea parentArea) {
+        this.parentArea = parentArea;
         return this;
     }
 
@@ -165,19 +193,19 @@ public final class DocumentedProperty {
         return Objects.equals(this.dependsOnGroups, that.dependsOnGroups) &&
                 Objects.equals(this.dependsOnProperties, that.dependsOnProperties) &&
                 Objects.equals(this.description, that.description) &&
-                Objects.equals(this.name, that.name) &&
+                Objects.equals(this.keys, that.keys) &&
                 Objects.equals(this.valueType, that.valueType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dependsOnGroups, dependsOnProperties, description, name, valueType);
+        return Objects.hash(dependsOnGroups, dependsOnProperties, description, keys, valueType);
     }
 
     @Override
     public String toString() {
         return "ConfigGroup{" +
-                "name='" + name + '\'' +
+                "keys='" + keys + '\'' +
                 ", description='" + description + '\'' +
                 ", valueType=" + valueType +
                 ", dependsOnAreas=" + dependsOnGroups +

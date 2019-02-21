@@ -33,8 +33,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,7 +40,7 @@ import java.util.List;
  */
 public class ConfigDocumenter {
 
-    private DocumentedConfiguration docs = new DocumentedConfiguration();
+    private ConfigurationDocumentation docs = new ConfigurationDocumentation();
 
 
     public static ConfigDocumenter getInstance(){
@@ -99,7 +97,8 @@ public class ConfigDocumenter {
         }
         configBuilder.filterInputsBy(filterBuilder);
         configBuilder.setUrls(ClasspathHelper.forJavaClassPath());
-        configBuilder.setScanners(new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new FieldAnnotationsScanner());
+        configBuilder.setScanners(new TypeAnnotationsScanner(),
+                new MethodAnnotationsScanner(), new FieldAnnotationsScanner());
         Reflections reflections = new Reflections(configBuilder);
         readSpecs(reflections);
     }
@@ -108,7 +107,7 @@ public class ConfigDocumenter {
      * Access the collected configuration documentation.
      * @return the documentation, not null.
      */
-    public DocumentedConfiguration getDocumentation(){
+    public ConfigurationDocumentation getDocumentation(){
         return docs;
     }
 
@@ -158,13 +157,24 @@ public class ConfigDocumenter {
     }
 
     private void readConfigSpec(Class type){
-        docs.init((ConfigSpec)type.getAnnotation(ConfigSpec.class), type);
+        ConfigSpec configAnnot = (ConfigSpec)type.getAnnotation(ConfigSpec.class);
+        docs.init(configAnnot, type);
+        for (ConfigAreaSpec areaSpec:configAnnot.areas()){
+            for(String basePath:areaSpec.basePaths()) {
+                docs.addGroup(new DocumentedArea(areaSpec, type));
+            }
+        }
+        for (ConfigPropertySpec propertySpec:configAnnot.properties()){
+            docs.addProperty(new DocumentedProperty(propertySpec, type));
+        }
     }
 
     private void readAreaSpecs(AnnotatedElement elem){
         ConfigAreaSpecs areaSpecs = elem.getAnnotation(ConfigAreaSpecs.class);
         for (ConfigAreaSpec areaSpec:areaSpecs.value()){
-            docs.addGroup(new DocumentedArea(areaSpec, elem));
+            for(String basePath:areaSpec.basePaths()) {
+                docs.addGroup(new DocumentedArea(areaSpec, elem));
+            }
         }
     }
 

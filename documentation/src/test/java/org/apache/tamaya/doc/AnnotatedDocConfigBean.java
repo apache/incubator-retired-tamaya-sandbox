@@ -21,9 +21,7 @@ package org.apache.tamaya.doc;
 import org.apache.tamaya.doc.annot.ConfigAreaSpec;
 import org.apache.tamaya.doc.annot.ConfigPropertySpec;
 import org.apache.tamaya.doc.annot.ConfigSpec;
-import org.apache.tamaya.inject.api.Config;
-import org.apache.tamaya.inject.api.DynamicValue;
-import org.apache.tamaya.inject.api.NoConfig;
+import org.apache.tamaya.inject.api.*;
 import org.apache.tamaya.spi.PropertyValue;
 
 import java.util.ArrayList;
@@ -39,18 +37,18 @@ import java.util.List;
         version="0.1.0"
 )
 @ConfigAreaSpec(
-        path="",
-        description = "Default root configuration",
-        areaType = PropertyValue.ValueType.MAP
+        description = "Server configuration options",
+        areaType = PropertyValue.ValueType.ARRAY
 )
+@ConfigSection("servers")
 public class AnnotatedDocConfigBean {
 
     @ConfigPropertySpec(description = "Tests a multi key resolution")
-    @Config(value = {"foo.bar.myprop", "mp", "common.testdata.myProperty"}, defaultValue = "ET")
+    @Config(key = "myProperty", alternateKeys = {"foo.bar.myprop", "mp"}, defaultValue = "ET")
     public String myParameter;
 
     @ConfigPropertySpec(description = "Tests a simple String description")
-    @Config("simple_value")
+    @Config(key = "simple_value")
     public String simpleValue;
 
     @ConfigPropertySpec(description = "Another test value without any explicit definition")
@@ -58,11 +56,11 @@ public class AnnotatedDocConfigBean {
     String anotherValue;
 
     @ConfigPropertySpec(description = "An explicit config parameter value.")
-    @Config("[host.name]")
+    @Config(key = "host.name", keyResolver = KeyResolution.ABSOLUTE)
     private String hostName;
 
     @ConfigPropertySpec(description = "An non String typed instance.")
-    @Config("host.name")
+    @Config(key = "[servers.dynamic.name]")
     private DynamicValue<String> dynamicHostname;
 
     @NoConfig
@@ -87,7 +85,7 @@ public class AnnotatedDocConfigBean {
     public static final String CONSTANT = "a constant";
 
 
-    @Config("java.version")
+    @Config(key = "java.version")
     void setJavaVersion(String version){
         this.javaVersion = version;
     }

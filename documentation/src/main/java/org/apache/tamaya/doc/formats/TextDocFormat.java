@@ -19,7 +19,7 @@
 package org.apache.tamaya.doc.formats;
 
 import org.apache.tamaya.doc.DocFormat;
-import org.apache.tamaya.doc.DocumentedConfiguration;
+import org.apache.tamaya.doc.ConfigurationDocumentation;
 import org.apache.tamaya.doc.DocumentedArea;
 import org.apache.tamaya.doc.DocumentedProperty;
 
@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 public class TextDocFormat implements DocFormat<String> {
     @Override
-    public String apply(DocumentedConfiguration documentedConfiguration) {
+    public String apply(ConfigurationDocumentation documentedConfiguration) {
         StringBuilder b = new StringBuilder();
         b.append("Configuration:\n");
         b.append("  Spec    : ").append(documentedConfiguration.getName()).append('\n');
@@ -56,8 +56,8 @@ public class TextDocFormat implements DocFormat<String> {
     }
 
     private void printArea(String inset, DocumentedArea area, StringBuilder b) {
-        if(!area.getPath().isEmpty()) {
-            b.append(inset).append("- name     : ").append(area.getPath()).append("\n");
+        if(!area.getMainBasePath().isEmpty()) {
+            b.append(inset).append("- name     : ").append(area.getMainBasePath()).append("\n");
         }else{
             b.append(inset).append("- name     : NONE\n");
         }
@@ -78,22 +78,10 @@ public class TextDocFormat implements DocFormat<String> {
         if(area.getValueType()!=Object.class) {
             b.append(inset).append("  Value    : ").append(area.getValueType().getName()).append('\n');
         }
-        if(!area.getProperties().isEmpty()) {
-            b.append(inset).append("  Properties : ").append('\n');
-            for (DocumentedProperty prop : area.getProperties().values()) {
-                printProperty(inset + "    ", prop, b);
-            }
-        }
-        if(!area.getAreas().isEmpty()) {
-            b.append(inset).append("  Areas   : ").append('\n');
-            for (DocumentedArea childArea : area.getAreas().values()) {
-                printArea(inset + "  ", childArea, b);
-            }
-        }
     }
 
     private void printProperty(String inset, DocumentedProperty prop, StringBuilder b) {
-        b.append(inset).append("- Name     : ").append(prop.getName()).append("\n");
+        b.append(inset).append("- Name     : ").append(prop.getKeys()).append("\n");
 //        b.append(inset).append("  Type     : property\n");
         if(prop.getOwner()!=null){
             b.append(inset).append("  Owner    : ").append(printOwner(prop.getOwner())).append('\n');

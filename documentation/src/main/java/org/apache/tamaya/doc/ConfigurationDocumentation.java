@@ -25,25 +25,27 @@ import java.util.*;
 /**
  * Documentation of an application configuration.
  */
-public final class DocumentedConfiguration {
+public final class ConfigurationDocumentation {
 
     private String name;
     private String version;
     private Class ownerClass;
 
     private Map<String, DocumentedProperty> properties = new TreeMap<>();
+    private Map<String, DocumentedProperty> allProperties = new TreeMap<>();
     private Map<String, DocumentedArea> groups = new TreeMap<>();
+    private Map<String, DocumentedArea> allGroups = new TreeMap<>();
 
     /**
      * Creates a new empty configuration documentation.
      */
-    public DocumentedConfiguration(){}
+    public ConfigurationDocumentation(){}
 
     /**
      * Creates a new configuration documentation and initializes it with the values from the annotation given.
      * @param annotation the spec annotation, not null.
      */
-    public DocumentedConfiguration(ConfigSpec annotation){
+    public ConfigurationDocumentation(ConfigSpec annotation){
         init(annotation, null);
     }
 
@@ -56,6 +58,38 @@ public final class DocumentedConfiguration {
         this.name = annotation.name();
         this.version = annotation.version();
         this.ownerClass = ownerClass;
+    }
+
+    public void resolveReferences(){
+        DocumentedArea currentArea = null;
+        for(DocumentedProperty prop:getAllPropertiesSorted()){
+            String[] parentCandidates = getCandidates(prop.getMainKey());
+            for(String candidateId:parentCandidates){
+                currentArea = getArea(candidateId);
+                if(currentArea!=null){
+                    prop.parentArea(currentArea);
+                }
+            }
+        }
+    }
+
+    private String[] getCandidates(String mainKey) {
+        List<String> candidates = new ArrayList<>();
+        String[] parts = mainKey.split("\\.");
+        if(parts.length==1){
+            candidates.add("");
+        }else {
+            for (int max = parts.length-1; max >= 0; max--) {
+                StringBuilder b = new StringBuilder();
+                for (int i = 0; i < max; i++) {
+                    b.append(parts[i]).append(".");
+                }
+                b.setLength(b.length() - 1);
+                candidates.add(b.toString());
+            }
+            candidates.add("");
+        }
+        return candidates.toArray(new String[candidates.size()]);
     }
 
     /**
@@ -108,7 +142,7 @@ public final class DocumentedConfiguration {
     }
 
     private int compareAreas(DocumentedArea area1, DocumentedArea area2) {
-        return area1.getPath().compareTo(area2.getPath());
+        return area1.getMainBasePath().compareTo(area2.getMainBasePath());
     }
 
     /**
@@ -118,15 +152,12 @@ public final class DocumentedConfiguration {
     public List<DocumentedProperty> getAllPropertiesSorted() {
         List<DocumentedProperty> props = new ArrayList<>();
         props.addAll(getProperties().values());
-        for(DocumentedArea area:getAreas().values()) {
-            props.addAll(area.getProperties().values());
-        }
         props.sort(this::compareProperties);
         return props;
     }
 
     private int compareProperties(DocumentedProperty property, DocumentedProperty property1) {
-        return property.getName().compareTo(property1.getName());
+        return property.getMainKey().compareTo(property1.getMainKey());
     }
 
     /**
@@ -137,30 +168,36 @@ public final class DocumentedConfiguration {
         return groups;
     }
 
-    public DocumentedArea getGroup(String path) {
-        return null;
+    public DocumentedArea getArea(String path) {
+        return allGroups.get(path);
     }
 
     public DocumentedProperty getProperty(String path) {
-        return null;
+        return allProperties.get(path);
     }
 
-    public DocumentedConfiguration addProperty(DocumentedProperty property){
-        this.properties.put(property.getName(), property);
+    public ConfigurationDocumentation addProperty(DocumentedProperty property){
+        for(String key:property.getKeys()) {
+            this.allProperties.put(key, property);
+        }
+        this.properties.put(property.getMainKey(), property);
         return this;
     }
 
-    public DocumentedConfiguration addGroup(DocumentedArea group){
-        this.groups.put(group.getPath(), group);
+    public ConfigurationDocumentation addGroup(DocumentedArea group){
+        for(String basePath:group.getBasePaths()) {
+            this.allGroups.put(basePath, group);
+        }
+        this.groups.put(group.getMainBasePath(), group);
         return this;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DocumentedConfiguration)) return false;
+        if (!(o instanceof ConfigurationDocumentation)) return false;
 
-        DocumentedConfiguration that = (DocumentedConfiguration) o;
+        ConfigurationDocumentation that = (ConfigurationDocumentation) o;
 
         if (!name.equals(that.name)) return false;
         return version.equals(that.version);
@@ -179,7 +216,7 @@ public final class DocumentedConfiguration {
                 "name='" + name + '\'' +
                 ", version='" + version + '\'' +
                 ", properties=" + properties +
-                ", groups=" + groups +
+                ", areas=" + groups +
                 '}';
     }
 

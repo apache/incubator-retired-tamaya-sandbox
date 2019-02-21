@@ -40,9 +40,15 @@ public @interface ConfigSpec {
     String description() default "";
 
     /**
-     * Should loading of the configuration fail, if a validation failed, default is {@code false}, where
-     * a warning is logged only.
-     * @return true to fail config load on configuration validation failures.
+     * The contained child annotations.
+     * @return the contained annotations.
      */
-    boolean failOnErrors() default false;
+    ConfigAreaSpec[] areas() default{};
+
+    /**
+     * The contained child annotations.
+     * @return the contained annotations.
+     */
+    ConfigPropertySpec[] properties()default{};
+
 }
