@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class ConfigDocumenter {
 
-    private ConfigurationDocumentation docs = new ConfigurationDocumentation();
+    private DocumentedConfiguration docs = new DocumentedConfiguration();
 
 
     public static ConfigDocumenter getInstance(){
@@ -111,7 +111,7 @@ public class ConfigDocumenter {
      * Access the collected configuration documentation.
      * @return the documentation, not null.
      */
-    public ConfigurationDocumentation getDocumentation(){
+    public DocumentedConfiguration getDocumentation(){
         return docs;
     }
 

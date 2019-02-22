@@ -83,7 +83,7 @@ public final class DocumentedProperty {
         }
     }
 
-    void resolve(ConfigurationDocumentation documentation){
+    void resolve(DocumentedConfiguration documentation){
         if(propertySpec !=null){
             for(String key: propertySpec.dependsOnAreas()){
                 this.dependsOnGroups.add(documentation.getArea(key));

@@ -24,6 +24,6 @@ import java.util.function.Function;
  * An interface for configuration documentation.
  * @param <T> the documentation format type
  */
-public interface DocFormat<T> extends Function<ConfigurationDocumentation, T> {
+public interface DocFormat<T> extends Function<DocumentedConfiguration, T> {
 
 }

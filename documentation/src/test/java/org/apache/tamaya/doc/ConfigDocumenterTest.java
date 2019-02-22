@@ -22,7 +22,8 @@ import org.apache.tamaya.doc.formats.HtmlDocFormat;
 import org.apache.tamaya.doc.formats.TextDocFormat;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ConfigDocumenterTest {
 
@@ -30,7 +31,7 @@ public class ConfigDocumenterTest {
     public void getDocumentationAndPrint_ConfigBean() {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readClasses(AnnotatedDocConfigBean.class);
-        ConfigurationDocumentation documentation = reader.getDocumentation();
+        DocumentedConfiguration documentation = reader.getDocumentation();
         assertThat(documentation).isNotNull();
         System.out.println(new TextDocFormat().apply(documentation));
     }
@@ -39,7 +40,7 @@ public class ConfigDocumenterTest {
     public void getDocumentationAndPrint_AnnotationType() {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readClasses(AnnotBasedStandaloneConfigDocumentation.class);
-        ConfigurationDocumentation documentation = reader.getDocumentation();
+        DocumentedConfiguration documentation = reader.getDocumentation();
         assertThat(documentation).isNotNull();
         System.out.println(new TextDocFormat().apply(documentation));
     }
@@ -48,7 +49,7 @@ public class ConfigDocumenterTest {
     public void getDocumentationAndPrint_Package() {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readPackages("org.apache.tamaya.doc");
-        ConfigurationDocumentation documentation = reader.getDocumentation();
+        DocumentedConfiguration documentation = reader.getDocumentation();
         assertThat(documentation).isNotNull();
         System.out.println(new TextDocFormat().apply(documentation));
     }
@@ -57,7 +58,7 @@ public class ConfigDocumenterTest {
     public void getDocumentationAndPrint_Package_html() {
         ConfigDocumenter reader = new ConfigDocumenter();
         reader.readPackages("org.apache.tamaya.doc");
-        ConfigurationDocumentation documentation = reader.getDocumentation();
+        DocumentedConfiguration documentation = reader.getDocumentation();
         assertThat(documentation).isNotNull();
         System.out.println(new HtmlDocFormat().apply(documentation));
     }

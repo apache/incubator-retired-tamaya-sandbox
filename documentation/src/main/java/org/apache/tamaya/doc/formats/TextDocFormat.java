@@ -19,8 +19,8 @@
 package org.apache.tamaya.doc.formats;
 
 import org.apache.tamaya.doc.DocFormat;
-import org.apache.tamaya.doc.ConfigurationDocumentation;
 import org.apache.tamaya.doc.DocumentedArea;
+import org.apache.tamaya.doc.DocumentedConfiguration;
 import org.apache.tamaya.doc.DocumentedProperty;
 
 import java.lang.reflect.AnnotatedElement;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  */
 public class TextDocFormat implements DocFormat<String> {
     @Override
-    public String apply(ConfigurationDocumentation documentedConfiguration) {
+    public String apply(DocumentedConfiguration documentedConfiguration) {
         StringBuilder b = new StringBuilder();
         b.append("Configuration:\n");
         b.append("  Spec    : ").append(documentedConfiguration.getName()).append('\n');
