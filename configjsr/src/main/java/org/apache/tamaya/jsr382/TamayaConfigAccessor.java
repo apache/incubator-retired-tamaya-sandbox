@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Tamaya implementation type for the {@link ConfigAccessor} type.
+ *
  * @param <T> the target type.
  */
 class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
@@ -48,6 +49,7 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
 
     /**
      * Constructor.
+     *
      * @param javaConfigAdapter
      * @param name
      */
@@ -70,17 +72,18 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
 
     /**
      * Access the list of al current possible candidate keys to evaluate a value for the given accessor.
+     *
      * @return the list of al current possible candidate keys, not null.
      */
     public List<String> getCandidateKeys() {
         List<String> keys = new ArrayList<>();
         List<List<String>> listList = new ArrayList<>();
         List<String> maxList = new ArrayList<>(lookupSuffixes);
-        while(!maxList.isEmpty()){
+        while (!maxList.isEmpty()) {
             listList.add(new ArrayList(maxList));
             maxList.remove(0);
         }
-        for(List<String> list:listList) {
+        for (List<String> list : listList) {
             keys.addAll(getSuffixKeys(list));
         }
         keys.add(getPropertyName());
@@ -89,11 +92,11 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
 
     private List<String> getSuffixKeys(List<String> list) {
         List<String> result = new ArrayList<>();
-        while(!list.isEmpty()){
-            result.add(getPropertyName()+'.'+ String.join(".", list));
-            if(list.size()>1) {
+        while (!list.isEmpty()) {
+            result.add(getPropertyName() + '.' + String.join(".", list));
+            if (list.size() > 1) {
                 list.remove(list.size() - 2);
-            }else{
+            } else {
                 list.remove(0);
             }
         }
@@ -162,14 +165,14 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
 
     @Override
     public T getValue() {
-        if(this.timeout > System.currentTimeMillis()){
+        if (this.timeout > System.currentTimeMillis()) {
             return this.cachedValue;
         }
         T value = getValueInternal(name);
-        if(value==null){
+        if (value == null) {
             value = getValueInternalFromDefaults();
         }
-        if(value==null){
+        if (value == null) {
             throw new IllegalArgumentException("No such value: " + name);
         }
         return value;
@@ -177,15 +180,15 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
 
     private T getValueInternal(String key) {
         T value = null;
-        if(customConverter!=null){
+        if (customConverter != null) {
             String textVal = javaConfigAdapter.getConfiguration().getOrDefault(name, String.class, null);
-            if(textVal==null){
+            if (textVal == null) {
                 textVal = stringDefaultValue;
             }
-            if(textVal!=null) {
+            if (textVal != null) {
                 value = customConverter.convert(textVal);
             }
-        }else {
+        } else {
             value = javaConfigAdapter.getConfiguration().getOrDefault(name, targetType, null);
         }
         return value;
@@ -193,14 +196,14 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
 
     private T getValueInternalFromDefaults() {
         T value = null;
-        if(customConverter!=null){
+        if (customConverter != null) {
             String textVal = stringDefaultValue;
-            if(textVal!=null) {
+            if (textVal != null) {
                 value = customConverter.convert(textVal);
             }
         }
         // Should we also try to convert with the String default value and existing converters?
-        if(value==null){
+        if (value == null) {
             value = typedDefaultValue;
         }
         return value;
@@ -208,13 +211,13 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
 
     @Override
     public T getValue(ConfigSnapshot configSnapshot) {
-        return ((TamayaConfigSnapshot)configSnapshot).getConfiguration()
+        return ((TamayaConfigSnapshot) configSnapshot).getConfiguration()
                 .get(name, targetType);
     }
 
     @Override
     public Optional<T> getOptionalValue(ConfigSnapshot configSnapshot) {
-        return Optional.ofNullable(((TamayaConfigSnapshot)configSnapshot).getConfiguration()
+        return Optional.ofNullable(((TamayaConfigSnapshot) configSnapshot).getConfiguration()
                 .getOrDefault(name, targetType, null));
     }
 

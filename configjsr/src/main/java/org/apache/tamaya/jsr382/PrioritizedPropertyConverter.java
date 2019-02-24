@@ -25,6 +25,7 @@ import java.util.Objects;
 
 /**
  * A prioritized property converter.
+ *
  * @param <T> the property type
  */
 final class PrioritizedPropertyConverter<T> implements PropertyConverter<T> {
@@ -38,8 +39,8 @@ final class PrioritizedPropertyConverter<T> implements PropertyConverter<T> {
     }
 
     public static <T> PropertyConverter<T> of(PropertyConverter<T> propertyConverter, int priority) {
-        if(propertyConverter instanceof PrioritizedPropertyConverter){
-            return ((PrioritizedPropertyConverter)propertyConverter).setPriority(priority);
+        if (propertyConverter instanceof PrioritizedPropertyConverter) {
+            return ((PrioritizedPropertyConverter) propertyConverter).setPriority(priority);
         }
         return new PrioritizedPropertyConverter<>(propertyConverter, priority);
     }

@@ -43,7 +43,7 @@ public class TamayaConfigProviderResolver extends ConfigProviderResolver {
     @Override
     public Config getConfig(ClassLoader loader) {
         Config config = this.configs.get(loader);
-        if(config==null){
+        if (config == null) {
             ConfigurationBuilder builder = Configuration.createConfigurationBuilder();
             builder.setClassLoader(loader);
             builder.addDefaultPropertyConverters();
@@ -63,7 +63,7 @@ public class TamayaConfigProviderResolver extends ConfigProviderResolver {
 
     @Override
     public void registerConfig(Config config, ClassLoader classLoader) {
-        if(configs.containsKey(classLoader)){
+        if (configs.containsKey(classLoader)) {
             Logger.getLogger(getClass().getName())
                     .warning("Replacing existing config for classloader: " + classLoader);
 //            throw new IllegalArgumentException("Already a config registered with classloader: " + classLoader);
@@ -73,8 +73,8 @@ public class TamayaConfigProviderResolver extends ConfigProviderResolver {
 
     @Override
     public void releaseConfig(Config config) {
-        for(Map.Entry<ClassLoader, Config> en: this.configs.entrySet()){
-            if(en.getValue().equals(config)){
+        for (Map.Entry<ClassLoader, Config> en : this.configs.entrySet()) {
+            if (en.getValue().equals(config)) {
                 this.configs.remove(en.getKey());
                 return;
             }

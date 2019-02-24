@@ -27,6 +27,7 @@ import java.util.Objects;
 
 /**
  * Converter implementation that wraps a Javaconfig {@link Converter} instance.
+ *
  * @param <T> the property converter type
  */
 final class TamayaPropertyConverterAdapter<T> implements PropertyConverter<T> {
@@ -35,17 +36,19 @@ final class TamayaPropertyConverterAdapter<T> implements PropertyConverter<T> {
 
     /**
      * Creates a new adapter instance.
+     *
      * @param delegate the delegate, not null.
      */
-    public TamayaPropertyConverterAdapter(Converter<T> delegate){
+    public TamayaPropertyConverterAdapter(Converter<T> delegate) {
         this.delegate = Objects.requireNonNull(delegate);
     }
 
     /**
      * Access the underlying converter instance.
+     *
      * @return the underlying converter, not null.
      */
-    public Converter<T> getConverter(){
+    public Converter<T> getConverter() {
         return this.delegate;
     }
 

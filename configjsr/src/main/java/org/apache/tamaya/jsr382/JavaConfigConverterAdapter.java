@@ -28,6 +28,7 @@ import java.util.Objects;
 
 /**
  * Tamaya converter implementation that wraps a Java config {@link javax.config.spi.Converter} instance.
+ *
  * @param <T> the converter type
  */
 public class JavaConfigConverterAdapter<T> implements Converter<T> {
@@ -36,17 +37,19 @@ public class JavaConfigConverterAdapter<T> implements Converter<T> {
 
     /**
      * Creates a new Converter, baed on the given Tamaya {@link org.apache.tamaya.spi.PropertyConverter}.
+     *
      * @param delegate the delegate, not null.
      */
-    public JavaConfigConverterAdapter(PropertyConverter<T> delegate){
+    public JavaConfigConverterAdapter(PropertyConverter<T> delegate) {
         this.delegate = Objects.requireNonNull(delegate);
     }
 
     /**
      * Access the underlying Tamaya converter.
+     *
      * @return the Tamaya converter, not null.
      */
-    public PropertyConverter<T> getPropertyConverter(){
+    public PropertyConverter<T> getPropertyConverter() {
         return this.delegate;
     }
 
