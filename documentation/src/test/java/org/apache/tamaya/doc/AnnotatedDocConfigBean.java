@@ -21,7 +21,10 @@ package org.apache.tamaya.doc;
 import org.apache.tamaya.doc.annot.ConfigAreaSpec;
 import org.apache.tamaya.doc.annot.ConfigPropertySpec;
 import org.apache.tamaya.doc.annot.ConfigSpec;
-import org.apache.tamaya.inject.api.*;
+import org.apache.tamaya.inject.api.Config;
+import org.apache.tamaya.inject.api.ConfigSection;
+import org.apache.tamaya.inject.api.DynamicValue;
+import org.apache.tamaya.inject.api.NoConfig;
 import org.apache.tamaya.spi.PropertyValue;
 
 import java.util.ArrayList;
@@ -56,7 +59,7 @@ public class AnnotatedDocConfigBean {
     String anotherValue;
 
     @ConfigPropertySpec(description = "An explicit config parameter value.")
-    @Config(key = "host.name", keyResolver = KeyResolution.ABSOLUTE)
+    @Config(key = "host.name")
     private String hostName;
 
     @ConfigPropertySpec(description = "An non String typed instance.")

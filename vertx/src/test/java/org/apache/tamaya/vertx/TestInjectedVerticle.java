@@ -33,10 +33,10 @@ import java.math.BigDecimal;
  */
 public class TestInjectedVerticle extends AbstractVerticle{
 
-    @Config(key="user.name")
+    @Config(key="[user.name]")
     public String userName;
 
-    @Config(key="user.home")
+    @Config(key="[user.home]")
     public String userHome;
 
     @Config(key= "any.number.BD", defaultValue = "1.123456789")

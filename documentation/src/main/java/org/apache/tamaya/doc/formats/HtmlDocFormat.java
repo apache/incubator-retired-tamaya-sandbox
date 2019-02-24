@@ -21,7 +21,7 @@ package org.apache.tamaya.doc.formats;
 import j2html.tags.ContainerTag;
 import org.apache.tamaya.doc.DocFormat;
 import org.apache.tamaya.doc.DocumentedArea;
-import org.apache.tamaya.doc.ConfigurationDocumentation;
+import org.apache.tamaya.doc.DocumentedConfiguration;
 import org.apache.tamaya.doc.DocumentedProperty;
 
 import java.io.File;
@@ -57,7 +57,7 @@ import static j2html.TagCreator.ul;
  */
 public class HtmlDocFormat implements DocFormat<String> {
     @Override
-    public String apply(ConfigurationDocumentation documentedConfiguration) {
+    public String apply(DocumentedConfiguration documentedConfiguration) {
         List<ContainerTag> areaTags = new ArrayList<>();
         for(DocumentedArea area:documentedConfiguration.getAllAreasSorted()) {
             areaTags.addAll(createAreaEntries(area, null));
@@ -91,7 +91,7 @@ public class HtmlDocFormat implements DocFormat<String> {
         }
     }
 
-    private ContainerTag createHead(ConfigurationDocumentation config) {
+    private ContainerTag createHead(DocumentedConfiguration config) {
         return head(title("Tamaya Configuration - " + config.getName() + " " +
                         config.getVersion()),
                 meta().withCharset("utf-8"),

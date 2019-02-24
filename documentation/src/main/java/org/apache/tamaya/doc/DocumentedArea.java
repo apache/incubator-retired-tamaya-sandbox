@@ -90,7 +90,7 @@ public final class DocumentedArea {
         return "<root>";
     }
 
-    void resolve(ConfigurationDocumentation documentation){
+    void resolve(DocumentedConfiguration documentation){
         if(configArea !=null){
             for(String key: configArea.dependsOnAreas()){
                 this.dependsOnGroups.add(documentation.getArea(key));
