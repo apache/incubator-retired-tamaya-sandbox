@@ -20,13 +20,13 @@ package org.apache.tamaya.vertx;
 
 import io.vertx.core.AbstractVerticle;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.inject.ConfigurationInjection;
+import org.apache.tamaya.inject.ConfigurationInjector;
 
 import java.util.Optional;
 
 /**
  * Base verticle class that adds some convenience methods for accessing configuration.
- * The class also performs configuration injection using {@link ConfigurationInjection}.
+ * The class also performs configuration injection using {@link ConfigurationInjector}.
  */
 public abstract class AbstractConfiguredVerticle extends AbstractVerticle{
 
@@ -48,7 +48,7 @@ public abstract class AbstractConfiguredVerticle extends AbstractVerticle{
     }
 
     protected void configure(){
-        ConfigurationInjection.getConfigurationInjector().configure(this, getConfiguration());
+        ConfigurationInjector.getInstance().configure(this, getConfiguration());
     }
 
     protected final String getConfigValue(String key){
