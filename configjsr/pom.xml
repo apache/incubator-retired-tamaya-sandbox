@@ -87,7 +87,7 @@ under the License.
         <dependency>
             <groupId>com.github.eclipse</groupId>
             <artifactId>ConfigJSR</artifactId>
-            <version>bdab2f22923ba83e93a841f61e177c95796cfb68</version>
+            <version>f739e6d322dbf4eab62d5ffb121c5b0a9e63c2d4</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

@@ -116,10 +116,10 @@ public class SmokeExamples {
 
         Config config = ConfigProvider.getConfig();
 
-        ConfigAccessor<String> accessor = config.access("foo.bar.property");
+        ConfigAccessor.Builder<String> accessor = config.access("foo.bar.property", String.class);
         accessor = accessor.addLookupSuffix("DEV").addLookupSuffix("server01");
         accessor = accessor.withDefault("anyDefault");
-        String textValue = accessor.getValue();
+        String textValue = accessor.build().getValue();
     }
 
     public void apacheTamaya_multiKeyLookup(){
@@ -139,11 +139,13 @@ public class SmokeExamples {
 
         Config config = ConfigProvider.getConfig();
 
-        ConfigAccessor<String> accessor = config.access("foo.bar.property");
-        accessor = accessor.addLookupSuffix("DEV");
-        accessor = accessor.withDefault("anyDefault");
-        ConfigAccessor<Integer> accessor2 = config.access("foo.bar.property2").as(Integer.class);
-        accessor = accessor.withDefault("1234");
+        ConfigAccessor.Builder<String> builder = config.access("foo.bar.property", String.class);
+        builder = builder.addLookupSuffix("DEV");
+        builder = builder.withDefault("anyDefault");
+        ConfigAccessor.Builder<Integer> builder2 = config.access("foo.bar.property2", Integer.class);
+        builder2 = builder2.withStringDefault("1234");
+        ConfigAccessor<String> accessor = builder.build();
+        ConfigAccessor<Integer> accessor2 = builder2.build();
         ConfigSnapshot snapshot = config.snapshotFor(accessor, accessor2);
 
         String property1 = accessor.getValue(snapshot);
@@ -212,7 +214,8 @@ public class SmokeExamples {
         String myKey = "Test ${java.version},${java.foo},${PATH}";
 
         Config config = ConfigProvider.getConfig();
-        String resolvedValue = config.access("myKey").evaluateVariables(true).getValue();
+        String resolvedValue = config.access("myKey", String.class).evaluateVariables(true).
+                build().getValue();
     }
 
     public void resolution_tamaya(){

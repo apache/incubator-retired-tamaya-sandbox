@@ -20,6 +20,7 @@ package org.apache.tamaya.jsr382;
 
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.Configuration;
+import org.apache.tamaya.TypeLiteral;
 
 import javax.config.Config;
 import javax.config.ConfigAccessor;
@@ -79,8 +80,8 @@ public class JavaConfigAdapter implements Config, Serializable {
     }
 
     @Override
-    public ConfigAccessor<String> access(String name) {
-        return new TamayaConfigAccessor(this, name);
+    public <T> ConfigAccessor.Builder<T> access(String name, Class<T> type) {
+        return new TamayaConfigAccessor.TamayaConfigAccessorBuilder<>(this, name, TypeLiteral.of(type));
     }
 
     @Override

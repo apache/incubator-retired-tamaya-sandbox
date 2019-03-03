@@ -23,6 +23,7 @@ import org.apache.tamaya.TypeLiteral;
 import javax.config.ConfigAccessor;
 import javax.config.ConfigSnapshot;
 import javax.config.spi.Converter;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -46,28 +47,20 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
     private long timeout = 0;
     private T cachedValue;
 
-
     /**
      * Constructor.
      *
-     * @param javaConfigAdapter
-     * @param name
+     * @param builder the builder, not null.
      */
-    TamayaConfigAccessor(JavaConfigAdapter javaConfigAdapter, String name) {
-        this.javaConfigAdapter = Objects.requireNonNull(javaConfigAdapter);
-        this.name = Objects.requireNonNull(name);
-        this.targetType = TypeLiteral.of(String.class);
-    }
-
-    private TamayaConfigAccessor(TamayaConfigAccessor<?> accessor, TypeLiteral<T> target) {
-        this.name = accessor.name;
-        this.targetType = target;
-        this.stringDefaultValue = accessor.stringDefaultValue;
-        this.javaConfigAdapter = javaConfigAdapter;
-        this.evaluateVariables = accessor.evaluateVariables;
-        this.lookupSuffixes.addAll(accessor.lookupSuffixes);
+    TamayaConfigAccessor(TamayaConfigAccessorBuilder<T> builder) {
+        this.name = builder.name;
+        this.targetType = builder.targetType;
+        this.stringDefaultValue = builder.stringDefaultValue;
+        this.javaConfigAdapter = builder.configAdapter;
+        this.evaluateVariables = builder.evaluateVariables;
+        this.lookupSuffixes.addAll(builder.lookupSuffixes);
         // What to do if the fallback accessors do not match, e.g. with collection types...
-        this.fallbackAccessors.addAll(accessor.fallbackAccessors);
+        this.fallbackAccessors.addAll(builder.fallbackAccessors);
     }
 
     /**
@@ -103,65 +96,133 @@ class TamayaConfigAccessor<T> implements ConfigAccessor<T> {
         return result;
     }
 
-    @Override
-    public <N> ConfigAccessor<N> as(Class<N> aClass) {
-        return new TamayaConfigAccessor<N>(this, TypeLiteral.of(aClass));
+    static final class TamayaConfigAccessorBuilder<T> implements ConfigAccessor.Builder<T>{
+
+        private String name;
+        private JavaConfigAdapter configAdapter;
+        private Converter<T> customConverter;
+        private TypeLiteral<T> targetType;
+        private T typedDefaultValue;
+        private String stringDefaultValue;
+        private List<ConfigAccessor<String>> fallbackAccessors = new ArrayList<>();
+        private List<String> lookupSuffixes = new ArrayList<>();
+        private boolean evaluateVariables = true;
+        private long timeout = 0;
+        private T cachedValue;
+        private Duration cacheDuration;
+
+        /**
+         * Constructor.
+         *
+         * @param configAdapter the config, not null.
+         */
+        TamayaConfigAccessorBuilder(JavaConfigAdapter configAdapter, String name, TypeLiteral<T> type) {
+            this.configAdapter = configAdapter;
+            this.name = name;
+            this.targetType = targetType;
+        }
+
+        @Override
+        public Builder<T> useConverter(Converter<T> converter) {
+            this.customConverter = Objects.requireNonNull(converter);
+            return this;
+        }
+
+        @Override
+        public Builder<T> withDefault(T value) {
+            this.typedDefaultValue = Objects.requireNonNull(value);
+            return this;
+        }
+
+        @Override
+        public Builder<T> withStringDefault(String value) {
+            this.stringDefaultValue = value;
+            return this;
+        }
+
+        @Override
+        public Builder<T> cacheFor(Duration duration) {
+            this.cacheDuration = Objects.requireNonNull(duration);
+            return this;
+        }
+
+        @Override
+        public Builder<T> evaluateVariables(boolean evaluateVariables) {
+            this.evaluateVariables = evaluateVariables;
+            return this;
+        }
+
+        @Override
+        public Builder<T> addLookupSuffix(String suffixValue) {
+            this.lookupSuffixes.add(Objects.requireNonNull(suffixValue));
+            return this;
+        }
+
+        @Override
+        public ConfigAccessor<T> build() {
+            return new TamayaConfigAccessor<T>(this);
+        }
     }
 
-    @Override
-    public ConfigAccessor<List<T>> asList() {
-        TypeLiteral<List<T>> target = new TypeLiteral<List<T>>();
-        return new TamayaConfigAccessor<List<T>>(this, target);
-    }
-
-    @Override
-    public ConfigAccessor<Set<T>> asSet() {
-        TypeLiteral<Set<T>> target = new TypeLiteral<Set<T>>();
-        return new TamayaConfigAccessor<Set<T>>(this, target);
-    }
-
-    @Override
-    public ConfigAccessor<T> useConverter(Converter<T> converter) {
-        this.customConverter = converter;
-        return this;
-    }
-
-    @Override
-    public ConfigAccessor<T> withDefault(T defaultValue) {
-        this.typedDefaultValue = defaultValue;
-        return this;
-    }
-
-    @Override
-    public ConfigAccessor<T> withStringDefault(String defaultValue) {
-        this.stringDefaultValue = defaultValue;
-        return this;
-    }
-
-    @Override
-    public ConfigAccessor<T> cacheFor(long duration, TimeUnit timeUnit) {
-        this.cachedValue = getValue();
-        this.timeout = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(duration, timeUnit);
-        return this;
-    }
-
-    @Override
-    public ConfigAccessor<T> evaluateVariables(boolean evaluateVariables) {
-        this.evaluateVariables = evaluateVariables;
-        return this;
-    }
-
-    @Override
-    public ConfigAccessor<T> addLookupSuffix(String lookupSuffix) {
-        this.lookupSuffixes.add(lookupSuffix);
-        return this;
-    }
-
-    @Override
-    public ConfigAccessor<T> addLookupSuffix(ConfigAccessor<String> configAccessor) {
-        this.fallbackAccessors.add(configAccessor);
-        return this;
-    }
+//    @Override
+//    public <N> ConfigAccessor<N> as(Class<N> aClass) {
+//        return new TamayaConfigAccessor<N>(this, TypeLiteral.of(aClass));
+//    }
+//
+//    @Override
+//    public ConfigAccessor<List<T>> asList() {
+//        TypeLiteral<List<T>> target = new TypeLiteral<List<T>>();
+//        return new TamayaConfigAccessor<List<T>>(this, target);
+//    }
+//
+//    @Override
+//    public ConfigAccessor<Set<T>> asSet() {
+//        TypeLiteral<Set<T>> target = new TypeLiteral<Set<T>>();
+//        return new TamayaConfigAccessor<Set<T>>(this, target);
+//    }
+//
+//    @Override
+//    public ConfigAccessor<T> useConverter(Converter<T> converter) {
+//        this.customConverter = converter;
+//        return this;
+//    }
+//
+//    @Override
+//    public ConfigAccessor<T> withDefault(T defaultValue) {
+//        this.typedDefaultValue = defaultValue;
+//        return this;
+//    }
+//
+//    @Override
+//    public ConfigAccessor<T> withStringDefault(String defaultValue) {
+//        this.stringDefaultValue = defaultValue;
+//        return this;
+//    }
+//
+//    @Override
+//    public ConfigAccessor<T> cacheFor(long duration, TimeUnit timeUnit) {
+//        this.cachedValue = getValue();
+//        this.timeout = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(duration, timeUnit);
+//        return this;
+//    }
+//
+//    @Override
+//    public ConfigAccessor<T> evaluateVariables(boolean evaluateVariables) {
+//        this.evaluateVariables = evaluateVariables;
+//        return this;
+//    }
+//
+//    @Override
+//    public ConfigAccessor<T> addLookupSuffix(String lookupSuffix) {
+//        this.lookupSuffixes.add(lookupSuffix);
+//        return this;
+//    }
+//
+//    @Override
+//    public ConfigAccessor<T> addLookupSuffix(ConfigAccessor<String> configAccessor) {
+//        this.fallbackAccessors.add(configAccessor);
+//        return this;
+//    }
 
     @Override
     public T getValue() {

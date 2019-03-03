@@ -192,7 +192,7 @@ public class JavaConfigAdapterTest {
         }
 
         @Override
-        public ConfigAccessor<String> access(String propertyName) {
+        public <T> ConfigAccessor.Builder<T> access(String propertyName, Class<T> type) {
             throw new RuntimeException("Not implemented yet!");
         }
 
