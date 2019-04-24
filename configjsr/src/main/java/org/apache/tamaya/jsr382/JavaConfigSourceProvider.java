@@ -29,23 +29,23 @@ import java.util.*;
 /**
  * JavaConfig {@link javax.config.spi.ConfigSource} implementation that wraps a {@link PropertySource} instance.
  */
-public class JavaConfigSourceProvider implements ConfigSourceProvider{
+public class JavaConfigSourceProvider implements ConfigSourceProvider {
 
     private PropertySourceProvider delegate;
 
-    public JavaConfigSourceProvider(PropertySourceProvider propertySourceProvider){
+    public JavaConfigSourceProvider(PropertySourceProvider propertySourceProvider) {
         this.delegate = Objects.requireNonNull(propertySourceProvider);
     }
 
-    public PropertySourceProvider getPropertySourceProvider(){
+    public PropertySourceProvider getPropertySourceProvider() {
         return this.delegate;
     }
 
 
     private Map<String, String> toMap(Map<String, PropertyValue> properties) {
         Map<String, String> valueMap = new HashMap<>(properties.size());
-        for(Map.Entry<String,PropertyValue> en:properties.entrySet()){
-            if(en.getValue().getValue()!=null) {
+        for (Map.Entry<String, PropertyValue> en : properties.entrySet()) {
+            if (en.getValue().getValue() != null) {
                 valueMap.put(en.getKey(), en.getValue().getValue());
             }
         }
@@ -54,10 +54,10 @@ public class JavaConfigSourceProvider implements ConfigSourceProvider{
 
     @Override
     public Iterable<ConfigSource> getConfigSources(ClassLoader forClassLoader) {
-        if(delegate instanceof TamayaPropertySourceProviderAdapter){
-            return ((TamayaPropertySourceProviderAdapter)delegate).getConfigSourceProvider()
+        if (delegate instanceof TamayaPropertySourceProviderAdapter) {
+            return ((TamayaPropertySourceProviderAdapter) delegate).getConfigSourceProvider()
                     .getConfigSources(forClassLoader);
-        }else {
+        } else {
             return JavaConfigAdapterFactory.toConfigSources(delegate.getPropertySources());
         }
     }

@@ -19,23 +19,26 @@
 package org.apache.tamaya.doc;
 
 import org.apache.tamaya.doc.annot.ConfigAreaSpec;
-import org.apache.tamaya.doc.annot.ConfigPropertySpec;
-import org.apache.tamaya.inject.api.ConfigDefaultSections;
+import org.apache.tamaya.inject.api.ConfigSection;
 import org.apache.tamaya.inject.spi.InjectionUtils;
 import org.apache.tamaya.spi.PropertyValue;
 
-import java.lang.reflect.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * A class representing the documented area of a configuration.
+ */
 public final class DocumentedArea {
 
     private final AnnotatedElement owner;
     private ConfigAreaSpec configArea;
-    private String path;
+    private String mainBasePath;
+    private Set<String> basePaths = new TreeSet<>();
     private String description;
     private PropertyValue.ValueType groupType;
-    private Map<String, DocumentedProperty> properties = new HashMap<>();
-    private Map<String, DocumentedArea> areas = new HashMap<>();
     private Class<?> valueType;
 
     private int minCardinality;
@@ -46,10 +49,12 @@ public final class DocumentedArea {
     public DocumentedArea(ConfigAreaSpec areaSpec, AnnotatedElement owner){
         this.owner = owner;
         this.configArea = areaSpec;
-        if(!areaSpec.path().isEmpty()) {
-            this.path = areaSpec.path();
+        if(!(areaSpec.basePaths().length==0)) {
+            this.mainBasePath = areaSpec.basePaths()[0];
+            this.basePaths.addAll(Arrays.asList(areaSpec.basePaths()));
         }else{
-           this.path = evaluatePath(owner);
+           this.mainBasePath = evaluatePath(owner);
+           this.basePaths.add(mainBasePath);
         }
         if(!areaSpec.description().isEmpty()) {
             this.description = areaSpec.description();
@@ -68,9 +73,6 @@ public final class DocumentedArea {
                 this.valueType = ((Class)owner);
             }
         }
-        for(ConfigPropertySpec ps:areaSpec.properties()) {
-            this.properties.put(ps.name(), new DocumentedProperty(ps, owner));
-        }
     }
 
     private String evaluatePath(AnnotatedElement owner) {
@@ -79,7 +81,7 @@ public final class DocumentedArea {
         }else if(owner instanceof Method) {
             return String.join(", ", InjectionUtils.getKeys((Method) owner));
         }else if(owner instanceof Class) {
-            ConfigDefaultSections sectionsAnnot = owner.getAnnotation(ConfigDefaultSections.class);
+            ConfigSection sectionsAnnot = owner.getAnnotation(ConfigSection.class);
             if(sectionsAnnot!=null){
                 return String.join(", ", sectionsAnnot.value());
             }
@@ -91,7 +93,7 @@ public final class DocumentedArea {
     void resolve(DocumentedConfiguration documentation){
         if(configArea !=null){
             for(String key: configArea.dependsOnAreas()){
-                this.dependsOnGroups.add(documentation.getGroup(key));
+                this.dependsOnGroups.add(documentation.getArea(key));
             }
             for(String key: configArea.dependsOnProperties()){
                 this.dependsOnProperties.add(documentation.getProperty(key));
@@ -99,22 +101,12 @@ public final class DocumentedArea {
         }
     }
 
-    public DocumentedArea addGroup(DocumentedArea group){
-        this.areas.put(group.path, group);
-        return this;
-    }
-
-    public DocumentedArea addProperty(DocumentedProperty property){
-        this.properties.put(property.getName(), property);
-        return this;
-    }
-
     public AnnotatedElement getOwner() {
         return owner;
     }
 
-    public String getPath() {
-        return path;
+    public Set<String> getBasePaths() {
+        return Collections.unmodifiableSet(basePaths);
     }
 
     public String getDescription() {
@@ -123,26 +115,6 @@ public final class DocumentedArea {
 
     public PropertyValue.ValueType getGroupType() {
         return groupType;
-    }
-
-    public Map<String, DocumentedProperty> getProperties() {
-        return properties;
-    }
-
-    public List<DocumentedProperty> getPropertiesSorted() {
-        List<DocumentedProperty> result = new ArrayList<>(properties.values());
-        result.sort(Comparator.comparing(DocumentedProperty::getName));
-        return result;
-    }
-
-    public Map<String, DocumentedArea> getAreas() {
-        return areas;
-    }
-
-    public List<DocumentedArea> getAreasSorted() {
-        List<DocumentedArea> result = new ArrayList<>(areas.values());
-        result.sort(Comparator.comparing(DocumentedArea::getPath));
-        return result;
     }
 
     public Class<?> getValueType() {
@@ -159,18 +131,22 @@ public final class DocumentedArea {
 
     public List<DocumentedArea> getDependsOnAreas() {
         List<DocumentedArea> result = new ArrayList<>(dependsOnGroups);
-        result.sort(Comparator.comparing(DocumentedArea::getPath));
+        result.sort(Comparator.comparing(DocumentedArea::getMainBasePath));
         return result;
+    }
+
+    public String getMainBasePath() {
+        return this.mainBasePath;
     }
 
     public List<DocumentedProperty> getDependsOnProperties() {
         List<DocumentedProperty> result = new ArrayList<>(dependsOnProperties);
-        result.sort(Comparator.comparing(DocumentedProperty::getName));
+        result.sort(Comparator.comparing(DocumentedProperty::getMainKey));
         return result;
     }
 
-    public DocumentedArea path(String path) {
-        this.path = path;
+    public DocumentedArea addBasePath(String path) {
+        this.basePaths.add(path);
         return this;
     }
 
@@ -181,16 +157,6 @@ public final class DocumentedArea {
 
     public DocumentedArea groupType(PropertyValue.ValueType groupType) {
         this.groupType = groupType;
-        return this;
-    }
-
-    public DocumentedArea properties(Map<String, DocumentedProperty> properties) {
-        this.properties = properties;
-        return this;
-    }
-
-    public DocumentedArea groups(Map<String, DocumentedArea> groups) {
-        this.areas = groups;
         return this;
     }
 
@@ -221,37 +187,37 @@ public final class DocumentedArea {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DocumentedArea that = (DocumentedArea) o;
 
         return Objects.equals(this.dependsOnGroups, that.dependsOnGroups) &&
                 Objects.equals(this.dependsOnProperties, that.dependsOnProperties) &&
                 Objects.equals(this.description, that.description) &&
-                Objects.equals(this.areas, that.areas) &&
                 Objects.equals(this.groupType, that.groupType) &&
                 Objects.equals(this.maxCardinality, that.maxCardinality) &&
                 Objects.equals(this.minCardinality, that.minCardinality) &&
-                Objects.equals(this.path, that.path) &&
-                Objects.equals(this.properties, that.properties) &&
+                Objects.equals(this.basePaths, that.basePaths) &&
                 Objects.equals(this.valueType, that.valueType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dependsOnGroups, dependsOnProperties, description, areas, groupType, maxCardinality,
-                minCardinality, path, properties, valueType);
+        return Objects.hash(dependsOnGroups, dependsOnProperties, description, groupType, maxCardinality,
+                minCardinality, basePaths, valueType);
     }
 
     @Override
     public String toString() {
         return "ConfigGroup{" +
-                "path='" + path + '\'' +
+                "basePaths='" + basePaths + '\'' +
                 ", description='" + description + '\'' +
                 ", areaType=" + groupType +
-                ", properties=" + properties +
-                ", areas=" + areas +
                 ", valueType=" + valueType +
                 ", minCardinality=" + minCardinality +
                 ", maxCardinality=" + maxCardinality +

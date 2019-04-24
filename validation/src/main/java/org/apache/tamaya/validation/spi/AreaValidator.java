@@ -52,7 +52,7 @@ public class AreaValidator implements ConfigValidator {
      * @param documentedArea the property docs, not null.
      */
     public AreaValidator(DocumentedArea documentedArea) {
-        this.name = Objects.requireNonNull(documentedArea.getPath());
+        this.name = Objects.requireNonNull(documentedArea.getBasePaths().iterator().next());
         this.description = documentedArea.getDescription();
         this.minCardinality = documentedArea.getMinCardinality();
         this.maxCardinality = documentedArea.getMaxCardinality();

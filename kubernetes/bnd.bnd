@@ -1,0 +1,32 @@
+-buildpath: \
+	osgi.annotation; version=6.0.0,\
+	osgi.core; version=6.0,\
+	osgi.cmpn; version=6.0
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Automatic-Module-Name: org.apache.tamaya.k8s
+Bundle-Version: ${version}.${tstamp}
+Bundle-Name: Apache Tamaya - Kubernetes Config
+Bundle-SymbolicName: org.apache.tamaya.etcd
+Bundle-Description: Apacha Tamaya Config - Kubernetes PropertySources
+Bundle-Category: Implementation
+Bundle-Copyright: (C) Apache Foundation
+Bundle-License: Apache Licence version 2
+Bundle-Vendor: Apache Software Foundation
+Bundle-ContactAddress: dev@tamaya.incubator.apache.org
+Bundle-DocURL: https://tamaya.apache.org
+Export-Package: \
+	org.apache.tamaya.k8s
+Import-Package: \
+    org.apache.tamaya,\
+    org.apache.tamaya.spi,\
+    org.apache.tamaya.mutableconfig\
+    org.apache.tamaya.mutableconfig.spi
+Export-Service: \
+    org.apache.tamaya.spi.PropertySource
+    

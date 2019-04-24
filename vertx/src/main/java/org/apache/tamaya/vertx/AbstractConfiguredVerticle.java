@@ -20,7 +20,6 @@ package org.apache.tamaya.vertx;
 
 import io.vertx.core.AbstractVerticle;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.inject.ConfigurationInjection;
 
 import java.util.Optional;

@@ -29,8 +29,8 @@ public final class ConfiguredMethod {
     private final Method method;
     private String key;
 
-    ConfiguredMethod(InjectionPoint injectionPoint, String key){
-        this.method = (Method)injectionPoint.getMember();
+    ConfiguredMethod(InjectionPoint injectionPoint, String key) {
+        this.method = (Method) injectionPoint.getMember();
         this.key = key;
     }
 
@@ -60,6 +60,6 @@ public final class ConfiguredMethod {
 
     @Override
     public String toString() {
-        return "CDIConfiguredMethod["+getSignature()+']';
+        return "CDIConfiguredMethod[" + getSignature() + ']';
     }
 }

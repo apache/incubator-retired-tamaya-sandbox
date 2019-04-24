@@ -108,6 +108,9 @@ public class CachedFilter implements PropertyFilter{
                 '}';
     }
 
+    /**
+     * A cached configuration entry.
+     */
     private static final class CachedEntry{
         private long ttl;
         private PropertyValue value;

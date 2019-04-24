@@ -23,7 +23,6 @@ import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.ConversionContext.Builder;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,8 +52,7 @@ public class DateTimeZoneConverterTest {
         for (Object[] pair : inputResultPairs) {
             DateTimeZone zone = converter.convert((String) pair[0], context);
 
-            assertThat(zone).isNotNull();
-            assertThat(zone).isEqualTo((DateTimeZone)pair[1]);
+            assertThat(zone).isNotNull().isEqualTo((DateTimeZone)pair[1]);
         }
     }
 
@@ -85,9 +83,7 @@ public class DateTimeZoneConverterTest {
         DateTimeZone result = converter.convert("+01:00", context);
 
         assertThat(result).isNotNull();
-        assertThat(context.getSupportedFormats().size()).isEqualTo(2);
-        assertThat(context.getSupportedFormats().contains(firstFormat)).isTrue();
-        assertThat(context.getSupportedFormats().contains(secondFormat)).isTrue();
+        assertThat(context.getSupportedFormats()).hasSize(2).containsExactly(firstFormat, secondFormat);
     }
 
 }

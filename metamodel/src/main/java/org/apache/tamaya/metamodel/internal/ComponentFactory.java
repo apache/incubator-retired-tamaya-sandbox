@@ -34,6 +34,7 @@ import java.util.Set;
 
 /**
  * Small helper class for loading of configured instances.
+ * @param <T> the component type
  */
 public final class ComponentFactory<T> {
 

@@ -32,8 +32,7 @@ public class PathBasedHJSONPropertySourceProviderTest {
         PathBasedHJSONPropertySourceProvider provider = new PathBasedHJSONPropertySourceProvider(
                 "configs/valid/*.hjson"
         );
-        assertThat(provider.getPropertySources()).isNotNull();
-        assertThat(7).isEqualTo(provider.getPropertySources().size());
+        assertThat(provider.getPropertySources()).isNotNull().hasSize(7);
     }
 
     @Test
@@ -41,8 +40,7 @@ public class PathBasedHJSONPropertySourceProviderTest {
         PathBasedHJSONPropertySourceProvider provider = new PathBasedHJSONPropertySourceProvider(
                 "configs/valid/cyril*.hjson"
         );
-        assertThat(provider.getPropertySources()).isNotNull();
-        assertThat(1).isEqualTo(provider.getPropertySources().size());
+        assertThat(provider.getPropertySources()).isNotNull().hasSize(1);
     }
 
     @Test
@@ -50,8 +48,7 @@ public class PathBasedHJSONPropertySourceProviderTest {
         PathBasedHJSONPropertySourceProvider provider = new PathBasedHJSONPropertySourceProvider(
                 "configs/valid/simple-*.hjson"
         );
-        assertThat(provider.getPropertySources()).isNotNull();
-        assertThat(3).isEqualTo(provider.getPropertySources().size());
+        assertThat(provider.getPropertySources()).isNotNull().hasSize(3);
     }
 
     @Test
@@ -59,7 +56,6 @@ public class PathBasedHJSONPropertySourceProviderTest {
         PathBasedHJSONPropertySourceProvider provider = new PathBasedHJSONPropertySourceProvider(
                 "configs/valid/foo*.hjson", "configs/valid/*.HJSON"
         );
-        assertThat(provider.getPropertySources()).isNotNull();
-        assertThat(0).isEqualTo(provider.getPropertySources().size());
+        assertThat(provider.getPropertySources()).isNotNull().isEmpty();
     }
 }

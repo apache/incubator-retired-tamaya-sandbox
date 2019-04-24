@@ -76,7 +76,7 @@ public abstract class CommonHJSONTestCaseCollection {
 
         System.out.println("simple-nested-string-only-config-1.json -> " + properties.getProperties().values());
 
-        assertThat(properties.getProperties().keySet().size() >= 5).isTrue();
+        assertThat(properties.getProperties().keySet().size()).isGreaterThanOrEqualTo(5);
 
         PropertyValue keyB = properties.get("b");
         PropertyValue keyDO = properties.get("d.o");
@@ -100,7 +100,7 @@ public abstract class CommonHJSONTestCaseCollection {
 
         PropertySource properties = getPropertiesFrom(configURL);
 
-        assertThat(properties.getProperties().keySet().size() >= 4).isTrue();
+        assertThat(properties.getProperties().keySet().size()).isGreaterThanOrEqualTo(4);
 
         PropertyValue keyA = properties.get("a");
         PropertyValue keyDO = properties.get("b.o");
@@ -163,7 +163,7 @@ public abstract class CommonHJSONTestCaseCollection {
 
         PropertySource properties = getPropertiesFrom(configURL);
 
-        assertThat(3).isEqualTo(properties.getProperties().size());
+        assertThat(properties.getProperties()).hasSize(3);
 
         PropertyValue keyA = properties.get("a");
         PropertyValue keyB = properties.get("b");
@@ -196,6 +196,6 @@ public abstract class CommonHJSONTestCaseCollection {
 
         PropertySource properties = getPropertiesFrom(configURL);
 
-        assertThat(properties.getProperties().keySet().size() >= 0).isTrue();
+        assertThat(properties.getProperties().keySet().size()).isGreaterThanOrEqualTo(0);
     }
 }

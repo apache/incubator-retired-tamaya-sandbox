@@ -37,7 +37,7 @@ public final class ConfiguredType {
     private final List<ConfiguredMethod> methods = new ArrayList<>();
     private final List<ConfiguredField> fields = new ArrayList<>();
 
-    public ConfiguredType(Class<?> type){
+    public ConfiguredType(Class<?> type) {
         this.type = Objects.requireNonNull(type);
     }
 
@@ -63,14 +63,15 @@ public final class ConfiguredType {
 
     /**
      * Used to build up during injection point processing.
+     *
      * @param injectionPoint the CDI injection point, not null.
-     * @param key the possible config key, not null.
+     * @param key            the possible config key, not null.
      */
     void addConfiguredMember(InjectionPoint injectionPoint, String key) {
         Member member = injectionPoint.getMember();
-        if(member instanceof Field){
+        if (member instanceof Field) {
             this.fields.add(new ConfiguredField(injectionPoint, key));
-        } else if(member instanceof Method){
+        } else if (member instanceof Method) {
             this.methods.add(new ConfiguredMethod(injectionPoint, key));
         }
     }

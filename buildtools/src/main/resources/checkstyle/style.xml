@@ -20,7 +20,6 @@ under the License.
     "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
     "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <module name="Checker">
-    <module name="SuppressionCommentFilter"/>
 
     <!-- Checks for Size Violations.                    -->
     <!-- See http://checkstyle.sf.net/config_sizes.html -->
@@ -35,8 +34,7 @@ under the License.
 
 
     <module name="TreeWalker">
-        <!-- needed for the SuppressionCommentFilter -->
-        <module name="FileContentsHolder"/>
+        <module name="SuppressionCommentFilter"/>
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
@@ -53,33 +51,14 @@ under the License.
                 </module>
         -->
 
-        <module name="ConstantName">
-            <!-- Normal rules, except that:
-               -  * any name can start with an underscore.
-               -  * "log" is allowed; this is a traditional name for log objects
-               -  * names ending with "ThreadLocal" are allowed so that threadlocal vars don't have to be
-               -    all-caps. They are static final, but are not really constants. Yes, type prefixes
-               -    on variable names sucks ("hungarian notation") but checkstyle doesn't allow
-               -    name rules to vary by the type of the constant, and no other alternative seems
-               -    any better.
-               -->
-            <property name="format"
-                      value="^_?((log)|(logger)|([a-z][a-zA-Z]*ThreadLocal)|([A-Z][A-Z0-9]*(_[A-Z0-9]+)*))$"/>
-        </module>
-
+        <module name="ConstantName"/>
         <module name="LocalVariableName"/>
-        <module name="MethodName">
-            <property name="format"
-                      value="^_?[a-z][a-zA-Z0-9]*$"/>
-        </module>
+        <module name="MethodName"/>
         <module name="PackageName"/>
         <module name="LocalFinalVariableName"/>
         <module name="ParameterName"/>
         <module name="StaticVariableName"/>
-        <module name="TypeName">
-            <property name="format"
-                      value="^_?[A-Z][a-zA-Z0-9]*$"/>
-        </module>
+        <module name="TypeName"/>
 
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
@@ -87,7 +66,10 @@ under the License.
             <property name="excludes"
                       value="java.io,java.net,java.util"/>
         </module>
-        <module name="IllegalImport"/>
+        <module name="IllegalImport">
+            <property name="illegalClasses" value="junit.framework.TestCase, org.junit.Assert, org.hamcrest.MatcherAssert, org.hamcrest.CoreMatchers, org.hamcrest.Matchers, org.hamcrest.core.Is"/>
+            <property name="illegalPkgs" value="junit.framework.TestCase, org.junit.Assert, org.hamcrest.MatcherAssert, org.hamcrest.CoreMatchers, org.hamcrest.Matchers, org.hamcrest.core.Is"/>
+        </module>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 

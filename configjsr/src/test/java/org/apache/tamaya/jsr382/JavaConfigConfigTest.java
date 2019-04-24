@@ -26,7 +26,7 @@ import javax.config.spi.ConfigSource;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by atsticks on 24.03.17.
@@ -52,8 +52,7 @@ public class JavaConfigConfigTest {
             Optional<String> val = config.getOptionalValue(key, String.class);
             assertThat(val).isNotNull();
             val = config.getOptionalValue(key + System.currentTimeMillis(), String.class);
-            assertThat(val).isNotNull();
-            assertThat(val.isPresent()).isFalse();
+            assertThat(val).isNotNull().isNotPresent();
         }
     }
 

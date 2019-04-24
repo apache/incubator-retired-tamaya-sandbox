@@ -18,7 +18,6 @@
  */
 package org.apache.tamaya.jsr382;
 
-import org.apache.tamaya.ConfigurationProvider;
 import org.junit.Test;
 
 import javax.config.Config;
@@ -46,7 +45,7 @@ public class JavaConfigConfigProviderTest {
         for(String s:ConfigProvider.getConfig().getPropertyNames()){
             cfgCount++;
         }
-        assertThat(cfgCount <= count).isTrue();
+        assertThat(cfgCount).isLessThanOrEqualTo(count);
     }
 
     @Test
@@ -59,7 +58,7 @@ public class JavaConfigConfigProviderTest {
         for(String name:names){
             count++;
         }
-        assertThat(count > 0).isTrue();
+        assertThat(count).isGreaterThan(0);
     }
 
 }

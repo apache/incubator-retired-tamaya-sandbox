@@ -31,20 +31,20 @@ import java.util.Set;
 /**
  * Implementation of a {@link ConfigSnapshot} based on Tamaya resources.
  */
-class TamayaConfigSnapshot  implements ConfigSnapshot {
+class TamayaConfigSnapshot implements ConfigSnapshot {
 
     private DefaultConfigurationSnapshot snapshot;
     private List<ConfigAccessor<?>> accessors = new ArrayList<>();
 
-    public TamayaConfigSnapshot(Configuration config, ConfigAccessor<?>... configAccessors){
+    public TamayaConfigSnapshot(Configuration config, ConfigAccessor<?>... configAccessors) {
         Set<String> keys = new HashSet<>();
-        for(ConfigAccessor<?> accessor:configAccessors){
-            keys.addAll(((TamayaConfigAccessor)accessor).getCandidateKeys());
+        for (ConfigAccessor<?> accessor : configAccessors) {
+            keys.addAll(((TamayaConfigAccessor) accessor).getCandidateKeys());
         }
         this.snapshot = new DefaultConfigurationSnapshot(config, keys);
     }
 
-    public Configuration getConfiguration(){
+    public Configuration getConfiguration() {
         return snapshot;
     }
 

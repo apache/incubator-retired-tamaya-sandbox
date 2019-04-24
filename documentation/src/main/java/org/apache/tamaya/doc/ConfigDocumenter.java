@@ -18,7 +18,11 @@
  */
 package org.apache.tamaya.doc;
 
-import org.apache.tamaya.doc.annot.*;
+import org.apache.tamaya.doc.annot.ConfigSpec;
+import org.apache.tamaya.doc.annot.ConfigAreaSpec;
+import org.apache.tamaya.doc.annot.ConfigAreaSpecs;
+import org.apache.tamaya.doc.annot.ConfigPropertySpec;
+import org.apache.tamaya.doc.annot.ConfigPropertySpecs;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
@@ -33,8 +37,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -99,7 +101,8 @@ public class ConfigDocumenter {
         }
         configBuilder.filterInputsBy(filterBuilder);
         configBuilder.setUrls(ClasspathHelper.forJavaClassPath());
-        configBuilder.setScanners(new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new FieldAnnotationsScanner());
+        configBuilder.setScanners(new TypeAnnotationsScanner(),
+                new MethodAnnotationsScanner(), new FieldAnnotationsScanner());
         Reflections reflections = new Reflections(configBuilder);
         readSpecs(reflections);
     }
@@ -158,13 +161,24 @@ public class ConfigDocumenter {
     }
 
     private void readConfigSpec(Class type){
-        docs.init((ConfigSpec)type.getAnnotation(ConfigSpec.class), type);
+        ConfigSpec configAnnot = (ConfigSpec)type.getAnnotation(ConfigSpec.class);
+        docs.init(configAnnot, type);
+        for (ConfigAreaSpec areaSpec:configAnnot.areas()){
+            for(String basePath:areaSpec.basePaths()) {
+                docs.addGroup(new DocumentedArea(areaSpec, type));
+            }
+        }
+        for (ConfigPropertySpec propertySpec:configAnnot.properties()){
+            docs.addProperty(new DocumentedProperty(propertySpec, type));
+        }
     }
 
     private void readAreaSpecs(AnnotatedElement elem){
         ConfigAreaSpecs areaSpecs = elem.getAnnotation(ConfigAreaSpecs.class);
         for (ConfigAreaSpec areaSpec:areaSpecs.value()){
-            docs.addGroup(new DocumentedArea(areaSpec, elem));
+            for(String basePath:areaSpec.basePaths()) {
+                docs.addGroup(new DocumentedArea(areaSpec, elem));
+            }
         }
     }
 

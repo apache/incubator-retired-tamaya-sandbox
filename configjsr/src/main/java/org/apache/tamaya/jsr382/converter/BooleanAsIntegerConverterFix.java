@@ -22,7 +22,6 @@ import org.apache.tamaya.spi.ConversionContext;
 import org.apache.tamaya.spi.PropertyConverter;
 
 import javax.annotation.Priority;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -37,25 +36,25 @@ public class BooleanAsIntegerConverterFix implements PropertyConverter<Boolean> 
     @Override
     public Boolean convert(String value, ConversionContext context) {
         context.addSupportedFormats(getClass(), "'1' (true), otherwise false.");
-        try{
+        try {
             int val = Integer.parseInt(Objects.requireNonNull(value).trim());
-            if(val==1) {
+            if (val == 1) {
                 return Boolean.TRUE;
             }
             return Boolean.FALSE;
-        }catch(Exception e){
+        } catch (Exception e) {
             // OK
             return Boolean.FALSE;
         }
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         return getClass().equals(o.getClass());
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return getClass().hashCode();
     }
 }

@@ -36,8 +36,7 @@ public class ConfigUsageTest {
         TestConfigAccessor.readConfiguration();
         Configuration config = Configuration.current();
         String info = ConfigUsage.getInstance().getInfo();
-        assertThat(info.contains("java.version")).isFalse();
-        assertThat(info).isNotNull();
+        assertThat(info).isNotNull().doesNotContain("java.version");
         config = TestConfigAccessor.readConfiguration();
         config.getProperties();
         TestConfigAccessor.readProperty(config, "java.locale");
@@ -46,8 +45,7 @@ public class ConfigUsageTest {
         config.get("java.version");
         info = ConfigUsage.getInstance().getInfo();
         System.out.println(info);
-        assertThat(info.contains("java.version")).isTrue();
-        assertThat(info).isNotNull();
+        assertThat(info).isNotNull().contains("java.version");
         ConfigUsage.getInstance().enableUsageTracking(false);
     }
 
@@ -58,8 +56,7 @@ public class ConfigUsageTest {
         TestConfigAccessor.readConfiguration();
         Configuration config = Configuration.current();
         String info = ConfigUsage.getInstance().getInfo();
-        assertThat(info).isNotNull();
-        assertThat(info.contains("java.version")).isFalse();
+        assertThat(info).isNotNull().doesNotContain("java.version");
         config = TestConfigAccessor.readConfiguration();
         config.getProperties();
         TestConfigAccessor.readProperty(config, "java.locale");
@@ -67,8 +64,7 @@ public class ConfigUsageTest {
         TestConfigAccessor.readProperty(config, "java.version");
         config.get("java.version");
         info = ConfigUsage.getInstance().getInfo();
-        assertThat(info.contains("java.version")).isFalse();
-        assertThat(info).isNotNull();
+        assertThat(info).isNotNull().doesNotContain("java.version");
         ConfigUsage.getInstance().enableUsageTracking(false);
     }
 }

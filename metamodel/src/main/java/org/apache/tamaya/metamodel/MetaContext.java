@@ -46,7 +46,7 @@ public final class MetaContext {
 
     private final Map<String,Value> properties = new ConcurrentHashMap<>();
 
-    private static final MetaContext globalContext = new MetaContext();
+    private static final MetaContext GLOBAL_CONTEXT = new MetaContext();
 
     /** The unique id of this context. */
     private MetaContext(){
@@ -68,7 +68,7 @@ public final class MetaContext {
      * @return the context instance, never null.
      */
     public static MetaContext getInstance(){
-        return globalContext;
+        return GLOBAL_CONTEXT;
     }
 
     /**
@@ -242,8 +242,12 @@ public final class MetaContext {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MetaContext)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MetaContext)) {
+            return false;
+        }
 
         MetaContext context = (MetaContext) o;
 
@@ -260,10 +264,13 @@ public final class MetaContext {
         return "MetaContext{" +
                 "id=" + getId() +
                 ", properties=" + properties +
-                ", global=" + (this == MetaContext.globalContext) +
+                ", global=" + (this == MetaContext.GLOBAL_CONTEXT) +
                 '}';
     }
 
+    /**
+     * A class representing a meta value.
+     */
     private static final class Value{
         private String key;
         private String value;
@@ -289,8 +296,12 @@ public final class MetaContext {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Value)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Value)) {
+                return false;
+            }
             Value value = (Value) o;
             return Objects.equals(value, this);
         }

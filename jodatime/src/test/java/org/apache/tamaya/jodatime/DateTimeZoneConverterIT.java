@@ -20,7 +20,6 @@ package org.apache.tamaya.jodatime;
 
 
 import org.apache.tamaya.spi.PropertyConverter;
-import org.apache.tamaya.spi.ServiceContext;
 import org.apache.tamaya.spi.ServiceContextManager;
 import org.junit.Test;
 

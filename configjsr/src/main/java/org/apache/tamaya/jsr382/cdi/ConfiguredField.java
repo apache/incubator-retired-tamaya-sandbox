@@ -29,8 +29,8 @@ public final class ConfiguredField {
     private final Field field;
     private String key;
 
-    ConfiguredField(InjectionPoint injectionPoint, String key){
-        this.field = (Field)injectionPoint.getMember();
+    ConfiguredField(InjectionPoint injectionPoint, String key) {
+        this.field = (Field) injectionPoint.getMember();
         this.key = key;
     }
 
@@ -51,7 +51,7 @@ public final class ConfiguredField {
     }
 
     public String getSignature() {
-        return getName()+':'+field.getType().getName();
+        return getName() + ':' + field.getType().getName();
     }
 
     public void configure(Object instance, Configuration config) {
@@ -60,6 +60,6 @@ public final class ConfiguredField {
 
     @Override
     public String toString() {
-        return "CDIConfiguredField["+getSignature()+']';
+        return "CDIConfiguredField[" + getSignature() + ']';
     }
 }

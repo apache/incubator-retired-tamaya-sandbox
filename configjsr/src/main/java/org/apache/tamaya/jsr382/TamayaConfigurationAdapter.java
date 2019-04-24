@@ -18,7 +18,9 @@
  */
 package org.apache.tamaya.jsr382;
 
-import org.apache.tamaya.*;
+import org.apache.tamaya.Configuration;
+import org.apache.tamaya.ConfigurationSnapshot;
+import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.spi.ConfigurationContext;
 import org.apache.tamaya.spisupport.DefaultConfigurationSnapshot;
 
@@ -28,25 +30,27 @@ import java.util.*;
 /**
  * Configuration implementation that wraps a Javaconfig {@link Config} instance.
  */
-class TamayaConfigurationAdapter implements Configuration{
+class TamayaConfigurationAdapter implements Configuration {
 
     private Config delegate;
     private ConfigurationContext context;
 
     /**
      * Creates a new adapter based on the given {@link Config}.
+     *
      * @param config the config, not null.
      */
-    public TamayaConfigurationAdapter(Config config){
+    public TamayaConfigurationAdapter(Config config) {
         this.delegate = Objects.requireNonNull(config);
         this.context = JavaConfigAdapterFactory.toConfigurationContext(config);
     }
 
     /**
      * Get the underlying config.
+     *
      * @return the underlying config, not null.
      */
-    public Config getConfig(){
+    public Config getConfig() {
         return delegate;
     }
 
@@ -84,15 +88,15 @@ class TamayaConfigurationAdapter implements Configuration{
 
     @Override
     public Map<String, String> getProperties() {
-        Map<String,String> properties = new HashMap<>();
-        for(String key:this.delegate.getPropertyNames()) {
+        Map<String, String> properties = new HashMap<>();
+        for (String key : this.delegate.getPropertyNames()) {
             properties.put(key, delegate.getValue(key, String.class));
         }
         return properties;
     }
 
     @Override
-    public ConfigurationSnapshot getSnapshot(Iterable<String> keys){
+    public ConfigurationSnapshot getSnapshot(Iterable<String> keys) {
         return new DefaultConfigurationSnapshot(this, keys);
     }
 

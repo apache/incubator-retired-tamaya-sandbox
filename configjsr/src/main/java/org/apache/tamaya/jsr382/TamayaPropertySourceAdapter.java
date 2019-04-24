@@ -36,17 +36,19 @@ class TamayaPropertySourceAdapter implements PropertySource {
 
     /**
      * Creates a new instance.
+     *
      * @param configSource the underlying config source, not null.
      */
-    public TamayaPropertySourceAdapter(ConfigSource configSource){
+    public TamayaPropertySourceAdapter(ConfigSource configSource) {
         this.delegate = Objects.requireNonNull(configSource);
     }
 
     /**
      * Access the underlying config source.
+     *
      * @return the underlying config source, not null.
      */
-    public ConfigSource getConfigSource(){
+    public ConfigSource getConfigSource() {
         return this.delegate;
     }
 
@@ -63,7 +65,7 @@ class TamayaPropertySourceAdapter implements PropertySource {
 
     @Override
     public PropertyValue get(String key) {
-        return PropertyValue.of(key, delegate.getValue(key),getName());
+        return PropertyValue.of(key, delegate.getValue(key), getName());
     }
 
     @Override
@@ -73,7 +75,7 @@ class TamayaPropertySourceAdapter implements PropertySource {
 
     private Map<String, PropertyValue> toValueMap(Map<String, String> properties) {
         Map<String, PropertyValue> valueMap = new HashMap<>(properties.size());
-        for(Map.Entry<String,String> en:properties.entrySet()){
+        for (Map.Entry<String, String> en : properties.entrySet()) {
             valueMap.put(en.getKey(), PropertyValue.of(en.getKey(), en.getValue(), getName()));
         }
         return valueMap;

@@ -19,7 +19,8 @@
 package org.apache.tamaya.jsr382;
 
 import org.apache.tamaya.TypeLiteral;
-import org.apache.tamaya.spi.*;
+import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.spisupport.PropertySourceComparator;
 import org.apache.tamaya.spisupport.propertysource.EnvironmentPropertySource;
 import org.apache.tamaya.spisupport.propertysource.SystemPropertySource;
@@ -34,24 +35,26 @@ import java.util.Objects;
 /**
  * Created by atsticks on 23.03.17.
  */
-final class JavaConfigBuilderAdapter implements ConfigBuilder{
+final class JavaConfigBuilderAdapter implements ConfigBuilder {
 
     private ConfigurationBuilder configBuilder;
 
     /**
      * Create a new ConfigBuilder using the given Tamaya config builder.
+     *
      * @param configBuilder
      */
-    JavaConfigBuilderAdapter(ConfigurationBuilder configBuilder){
+    JavaConfigBuilderAdapter(ConfigurationBuilder configBuilder) {
         this.configBuilder = Objects.requireNonNull(configBuilder);
         configBuilder.addDefaultPropertyConverters();
     }
 
     /**
      * Access the underlying Tamaya {@link ConfigurationBuilder}.
+     *
      * @return the Tamaya builder, not null.
      */
-    public ConfigurationBuilder getConfigurationBuilder(){
+    public ConfigurationBuilder getConfigurationBuilder() {
         return configBuilder;
     }
 
@@ -78,14 +81,15 @@ final class JavaConfigBuilderAdapter implements ConfigBuilder{
 
     /**
      * Add ConfigSources registered using the ServiceLoader.
+     *
      * @return the ConfigBuilder with the added config sources
      */
     @Override
     public ConfigBuilder addDiscoveredSources() {
-        for(ConfigSource configSource: ServiceContextManager.getServiceContext().getServices(ConfigSource.class)){
+        for (ConfigSource configSource : ServiceContextManager.getServiceContext().getServices(ConfigSource.class)) {
             configBuilder.addPropertySources(JavaConfigAdapterFactory.toPropertySource(configSource));
         }
-        for(ConfigSourceProvider configSourceProvider: ServiceContextManager.getServiceContext().getServices(ConfigSourceProvider.class)){
+        for (ConfigSourceProvider configSourceProvider : ServiceContextManager.getServiceContext().getServices(ConfigSourceProvider.class)) {
             configBuilder.addPropertySources(JavaConfigAdapterFactory.toPropertySources(configSourceProvider.getConfigSources(
                     Thread.currentThread().getContextClassLoader()
             )));
@@ -96,13 +100,14 @@ final class JavaConfigBuilderAdapter implements ConfigBuilder{
 
     /**
      * Add Converters registered using the ServiceLoader.
+     *
      * @return the ConfigBuilder with the added config converters
      */
     @Override
     public ConfigBuilder addDiscoveredConverters() {
-        for(Converter<?> converter: ServiceContextManager.getServiceContext().getServices(Converter.class)){
+        for (Converter<?> converter : ServiceContextManager.getServiceContext().getServices(Converter.class)) {
             TypeLiteral targetType = TypeLiteral.of(
-                    TypeLiteral.getGenericInterfaceTypeParameters(converter.getClass(),Converter.class)[0]);
+                    TypeLiteral.getGenericInterfaceTypeParameters(converter.getClass(), Converter.class)[0]);
             configBuilder.addPropertyConverters(targetType,
                     JavaConfigAdapterFactory.toPropertyConverter(converter));
         }
@@ -117,7 +122,7 @@ final class JavaConfigBuilderAdapter implements ConfigBuilder{
 
     @Override
     public ConfigBuilder withSources(ConfigSource... sources) {
-        for(ConfigSource source:sources){
+        for (ConfigSource source : sources) {
             configBuilder.addPropertySources(JavaConfigAdapterFactory.toPropertySource(source));
         }
         return this;
@@ -136,7 +141,7 @@ final class JavaConfigBuilderAdapter implements ConfigBuilder{
 
     @Override
     public ConfigBuilder withConverters(Converter<?>... converters) {
-        for(Converter<?> converter:converters){
+        for (Converter<?> converter : converters) {
             TypeLiteral lit = TypeLiteral.of(converter.getClass());
             TypeLiteral target = TypeLiteral.of(lit.getType());
             configBuilder.removePropertyConverters(target);

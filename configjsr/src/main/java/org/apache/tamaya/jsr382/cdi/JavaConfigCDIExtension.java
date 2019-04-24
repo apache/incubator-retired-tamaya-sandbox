@@ -52,13 +52,14 @@ public class JavaConfigCDIExtension implements Extension {
     /**
      * Constructor for loading logging its load.
      */
-    public JavaConfigCDIExtension(){
+    public JavaConfigCDIExtension() {
         LOG.finest("Loading Tamaya JavaConfig Support...");
     }
 
     /**
      * Method that checks the configuration injection points during deployment for available configuration.
-     * @param pb the bean to process.
+     *
+     * @param pb          the bean to process.
      * @param beanManager the bean manager to notify about new injections.
      */
     public void retrieveTypes(@Observes final ProcessBean<?> pb, BeanManager beanManager) {
@@ -71,17 +72,17 @@ public class JavaConfigCDIExtension implements Extension {
             if (injectionPoint.getAnnotated().isAnnotationPresent(ConfigProperty.class)) {
                 LOG.fine("Configuring: " + injectionPoint);
                 final ConfigProperty annotation = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
-                String key = !annotation.name().isEmpty()?annotation.name():JavaConfigConfigurationProducer.getDefaultKey(injectionPoint);
+                String key = !annotation.name().isEmpty() ? annotation.name() : JavaConfigConfigurationProducer.getDefaultKey(injectionPoint);
                 configuredType.addConfiguredMember(injectionPoint, key);
                 Type originalType = injectionPoint.getType();
                 Type convertedType = unwrapType(originalType);
                 types.add(convertedType);
                 configured = true;
                 LOG.finest(() -> "Enabling Tamaya JavaConfig Configuration on bean: " + configuredType.getName());
-            }else if(injectionPoint.getMember() instanceof Method){
-                Method method = (Method)injectionPoint.getMember();
-                for(AnnotatedType paramType: method.getAnnotatedParameterTypes()){
-                    if(paramType.isAnnotationPresent(ConfigProperty.class)) {
+            } else if (injectionPoint.getMember() instanceof Method) {
+                Method method = (Method) injectionPoint.getMember();
+                for (AnnotatedType paramType : method.getAnnotatedParameterTypes()) {
+                    if (paramType.isAnnotationPresent(ConfigProperty.class)) {
                         LOG.fine("Configuring method: " + injectionPoint);
                         final ConfigProperty annotation = paramType.getAnnotation(ConfigProperty.class);
                         String key = !annotation.name().isEmpty() ? annotation.name() : JavaConfigConfigurationProducer.getDefaultKey(injectionPoint);
@@ -95,7 +96,7 @@ public class JavaConfigCDIExtension implements Extension {
                 }
             }
         }
-        if(configured) {
+        if (configured) {
             beanManager.fireEvent(configuredType);
         }
     }
@@ -108,15 +109,15 @@ public class JavaConfigCDIExtension implements Extension {
     }
 
     public void addConverter(@Observes final AfterBeanDiscovery abd, final BeanManager bm) {
-        if(!types.isEmpty() && convBean!=null) {
+        if (!types.isEmpty() && convBean != null) {
             abd.addBean(new BridgingConfigBean(convBean, types));
         }
     }
 
     private Type unwrapType(Type type) {
-        if(type instanceof ParameterizedType) {
+        if (type instanceof ParameterizedType) {
             Type rawType = ((ParameterizedType) type).getRawType();
-            if(rawType == Provider.class || rawType == Instance.class) {
+            if (rawType == Provider.class || rawType == Instance.class) {
                 return ((ParameterizedType) type).getActualTypeArguments()[0];
             }
         }

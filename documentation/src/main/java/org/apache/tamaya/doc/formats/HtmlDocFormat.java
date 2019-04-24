@@ -30,8 +30,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static j2html.TagCreator.*;
+import static j2html.TagCreator.b;
+import static j2html.TagCreator.body;
+import static j2html.TagCreator.h1;
+import static j2html.TagCreator.h2;
+import static j2html.TagCreator.h4;
+import static j2html.TagCreator.head;
+import static j2html.TagCreator.html;
+import static j2html.TagCreator.i;
+import static j2html.TagCreator.li;
+import static j2html.TagCreator.link;
+import static j2html.TagCreator.meta;
+import static j2html.TagCreator.p;
+import static j2html.TagCreator.pre;
+import static j2html.TagCreator.table;
+import static j2html.TagCreator.td;
+import static j2html.TagCreator.text;
+import static j2html.TagCreator.th;
+import static j2html.TagCreator.title;
+import static j2html.TagCreator.thead;
+import static j2html.TagCreator.tr;
+import static j2html.TagCreator.ul;
 
+/**
+ * An HTML-based documentation format.
+ */
 public class HtmlDocFormat implements DocFormat<String> {
     @Override
     public String apply(DocumentedConfiguration documentedConfiguration) {
@@ -83,15 +106,17 @@ public class HtmlDocFormat implements DocFormat<String> {
         List<ContainerTag> propertyRows = new ArrayList<>();
         for (DocumentedProperty prop : properties) {
             propertyRows.add(tr(
-                    td(pre(prop.getName().replace(", ", "\n"))).attr("scope","row"),
+                    td(pre(prop.getMainKey())).attr("scope","row"),
+                    td(pre(String.join("\n", prop.getBackupKeys())).attr("scope","row"),
                     td(Object.class==prop.getValueType()?"":prop.getValueType().getName()),
                     td(prop.getDescription()),
                     td(i(prop.getDefaultValue()))
-            ));
+            )));
         }
         ContainerTag propertiesTable = table(
                 thead(tr(
-                        th("Key(s)").attr("scope","col"),
+                        th("Main Key").attr("scope","col"),
+                        th("Alternate Keys").attr("scope","col"),
                         th("Valuetype").attr("scope","col"),
                         th("Description").attr("width", "75%").attr("scope","col"),
                         th("Default").attr("scope","col").attr("width", "15%")
@@ -104,23 +129,14 @@ public class HtmlDocFormat implements DocFormat<String> {
 
     private List<ContainerTag> createAreaEntries(DocumentedArea area, String parentArea) {
         List<ContainerTag> result = new ArrayList<>();
-        if(parentArea==null){
-            result.add(h4(area.getPath()));
-        }else{
-            result.add(h4(parentArea + "."+ area.getPath()));
-        }
+        result.add(h4(area.getMainBasePath()));
         result.add(ul(
                 li(b("Group Type: "), text(area.getGroupType().toString()),
                 li(b("Valuetype: "), text(area.getValueType().getName()))
                         .withCondHidden(Object.class==area.getValueType()),
                 li(b("Description: "), text(area.getDescription()))
-                        .withCondHidden(area.getDescription()==null),
-                li(b("Properties: ")).with(createPropertiesTable(area.getPropertiesSorted(), area.getPath()))
-                        .withCondHidden(area.getProperties().isEmpty())
+                        .withCondHidden(area.getDescription()==null)
         )));
-        for(DocumentedArea subArea:area.getAreasSorted()){
-            result.addAll(createAreaEntries(subArea, area.getPath()));
-        }
         return result;
     }
 

@@ -24,17 +24,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
+/**
+ * This annotation allows one to specify a configuration property.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 public @interface ConfigPropertySpec {
-
-//    boolean id() default false;
 
     /**
      * The property name. The full property key is a combination of the parent
      * @return the name of the property, taken from the default resolution, if empty.
      */
-    String name() default "";
+    String[] keys() default {};
 
     /**
      * Define a description of the property.

@@ -79,7 +79,7 @@ under the License.
         <jruby.version>1.7.26</jruby.version>
         <findbugs.version>3.0.4</findbugs.version>
         <mockito.version>1.10.19</mockito.version>
-        <rat.version>0.12</rat.version>
+        <rat.version>0.13</rat.version>
         <toolchains.plugin>1.1</toolchains.plugin>
 
         <!-- Dependencies for site generation -->
@@ -342,21 +342,16 @@ under the License.
                     </executions>
                     <configuration>
                         <logViolationsToConsole>true</logViolationsToConsole>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <suppressionsLocation>buildtools/src/main/resources/checkstyle/suppressions.xml</suppressionsLocation>
                         <configLocation>buildtools/src/main/resources/checkstyle/style.xml</configLocation>
-                        <failOnViolation>false</failOnViolation>
                     </configuration>
 
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>7.8</version>
-                            <exclusions><!-- MCHECKSTYLE-156 -->
-                                <exclusion>
-                                    <groupId>com.sun</groupId>
-                                    <artifactId>tools</artifactId>
-                                </exclusion>
-                            </exclusions>
+                            <version>8.19</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -615,7 +610,7 @@ under the License.
                 							apache-rat-plugin
                 						</artifactId>
                 						<versionRange>
-                							[0.12,)
+                							[0.13,)
                 						</versionRange>
                 						<goals>
                 							<goal>check</goal>

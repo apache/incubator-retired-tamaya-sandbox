@@ -19,7 +19,6 @@
 package org.apache.tamaya.vertx;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.MessageConsumer;
@@ -27,9 +26,7 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.apache.tamaya.Configuration;
-import org.apache.tamaya.ConfigurationProvider;
 import org.apache.tamaya.functions.ConfigurationFunctions;
-import org.apache.tamaya.functions.PropertyMatcher;
 import org.apache.tamaya.inject.ConfigurationInjection;
 import org.apache.tamaya.inject.api.Config;
 
@@ -50,13 +47,13 @@ public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
     public static final String DEFAULT_CONFIG_GET_MULTI_ADDRESS = "CONFIG.GET.MAP";
     public static final String DEFAULT_CONFIG_GET_SINGLE_ADDRESS = "CONFIG.GET.SINGLE";
 
-    @Config(value = "tamaya.vertx.busaddress.inject", defaultValue = DEFAULT_CONFIGRE_ADDRESS)
+    @Config(key = "tamaya.vertx.busaddress.inject", defaultValue = DEFAULT_CONFIGRE_ADDRESS)
     private String injectionBusTarget;
 
-    @Config(value = "tamaya.vertx.busaddress.multi", defaultValue = DEFAULT_CONFIG_GET_MULTI_ADDRESS)
+    @Config(key = "tamaya.vertx.busaddress.multi", defaultValue = DEFAULT_CONFIG_GET_MULTI_ADDRESS)
     private String mapBusTarget;
 
-    @Config(value = "tamaya.vertx.busaddress.single", defaultValue = DEFAULT_CONFIG_GET_SINGLE_ADDRESS)
+    @Config(key = "tamaya.vertx.busaddress.single", defaultValue = DEFAULT_CONFIG_GET_SINGLE_ADDRESS)
     private String singleBusTarget;
 
 

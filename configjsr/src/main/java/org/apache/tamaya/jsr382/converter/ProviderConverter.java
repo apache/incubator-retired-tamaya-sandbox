@@ -44,26 +44,31 @@ public class ProviderConverter implements PropertyConverter<Provider> {
     @Override
     public Provider convert(String value, ConversionContext context) {
         return () -> {
-            try{
+            try {
                 Type targetType = context.getTargetType().getType();
                 ConvertQuery converter = new ConvertQuery(value, TypeLiteral.of(targetType));
                 return context.getConfiguration().query(converter);
-            }catch(Exception e){
+            } catch (Exception e) {
                 throw new ConfigException("Error evaluating config value.", e);
             }
         };
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         return getClass().equals(o.getClass());
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return getClass().hashCode();
     }
 
+    /**
+     * A class for converting from a String to a particular type.
+     *
+     * @param <T> the ConfigQuery type
+     */
     private static final class ConvertQuery<T> implements ConfigQuery<T> {
 
         private String rawValue;
@@ -79,17 +84,17 @@ public class ProviderConverter implements PropertyConverter<Provider> {
             List<PropertyConverter<T>> converters = config.getContext().getPropertyConverters(type);
             ConversionContext context = new ConversionContext.Builder(type).setConfiguration(config)
                     .setConfiguration(config).setKey(ConvertQuery.class.getName()).build();
-            for(PropertyConverter<?> conv: converters) {
-                try{
-                    if(conv instanceof ProviderConverter){
+            for (PropertyConverter<?> conv : converters) {
+                try {
+                    if (conv instanceof ProviderConverter) {
                         continue;
                     }
-                    T result = (T)conv.convert(rawValue, context);
-                    if(result!=null){
+                    T result = (T) conv.convert(rawValue, context);
+                    if (result != null) {
                         return result;
                     }
-                }catch(Exception e){
-                    LOG.log(Level.FINEST,  e, () -> "Converter "+ conv +" failed to convert to " + type);
+                } catch (Exception e) {
+                    LOG.log(Level.FINEST, e, () -> "Converter " + conv + " failed to convert to " + type);
                 }
             }
             return null;

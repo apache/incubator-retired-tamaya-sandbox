@@ -34,5 +34,5 @@ public @interface ConfigPropertySpecs {
      * The contained child annotations.
      * @return the contained annotations.
      */
-    ConfigPropertySpec[] value()default{};
+    ConfigPropertySpec[] value() default{};
 }

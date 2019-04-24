@@ -34,7 +34,7 @@ public class DateTimeConverterTest {
      */
     private static DateTimeConverter converter = new DateTimeConverter();
 
-    private static DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     @Test
     public void canConvertISO8601DateTimeSpecWithTimezoneOffset() {
@@ -88,11 +88,11 @@ public class DateTimeConverterTest {
         ConversionContext context = new ConversionContext.Builder(TypeLiteral.of(DateTime.class)).build();
         converter.convert("2007-08-31T16+00:00", context);
 
-        assertThat(context.getSupportedFormats().size()).isEqualTo(DateTimeConverter.PARSER_FORMATS.length);
+        assertThat(context.getSupportedFormats()).hasSize(DateTimeConverter.PARSER_FORMATS.length);
 
         for (String format : DateTimeConverter.PARSER_FORMATS) {
             String expected = format + " (" + DateTimeConverter.class.getSimpleName() + ")";
-            assertThat(context.getSupportedFormats().contains(expected)).isTrue();
+            assertThat(context.getSupportedFormats()).contains(expected);
         }
     }
 }

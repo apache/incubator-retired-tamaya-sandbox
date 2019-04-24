@@ -20,7 +20,11 @@ package org.apache.tamaya.doc.annot;
 
 import org.apache.tamaya.spi.PropertyValue;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * This annotation allows to specify a configuration area.
@@ -34,7 +38,7 @@ public @interface ConfigAreaSpec {
      * of the configuration tree.
      * @return the path, not null.
      */
-    String path()default"";
+    String[] basePaths() default {};
 
     /**
      * Define a description of the area.
@@ -73,12 +77,6 @@ public @interface ConfigAreaSpec {
      * @return the maximal cardinality.
      */
     int max() default 0;
-
-    /**
-     * The properties managed in this area.
-     * @return the properties managed within this area.
-     */
-    ConfigPropertySpec[] properties() default {};
 
     /**
      * Allows to define that this area is only required, if any of these configured areas are present in your config.

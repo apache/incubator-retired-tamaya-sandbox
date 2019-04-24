@@ -28,33 +28,35 @@ import java.util.*;
 /**
  * Tamaya {@link PropertySourceProvider} implementation that wraps a {@link ConfigSourceProvider} instance.
  */
-class TamayaPropertySourceProviderAdapter implements PropertySourceProvider{
+class TamayaPropertySourceProviderAdapter implements PropertySourceProvider {
 
     private ConfigSourceProvider delegate;
 
     /**
      * Creates a new instance.
+     *
      * @param configSourceProvider the provider, not null.
      */
-    public TamayaPropertySourceProviderAdapter(ConfigSourceProvider configSourceProvider){
+    public TamayaPropertySourceProviderAdapter(ConfigSourceProvider configSourceProvider) {
         this.delegate = Objects.requireNonNull(configSourceProvider);
     }
 
     /**
      * Access the underlying provider.
+     *
      * @return the provider, not null.
      */
-    public ConfigSourceProvider getConfigSourceProvider(){
+    public ConfigSourceProvider getConfigSourceProvider() {
         return this.delegate;
     }
 
 
     @Override
     public Collection<PropertySource> getPropertySources() {
-        if(delegate instanceof JavaConfigSourceProvider){
-            return ((JavaConfigSourceProvider)delegate).getPropertySourceProvider()
+        if (delegate instanceof JavaConfigSourceProvider) {
+            return ((JavaConfigSourceProvider) delegate).getPropertySourceProvider()
                     .getPropertySources();
-        }else {
+        } else {
             return JavaConfigAdapterFactory.toPropertySources(
                     delegate.getConfigSources(Thread.currentThread().getContextClassLoader()));
         }

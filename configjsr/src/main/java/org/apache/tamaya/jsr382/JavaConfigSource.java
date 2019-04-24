@@ -31,15 +31,15 @@ import java.util.function.Consumer;
 /**
  * Javaconfig {@link ConfigSource} implementation that wraps a {@link PropertySource} instance.
  */
-public class JavaConfigSource implements ConfigSource{
+public class JavaConfigSource implements ConfigSource {
 
     private PropertySource delegate;
 
-    public JavaConfigSource(PropertySource propertySource){
+    public JavaConfigSource(PropertySource propertySource) {
         this.delegate = Objects.requireNonNull(propertySource);
     }
 
-    public PropertySource getPropertySource(){
+    public PropertySource getPropertySource() {
         return this.delegate;
     }
 
@@ -56,7 +56,7 @@ public class JavaConfigSource implements ConfigSource{
     @Override
     public String getValue(String key) {
         PropertyValue value = delegate.get(key);
-        if(value!=null){
+        if (value != null) {
             return value.getValue();
         }
         return null;
@@ -69,8 +69,8 @@ public class JavaConfigSource implements ConfigSource{
 
     private Map<String, String> toMap(Map<String, PropertyValue> properties) {
         Map<String, String> valueMap = new HashMap<>(properties.size());
-        for(Map.Entry<String,PropertyValue> en:properties.entrySet()){
-            if(en.getValue().getValue()!=null) {
+        for (Map.Entry<String, PropertyValue> en : properties.entrySet()) {
+            if (en.getValue().getValue() != null) {
                 valueMap.put(en.getKey(), en.getValue().getValue());
             }
         }
@@ -88,9 +88,9 @@ public class JavaConfigSource implements ConfigSource{
      */
     // TODO implement change support in Tamaya
     public ChangeSupport setOnAttributeChange(Consumer<Set<String>> callback) {
-        switch(delegate.getChangeSupport()){
+        switch (delegate.getChangeSupport()) {
             case SUPPORTED:
-                delegate.addChangeListener((s,ps) -> {
+                delegate.addChangeListener((s, ps) -> {
                     callback.accept(s);
                 });
                 return ChangeSupport.SUPPORTED;

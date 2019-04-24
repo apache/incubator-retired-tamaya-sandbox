@@ -49,7 +49,7 @@ public class PropertyValidator implements ConfigValidator {
      * @param documentedProperty the property docs, not null.
      */
     public PropertyValidator(DocumentedProperty documentedProperty) {
-        this.name = Objects.requireNonNull(documentedProperty.getName());
+        this.name = Objects.requireNonNull(documentedProperty.getKeys().iterator().next());
         this.description = documentedProperty.getDescription();
         this.required = documentedProperty.isRequired();
         this.owner = documentedProperty;
