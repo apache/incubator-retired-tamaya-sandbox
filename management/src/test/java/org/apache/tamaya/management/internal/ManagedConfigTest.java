@@ -82,13 +82,13 @@ public class ManagedConfigTest {
 
     @Test
     public void testGetTransitiveAreas() {
-        Set<String> sections = (bean.getTransitiveSections());
-        Set<String> sectionsNT = (bean.getSections());
+        Set<String> sections = bean.getTransitiveSections();
+        Set<String> sectionsNT = bean.getSections();
         assertThat(sections).isNotNull();
         assertThat(sections.contains("java")).isTrue();
         assertThat(sections.contains("sun")).isTrue();
         assertThat(sections.contains("sun.os")).isTrue();
-        assertThat(sectionsNT.size() < sections.size()).isTrue();
+        assertThat(sections.size()).isGreaterThan(sectionsNT.size());
     }
 
     @Test
