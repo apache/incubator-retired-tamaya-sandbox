@@ -31,7 +31,7 @@ under the License.
     <packaging>jar</packaging>
 
     <properties>
-        <camel.version>2.17.0</camel.version>
+        <camel.version>2.17.6</camel.version>
     </properties>
 
     <build>
