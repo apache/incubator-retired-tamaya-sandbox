@@ -82,7 +82,7 @@ public class ManagedConfigTest {
         assertThat(sections).isNotNull();
         assertThat(sections.contains("java")).isTrue();
         assertThat(sections.contains("sun")).isTrue();
-        assertThat(sections.contains("sun.os")).isTrue();
+        assertThat(sections.contains("sun.arch")).isTrue();
         assertThat(sections.size()).isGreaterThan(sectionsNT.size());
     }
 
