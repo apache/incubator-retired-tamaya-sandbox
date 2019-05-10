@@ -18,14 +18,14 @@
  */
 package org.apache.tamaya.metamodel.ext;
 
+import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.Refreshable;
 import org.apache.tamaya.metamodel.internal.ComponentConfigurator;
+import org.apache.tamaya.spi.ObjectValue;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertySourceProvider;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,11 +42,13 @@ public final class RefreshablePropertySourceProvider
         implements PropertySourceProvider, Refreshable {
 
     private static final Logger LOG = Logger.getLogger(RefreshablePropertySourceProvider.class.getName());
-    private Map<String,String> metaConfig;
+    private ObjectValue nodeConfig;
+    private MetaContext metaConfig;
     private PropertySourceProvider wrapped;
     private Collection<PropertySource> propertSources;
 
-    private RefreshablePropertySourceProvider(Map<String,String> metaConfig, PropertySourceProvider wrapped) {
+    private RefreshablePropertySourceProvider(ObjectValue nodeConfig, MetaContext metaConfig, PropertySourceProvider wrapped) {
+        this.nodeConfig = nodeConfig;
         this.metaConfig = Objects.requireNonNull(metaConfig);
         this.wrapped = Objects.requireNonNull(wrapped);
         this.propertSources = Objects.requireNonNull(wrapped.getPropertySources());
@@ -55,15 +57,16 @@ public final class RefreshablePropertySourceProvider
     /**
      * Makes a property source provider refreshable. If the given property source provider is already an instance of
      * RefreshablePropertySourceProvider, the property source provider is returned unchanged.
-     * @param metaConfig the configuration parameters to be applied when a new PropertySourceProvider is created, not null.
+     * @param nodeConfig the pased node configuration.
+     * @param metaContext the configuration parameters to be applied when a new PropertySourceProvider is created, not null.
      * @param provider the property source provider, not null.
      * @return a new instance, not null.
      */
-    public static RefreshablePropertySourceProvider of(Map<String,String> metaConfig, PropertySourceProvider provider) {
+    public static RefreshablePropertySourceProvider of(ObjectValue nodeConfig, MetaContext metaContext, PropertySourceProvider provider) {
         if(provider instanceof RefreshablePropertySourceProvider){
             return (RefreshablePropertySourceProvider)provider;
         }
-        return new RefreshablePropertySourceProvider(metaConfig, provider);
+        return new RefreshablePropertySourceProvider(nodeConfig, metaContext, provider);
     }
 
     /**
@@ -73,7 +76,7 @@ public final class RefreshablePropertySourceProvider
      * @return a new instance, not null.
      */
     public static RefreshablePropertySourceProvider of(PropertySourceProvider provider) {
-        return of(Collections.<String, String>emptyMap(), provider);
+        return of(null, new MetaContext(), provider);
     }
 
     @Override
@@ -88,7 +91,7 @@ public final class RefreshablePropertySourceProvider
                 ((Refreshable) this.wrapped).refresh();
             }else {
                 this.wrapped = this.wrapped.getClass().newInstance();
-                ComponentConfigurator.configure(this.wrapped, metaConfig);
+                ComponentConfigurator.configure(this.wrapped, nodeConfig.toMap());
             }
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Failed to refresh PropertySourceProvider: " +

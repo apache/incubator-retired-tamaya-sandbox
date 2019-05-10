@@ -16,38 +16,24 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.metamodel.internal.factories;
+package org.apache.tamaya.metamodel;
 
-import org.apache.tamaya.spi.PropertySource;
-import org.apache.tamaya.spisupport.propertysource.CLIPropertySource;
+import org.apache.tamaya.spi.PropertyValue;
 import org.junit.Test;
-
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Created by atsticks on 18.04.17.
- */
-public class CLIArgumentsFactoryTest {
 
-    private static CLIArgumentsFactory f = new CLIArgumentsFactory();
+public class ImmutableFilterTest {
 
     @Test
-    public void getName() throws Exception {
-        assertThat("cli").isEqualTo(f.getName());
+    public void filterProperty() {
+        ImmutableFilter filter = new ImmutableFilter();
+        PropertyValue val = PropertyValue.createValue("a", "b");
+        PropertyValue filtered = filter.filterProperty(val, null);
+        assertThat(filtered).isNotNull().isEqualTo(val);
+        PropertyValue val2 = PropertyValue.createValue("a", "b2");
+        filtered = filter.filterProperty(val, null);
+        assertThat(filtered).isNotNull().isEqualTo(val);
     }
-
-    @Test
-    public void create() throws Exception {
-        PropertySource ps = f.create(Collections.EMPTY_MAP);
-        assertThat(ps).isNotNull();
-        assertThat(ps).isInstanceOf(CLIPropertySource.class);
-    }
-
-    @Test
-    public void getType() throws Exception {
-        assertThat(PropertySource.class).isEqualTo(f.getType());
-    }
-
 }

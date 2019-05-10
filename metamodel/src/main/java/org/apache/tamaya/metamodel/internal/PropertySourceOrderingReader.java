@@ -18,18 +18,18 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
-import org.apache.tamaya.ConfigException;
+import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ObjectValue;
+import org.apache.tamaya.spi.PropertyValue;
 import org.osgi.service.component.annotations.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.annotation.Priority;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -43,23 +43,26 @@ public class PropertySourceOrderingReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertySourceOrderingReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationBuilder configBuilder) {
-        NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-source-order");
-        if(nodeList.getLength()==0){
+    public void read(ConfigurationData metaConfig, ConfigurationBuilder configBuilder) {
+        ObjectValue root = ObjectValue.from(metaConfig.getData());
+
+        if(root.getPropertyValue("source-order")==null){
             LOG.finer("No property source ordering defined.");
             return;
         }
-        if(nodeList.getLength()>1){
-            throw new ConfigException("Only one property source order can be applied.");
+        ObjectValue value = root.getPropertyValue("source-order").toObjectValue();
+        if(value.getValueType()== PropertyValue.ValueType.MAP){
+            ObjectValue ov = value.toObjectValue();
+            String type = ItemFactoryManager.getType(ov);
+            if(type!=null){
+                ItemFactory<Comparator> comparatorFactory = ItemFactoryManager.getInstance()
+                        .getFactory(Comparator.class, type);
+                Map<String,String> properties = ov.toLocalMap();
+                Comparator comparator = comparatorFactory.create(properties);
+                ComponentConfigurator.configure(comparator, properties);
+                LOG.finer("Sorting property sources using comparator: " + comparator.getClass().getName());
+                configBuilder.sortPropertySources(comparator);
+            }
         }
-        Node node = nodeList.item(0);
-        String type = node.getAttributes().getNamedItem("type").getNodeValue();
-        ItemFactory<Comparator> comparatorFactory = ItemFactoryManager.getInstance().getFactory(Comparator.class, type);
-        Comparator comparator = comparatorFactory.create(ComponentConfigurator.extractParameters(node));
-        ComponentConfigurator.configure(comparator, node);
-        LOG.finer("Sorting property sources using comparator: " + comparator.getClass().getName());
-        configBuilder.sortPropertySources(comparator);
     }
-
-
 }

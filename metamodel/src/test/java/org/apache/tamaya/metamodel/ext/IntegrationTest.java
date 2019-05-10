@@ -22,7 +22,6 @@ import org.apache.tamaya.Configuration;
 import org.apache.tamaya.TypeLiteral;
 import org.apache.tamaya.metamodel.CachedFilter;
 import org.apache.tamaya.metamodel.MetaConfiguration;
-import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.spi.PropertyConverter;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertySource;
@@ -52,7 +51,7 @@ public class IntegrationTest {
 
     @Test
     public void testEmptyConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/empty-config.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/empty-config.conf"));
         assertThat(config).isNotNull();
         assertThat(config.getProperties()).isEmpty();
         assertThat(config.getContext().getPropertySources()).isEmpty();
@@ -61,23 +60,8 @@ public class IntegrationTest {
     }
 
     @Test
-    public void testMetaContextConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/context-test.xml"));
-        assertThat(config).isNotNull();
-        assertThat(config.getProperties()).isEmpty();
-        assertThat(config.getContext().getPropertyConverters()).isEmpty();
-        assertThat(config.getContext().getPropertyFilters()).isEmpty();
-        MetaContext ctx = MetaContext.getInstance();
-        assertThat(ctx.getProperties()).isNotEmpty();
-        assertThat(ctx.getId()).isEqualTo(ctx.getProperty("_id"));
-        assertThat("NONE").isEqualTo(ctx.getProperty("app"));
-        assertThat("DEV").isEqualTo(ctx.getProperty("stage"));
-        assertThat(".").isEqualTo(ctx.getProperty("configdir"));
-    }
-
-    @Test
     public void testDefaultConvertersConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyconverters-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyconverters-test.conf"));
         assertThat(config).isNotNull()
             .isEqualTo(Configuration.createConfigurationBuilder()
                         .addDefaultPropertyConverters()
@@ -90,7 +74,7 @@ public class IntegrationTest {
 
     @Test
     public void testDefaultPropertySourcesConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertysources-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertysources-test.conf"));
         assertThat(config).isNotNull()
             .isEqualTo(Configuration.createConfigurationBuilder()
                     .addDefaultPropertySources().build());
@@ -102,7 +86,7 @@ public class IntegrationTest {
 
     @Test
     public void testDefaultPropertyFiltersConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyfilters-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/default-propertyfilters-test.conf"));
         assertThat(config).isNotNull()
             .isEqualTo(Configuration.createConfigurationBuilder()
                         .addDefaultPropertyFilters().build());
@@ -114,7 +98,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyFiltersConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilters-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilters-test.conf"));
         assertThat(config).isNotNull();
         assertThat(config.getProperties()).isEmpty();
         assertThat(config.getContext().getPropertySources()).isEmpty();
@@ -125,7 +109,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyConvertersConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverters-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverters-test.conf"));
         assertThat(config).isNotNull();
         assertThat(config.getProperties()).isEmpty();
         assertThat(config.getContext().getPropertySources()).isEmpty();
@@ -138,7 +122,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertySourcesConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysources-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysources-test.hocon"));
         assertThat(config).isNotNull();
         assertThat(config.getProperties()).isNotEmpty();
         assertThat(config.getContext().getPropertySources()).isNotEmpty().hasSize(2);
@@ -149,7 +133,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyFilterConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilter-config-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyfilter-config-test.conf"));
         assertThat(config).isNotNull();
         assertThat(config.getProperties()).isEmpty();
         assertThat(config.getContext().getPropertySources()).isEmpty();
@@ -166,10 +150,10 @@ public class IntegrationTest {
 
     @Test
     public void testPropertySourceConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysource-config-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertysources-test.hocon"));
         assertThat(config).isNotNull();
-        assertThat(config.getProperties()).isEmpty();
-        assertThat(config.getContext().getPropertySources()).isNotEmpty().hasSize(1);
+        assertThat(config.getProperties()).isNotEmpty();
+        assertThat(config.getContext().getPropertySources()).isNotEmpty().hasSize(2);
         assertThat(config.getContext().getPropertyConverters()).isEmpty();
         assertThat(config.getContext().getPropertyFilters()).isEmpty();
         PropertySource ps = config.getContext().getPropertySources().get(0);
@@ -183,7 +167,7 @@ public class IntegrationTest {
 
     @Test
     public void testPropertyConverterConfig(){
-        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverter-config-test.xml"));
+        Configuration config = MetaConfiguration.createConfiguration(getConfig("IntegrationTests/propertyconverter-config-test.conf"));
         assertThat(config).isNotNull();
         assertThat(config.getProperties()).isEmpty();
         assertThat(config.getContext().getPropertySources()).isEmpty();

@@ -18,18 +18,18 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
-import org.apache.tamaya.ConfigException;
+import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ObjectValue;
+import org.apache.tamaya.spi.PropertyValue;
 import org.osgi.service.component.annotations.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.annotation.Priority;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -43,23 +43,27 @@ public class PropertyFilterOrderingReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertyFilterOrderingReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationBuilder configBuilder) {
-        NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-filter-order");
-        if(nodeList.getLength()==0){
-            LOG.finer("No property filter ordering configured.");
+    public void read(ConfigurationData metaConfig, ConfigurationBuilder configBuilder) {
+        ObjectValue root = ObjectValue.from(metaConfig.getData());
+        if(root.getPropertyValue("filter-order")==null){
+            LOG.finer("No property filter ordering defined.");
             return;
         }
-        if(nodeList.getLength()>1){
-            throw new ConfigException("Only one property filter order can be applied.");
+        ObjectValue value = root.getPropertyValue("filter-order").toObjectValue();
+        if(value.getValueType()== PropertyValue.ValueType.MAP){
+            ObjectValue ov = value.toObjectValue();
+            PropertyValue type = ov.getPropertyValue("type");
+            if(type==null){
+                type = ov.getPropertyValue("class");
+                ItemFactory<Comparator> comparatorFactory = ItemFactoryManager.getInstance()
+                        .getFactory(Comparator.class, type.getValue());
+                Map<String,String> properties = ov.toLocalMap();
+                Comparator comparator = comparatorFactory.create(properties);
+                ComponentConfigurator.configure(comparator, properties);
+                LOG.finer("Sorting property filters using comparator: " + comparator.getClass().getName());
+                configBuilder.sortPropertyFilter(comparator);
+            }
         }
-        Node node = nodeList.item(0);
-        String type = node.getAttributes().getNamedItem("type").getNodeValue();
-        ItemFactory<Comparator> comparatorFactory = ItemFactoryManager.getInstance().getFactory(Comparator.class, type);
-        Comparator comparator = comparatorFactory.create(ComponentConfigurator.extractParameters(node));
-        ComponentConfigurator.configure(comparator, node);
-        LOG.finer("Sorting property filters using comparator: " + comparator.getClass().getName());
-        configBuilder.sortPropertyFilter(comparator);
     }
-
 
 }

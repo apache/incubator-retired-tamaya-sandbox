@@ -18,39 +18,41 @@
  */
 package org.apache.tamaya.metamodel;
 
+import org.apache.tamaya.metamodel.spi.ContextInitializer;
+import org.apache.tamaya.spi.ServiceContextManager;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Class managing a configuration system's getMeta-context. This
+ * Class managing a configuration system's meta-context. This
  * context is used by the configuration system to evaluate the
  * right properties, e.g. by defining the current stage or labels
- * that apply to the current configuration. Hereby contexts are
- * <ul>
- *     <li>stackable into a context hierarchy, see {@link #combineWith(MetaContext, MetaContext...)}</li>
- *     <li>providing key/values only valid for a certain time (assigned a TTL), see {@link #setProperty(String, String, int, TimeUnit)},
- *     {@link #setProperties(Map, long, TimeUnit)}</li>
- * </ul>
- * Additionally there is special support for thread related contexts, see {@link #getThreadInstance()}.
- * Finally there is also one special globally shared context instance, see {@link #getInstance()}.
+ * that apply to the current configuration.
  */
 public final class MetaContext {
 
-    private static final ThreadLocal<MetaContext> THREAD_CONTEXT = new ThreadLocal<MetaContext>(){
-        @Override
-        protected MetaContext initialValue() {
-            return new MetaContext();
-        }
-    };
+    private static final Logger LOG = Logger.getLogger(MetaContext.class.getName());
 
-    private final Map<String,Value> properties = new ConcurrentHashMap<>();
+    private static final MetaContext INSTANCE = new MetaContext();
 
-    private static final MetaContext GLOBAL_CONTEXT = new MetaContext();
+    private final Map<String,Object> properties = new ConcurrentHashMap<>();
 
     /** The unique id of this context. */
-    private MetaContext(){
-        setProperty("_id", UUID.randomUUID().toString());
+    public MetaContext(){
+
+        setStringProperty("_id", UUID.randomUUID().toString());
+        initialize();
+    }
+
+    /**
+     * Get the current metacontext.
+     * @return the meta-context, never null.
+     */
+    public static MetaContext getInstance() {
+        return INSTANCE;
     }
 
     /**
@@ -58,42 +60,30 @@ public final class MetaContext {
      * @return the context's id
      */
     public String getId() {
-        return getProperty("_id", "N/A");
-    }
-
-
-    /**
-     * Access the global context. There might be other contexts used in the system, which also
-     * may delegate to the global context.
-     * @return the context instance, never null.
-     */
-    public static MetaContext getInstance(){
-        return GLOBAL_CONTEXT;
+        return getStringProperty("_id").orElse("N/A");
     }
 
     /**
-     * Access the thread-based context. If no such context
-     * exists a new one will be created.
-     * @param reinit if true, clear's the thread's context.
-     * @return the corresponding context, never null.
+     * Reads and applies the {@link ContextInitializer}s using the default classloader..
      */
-    public static MetaContext getThreadInstance(boolean reinit){
-        MetaContext threadContext = THREAD_CONTEXT.get();
-        if(reinit){
-            threadContext.properties.clear();
+    public void initialize(){
+        initialize(ServiceContextManager.getDefaultClassLoader());
+    }
+
+    /**
+     * Reads and applies the {@link ContextInitializer}s for the given class loader.
+     * @param classLoader the target classloader, never null.
+     */
+    public void initialize(ClassLoader classLoader){
+        for(ContextInitializer initializer: ServiceContextManager.getServiceContext(classLoader)
+        .getServices(ContextInitializer.class)){
+            try{
+                initializer.initializeContext(this);
+            }catch(Exception e){
+                LOG.log(Level.WARNING, "ContextInitializer failed: " + initializer.getClass().getName(), e);
+            }
         }
-        return threadContext;
     }
-
-    /**
-     * Access the current context, which actually is the current context, combined with the thread based
-     * context (overriding).
-     * @return the corresponding context, never null.
-     */
-    public MetaContext getThreadInstance(){
-        return getThreadInstance(false);
-    }
-
 
     /**
      * Combine this context with the other contexts given.
@@ -115,27 +105,36 @@ public final class MetaContext {
      * @param key the key, not null
      * @return the createValue, or null.
      */
-    public String getProperty(String key){
-        return getProperty(key, null);
+    public Optional<String> getStringProperty(String key){
+        return getProperty(key, String.class);
     }
 
     /**
      * Access the given context property.
-     * @param key the key, not the default createValue.
-     * @param defaultValue the default createValue to be returned, if no createValue is defined, or the
-     *                     stored createValue's TTL has been reached.
-     * @return the createValue, default createValue or null.
+     * @param key the key, not null
+     * @return the createValue, or null.
      */
-    public String getProperty(String key, String defaultValue){
-        Value value = this.properties.get(key);
-        if(value==null){
-            return defaultValue;
-        }
-        if(!value.isValid()){
-            this.properties.remove(key);
-            return null;
-        }
-        return value.value;
+    public Optional<Boolean> getBooleanProperty(String key){
+        return getProperty(key, Boolean.class);
+    }
+
+    /**
+     * Access the given context property.
+     * @param key the key, not null
+     * @return the createValue, or null.
+     */
+    public Optional<Number> getNumberProperty(String key){
+        return getProperty(key, Number.class);
+    }
+
+    /**
+     * Access the given context property.
+     * @param key the key, not null
+     * @return the createValue, or null.
+     */
+    public <T> Optional<T> getProperty(String key, Class<T> type){
+        T value = (T)this.properties.get(key);
+        return Optional.ofNullable(value);
     }
 
     /**
@@ -144,22 +143,40 @@ public final class MetaContext {
      * @param value the createValue, not null.
      * @return the previous createValue, or null.
      */
-    public String setProperty(String key, String value){
-       return setProperty(key, value, 0, TimeUnit.MILLISECONDS);
+    public String setStringProperty(String key, String value){
+        return setProperty(key, String.class, value);
     }
 
     /**
      * Sets the given context property.
      * @param key the key, not null.
      * @param value the createValue, not null.
-     * @param ttl the time to live. Zero or less than zero means, no timeout.
-     * @param unit the target time unit.
      * @return the previous createValue, or null.
      */
-    public String setProperty(String key, String value, int ttl, TimeUnit unit){
-        Value previous = this.properties.put(key, new Value(key, value, ttl));
-        if(previous!=null && previous.isValid()){
-            return previous.value;
+    public Boolean setBooleanProperty(String key, Boolean value){
+        return setProperty(key, Boolean.class, value);
+    }
+
+    /**
+     * Sets the given context property.
+     * @param key the key, not null.
+     * @param value the createValue, not null.
+     * @return the previous createValue, or null.
+     */
+    public Number setNumberProperty(String key, Number value){
+        return setProperty(key, Number.class, value);
+    }
+
+    /**
+     * Sets the given context property.
+     * @param key the key, not null.
+     * @param value the createValue, not null.
+     * @return the previous createValue, or null.
+     */
+    public <T> T setProperty(String key, Class<T> type, T value){
+        T previous = (T)this.properties.put(key, Objects.requireNonNull(value));
+        if(previous!=null){
+            return previous;
         }
         return null;
     }
@@ -169,52 +186,22 @@ public final class MetaContext {
      * @param key the key, not null.
      * @param value the createValue, not null.
      */
-    public void setPropertyIfAbsent(String key, String value){
-        setPropertyIfAbsent(key, value, 0, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * Sets the given property unless there is already a createValue defined.
-     * @param key the key, not null.
-     * @param value the createValue, not null.
-     * @param ttl the time to live. Zero or less than zero means, no timeout.
-     * @param unit the target time unit.
-     */
-    public void setPropertyIfAbsent(String key, String value, long ttl, TimeUnit unit){
-        Value prev = this.properties.get(key);
+    public <T> T setPropertyIfAbsent(String key, Class<T> type, T value){
+        T prev = (T)this.properties.get(key);
         if(prev==null){
-            this.properties.put(key, new Value(key, value, unit.toMillis(ttl)));
+            this.properties.put(key, value);
+            return prev;
         }
+        return null;
     }
 
-    /**
-     * Adds all properties given, overriding any existing properties.
-     * @param properties the properties, not null.
-     */
-    public void setProperties(Map<String,String> properties){
-        setProperties(properties, 0L, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * Adds all properties given, overriding any existing properties.
-     * @param properties the properties, not null.
-     * @param ttl the time to live. Zero or less than zero means, no timeout.
-     * @param unit the target time unit.
-     */
-    public void setProperties(Map<String,String> properties, long ttl, TimeUnit unit){
-        for(Map.Entry<String, String> en:properties.entrySet()) {
-            this.properties.put(
-                    en.getKey().toString(),
-                    new Value(en.getKey().toString(), en.getValue().toString(), unit.toMillis(ttl)));
-        }
-    }
 
     /**
      * Checks if all the given properties are present.
      * @param keys the keys to check, not null.
      * @return true, if all the given keys are existing.
      */
-    public boolean checkProperties(String... keys){
+    public boolean checkPropertiesArePresent(String... keys){
         for(String key:keys) {
             if (getProperty(key, null) == null) {
                 return false;
@@ -227,17 +214,8 @@ public final class MetaContext {
      * Access all the current context properties.
      * @return the properties, never null.
      */
-    public Map<String,String> getProperties(){
-        Map<String,String> map = new HashMap<>();
-        for(Map.Entry<String,Value> en:properties.entrySet()) {
-            Value val = en.getValue();
-            if(val.isValid()){
-                map.put(en.getKey(), val.value);
-            }else{
-                this.properties.remove(en.getKey());
-            }
-        }
-        return Collections.unmodifiableMap(map);
+    public Map<String,Object> getProperties(){
+        return Collections.unmodifiableMap(properties);
     }
 
     @Override
@@ -264,51 +242,7 @@ public final class MetaContext {
         return "MetaContext{" +
                 "id=" + getId() +
                 ", properties=" + properties +
-                ", global=" + (this == MetaContext.GLOBAL_CONTEXT) +
                 '}';
     }
 
-    /**
-     * A class representing a meta value.
-     */
-    private static final class Value{
-        private String key;
-        private String value;
-        private long validUntil;
-
-        Value(String key, String value, long ttl){
-            this.key = Objects.requireNonNull(key);
-            this.value = Objects.requireNonNull(value);
-            if(ttl>0) {
-                this.validUntil = System.currentTimeMillis() + ttl;
-            }
-        }
-
-        /** Method to check if a createValue is still valid. */
-        boolean isValid(){
-            return this.validUntil<=0 || this.validUntil>=System.currentTimeMillis();
-        }
-
-        /** Method that invalidates a createValue. */
-        void invalidate(){
-            this.validUntil = 0;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Value)) {
-                return false;
-            }
-            Value value = (Value) o;
-            return Objects.equals(value, this);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(value);
-        }
-    }
 }

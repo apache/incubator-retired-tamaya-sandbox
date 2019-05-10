@@ -50,7 +50,7 @@ public class SecuredFilter implements PropertyFilter{
     public static final class SecuredFilterFactory implements ItemFactory<PropertyFilter> {
         @Override
         public String getName() {
-            return "Secured";
+            return "secured";
         }
 
         @Override

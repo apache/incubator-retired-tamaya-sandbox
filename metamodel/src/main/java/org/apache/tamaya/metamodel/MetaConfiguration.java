@@ -19,30 +19,28 @@
 package org.apache.tamaya.metamodel;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.Configuration;
+import org.apache.tamaya.format.ConfigurationData;
+import org.apache.tamaya.format.ConfigurationFormat;
+import org.apache.tamaya.format.ConfigurationFormats;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
 import org.apache.tamaya.spi.ServiceContextManager;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Accessor singleton for accessing/loading getMeta-configuration.
  */
 public final class MetaConfiguration {
 
-    private static final String CONFIG_RESOURCE = "tamaya-config.xml";
+    private static final String CONFIG_RESOURCE = "tamaya-config.conf";
 
     private static final Logger LOG = Logger.getLogger(MetaConfiguration.class.getName());
 
@@ -56,7 +54,7 @@ public final class MetaConfiguration {
      * and applies it as default configuration using {@link Configuration#current()} (Configuration)}.
      */
     public static void configure(){
-        LOG.info("TAMAYA: Checking for getMeta-configuration...");
+        LOG.info("TAMAYA: Checking for meta-configuration...");
         URL configFile = getDefaultMetaConfig();
         if(configFile==null){
             LOG.warning("TAMAYA: No " + CONFIG_RESOURCE + " found, using defaults.");
@@ -108,22 +106,28 @@ public final class MetaConfiguration {
      */
     public static ConfigurationBuilder createConfigBuilder(URL metaConfig){
         URL configFile = Objects.requireNonNull(metaConfig);
-        LOG.info("TAMAYA: Loading tamaya-config.xml...");
-        Document document = null;
-        try {
-            document = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder().parse(configFile.openStream());
-            ConfigurationBuilder builder = Configuration.createConfigurationBuilder();
-            for(MetaConfigurationReader reader: ServiceContextManager.getServiceContext().getServices(
-                    MetaConfigurationReader.class
-            )){
-                LOG.fine("TAMAYA: Executing MetaConfig-Reader: " + reader.getClass().getName() + "...");
-                reader.read(document, builder);
-            }
-            return builder;
-        } catch (SAXException | IOException | ParserConfigurationException e) {
-            throw new ConfigException("Cannot read getMeta-config deom " + metaConfig, e);
+        LOG.info("TAMAYA: Loading "+metaConfig.toString()+"...");
+        List<ConfigurationFormat> formats = ConfigurationFormats.getInstance().getFormats(metaConfig);
+        if(formats.isEmpty()){
+            throw new IllegalStateException("Please install a matching ConfigurationFormat for the meta configuration: " + metaConfig);
         }
+        for(ConfigurationFormat format:formats) {
+            try {
+                ConfigurationData data = format.readConfiguration(configFile.toString(),
+                        configFile.openStream());
+                ConfigurationBuilder builder = Configuration.createConfigurationBuilder();
+                for (MetaConfigurationReader reader : ServiceContextManager.getServiceContext().getServices(
+                        MetaConfigurationReader.class
+                )) {
+                    LOG.fine("TAMAYA: Executing MetaConfig-Reader: " + reader.getClass().getName() + "...");
+                    reader.read(data, builder);
+                }
+                return builder;
+            } catch (Exception e) {
+                throw new ConfigException("Cannot read meta-config from " + metaConfig, e);
+            }
+        }
+        throw new IllegalStateException("No ConfigurationFormat matched the meta configuration: " + metaConfig);
     }
 
     /**

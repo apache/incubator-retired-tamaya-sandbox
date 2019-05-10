@@ -18,18 +18,19 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
-import org.apache.tamaya.ConfigException;
+import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ListValue;
+import org.apache.tamaya.spi.ObjectValue;
 import org.apache.tamaya.spi.PropertyFilter;
+import org.apache.tamaya.spi.PropertyValue;
 import org.osgi.service.component.annotations.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -42,38 +43,42 @@ public class PropertyFilterReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertyFilterReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationBuilder configBuilder) {
-        NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-filters");
-        if(nodeList.getLength()==0){
-            LOG.finer("No property filters configured.");
+    public void read(ConfigurationData metaConfig, ConfigurationBuilder configBuilder) {
+        ObjectValue root = ObjectValue.from(metaConfig.getData());
+        if (root.getPropertyValue("filters") == null) {
+            LOG.finer("No property filters configured");
             return;
         }
-        if(nodeList.getLength()>1){
-            throw new ConfigException("Only one single property-filters section allowed.");
-        }
-        nodeList = nodeList.item(0).getChildNodes();
-        for(int i=0;i<nodeList.getLength();i++){
-            Node node = nodeList.item(i);
-            if(node.getNodeType()!=Node.ELEMENT_NODE) {
+        ListValue nodeList = root.getPropertyValue("filters").toListValue();
+        ListValue listValue = nodeList.toListValue();
+        for (PropertyValue filterNode : listValue) {
+
+            if (filterNode.getValueType() != PropertyValue.ValueType.MAP) {
                 continue;
             }
-            String type = node.getNodeName();
+            ObjectValue ov = filterNode.toObjectValue();
+            String type = ItemFactoryManager.getType(ov);
             if ("defaults".equals(type)) {
                 LOG.finer("Adding default property filters...");
                 configBuilder.addDefaultPropertyFilters();
                 continue;
             }
-            ItemFactory<PropertyFilter> filterFactory = ItemFactoryManager.getInstance().getFactory(PropertyFilter.class, type);
-            if(filterFactory==null){
-                LOG.severe("No such property filter: " + type);
-                continue;
-            }
-            Map<String,String> params = ComponentConfigurator.extractParameters(node);
-            PropertyFilter filter = filterFactory.create(params);
-            if(filter!=null) {
-                ComponentConfigurator.configure(filter, params);
-                LOG.finer("Adding configured property filter: " + filter.getClass().getName());
-                configBuilder.addPropertyFilters(filter);
+            ObjectValue propertyValue = ov.getPropertyValue("properties").toObjectValue();
+            Map<String,String> properties = propertyValue!=null? propertyValue.toLocalMap(): null;
+            try {
+                ItemFactory<PropertyFilter> filterFactory = ItemFactoryManager.getInstance().getFactory(PropertyFilter.class, type);
+                if (filterFactory == null) {
+                    LOG.severe("No such property filter: " + type);
+                    continue;
+                }
+                PropertyFilter filter = filterFactory.create(properties);
+                if (filter != null) {
+                    ComponentConfigurator.configure(filter, properties);
+                    LOG.finer("Adding filter: " + filter.getClass());
+                    configBuilder.addPropertyFilters(filter);
+                }
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Failed to configure PropertyFilter: " + type, e);
             }
         }
     }

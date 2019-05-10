@@ -18,22 +18,19 @@
  */
 package org.apache.tamaya.metamodel.spi;
 
-import org.apache.tamaya.format.ConfigurationData;
-import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.metamodel.MetaContext;
 
 /**
- * Reader that reads getMeta configuration from the getMeta configuration XML source.
- * This SPI allows to allow different aspects to be configured by different modules.
+ * SPI interface for implementations of simple expression types for use within
+ * {@link org.apache.tamaya.metamodel.MetaContext} getMeta-configuration entries.
  */
-public interface MetaConfigurationReader {
+public interface ContextInitializer {
 
     /**
-     * Reads meta-configuration from the given document and configures the current
-     * configuration builder. The priority of readers is determined by the priorization policy
-     * implemented by the {@link org.apache.tamaya.spi.ServiceContext},
-     * @param metaConfig the meta-configuration data, not null.
-     * @param configBuilder the context builder to use.
+     * Get the expression id, which is the first part of a placeholder expression
+     * ({@code ${expressionId:expression}}).
+     * @return the expression id, never null.
      */
-    void read(ConfigurationData metaConfig, ConfigurationBuilder configBuilder);
+    void initializeContext(MetaContext metaContext);
 
 }

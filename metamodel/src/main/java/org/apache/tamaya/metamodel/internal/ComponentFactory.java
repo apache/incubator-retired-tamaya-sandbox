@@ -16,18 +16,12 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-
 package org.apache.tamaya.metamodel.internal;
 
 import org.apache.tamaya.spi.ServiceContextManager;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -86,23 +80,23 @@ public final class ComponentFactory<T> {
         return comp;
     }
 
-    public Collection<T> loadInstances(NodeList nodeList) {
-        List<T> items = new ArrayList<>();
-        for(int i=0;i<nodeList.getLength();i++){
-            Node node = nodeList.item(i);
-            if(node.getNodeName().equals("filter")){
-                String type = node.getNodeValue();
-                try {
-                    T item = getComponent(type);
-                    ComponentConfigurator.configure(item, node);
-                    items.add(item);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return items;
-    }
+//    public Collection<T> loadInstances(NodeList nodeList) {
+//        List<T> items = new ArrayList<>();
+//        for(int i=0;i<nodeList.getLength();i++){
+//            Node node = nodeList.item(i);
+//            if(node.getNodeName().equals("filter")){
+//                String type = node.getNodeValue();
+//                try {
+//                    T item = getComponent(type);
+//                    ComponentConfigurator.configure(item, node);
+//                    items.addPropertyValue(item);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return items;
+//    }
 
     @Override
     public String toString() {

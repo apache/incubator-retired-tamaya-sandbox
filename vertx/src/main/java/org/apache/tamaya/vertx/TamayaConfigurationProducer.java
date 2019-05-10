@@ -28,6 +28,7 @@ import io.vertx.core.json.JsonObject;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.functions.ConfigurationFunctions;
 import org.apache.tamaya.inject.ConfigurationInjection;
+import org.apache.tamaya.inject.ConfigurationInjector;
 import org.apache.tamaya.inject.api.Config;
 
 import java.util.Map;
@@ -123,7 +124,7 @@ public class TamayaConfigurationProducer extends AbstractConfiguredVerticle{
             if(o==null){
                 h.fail(HttpResponseStatus.BAD_REQUEST.code(), "Required createObject to configure is missing.");
             }else {
-                ConfigurationInjection.getConfigurationInjector().configure(o);
+                ConfigurationInjector.getInstance().configure(o);
                 h.reply("OK");
             }
         });

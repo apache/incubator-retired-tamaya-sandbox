@@ -163,7 +163,7 @@ public class JavaConfigAdapterTest {
     @Test
     public void toStringMap() throws Exception {
         Map<String,PropertyValue> props = new HashMap<>();
-        props.put("a", PropertyValue.of("a","b", "toStringMap"));
+        props.put("a", PropertyValue.createValue("a","b").setMeta("source", "toStringMap"));
         Map<String, String> mpProps = JavaConfigAdapterFactory.toStringMap(props);
         assertThat(mpProps).isNotNull().containsEntry("a", "b");
         assertThat(props.keySet()).isEqualTo(mpProps.keySet());

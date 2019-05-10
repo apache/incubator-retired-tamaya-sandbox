@@ -72,7 +72,7 @@ public class ConfigValidationDocumentationReader implements ClassloaderAware {
     private void loadValidations(DocumentedArea docArea, List<ConfigValidator> result) {
         result.add(new AreaValidator(docArea));
 //        for(DocumentedProperty propDoc:docArea.getPropertiesSorted()){
-//            result.add(new PropertyValidator(propDoc));
+//            result.addPropertyValue(new PropertyValidator(propDoc));
 //        }
 //        for(DocumentedArea area:docArea.getAreasSorted()){
 //            loadValidations(area, result);

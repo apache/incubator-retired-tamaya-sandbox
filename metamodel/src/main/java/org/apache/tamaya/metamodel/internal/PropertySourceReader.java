@@ -18,9 +18,8 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
-import org.apache.tamaya.ConfigException;
+import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.metamodel.EnabledPropertySource;
-import org.apache.tamaya.metamodel.MetaContext;
 import org.apache.tamaya.metamodel.ext.EnabledPropertySourceProvider;
 import org.apache.tamaya.metamodel.ext.FilteredPropertySource;
 import org.apache.tamaya.metamodel.ext.RefreshablePropertySource;
@@ -29,13 +28,13 @@ import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ListValue;
+import org.apache.tamaya.spi.ObjectValue;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertySourceProvider;
+import org.apache.tamaya.spi.PropertyValue;
 import org.osgi.service.component.annotations.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,61 +49,64 @@ public class PropertySourceReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertySourceReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationBuilder configBuilder) {
-        NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-sources");
-        if(nodeList.getLength()==0){
-            LOG.finer("No property sources configured.");
+    public void read(ConfigurationData metaConfig, ConfigurationBuilder configBuilder) {
+        ObjectValue root = ObjectValue.from(metaConfig.getData());
+        PropertyValue nodeList = root.getPropertyValue("sources");
+        if (nodeList == null) {
+            LOG.finer("No property sources configured");
             return;
         }
-        if(nodeList.getLength()>1){
-            throw new ConfigException("Only one single property-source section allowed.");
-        }
-        nodeList = nodeList.item(0).getChildNodes();
-        for(int i=0;i<nodeList.getLength();i++){
-            Node node = nodeList.item(i);
-            if(node.getNodeType()!=Node.ELEMENT_NODE) {
+        ListValue listValue = nodeList.toListValue();
+        for (PropertyValue node : listValue) {
+            if(node.getValueType()!= PropertyValue.ValueType.MAP) {
                 continue;
             }
-            String type = node.getNodeName();
-            if("defaults".equals(type)){
-                LOG.fine("Adding default property sources.");
+            ObjectValue ov = node.toObjectValue();
+            ObjectValue propertyValue = ov.getPropertyValue("properties").toObjectValue();
+            Map<String,String> params = propertyValue!=null? propertyValue.toLocalMap(): null;
+            String type = ItemFactoryManager.getType(ov);
+            if ("defaults".equals(type)) {
+                LOG.finer("Adding default property sources...");
                 configBuilder.addDefaultPropertySources();
                 continue;
             }
-            try {
-                ItemFactory<PropertySource> sourceFactory = ItemFactoryManager.getInstance().getFactory(PropertySource.class, type);
-                if (sourceFactory != null) {
-                    LOG.fine("Property source found: " + type);
-                    Map<String, String> params = ComponentConfigurator.extractParameters(node);
+            boolean isProvider = ov.getValue("provider")!=null?Boolean.valueOf(ov.getValue("provider")):false;
+            if(isProvider) {
+                try {
+                    ItemFactory<PropertySourceProvider> providerFactory = ItemFactoryManager.getInstance().getFactory(PropertySourceProvider.class, type);
+                    if(providerFactory==null){
+                        LOG.fine("No such property source provider: " + type);
+                        continue;
+                    }
+                    PropertySourceProvider prov = providerFactory.create(params);
+                    if(prov!=null) {
+                        ComponentConfigurator.configure(prov, params);
+                        prov = decoratePropertySourceProvider(prov, ov.toLocalMap());
+                        LOG.finer("Adding configured property source provider: " + prov.getClass().getName());
+                        configBuilder.addPropertySources(prov.getPropertySources());
+                    }
+                } catch (Exception e) {
+                    LOG.log(Level.SEVERE, "Failed to configure PropertySourceProvider: " + type, e);
+                }
+            }else{
+                try {
+                    ItemFactory<PropertySource> sourceFactory = ItemFactoryManager.getInstance().getFactory(PropertySource.class, type);
+                    if (sourceFactory == null) {
+                        LOG.severe("No such property source: " + type);
+                        continue;
+                    }
                     PropertySource ps = sourceFactory.create(params);
                     if (ps != null) {
                         ComponentConfigurator.configure(ps, params);
-                        ps = decoratePropertySource(ps, node, params);
+                        ps = decoratePropertySource(ps, ov);
                         LOG.finer("Adding configured property source: " + ps.getName());
                         configBuilder.addPropertySources(ps);
                         continue;
                     }
-                }
-            } catch (Exception e) {
-                LOG.log(Level.SEVERE, "Failed to configure PropertySource: " + type, e);
-                continue;
-            }
-            try {
-                ItemFactory<PropertySourceProvider> providerFactory = ItemFactoryManager.getInstance().getFactory(PropertySourceProvider.class, type);
-                if(providerFactory==null){
-                    LOG.fine("No such property source provider: " + type);
+                } catch (Exception e) {
+                    LOG.log(Level.SEVERE, "Failed to configure PropertySource: " + type, e);
                     continue;
                 }
-                Map<String,String> params = ComponentConfigurator.extractParameters(node);
-                PropertySourceProvider prov = providerFactory.create(params);
-                if(prov!=null) {
-                    ComponentConfigurator.configure(prov, node);
-                    prov = decoratePropertySourceProvider(prov, node, params);
-                    LOG.finer("Adding configured property source provider: " + prov.getClass().getName());
-                    configBuilder.addPropertySources(prov.getPropertySources());
-                }
-            } catch (Exception e) {
-                LOG.log(Level.SEVERE, "Failed to configure PropertySourceProvider: " + type, e);
             }
         }
     }
@@ -112,47 +114,47 @@ public class PropertySourceReader implements MetaConfigurationReader{
     /**
      * Decorates a property source to be refreshable or filtered.
      * @param ps the wrapped property source
-     *@param configNode the XML config value
-     * @param params the extracted parameter createList   @return the property source to be added to the context.
+     * @param configNode the config value
+     * @return the property source to be added to the context.
      */
-    private PropertySource decoratePropertySource(PropertySource ps, Node configNode, Map<String, String> params){
-        Node refreshableVal = configNode.getAttributes().getNamedItem("refreshable");
-        if(refreshableVal!=null && Boolean.parseBoolean(refreshableVal.getNodeValue())){
-            ps = RefreshablePropertySource.of(params, ps);
+    private PropertySource decoratePropertySource(PropertySource ps, ObjectValue configNode){
+        Map<String,String> params = configNode.toMap();
+        boolean refreshable = Boolean.parseBoolean(params.get("refreshable"));
+        if(refreshable){
+            ps = RefreshablePropertySource.of(ps);
         }
-        Node enabledVal = configNode.getAttributes().getNamedItem("enabled");
+        String enabledVal = params.get("enabled");
         if(enabledVal!=null){
-            ps = new EnabledPropertySource(ps,
-                    MetaContext.getInstance().getProperties(),
-                    enabledVal.getNodeValue());
+            ps = new EnabledPropertySource(ps, enabledVal);
         }
-        NodeList childNodes = configNode.getChildNodes();
-        for(int i=0;i<childNodes.getLength();i++){
-            Node node = childNodes.item(i);
-            if("filters".equals(node.getNodeName())){
-                ps = FilteredPropertySource.of(ps);
-                NodeList filterNodes = node.getChildNodes();
-                for(int f=0;f<filterNodes.getLength();f++) {
-                    Node filterNode = filterNodes.item(f);
-                    configureFilter((FilteredPropertySource) ps, filterNode);
-                }
+        PropertyValue childNodes = configNode.getPropertyValue("filters");
+        if(childNodes!=null) {
+            ListValue listValue = childNodes.toListValue();
+            ps = FilteredPropertySource.of(ps);
+            for (PropertyValue filterNode:listValue) {
+                ObjectValue ov = filterNode.toObjectValue();
+                configureFilter((FilteredPropertySource) ps, ov);
             }
         }
         return ps;
     }
 
-    private void configureFilter(FilteredPropertySource ps, Node filterNode) {
+    private void configureFilter(FilteredPropertySource ps, ObjectValue filterNode) {
         try {
-            String type = filterNode.getNodeName();
-            ItemFactory<PropertyFilter> filterFactory = ItemFactoryManager.getInstance().getFactory(PropertyFilter.class, type);
+            String type = ItemFactoryManager.getType(filterNode);
+            if(type==null){
+                return;
+            }
+            ItemFactory<PropertyFilter> filterFactory = ItemFactoryManager.getInstance()
+                    .getFactory(PropertyFilter.class, type);
             if(filterFactory==null){
                 LOG.severe("No such property filter: " + type);
                 return;
             }
-            Map<String,String> params = ComponentConfigurator.extractParameters(filterNode);
-            PropertyFilter filter = filterFactory.create(params);
+            Map<String,String> properties = filterNode.toMap();
+            PropertyFilter filter = filterFactory.create(properties);
             if(filter!=null) {
-                ComponentConfigurator.configure(filter, params);
+                ComponentConfigurator.configure(filter, properties);
                 LOG.finer("Adding configured property filter: " + filter.getClass().getName());
                 ps.addPropertyFilter(filter);
             }
@@ -164,21 +166,19 @@ public class PropertySourceReader implements MetaConfigurationReader{
     /**
      * Decorates a property source provider to be refreshable or filtered.
      * @param prov the property source provider to be wrapped.
-     * @param configNode the XML config value
-     * @param params the extracted parameter createList   @return the property source provider to be added to the context.
+     * @param properties the config properties
      */
-    private PropertySourceProvider decoratePropertySourceProvider(PropertySourceProvider prov, Node configNode, Map<String, String> params){
-        Node refreshableVal = configNode.getAttributes().getNamedItem("refreshable");
+    private PropertySourceProvider decoratePropertySourceProvider(PropertySourceProvider prov, Map<String, String> properties){
+        boolean refreshable = Boolean.parseBoolean(properties.get("refreshable"));
         // Refreshable
-        if(refreshableVal!=null && Boolean.parseBoolean(refreshableVal.getNodeValue())){
-            prov = RefreshablePropertySourceProvider.of(params, prov);
+        if(refreshable){
+            prov = RefreshablePropertySourceProvider.of(prov);
         }
         // Enabled
-        Node enabledVal = configNode.getAttributes().getNamedItem("enabled");
-        if(enabledVal!=null){
+        String enabled = properties.get("enabled");
+        if(enabled!=null){
             prov = new EnabledPropertySourceProvider(prov,
-                    MetaContext.getInstance().getProperties(),
-                    enabledVal.getNodeValue());
+                    enabled);
         }
         return prov;
     }

@@ -19,12 +19,10 @@
 package org.apache.tamaya.metamodel.ext;
 
 import org.apache.tamaya.metamodel.Refreshable;
-import org.apache.tamaya.metamodel.internal.ComponentConfigurator;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spisupport.PropertySourceComparator;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -45,28 +43,12 @@ public final class RefreshablePropertySource
         implements PropertySource, Refreshable {
 
     private static final Logger LOG = Logger.getLogger(RefreshablePropertySource.class.getName());
-    private Map<String,String> metaConfig;
     private PropertySource wrapped;
     private AtomicLong nextRefresh = new AtomicLong();
     private AtomicLong refreshPeriod = new AtomicLong();
 
-    private RefreshablePropertySource(Map<String,String> metaConfig, PropertySource wrapped) {
-        this.metaConfig = Objects.requireNonNull(metaConfig);
-        this.wrapped = Objects.requireNonNull(wrapped);
-    }
-
-    /**
-     * Makes a property source refreshable. If the given property source is already an instance of
-     * RefreshablePropertySource, the property source is returned.
-     * @param metaConfig the configuration parameters to be applied when a new PropertySource is created, not null.
-     * @param propertySource the property source, not null.
-     * @return a new instance, not null.
-     */
-    public static RefreshablePropertySource of(Map<String,String> metaConfig, PropertySource propertySource) {
-        if(propertySource instanceof RefreshablePropertySource){
-            return (RefreshablePropertySource)propertySource;
-        }
-        return new RefreshablePropertySource(metaConfig, propertySource);
+    private RefreshablePropertySource(PropertySource propertySource) {
+        this.wrapped = Objects.requireNonNull(propertySource);
     }
 
     /**
@@ -76,8 +58,12 @@ public final class RefreshablePropertySource
      * @return a new instance, not null.
      */
     public static RefreshablePropertySource of(PropertySource propertySource) {
-        return of(Collections.<String, String>emptyMap(), propertySource);
+        if(propertySource instanceof RefreshablePropertySource){
+            return (RefreshablePropertySource)propertySource;
+        }
+        return new RefreshablePropertySource(propertySource);
     }
+
 
     /**
      * Checks if the property source should autorefresh, if so {@link #refresh()} is called.
@@ -108,8 +94,7 @@ public final class RefreshablePropertySource
             if(this.wrapped instanceof Refreshable){
                 ((Refreshable) this.wrapped).refresh();
             }else {
-                this.wrapped = this.wrapped.getClass().newInstance();
-                ComponentConfigurator.configure(this.wrapped, metaConfig);
+                this.wrapped = this.wrapped.getClass().getConstructor().newInstance();
             }
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Failed to reload/refresh PropertySource: " +
@@ -145,7 +130,6 @@ public final class RefreshablePropertySource
     @Override
     public String toString() {
         return "RefreshablePropertySource{" +
-                "\n metaConfig=" + metaConfig +
                 "\n wrapped=" + wrapped +
                 '}';
     }

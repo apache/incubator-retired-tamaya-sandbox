@@ -24,12 +24,10 @@ import bsh.Interpreter;
 import bsh.NameSpace;
 import bsh.UtilEvalError;
 import org.apache.tamaya.metamodel.MetaContext;
-import org.apache.tamaya.metamodel.spi.SimpleResolver;
 import org.osgi.service.component.annotations.Component;
 
 import java.io.*;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -43,38 +41,24 @@ import java.util.logging.Logger;
  * </ul>
  */
 @Component
-public final class JavaResolver implements SimpleResolver{
+public final class JavaResolver {
 
     private static final Logger LOG = Logger.getLogger(JavaResolver.class.getName());
 
-
-    @Override
     public String getResolverId() {
         return "java";
     }
 
-    @Override
-    public String evaluate(String expression) {
-        try{
-            return String.valueOf(evaluate(expression, null));
-        }catch(Exception e){
-            LOG.log(Level.WARNING, "Error evaluating expression: " + expression, e);
-            return "ERROR{"+expression+"}:"+e;
-        }
-    }
-
-    public Object evaluate(String expression, Map<String, String> context) throws UtilEvalError, EvalError {
+    public Object evaluate(String expression) throws UtilEvalError, EvalError {
             BshClassManager bshClassManager = new BshClassManager();
             NameSpace namespace = new NameSpace(bshClassManager, "config");
             namespace.loadDefaultImports();
             namespace.importStatic(JavaResolver.class);
-            namespace.setVariable("contextprops", MetaContext.getInstance(), false);
+            namespace.setVariable("context", MetaContext.getInstance(), false);
             namespace.setVariable("envprops", System.getenv(), false);
             namespace.setVariable("sysprops", System.getProperties(), false);
-            if(context!=null){
-                for(Map.Entry<String,String> en:context.entrySet()){
-                    namespace.setVariable(en.getKey(), en.getValue(), false);
-                }
+            for(Map.Entry<String,Object> en:MetaContext.getInstance().getProperties().entrySet()){
+                namespace.setVariable(en.getKey(), en.getValue(), false);
             }
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             PrintStream outStream = new PrintStream(out);
@@ -89,7 +73,8 @@ public final class JavaResolver implements SimpleResolver{
     }
 
     public static String context(String key){
-        return MetaContext.getInstance().getProperty(key);
+        return MetaContext.getInstance().getStringProperty(key)
+                .orElse(null);
     }
 
     public static String env(String key){

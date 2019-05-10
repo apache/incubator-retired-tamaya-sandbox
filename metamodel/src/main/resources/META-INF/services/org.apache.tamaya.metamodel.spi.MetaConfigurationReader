@@ -20,6 +20,5 @@
 org.apache.tamaya.metamodel.internal.PropertyFilterReader
 org.apache.tamaya.metamodel.internal.PropertyConverterReader
 org.apache.tamaya.metamodel.internal.PropertySourceReader
-org.apache.tamaya.metamodel.internal.MetaContextReader
 org.apache.tamaya.metamodel.internal.PropertyFilterOrderingReader
 org.apache.tamaya.metamodel.internal.PropertySourceOrderingReader

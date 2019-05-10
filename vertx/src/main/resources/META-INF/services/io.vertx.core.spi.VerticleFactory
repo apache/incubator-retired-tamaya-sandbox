@@ -16,4 +16,4 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-org.apache.tamaya.vertx.ConfiguredJavaVerticleFactory
+org.apache.tamaya.vertx.ConfiguredVerticleFactory

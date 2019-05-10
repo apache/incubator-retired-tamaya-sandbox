@@ -839,7 +839,6 @@ under the License.
         <module>vertx</module>
         <module>configjsr</module>
         <module>documentation</module>
-        <module>hjson</module>
         <!-- Once the API is officially available ... -->
         <!--   module>configjsr</module-->
     </modules>

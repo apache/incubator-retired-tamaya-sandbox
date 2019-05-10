@@ -18,6 +18,7 @@
  */
 package org.apache.tamaya.jsr382;
 
+import org.apache.tamaya.spi.ServiceContextManager;
 import org.apache.tamaya.spisupport.propertysource.PropertiesResourcePropertySource;
 
 
@@ -27,7 +28,7 @@ import org.apache.tamaya.spisupport.propertysource.PropertiesResourcePropertySou
 public class JavaConfigDefaultPropertiesPropertySource extends PropertiesResourcePropertySource {
 
     public JavaConfigDefaultPropertiesPropertySource() {
-        super("META-INF/javaconfig.properties", null);
+        super("META-INF/javaconfig.properties", ServiceContextManager.getDefaultClassLoader());
         setDefaultOrdinal(100);
     }
 

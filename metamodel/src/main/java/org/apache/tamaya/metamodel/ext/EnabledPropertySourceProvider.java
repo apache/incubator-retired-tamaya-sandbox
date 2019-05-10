@@ -29,6 +29,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.tamaya.metamodel.Enabled;
+import org.apache.tamaya.metamodel.MetaContext;
+import org.apache.tamaya.metamodel.Refreshable;
 import org.apache.tamaya.spi.PropertySource;
 import org.apache.tamaya.spi.PropertySourceProvider;
 
@@ -37,20 +39,19 @@ import org.apache.tamaya.spi.PropertySourceProvider;
  * {@code enabled} expression.
  */
 public final class EnabledPropertySourceProvider
-        implements PropertySourceProvider, Enabled {
+        implements PropertySourceProvider, Enabled, Refreshable {
 
     private static final Logger LOG = Logger.getLogger(EnabledPropertySourceProvider.class.getName());
     private String enabledExpression;
     private PropertySourceProvider wrapped;
     private boolean enabled;
 
-    public EnabledPropertySourceProvider(PropertySourceProvider wrapped, Map<String,String> context, String expression) {
+    public EnabledPropertySourceProvider(PropertySourceProvider wrapped, String expression) {
         this.enabledExpression = Objects.requireNonNull(expression);
         this.wrapped = Objects.requireNonNull(wrapped);
-        this.enabled = calculateEnabled(context);
     }
 
-    protected boolean calculateEnabled(Map<String, String> context) {
+    protected boolean calculateEnabled() {
         try {
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("nashorn");
@@ -58,7 +59,7 @@ public final class EnabledPropertySourceProvider
                 engine = manager.getEngineByName("rhino");
             }
             // init script engine
-            for(Map.Entry<String,String> entry: context.entrySet()) {
+            for(Map.Entry<String,Object> entry: MetaContext.getInstance().getProperties().entrySet()) {
                 engine.put(entry.getKey(), entry.getValue());
             }
             Object o = engine.eval(enabledExpression);
@@ -105,10 +106,16 @@ public final class EnabledPropertySourceProvider
     }
 
     @Override
+    public void refresh() {
+        calculateEnabled();
+    }
+
+    @Override
     public String toString() {
-        return "DynamicPropertySourceProvider{" +
+        return "EnabledPropertySourceProvider{" +
                 "\n enabled=" + enabledExpression +
                 "\n wrapped=" + wrapped +
                 '}';
     }
+
 }

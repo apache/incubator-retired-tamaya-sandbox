@@ -54,7 +54,7 @@ public abstract class BaseRemotePropertySource implements PropertySource{
 
     @Override
     public Map<String, PropertyValue> getProperties() {
-        return PropertyValue.map(properties, getName());
+        return PropertyValue.mapProperties(properties, getName());
     }
 
     /**

@@ -40,7 +40,7 @@ public class HideFilter implements PropertyFilter{
     public static final class HideFilterFactory implements ItemFactory<PropertyFilter> {
         @Override
         public String getName() {
-            return "Hide";
+            return "hide";
         }
 
         @Override

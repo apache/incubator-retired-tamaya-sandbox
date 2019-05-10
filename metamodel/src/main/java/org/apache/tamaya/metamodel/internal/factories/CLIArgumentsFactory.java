@@ -32,7 +32,7 @@ import java.util.Map;
 public final class CLIArgumentsFactory implements ItemFactory<PropertySource>{
     @Override
     public String getName() {
-        return "CLI";
+        return "cli";
     }
 
     @Override

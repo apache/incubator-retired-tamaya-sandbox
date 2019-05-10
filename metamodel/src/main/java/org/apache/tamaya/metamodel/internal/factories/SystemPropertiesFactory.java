@@ -16,24 +16,33 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.tamaya.metamodel.spi;
 
-import org.apache.tamaya.format.ConfigurationData;
-import org.apache.tamaya.spi.ConfigurationBuilder;
+package org.apache.tamaya.metamodel.internal.factories;
+
+import org.apache.tamaya.metamodel.spi.ItemFactory;
+import org.apache.tamaya.spi.PropertySource;
+import org.apache.tamaya.spisupport.propertysource.SystemPropertySource;
+import org.osgi.service.component.annotations.Component;
+
+import java.util.Map;
 
 /**
- * Reader that reads getMeta configuration from the getMeta configuration XML source.
- * This SPI allows to allow different aspects to be configured by different modules.
+ * Factory for configuring system properties based property sources.
  */
-public interface MetaConfigurationReader {
+@Component
+public final class SystemPropertiesFactory implements ItemFactory<PropertySource>{
+    @Override
+    public String getName() {
+        return "system-properties";
+    }
 
-    /**
-     * Reads meta-configuration from the given document and configures the current
-     * configuration builder. The priority of readers is determined by the priorization policy
-     * implemented by the {@link org.apache.tamaya.spi.ServiceContext},
-     * @param metaConfig the meta-configuration data, not null.
-     * @param configBuilder the context builder to use.
-     */
-    void read(ConfigurationData metaConfig, ConfigurationBuilder configBuilder);
+    @Override
+    public PropertySource create(Map<String,String> parameters) {
+        return new SystemPropertySource();
+    }
 
+    @Override
+    public Class<? extends PropertySource> getType() {
+        return PropertySource.class;
+    }
 }

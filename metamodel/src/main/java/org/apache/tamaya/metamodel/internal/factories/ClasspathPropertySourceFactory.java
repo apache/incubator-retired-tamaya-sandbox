@@ -21,47 +21,37 @@ package org.apache.tamaya.metamodel.internal.factories;
 
 import org.osgi.service.component.annotations.Component;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 /**
- * Factory for configuring file based property sources.
+ * Factory for configuring resource based property sources.
  */
 @Component
-public final class FilePropertySourceFactory extends ResourcePropertySourceFactory{
+public class ClasspathPropertySourceFactory extends URLPropertySourceFactory{
 
-    private static final Logger LOG = Logger.getLogger(FilePropertySourceFactory.class.getName());
+    private static final Logger LOG = Logger.getLogger(ClasspathPropertySourceFactory.class.getName());
 
     @Override
     public String getName() {
-        return "file";
+        return "classpath";
     }
 
-    @Override
+
     protected String example() {
-        return "{ type: file\n" +
+        return "{ type: classpath\n" +
                 " properties: {\n" +
-                "   location=\"c:/temp/config.xml\"\n" +
+                "   location=\"META-INF/config.xml\"\n" +
                 "   format=\"xml-properties\"\n" +
                 " }\n" +
                 "}\n";
     }
 
-    @Override
     protected URL createResource(String location) {
         try {
-            Path path = Paths.get(location);
-            if(!path.toFile().exists()){
-                LOG.info("Cannot read file '" + location + "': no such file.");
-            }else if(!path.toFile().canRead()){
-                LOG.info("Cannot read file '" + location + "': not readable.");
-            }
-            return path.toUri().toURL();
-        } catch (MalformedURLException e) {
-            LOG.warning("Invalid file '" + location + "'.");
+            return getClass().getClassLoader().getResource(location);
+        } catch (Exception e) {
+            LOG.warning("Invalid resource '" + location + "'.");
             return null;
         }
     }

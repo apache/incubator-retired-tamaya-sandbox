@@ -42,15 +42,15 @@ public final class EnabledPropertySource
     private boolean enabled;
     private static final JavaResolver RESOLVER = new JavaResolver();
 
-    public EnabledPropertySource(PropertySource wrapped, Map<String,String> context, String expression) {
+    public EnabledPropertySource(PropertySource wrapped, String expression) {
         this.enabledExpression = Objects.requireNonNull(expression);
         this.wrapped = Objects.requireNonNull(wrapped);
-        this.enabled = calculateEnabled(context);
+        this.enabled = calculateEnabled();
     }
 
-    protected boolean calculateEnabled(Map<String, String> context) {
+    protected boolean calculateEnabled() {
         try {
-            return Boolean.TRUE.equals(RESOLVER.evaluate(enabledExpression, context));
+            return Boolean.TRUE.equals(RESOLVER.evaluate(enabledExpression));
         } catch (Exception e) {
             LOG.severe("Invalid Boolean expression: '"
                     +enabledExpression+"': " + e + ", property source will be disabled: " +

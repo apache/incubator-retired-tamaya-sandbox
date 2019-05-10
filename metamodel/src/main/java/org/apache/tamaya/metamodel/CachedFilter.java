@@ -45,7 +45,7 @@ public class CachedFilter implements PropertyFilter{
     public static final class CachedFilterFactory implements ItemFactory<PropertyFilter> {
         @Override
         public String getName() {
-            return "Cached";
+            return "cached";
         }
 
         @Override

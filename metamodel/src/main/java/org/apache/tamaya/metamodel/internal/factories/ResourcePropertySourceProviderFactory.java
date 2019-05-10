@@ -99,8 +99,13 @@ public class ResourcePropertySourceProviderFactory implements ItemFactory<Proper
     }
 
     protected String example() {
-        return "<resources location\"/META-INF/**/config.xml\"\n" +
-                "          formats=\"xml-properties\"\n/>";
+        return "{ type: resources\n" +
+                " provider: true\n" +
+                " properties: {\n" +
+                "   location=\"META-INF/**/config.xml\"\n" +
+                "   format=\"xml-properties\"\n" +
+                " }\n" +
+                "}\n";
     }
 
     protected Collection<URL> createResources(String location) {

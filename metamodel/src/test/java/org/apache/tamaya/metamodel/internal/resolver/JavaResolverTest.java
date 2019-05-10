@@ -41,8 +41,8 @@ public class JavaResolverTest {
     @Test
     public void evaluateDirect() throws Exception {
         assertThat("createValue").isEqualTo(r.evaluate("\"createValue\""));
-        assertThat("1.1").isEqualTo(r.evaluate("1.1"));
-        assertThat("1").isEqualTo(r.evaluate("1"));
+        assertThat("1.1").isEqualTo(r.evaluate("\"1.1\""));
+        assertThat(1).isEqualTo(r.evaluate("1"));
     }
 
     @Test
@@ -50,16 +50,16 @@ public class JavaResolverTest {
         assertThat(System.getProperty("java.version")).isEqualTo(r.evaluate("sys(\"java.version\")"));
         String key = System.getenv().keySet().iterator().next();
         assertThat(System.getenv(key)).isEqualTo(r.evaluate("env(\""+key+"\")"));
-        MetaContext.getInstance().setProperty("foo", "bar");
+        MetaContext.getInstance().setStringProperty("foo", "bar");
         assertThat("bar").isEqualTo(r.evaluate("context(\"foo\")"));
     }
 
     @Test
     public void evaluateExpression() throws Exception {
-        assertThat("true").isEqualTo(r.evaluate("env(\"STAGE\") == null"));
-        assertThat("true").isEqualTo(r.evaluate("sys(\"STAGE\") == null"));
+        assertThat(true).isEqualTo(r.evaluate("env(\"STAGE\") == null"));
+        assertThat(true).isEqualTo(r.evaluate("sys(\"STAGE\") == null"));
         System.setProperty("STAGE", "DEV2");
-        assertThat("false").isEqualTo(r.evaluate("sys(\"STAGE\") == null"));
+        assertThat(false).isEqualTo(r.evaluate("sys(\"STAGE\") == null"));
         System.setProperty("STAGE", "DEV2");
         assertThat("DEV2").isEqualTo(r.evaluate("sys(\"STAGE\") == null?env(\"STAGE\"):sys(\"STAGE\")"));
         assertThat("DEV2").isEqualTo(r.evaluate("if(sys(\"STAGE\") == null)return env(\"STAGE\"); else return sys(\"STAGE\");"));

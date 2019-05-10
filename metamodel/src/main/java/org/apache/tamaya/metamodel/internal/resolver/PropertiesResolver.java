@@ -19,7 +19,6 @@
 package org.apache.tamaya.metamodel.internal.resolver;
 
 import org.apache.tamaya.metamodel.MetaContext;
-import org.apache.tamaya.metamodel.spi.SimpleResolver;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -36,13 +35,12 @@ import org.osgi.service.component.annotations.Component;
  * Hereby the _default_ parameter defines the default createValue to be applied, if no createValue was found.
  */
 @Component
-public final class PropertiesResolver implements SimpleResolver{
-    @Override
+public final class PropertiesResolver {
+
     public String getResolverId() {
         return "properties";
     }
 
-    @Override
     public String evaluate(String expression) {
         String[] mainParts = expression.split("\\?",2);
         if(mainParts.length==1){
@@ -68,8 +66,7 @@ public final class PropertiesResolver implements SimpleResolver{
                 }
                 return val;
             case "ctx":
-                return MetaContext.getInstance()
-                        .getProperty(parts[1], defaultValue);
+                return MetaContext.getInstance().getStringProperty(parts[1]).orElse(defaultValue);
             default:
                 return null;
         }

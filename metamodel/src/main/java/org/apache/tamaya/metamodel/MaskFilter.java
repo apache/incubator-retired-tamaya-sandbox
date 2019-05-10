@@ -38,7 +38,9 @@ public class MaskFilter implements PropertyFilter{
     private String matches;
     private List<String> roles = new ArrayList<>();
     private String mask = "*****";
-    private TargetPolicy policy = TargetPolicy.ALL;
+    private boolean filterSingleValues;
+    private boolean filterAllValues = true;
+
 
     /**
      * Factory for configuring immutable property filter.
@@ -46,7 +48,7 @@ public class MaskFilter implements PropertyFilter{
     public static final class MaskFilterFactory implements ItemFactory<PropertyFilter> {
         @Override
         public String getName() {
-            return "Mask";
+            return "mask";
         }
 
         @Override
@@ -99,24 +101,29 @@ public class MaskFilter implements PropertyFilter{
         return this;
     }
 
-    public TargetPolicy getPolicy() {
-        return policy;
+    public boolean isFilterSingleValues() {
+        return filterSingleValues;
     }
 
-    public MaskFilter setPolicy(TargetPolicy policy) {
-        this.policy = policy;
+    public boolean isFilterAllValues() {
+        return filterAllValues;
+    }
+
+    public MaskFilter setFilterSingleValues(boolean filterSingleValues) {
+        this.filterSingleValues = filterSingleValues;
         return this;
     }
 
-    public MaskFilter setPolicy(String policy) {
-        return setPolicy(TargetPolicy.valueOf(policy));
+    public MaskFilter setFilterAllValues(boolean filterAllValues) {
+        this.filterAllValues = filterAllValues;
+        return this;
     }
 
     @Override
     public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
         if(matches !=null){
             if(value.getKey().matches(matches)){
-                return null;
+                return PropertyValue.createValue(value.getKey(), mask);
             }
         }
         return value;
@@ -124,17 +131,13 @@ public class MaskFilter implements PropertyFilter{
 
     @Override
     public String toString() {
-        return "HideFilter{" +
+        return "MaskFilter{" +
                 "matches='" + matches + '\'' +
+                ", mask='" + mask + '\'' +
+                ", roles='" + roles + '\'' +
+                ", filterAllValues='" + filterAllValues + '\'' +
+                ", filterSingleValues='" + filterSingleValues + '\'' +
                 '}';
     }
 
-    /**
-     * The target policy for masking properties.
-     */
-    private enum TargetPolicy {
-        ALL,
-        SINGLEVALUE,
-        MULTIVALUE
-    }
 }

@@ -39,7 +39,7 @@ public class ImmutableFilter implements PropertyFilter{
     public static final class ImmutableFilterFactory implements ItemFactory<PropertyFilter> {
         @Override
         public String getName() {
-            return "Immutable";
+            return "immutable";
         }
 
         @Override
@@ -58,7 +58,7 @@ public class ImmutableFilter implements PropertyFilter{
     @Override
     public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
         String key = value.getKey();
-        if(!context.isSinglePropertyScoped()) {
+        if(context!=null && !context.isSinglePropertyScoped()) {
             key = value.getKey() + "_all";
         }
         PropertyValue val = map.get(key);

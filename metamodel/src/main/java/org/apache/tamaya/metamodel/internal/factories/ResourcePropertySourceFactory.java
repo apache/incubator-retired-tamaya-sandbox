@@ -39,8 +39,12 @@ public class ResourcePropertySourceFactory extends URLPropertySourceFactory{
 
 
     protected String example() {
-        return "<resource location=\"META-INF/config.xml\"\n" +
-                "     formats=\"xml-properties\")>\n";
+        return "{ type: resource\n" +
+                " properties: {\n" +
+                "   location=\"META-INF/config.xml\"\n" +
+                "   format=\"xml-properties\"\n" +
+                " }\n" +
+                "}\n";
     }
 
     protected URL createResource(String location) {

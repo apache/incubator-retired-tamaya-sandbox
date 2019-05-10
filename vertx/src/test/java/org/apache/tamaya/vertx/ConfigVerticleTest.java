@@ -60,7 +60,6 @@ public class ConfigVerticleTest {
     }
 
     @Test
-
     public void testSingle(final TestContext testContext) {
         final Async async = testContext.async();
         vertxContext.vertx().eventBus().send(TamayaConfigurationProducer.DEFAULT_CONFIG_GET_SINGLE_ADDRESS,

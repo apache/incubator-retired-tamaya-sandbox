@@ -42,7 +42,7 @@ public class MapFilter implements PropertyFilter{
     public static final class MapFilterFactory implements ItemFactory<PropertyFilter> {
         @Override
         public String getName() {
-            return "Map";
+            return "mapped";
         }
 
         @Override
@@ -95,7 +95,7 @@ public class MapFilter implements PropertyFilter{
         if(cutoff !=null){
             if(value.getKey().startsWith(cutoff)){
                 key = key.substring(cutoff.length());
-                value.setKey(key);
+                value = value.setKey(key);
             }
         }
         if(target!=null){

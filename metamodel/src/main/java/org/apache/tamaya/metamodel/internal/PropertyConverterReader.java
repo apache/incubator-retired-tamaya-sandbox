@@ -18,17 +18,17 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
-import org.apache.tamaya.ConfigException;
 import org.apache.tamaya.TypeLiteral;
+import org.apache.tamaya.format.ConfigurationData;
 import org.apache.tamaya.metamodel.spi.ItemFactory;
 import org.apache.tamaya.metamodel.spi.ItemFactoryManager;
 import org.apache.tamaya.metamodel.spi.MetaConfigurationReader;
 import org.apache.tamaya.spi.ConfigurationBuilder;
+import org.apache.tamaya.spi.ListValue;
+import org.apache.tamaya.spi.ObjectValue;
 import org.apache.tamaya.spi.PropertyConverter;
+import org.apache.tamaya.spi.PropertyValue;
 import org.osgi.service.component.annotations.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,22 +43,27 @@ public class PropertyConverterReader implements MetaConfigurationReader{
     private static final Logger LOG = Logger.getLogger(PropertyConverterReader.class.getName());
 
     @Override
-    public void read(Document document, ConfigurationBuilder configBuilder) {
-        NodeList nodeList = document.getDocumentElement().getElementsByTagName("property-converters");
-        if(nodeList.getLength()==0){
-            LOG.finer("No property converters configured");
+    public void read(ConfigurationData metaConfig, ConfigurationBuilder configBuilder) {
+        ObjectValue root = ObjectValue.from(metaConfig.getData());
+        if(root.getPropertyValue("converters")==null){
+            LOG.finer("No property converters configured.");
             return;
         }
-        if(nodeList.getLength()>1){
-            throw new ConfigException("Only one single property-converters section allowed.");
-        }
-        nodeList = nodeList.item(0).getChildNodes();
-        for(int i=0;i<nodeList.getLength();i++){
-            Node node = nodeList.item(i);
-            if(node.getNodeType()!=Node.ELEMENT_NODE) {
+        ListValue nodeList = root.getPropertyValue("converters").toListValue();
+        ListValue listValue = nodeList.toListValue();
+        for(PropertyValue converterNode:listValue){
+
+            if(converterNode.getValueType()!= PropertyValue.ValueType.MAP) {
                 continue;
             }
-            String type = node.getNodeName();
+            ObjectValue ov = converterNode.toObjectValue();
+            if(ov.getPropertyValue("properties")==null){
+                LOG.severe("No property converter configured.");
+                continue;
+            }
+            ObjectValue propertyValue = ov.getPropertyValue("properties").toObjectValue();
+            Map<String,String> properties = propertyValue!=null? propertyValue.toLocalMap(): null;
+            String type = ItemFactoryManager.getType(ov);
             if("defaults".equals(type)){
                 LOG.finer("Adding default property converters...");
                 configBuilder.addDefaultPropertyConverters();
@@ -70,11 +75,10 @@ public class PropertyConverterReader implements MetaConfigurationReader{
                     LOG.severe("No such property converter: " + type);
                     continue;
                 }
-                Map<String,String> params = ComponentConfigurator.extractParameters(node);
-                PropertyConverter converter = converterFactory.create(params);
+                PropertyConverter converter = converterFactory.create(ov.toMap());
                 if(converter!=null) {
-                    ComponentConfigurator.configure(converter, node);
-                    Class targetType = Class.forName(params.get("targetType"));
+                    ComponentConfigurator.configure(converter, properties);
+                    Class targetType = Class.forName(ov.getValue("targetType"));
                     LOG.finer("Adding converter for type " + targetType.getName() + ": " + converter.getClass());
                     configBuilder.addPropertyConverters(TypeLiteral.of(targetType), converter);
                 }

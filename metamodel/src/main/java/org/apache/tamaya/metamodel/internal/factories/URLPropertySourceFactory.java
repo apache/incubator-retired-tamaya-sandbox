@@ -69,8 +69,12 @@ public class URLPropertySourceFactory implements ItemFactory<PropertySource>{
     }
 
     protected String example() {
-        return "<url location=\"http://127.0.0.1:1110/config.xml\"\n" +
-                "    formats=\"xml-properties\"\n/>";
+        return "{ type: url\n" +
+                " properties: {\n" +
+                "   location=\"http://127.0.0.1:1110/config.xml\"\n" +
+                "   format=\"xml-properties\"\n" +
+                " }\n" +
+                "}\n";
     }
 
     protected URL createResource(String location) {

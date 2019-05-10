@@ -28,6 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tamaya.spi.ObjectValue;
+import org.apache.tamaya.spi.PropertyValue;
 import org.apache.tamaya.spi.ServiceContextManager;
 
 /**
@@ -47,6 +49,26 @@ public final class ItemFactoryManager {
 
     public static ItemFactoryManager getInstance(){
         return INSTANCE;
+    }
+
+    /**
+     * Extracts the target type by evaluating any {@code type, class} attributes.
+     * @param objectValue the config value.
+     * @return the type/class name, or null.
+     */
+    public static String getType(ObjectValue objectValue) {
+        if(objectValue==null){
+            return null;
+        }
+        PropertyValue val = objectValue.getPropertyValue("type");
+        if(val == null){
+            val = objectValue.getPropertyValue("class");
+        }
+        if(val==null){
+            LOG.severe("Type definition requires either type or class declaration: " + objectValue);
+            return null;
+        }
+        return val.getValue();
     }
 
     public <T> List<ItemFactory<T>> getFactories(Class<T> type){

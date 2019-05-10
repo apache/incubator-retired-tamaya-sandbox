@@ -18,10 +18,6 @@
  */
 package org.apache.tamaya.metamodel.internal;
 
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -43,19 +39,12 @@ public final class ComponentConfigurator<T> {
     /**
      * Configures the given instance with whatever is defined in the current child values.
      * @param instance the instance to be configured, not null.
-     * @param node the value containing any configuration child values, not null.
-     */
-    public static void configure(Object instance, Node node) {
-        Map<String,String> params = extractParameters(node);
-        configure(instance, params);
-    }
-
-    /**
-     * Configures the given instance with whatever is defined in the current child values.
-     * @param instance the instance to be configured, not null.
-     * @param params the value containing any configuration child values, not null.
+     * @param params the params containing any configuration child values, not null.
      */
     public static void configure(Object instance, Map<String,String> params) {
+        if(params==null){
+            return;
+        }
         LOG.finest("Configuring instance: " + instance + " with " + params);
         for(Map.Entry<String,String> en:params.entrySet()){
             applyParam(instance, en.getKey(), en.getValue());
@@ -197,27 +186,6 @@ public final class ComponentConfigurator<T> {
                     "Failed to convert createValue '"+value+"' to required target type: " + targetType.getName(), e);
             return null;
         }
-    }
-
-    public static Map<String, String> extractParameters(Node node) {
-        Map<String,String> params = new HashMap<>();
-        NamedNodeMap attributes = node.getAttributes();
-        for(int c=0;c<attributes.getLength();c++) {
-            Node pn = attributes.item(c);
-            String key = pn.getNodeName();
-            String value = pn.getNodeValue();
-            params.put(key, value);
-        }
-        NodeList entryNodes = node.getChildNodes();
-        for(int c=0;c<entryNodes.getLength();c++) {
-            Node filterNode = entryNodes.item(c);
-            if(filterNode.getNodeType()==Node.ELEMENT_NODE) {
-                String key = filterNode.getNodeName();
-                String value = filterNode.getTextContent();
-                params.put(key, value);
-            }
-        }
-        return params;
     }
 
 }

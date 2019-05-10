@@ -18,18 +18,17 @@
 // -->
 <configuration>
     <!-- Context is evaluated first. -->
-    <context>
-        <stage>${properties:system:STAGE?default=DEV}</stage>
-        <configdir>${properties:system:configdir?default=.}</configdir>
-        <app>${properties:system.APP?default=NONE}</app>
-        <context>${java:java.util.UUID.randomUUID()}</context>
-        <company>Trivadis</company>
-        <default-formats>yaml,json</default-formats>
-        <default-refresh-period>5 SECOND</default-refresh-period>
-    </context>
-    <context name="APP">
-        <application>someAppName</application>
-    </context>
+    <context-initializers>
+        <context-initializer></context-initializer>
+        <context-initializer></context-initializer>
+        <!--<configdir>${properties:system:configdir?default=.}</configdir>-->
+        <!--<app>${properties:system.APP?default=NONE}</app>-->
+        <!--<context>${java:java.util.UUID.randomUUID()}</context>-->
+        <!--<company>Trivadis</company>-->
+        <!--<default-formats>yaml,json</default-formats>-->
+        <!--<default-refresh-period>5 SECOND</default-refresh-period>-->
+    </context-initializers>
+
 
     <!-- combinationPolicy class="" / -->
 

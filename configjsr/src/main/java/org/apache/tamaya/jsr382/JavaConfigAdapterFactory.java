@@ -213,11 +213,11 @@ public final class JavaConfigAdapterFactory {
     }
 
     /**
-     * Converts the given Tamaya key, value map into a corresponding String based map, hereby
+     * Converts the given Tamaya key, value mapProperties into a corresponding String based mapProperties, hereby
      * omitting all meta-entries.
      *
-     * @param properties the Tamaya key, value map, not null.
-     * @return the corresponding String based map, never null.
+     * @param properties the Tamaya key, value mapProperties, not null.
+     * @return the corresponding String based mapProperties, never null.
      */
     public static Map<String, String> toStringMap(Map<String, PropertyValue> properties) {
         Map<String, String> valueMap = new HashMap<>(properties.size());
@@ -230,17 +230,17 @@ public final class JavaConfigAdapterFactory {
     }
 
     /**
-     * Converts the given String based key, value map into a corresponding String,PropertyValue
-     * based map.
+     * Converts the given String based key, value mapProperties into a corresponding String,PropertyValue
+     * based mapProperties.
      *
-     * @param properties the String based key, value map, not null.
+     * @param properties the String based key, value mapProperties, not null.
      * @param source     the source of the entries, not null.
-     * @return the corresponding String,PropertyValue based map, never null.
+     * @return the corresponding String,PropertyValue based mapProperties, never null.
      */
     public static Map<String, PropertyValue> toPropertyValueMap(Map<String, String> properties, String source) {
         Map<String, PropertyValue> valueMap = new HashMap<>(properties.size());
         for (Map.Entry<String, String> en : properties.entrySet()) {
-            valueMap.put(en.getKey(), PropertyValue.of(en.getKey(), en.getValue(), source));
+            valueMap.put(en.getKey(), PropertyValue.createValue(en.getKey(), en.getValue()).setMeta("source", source));
         }
         return valueMap;
     }
