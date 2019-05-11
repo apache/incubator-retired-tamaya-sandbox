@@ -113,7 +113,7 @@ public final class MetaConfiguration {
         Document document = null;
         try {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
 
             document = factory.newDocumentBuilder().parse(configFile.openStream());
             ConfigurationBuilder builder = Configuration.createConfigurationBuilder();
