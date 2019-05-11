@@ -186,7 +186,7 @@ public class ConfiguredSystemProperties extends Properties {
     }
 
     @Override
-    public void loadFromXML(InputStream in) throws IOException {
+    public synchronized void loadFromXML(InputStream in) throws IOException {
         getContextualProperties().loadFromXML(in);
     }
 
