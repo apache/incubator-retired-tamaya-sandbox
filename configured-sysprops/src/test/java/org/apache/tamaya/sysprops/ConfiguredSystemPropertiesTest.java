@@ -18,6 +18,13 @@
  */
 package org.apache.tamaya.sysprops;
 
+import org.junit.Test;
+
 public class ConfiguredSystemPropertiesTest {
+
+    @Test
+    public void objectCreation() {
+        System.setProperty("TamayaUnderTest", "true");
+    }
 
 }
