@@ -45,7 +45,7 @@ public class ConfiguredSystemProperties extends Properties {
 
     private static final Logger LOG = Logger.getLogger(ConfiguredSystemProperties.class.getName());
     private Properties initialProperties;
-    private static volatile Properties contextualProperties;
+    private static Properties contextualProperties;
 
     private final Object LOCK = new Object();
 
