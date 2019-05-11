@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -111,12 +112,13 @@ public final class MetaConfiguration {
         LOG.info("TAMAYA: Loading tamaya-config.xml...");
         Document document = null;
         try {
-            document = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder().parse(configFile.openStream());
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+
+            document = factory.newDocumentBuilder().parse(configFile.openStream());
             ConfigurationBuilder builder = Configuration.createConfigurationBuilder();
             for(MetaConfigurationReader reader: ServiceContextManager.getServiceContext().getServices(
-                    MetaConfigurationReader.class
-            )){
+                    MetaConfigurationReader.class)){
                 LOG.fine("TAMAYA: Executing MetaConfig-Reader: " + reader.getClass().getName() + "...");
                 reader.read(document, builder);
             }
