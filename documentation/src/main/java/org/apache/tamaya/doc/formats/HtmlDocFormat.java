@@ -80,13 +80,9 @@ public class HtmlDocFormat implements DocFormat<String> {
     }
 
     private void writeResultToFile(String result) {
-        File file = new File("./doc.html");
-        FileWriter w;
-        try {
-            w = new FileWriter(file);
+        try (FileWriter w = new FileWriter(new File("./doc.html"));) {
             w.append(result);
             w.flush();
-            w.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
