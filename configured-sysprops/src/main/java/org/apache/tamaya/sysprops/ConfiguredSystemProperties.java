@@ -47,9 +47,6 @@ public class ConfiguredSystemProperties extends Properties {
     private Properties initialProperties;
     private static Properties contextualProperties;
 
-    private final Object LOCK = new Object();
-
-
     private ConfiguredSystemProperties(Properties initialProperties) {
         super(initialProperties);
         this.initialProperties = initialProperties;
@@ -316,13 +313,9 @@ public class ConfiguredSystemProperties extends Properties {
         contextualProperties.clear();
     }
 
-    protected Properties getContextualProperties() {
+    protected synchronized Properties getContextualProperties() {
         if (contextualProperties == null) {
-            synchronized (LOCK) {
-                if (contextualProperties == null) {
-                    contextualProperties = createNewProperties();
-                }
-            }
+            contextualProperties = createNewProperties();
         }
         return contextualProperties;
     }
