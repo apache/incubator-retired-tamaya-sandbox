@@ -45,10 +45,7 @@ public class ConfiguredSystemProperties extends Properties {
 
     private static final Logger LOG = Logger.getLogger(ConfiguredSystemProperties.class.getName());
     private Properties initialProperties;
-    private static volatile Properties contextualProperties;
-
-    private final Object LOCK = new Object();
-
+    private static Properties contextualProperties;
 
     private ConfiguredSystemProperties(Properties initialProperties) {
         super(initialProperties);
@@ -153,7 +150,7 @@ public class ConfiguredSystemProperties extends Properties {
 
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return getContextualProperties().toString();
     }
 
@@ -189,12 +186,12 @@ public class ConfiguredSystemProperties extends Properties {
     }
 
     @Override
-    public void loadFromXML(InputStream in) throws IOException {
+    public synchronized void loadFromXML(InputStream in) throws IOException {
         getContextualProperties().loadFromXML(in);
     }
 
     @Override
-    public void storeToXML(OutputStream os, String comment) throws IOException {
+    public synchronized void storeToXML(OutputStream os, String comment) throws IOException {
         getContextualProperties().storeToXML(os, comment);
     }
 
@@ -214,37 +211,37 @@ public class ConfiguredSystemProperties extends Properties {
     }
 
     @Override
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return getContextualProperties().isEmpty();
     }
 
     @Override
-    public Object put(Object key, Object value) {
+    public synchronized Object put(Object key, Object value) {
         return getContextualProperties().put(key, value);
     }
 
     @Override
-    public Object remove(Object key) {
+    public synchronized Object remove(Object key) {
         return getContextualProperties().remove(key);
     }
 
     @Override
-    public void putAll(Map<?, ?> t) {
+    public synchronized void putAll(Map<?, ?> t) {
         getContextualProperties().putAll(t);
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
         getContextualProperties().clear();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public synchronized boolean equals(Object o) {
         return getContextualProperties().equals(o);
     }
 
     @Override
-    public int hashCode() {
+    public synchronized int hashCode() {
         return getContextualProperties().hashCode();
     }
 
@@ -316,13 +313,9 @@ public class ConfiguredSystemProperties extends Properties {
         contextualProperties.clear();
     }
 
-    protected Properties getContextualProperties() {
+    protected synchronized Properties getContextualProperties() {
         if (contextualProperties == null) {
-            synchronized (LOCK) {
-                if (contextualProperties == null) {
-                    contextualProperties = createNewProperties();
-                }
-            }
+            contextualProperties = createNewProperties();
         }
         return contextualProperties;
     }

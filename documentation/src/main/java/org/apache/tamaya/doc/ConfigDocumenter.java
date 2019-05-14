@@ -28,6 +28,8 @@ import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.Scanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
@@ -44,8 +46,8 @@ import java.util.List;
  */
 public class ConfigDocumenter {
 
+    private static final Scanner[] SCANNERS = {new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new FieldAnnotationsScanner(), new SubTypesScanner()};
     private DocumentedConfiguration docs = new DocumentedConfiguration();
-
 
     public static ConfigDocumenter getInstance(){
         return ServiceContextManager.getServiceContext()
@@ -70,7 +72,7 @@ public class ConfigDocumenter {
             urls.add(ClasspathHelper.forClass(clazz));
         }
         ConfigurationBuilder configBuilder = new ConfigurationBuilder()
-                .setScanners(new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new FieldAnnotationsScanner())
+                .setScanners(SCANNERS)
                 .setUrls(urls)
                 .filterInputsBy(filterBuilder);
         Reflections reflections = new Reflections(configBuilder);
@@ -83,7 +85,7 @@ public class ConfigDocumenter {
      */
     public void readClasses(ClassLoader classLoader){
         ConfigurationBuilder configBuilder = new ConfigurationBuilder()
-                .setScanners(new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new FieldAnnotationsScanner())
+                .setScanners(SCANNERS)
                 .setUrls(ClasspathHelper.forClassLoader(classLoader));
         Reflections reflections = new Reflections(configBuilder);
         readSpecs(reflections);
@@ -101,8 +103,7 @@ public class ConfigDocumenter {
         }
         configBuilder.filterInputsBy(filterBuilder);
         configBuilder.setUrls(ClasspathHelper.forJavaClassPath());
-        configBuilder.setScanners(new TypeAnnotationsScanner(),
-                new MethodAnnotationsScanner(), new FieldAnnotationsScanner());
+        configBuilder.setScanners(SCANNERS);
         Reflections reflections = new Reflections(configBuilder);
         readSpecs(reflections);
     }

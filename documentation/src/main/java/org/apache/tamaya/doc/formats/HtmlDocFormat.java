@@ -27,6 +27,7 @@ import org.apache.tamaya.doc.DocumentedProperty;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ import static j2html.TagCreator.tr;
 import static j2html.TagCreator.ul;
 
 /**
- * An HTML-based documentation format.
+ * A HTML-based documentation format.
  */
 public class HtmlDocFormat implements DocFormat<String> {
     @Override
@@ -79,13 +80,9 @@ public class HtmlDocFormat implements DocFormat<String> {
     }
 
     private void writeResultToFile(String result) {
-        File file = new File("./doc.html");
-        FileWriter w;
-        try {
-            w = new FileWriter(file);
+        try (FileWriter w = new FileWriter(new File("./doc.html"));) {
             w.append(result);
             w.flush();
-            w.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,7 +91,7 @@ public class HtmlDocFormat implements DocFormat<String> {
     private ContainerTag createHead(DocumentedConfiguration config) {
         return head(title("Tamaya Configuration - " + config.getName() + " " +
                         config.getVersion()),
-                meta().withCharset("utf-8"),
+                meta().withCharset(StandardCharsets.UTF_8.displayName()),
                 meta().withName("viewport").withContent("width=device-width, initial-scale=0.9, shrink-to-fit=yes"),
                 link().withRel("stylesheet")
                         .withHref("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css")

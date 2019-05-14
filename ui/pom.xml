@@ -36,7 +36,7 @@
         <vaadin.plugin.version>2.1.0</vaadin.plugin.version>
         <vaadin.version>8.0.4</vaadin.version>
         <guava.version>21.0</guava.version>
-        <tomcat.version>7.0.57</tomcat.version>
+        <tomcat.version>7.0.94</tomcat.version>
     </properties>
 
     <modules>

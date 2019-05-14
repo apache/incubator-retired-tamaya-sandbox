@@ -15,4 +15,4 @@ release.properties
 .classpath
 **/*.checkstyle
 **/*.fbExcludeFilterFile
-
+documentation/doc.html
