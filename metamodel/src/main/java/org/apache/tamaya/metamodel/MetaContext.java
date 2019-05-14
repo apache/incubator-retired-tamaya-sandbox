@@ -130,6 +130,7 @@ public final class MetaContext {
     /**
      * Access the given context property.
      * @param key the key, not null
+     * @param type the property type, not null.
      * @return the createValue, or null.
      */
     public <T> Optional<T> getProperty(String key, Class<T> type){
@@ -171,6 +172,8 @@ public final class MetaContext {
      * Sets the given context property.
      * @param key the key, not null.
      * @param value the createValue, not null.
+     * @param type the property type, not null.
+     * @param <T> the type
      * @return the previous createValue, or null.
      */
     public <T> T setProperty(String key, Class<T> type, T value){
@@ -185,6 +188,9 @@ public final class MetaContext {
      * Sets the given property unless there is already a createValue defined.
      * @param key the key, not null.
      * @param value the createValue, not null.
+     * @param type the property type, not null.
+     * @param <T> the type
+     * @return the value
      */
     public <T> T setPropertyIfAbsent(String key, Class<T> type, T value){
         T prev = (T)this.properties.get(key);

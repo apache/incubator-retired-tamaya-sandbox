@@ -27,7 +27,6 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.functions.ConfigurationFunctions;
-import org.apache.tamaya.inject.ConfigurationInjection;
 import org.apache.tamaya.inject.ConfigurationInjector;
 import org.apache.tamaya.inject.api.Config;
 

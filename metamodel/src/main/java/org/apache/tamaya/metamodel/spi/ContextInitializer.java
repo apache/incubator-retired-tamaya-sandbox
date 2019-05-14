@@ -29,7 +29,7 @@ public interface ContextInitializer {
     /**
      * Get the expression id, which is the first part of a placeholder expression
      * ({@code ${expressionId:expression}}).
-     * @return the expression id, never null.
+     * @param metaContext the neta context, not null..
      */
     void initializeContext(MetaContext metaContext);
 

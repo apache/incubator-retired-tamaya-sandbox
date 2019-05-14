@@ -25,7 +25,6 @@ import javax.config.ConfigSnapshot;
 import javax.config.spi.Converter;
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Tamaya implementation type for the {@link ConfigAccessor} type.

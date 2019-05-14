@@ -21,7 +21,6 @@ package org.apache.tamaya.vertx;
 import io.vertx.core.Verticle;
 import io.vertx.core.impl.verticle.CompilingClassLoader;
 import io.vertx.core.spi.VerticleFactory;
-import org.apache.tamaya.inject.ConfigurationInjection;
 import org.apache.tamaya.inject.ConfigurationInjector;
 
 /**
