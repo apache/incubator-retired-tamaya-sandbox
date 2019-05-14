@@ -57,11 +57,10 @@ public class PropertyConverterReader implements MetaConfigurationReader{
                 continue;
             }
             ObjectValue ov = converterNode.toObjectValue();
-            if(ov.getPropertyValue("properties")==null){
-                LOG.severe("No property converter configured.");
-                continue;
+            ObjectValue propertyValue = null;
+            if(ov.getPropertyValue("properties")!=null){
+                propertyValue = ov.getPropertyValue("properties").toObjectValue();
             }
-            ObjectValue propertyValue = ov.getPropertyValue("properties").toObjectValue();
             Map<String,String> properties = propertyValue!=null? propertyValue.toLocalMap(): null;
             String type = ItemFactoryManager.getType(ov);
             if("defaults".equals(type)){

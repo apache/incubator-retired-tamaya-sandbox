@@ -62,7 +62,10 @@ public class PropertySourceReader implements MetaConfigurationReader{
                 continue;
             }
             ObjectValue ov = node.toObjectValue();
-            ObjectValue propertyValue = ov.getPropertyValue("properties").toObjectValue();
+            ObjectValue propertyValue = null;
+            if(ov.getPropertyValue("properties")!=null) {
+                propertyValue = ov.getPropertyValue("properties").toObjectValue();
+            }
             Map<String,String> params = propertyValue!=null? propertyValue.toLocalMap(): null;
             String type = ItemFactoryManager.getType(ov);
             if ("defaults".equals(type)) {
