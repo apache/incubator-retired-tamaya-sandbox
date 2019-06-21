@@ -52,11 +52,15 @@ import static j2html.TagCreator.title;
 import static j2html.TagCreator.thead;
 import static j2html.TagCreator.tr;
 import static j2html.TagCreator.ul;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A HTML-based documentation format.
  */
 public class HtmlDocFormat implements DocFormat<String> {
+    private static final Logger LOG = Logger.getLogger(HtmlDocFormat.class.getName());
+
     @Override
     public String apply(DocumentedConfiguration documentedConfiguration) {
         List<ContainerTag> areaTags = new ArrayList<>();
@@ -84,7 +88,7 @@ public class HtmlDocFormat implements DocFormat<String> {
             w.append(result);
             w.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, e, () -> "Failed writing file ./doc.html");
         }
     }
 

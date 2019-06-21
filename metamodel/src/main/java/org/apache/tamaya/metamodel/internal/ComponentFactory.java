@@ -70,6 +70,10 @@ public final class ComponentFactory<T> {
                 }
             }
         }
+
+        if (comp == null){
+            return null;
+        }
         // Multiple instances: createObject a new instance using the parameterless constructor for all subsequent
         // resolutions.
         if(loaded.contains(comp.getClass().getName())){
@@ -79,24 +83,6 @@ public final class ComponentFactory<T> {
         loaded.add(comp.getClass().getName());
         return comp;
     }
-
-//    public Collection<T> loadInstances(NodeList nodeList) {
-//        List<T> items = new ArrayList<>();
-//        for(int i=0;i<nodeList.getLength();i++){
-//            Node node = nodeList.item(i);
-//            if(node.getNodeName().equals("filter")){
-//                String type = node.getNodeValue();
-//                try {
-//                    T item = getComponent(type);
-//                    ComponentConfigurator.configure(item, node);
-//                    items.addPropertyValue(item);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        return items;
-//    }
 
     @Override
     public String toString() {

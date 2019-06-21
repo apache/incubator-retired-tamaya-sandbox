@@ -97,20 +97,19 @@ public final class JavaResolver {
             ByteArrayOutputStream sw = new ByteArrayOutputStream();
             byte[] buff = new byte[512];
             result[0] = proc.waitFor();
-            int read = out.read(buff);
-            while(read > 0){
+            int read = 0;
+            while((read = out.read(buff)) > 0){
                 sw.write(buff, 0, read);
-                out.read(buff);
             }
             result[1] = sw.toString();
-            read = err.read(buff);
-            while(read > 0){
+            sw.reset();
+            while((read = err.read(buff)) > 0){
                 sw.write(buff, 0, read);
-                err.read(buff);
             }
             result[2] = sw.toString();
             return result;
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return new Object[]{"","Process interrupted.", -1};
         } catch (Exception e){
             return new Object[]{"","Process failed: " + e, -1};

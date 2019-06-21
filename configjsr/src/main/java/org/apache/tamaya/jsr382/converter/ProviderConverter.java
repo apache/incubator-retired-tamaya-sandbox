@@ -56,6 +56,9 @@ public class ProviderConverter implements PropertyConverter<Provider> {
 
     @Override
     public boolean equals(Object o) {
+        if (o == null){
+            return false;
+        }
         return getClass().equals(o.getClass());
     }
 
