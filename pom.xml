@@ -831,10 +831,9 @@ under the License.
         <module>metamodel</module>
         <module>uom</module>
         <module>vertx</module>
-        <module>configjsr</module>
+        <!-- with drawn -->
+        <!--<module>configjsr</module>-->
         <module>documentation</module>
-        <!-- Once the API is officially available ... -->
-        <!--   module>configjsr</module-->
     </modules>
 
     <profiles>
