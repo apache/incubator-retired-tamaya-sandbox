@@ -24,6 +24,7 @@ import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +38,8 @@ public class CachedFilter implements PropertyFilter{
     private String matches;
     private Map<String, CachedEntry> cachedEntries = new ConcurrentHashMap<>();
     private int maxSize = -1;
-    private long timeout = TimeUnit.MINUTES.toMillis(5);
+    private TimeUnit timeUnit = TimeUnit.MINUTES;
+    private long timeout = 5;
 
     /**
      * Factory for configuring immutable property filter.
@@ -68,6 +70,33 @@ public class CachedFilter implements PropertyFilter{
         return this;
     }
 
+    public CachedFilter setTimeout(long timeout){
+        this.timeout = timeout;
+        return this;
+    }
+
+    public CachedFilter setTimeUnit(TimeUnit timeUnit){
+        this.timeUnit = Objects.requireNonNull(timeUnit);
+        return this;
+    }
+
+    public TimeUnit getTimeUnit(){
+        return timeUnit;
+    }
+
+    public long getTimeout(){
+        return timeout;
+    }
+
+    public CachedFilter setMaxSize(int maxSize){
+        this.maxSize = maxSize;
+        return this;
+    }
+
+    public int getMaxSize(){
+        return maxSize;
+    }
+
     @Override
     public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
         if(matches !=null){
@@ -85,17 +114,17 @@ public class CachedFilter implements PropertyFilter{
      * @return
      */
     private PropertyValue resolveCachedEntry(PropertyValue value) {
-        if(maxSize>0 && maxSize<=this.cachedEntries.size()){
+        if(maxSize>0 && maxSize<this.cachedEntries.size()){
             return value;
         }
         CachedEntry ce = cachedEntries.get(value.getKey());
         if(ce==null || !ce.isValid()){
             if(value!=null) {
-                ce = new CachedEntry(value, System.currentTimeMillis() + timeout);
+                ce = new CachedEntry(value, System.currentTimeMillis() + timeUnit.toMillis(timeout));
                 this.cachedEntries.put(value.getKey(), ce);
             }
         }
-        return value;
+        return ce.value;
     }
 
     @Override
@@ -105,6 +134,7 @@ public class CachedFilter implements PropertyFilter{
                 ", cache-getNumChilds=" + cachedEntries.size() +
                 ", max-getNumChilds=" + maxSize +
                 ", timeout=" + timeout +
+                ", timeUnit=" + timeUnit +
                 '}';
     }
 
@@ -121,7 +151,7 @@ public class CachedFilter implements PropertyFilter{
         }
 
         public boolean isValid(){
-            return System.currentTimeMillis() > ttl;
+            return System.currentTimeMillis() < ttl;
         }
     }
 }

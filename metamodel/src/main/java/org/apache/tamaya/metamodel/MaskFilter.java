@@ -36,7 +36,6 @@ import java.util.Map;
 public class MaskFilter implements PropertyFilter{
 
     private String matches;
-    private List<String> roles = new ArrayList<>();
     private String mask = "*****";
     private boolean filterSingleValues;
     private boolean filterAllValues = true;
@@ -68,27 +67,6 @@ public class MaskFilter implements PropertyFilter{
 
     public MaskFilter setMatches(String matches) {
         this.matches = matches;
-        return this;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public MaskFilter setRoles(List<String> roles) {
-        this.roles.clear();
-        for(String role:roles) {
-            this.roles.add(role.trim());
-        }
-        return this;
-    }
-
-    public MaskFilter setRoles(String... roles) {
-        return setRoles(Arrays.asList(roles));
-    }
-
-    public MaskFilter setRoles(String roles){
-        setRoles(roles.split(","));
         return this;
     }
 
@@ -134,7 +112,6 @@ public class MaskFilter implements PropertyFilter{
         return "MaskFilter{" +
                 "matches='" + matches + '\'' +
                 ", mask='" + mask + '\'' +
-                ", roles='" + roles + '\'' +
                 ", filterAllValues='" + filterAllValues + '\'' +
                 ", filterSingleValues='" + filterSingleValues + '\'' +
                 '}';

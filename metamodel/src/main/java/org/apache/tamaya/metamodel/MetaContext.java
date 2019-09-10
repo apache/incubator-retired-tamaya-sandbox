@@ -209,7 +209,7 @@ public final class MetaContext {
      */
     public boolean checkPropertiesArePresent(String... keys){
         for(String key:keys) {
-            if (getProperty(key, null) == null) {
+            if (!getProperty(key, null).isPresent()) {
                 return false;
             }
         }

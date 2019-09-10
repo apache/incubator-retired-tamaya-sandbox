@@ -23,62 +23,34 @@ import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyValue;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class MaskFilterTest {
+public class HideFilterTest {
+
+    private HideFilter filter = new HideFilter();
 
     @Test
     public void getSetMatches() {
-        MaskFilter filter = new MaskFilter();
         filter.setMatches("*.SEC");
         assertThat(filter.getMatches()).isNotNull().isEqualTo("*.SEC");
     }
 
     @Test
-    public void getSetMask() {
-        MaskFilter filter = new MaskFilter();
-        filter.setMask("*");
-        assertThat(filter.getMask()).isEqualTo("*");
-    }
-
-    @Test
-    public void setGetFilterAllValues() {
-        MaskFilter filter = new MaskFilter();
-        filter.setFilterAllValues(true);
-        assertThat(filter.isFilterAllValues()).isTrue();
-    }
-
-    @Test
-    public void setGetFilterSingleValues() {
-        MaskFilter filter = new MaskFilter();
-        filter.setFilterSingleValues(true);
-        assertThat(filter.isFilterSingleValues()).isTrue();
-    }
-
-
-    @Test
     public void filterProperty() {
-        MaskFilter filter = new MaskFilter();
         filter.setMatches(".*\\.SEC");
         assertThat(filter.getMatches()).isEqualTo(".*\\.SEC");
         PropertyValue value = PropertyValue.createValue("foo.SEC", "someValue");
         PropertyValue filtered = filter.filterProperty(value,
                 new FilterContext(value, Collections.emptyMap(), ConfigurationContext.EMPTY));
-        assertThat(filtered).isNotNull();
-        assertThat(filtered.getValue()).isNotNull().isEqualTo("*****");
+        assertThat(filtered).isNull();
     }
 
     @Test
     public void testToString() {
-        MaskFilter filter = new MaskFilter();
         filter.setMatches(".*\\.SEC");
-        filter.setMask("*****");
-        filter.setFilterSingleValues(true);
-        filter.setMask("123");
-        assertThat(filter.toString()).isEqualTo("MaskFilter{matches='.*\\.SEC', mask='123', filterAllValues='true', filterSingleValues='true'}");
+        assertThat(filter.toString()).isEqualTo("HideFilter{matches='.*\\.SEC'}");
     }
 }

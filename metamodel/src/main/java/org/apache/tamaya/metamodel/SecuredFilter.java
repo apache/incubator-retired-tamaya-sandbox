@@ -24,10 +24,8 @@ import org.apache.tamaya.spi.FilterContext;
 import org.apache.tamaya.spi.PropertyFilter;
 import org.apache.tamaya.spi.PropertyValue;
 
-import javax.security.auth.Subject;
-import java.security.AccessController;
-import java.security.Principal;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
@@ -40,8 +38,8 @@ public class SecuredFilter implements PropertyFilter{
     private static final Logger LOG = Logger.getLogger(SecuredFilter.class.getName());
 
     private String matches;
-    private String roles;
-    private String[]rolesArray;
+    private Set<String> roles = new HashSet<>();
+    private Supplier<Set<String>> roleSupplier = () -> null;
     private SecurePolicy policy = SecurePolicy.HIDE;
 
     /**
@@ -73,13 +71,16 @@ public class SecuredFilter implements PropertyFilter{
         return this;
     }
 
-    public String getRoles() {
-        return roles;
+    public Set<String> getRoles() {
+        return Collections.unmodifiableSet(roles);
     }
 
-    public SecuredFilter setRoles(String roles) {
-        this.roles = roles;
-        this.rolesArray = roles.split(",");
+    public SecuredFilter setRoles(String... roles) {
+        return setRoles(Arrays.asList(roles));
+    }
+
+    public SecuredFilter setRoles(Collection<String> roles) {
+        this.roles.addAll(roles);
         return this;
     }
 
@@ -92,6 +93,14 @@ public class SecuredFilter implements PropertyFilter{
         return this;
     }
 
+    public Supplier<Set<String>> getRoleSupplier() {
+        return roleSupplier;
+    }
+
+    public void setRoleSupplier(Supplier<Set<String>> roleSupplier) {
+        this.roleSupplier = Objects.requireNonNull(roleSupplier);
+    }
+
     @Override
     public PropertyValue filterProperty(PropertyValue value, FilterContext context) {
         if(matches !=null){
@@ -99,24 +108,25 @@ public class SecuredFilter implements PropertyFilter{
                 return value;
             }
         }
-        Subject s = javax.security.auth.Subject.getSubject(AccessController.getContext());
-        for(Principal principal:s.getPrincipals()){
-            for(String role:rolesArray) {
-                if(principal.getName().equals(role)){
+        Set<String> assignedRoles = this.roleSupplier.get();
+        if(assignedRoles!=null) {
+            for (String role : this.roles) {
+                if (assignedRoles.contains(role)) {
                     return value;
                 }
             }
+            switch (policy) {
+                case THROW_EXCPETION:
+                    throw new ConfigException("Unauthorized access to '" + value.getKey() + "', not in " + roles);
+                case WARN_ONLY:
+                    LOG.warning("Unauthorized access to '" + value.getKey() + "', not in " + roles);
+                    return value;
+                case HIDE:
+                default:
+                    return null;
+            }
         }
-        switch(policy){
-            case THROW_EXCPETION:
-                throw new ConfigException("Unauthorized access to '"+value.getKey()+"', not in " + roles);
-            case WARN_ONLY:
-                LOG.warning("Unauthorized access to '"+value.getKey()+"', not in " + roles);
-                return value;
-            case HIDE:
-            default:
-                return null;
-        }
+        return value;
     }
 
     @Override
