@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tamaya.ext</groupId>
         <artifactId>tamaya-sandbox</artifactId>
-        <version>0.4-incubating-SNAPSHOT</version>
+        <version>0.5-incubating-SNAPSHOT</version>
     </parent>
 
     <artifactId>tamaya-ui-parent</artifactId>
