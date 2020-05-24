@@ -82,4 +82,16 @@ public class JavaResolverTest {
         return TEST;
     }
 
+    @Test
+    public void evalCommand() throws Exception {
+        Object[] ret = JavaResolver.eval("echo -n " + TEST);
+        
+        Integer returnValue = (Integer) ret[0];
+        String returnOut = (String) ret[1];
+        String returnErr = (String) ret[2];
+        assertThat(0).isEqualTo(returnValue);
+        assertThat(TEST).isEqualTo(returnOut);
+        assertThat("").isEqualTo(returnErr);
+    }
+
 }

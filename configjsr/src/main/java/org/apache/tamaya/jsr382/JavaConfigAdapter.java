@@ -26,9 +26,6 @@ import javax.config.Config;
 import javax.config.ConfigAccessor;
 import javax.config.ConfigSnapshot;
 import javax.config.spi.ConfigSource;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -97,18 +94,6 @@ public class JavaConfigAdapter implements Config, Serializable {
     @Override
     public Iterable<ConfigSource> getConfigSources() {
         return JavaConfigAdapterFactory.toConfigSources(delegate.getContext().getPropertySources());
-    }
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        if (!(this.delegate instanceof Serializable)) {
-            out.writeObject(this.delegate.getSnapshot());
-        } else {
-            out.writeObject(this.delegate);
-        }
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        this.delegate = (Configuration) in.readObject();
     }
 
     @Override

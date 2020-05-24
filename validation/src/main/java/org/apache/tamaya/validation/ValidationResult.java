@@ -34,7 +34,7 @@ public final class ValidationResult {
 
     /**
      * Creates a new validation result.
-     * @param snapshot the snapshpt config, not null.
+     * @param snapshot the snapshot config, not null.
      * @param result the result, not null.
      */
     public ValidationResult(ConfigurationSnapshot snapshot, List<ValidationCheck> result) {
@@ -82,7 +82,7 @@ public final class ValidationResult {
             return result;
         }else{
             return result.stream()
-                    .filter(f -> findings.contains(f))
+                    .filter(f -> findings.contains(f.getResult()))
                     .collect(Collectors.toList());
         }
     }
